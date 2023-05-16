@@ -23,11 +23,15 @@ use App\Http\Controllers\PublicPageController;
 
 // Auth::routes();
 Auth::routes([
-    'register' => false
+    'register' => false,
+    'login' => false,
 ]);
 
-// Route::get('/', [PageController::class, 'home'])->name('root');
-Route::get('/', function () { return redirect()->route('admin'); });
+/**
+ * Root
+ */
+Route::get('/', [PageController::class, 'home'])->name('home');
+Route::get('/login', [PageController::class, 'home'])->name('login');
 
 
 /**

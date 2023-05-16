@@ -10,14 +10,16 @@ export const routes = [
      * https://techvblogs.com/blog/spa-authentication-laravel-9-sanctum-vue3-vite
      */
 
-    // {
-    //     path: "/",
-    //     component: () => import("../App.vue"),
-    //     name: "App",
-    //     meta: {
-    //         title: "App",
-    //     },
-    // },
+    {
+        path: "/",
+        component: () => import("../pages/Home.vue"),
+        name: "Home",
+        meta: {
+            requiresAuth: false,
+            title: "Home",
+        },
+    },
+
     /**
      * Auth Login
      */
