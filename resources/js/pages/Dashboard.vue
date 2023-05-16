@@ -1,9 +1,32 @@
 <template>
   <v-container>
     <v-row>
-      <div class="v-col-12 v-col-md-6 mx-auto text-center mt-16">
-        <div class="text-h1">Welcome</div>
+      <div class="v-col-12 mt-10">
+        <div class="text-h6 mb-3">My KPI</div>
+        <v-card class="rounded-lg">
+          <v-card-text>
+            <KpiProgress v-if="authUser && authUser.is_regular == true" />
+            <KpiProgressProbation v-else />
+          </v-card-text>
+        </v-card>
       </div>
     </v-row>
   </v-container>
 </template>
+
+<script setup>
+import { computed, defineAsyncComponent } from "vue";
+import { useAuthStore } from "@/stores/auth";
+const KpiProgress = defineAsyncComponent(() =>
+  import("../components/kpi/KpiProgress.vue")
+);
+const KpiProgressProbation = defineAsyncComponent(() =>
+  import("../components/kpi/KpiProgressProbation.vue")
+);
+
+// authenticated user object
+const authStore = useAuthStore();
+const authUser = computed(() => {
+  return authStore.user;
+});
+</script>
