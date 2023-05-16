@@ -42,24 +42,28 @@ const router = createRouter({
     routes,
 });
 router.beforeEach((to, from, next) => {
-    console.log("to.meta.requiresAuth", to.meta.requiresAuth);
-    console.log("authStore.is_logged_in", authStore.is_logged_in);
-
+    console.log("authStore.user.role", authStore);
+    // console.log("to.meta.requiresAuth", to.meta.requiresAuth);
+    // console.log("authStore.is_logged_in", authStore.is_logged_in);
     if (to.meta.requiresAuth && !authStore.is_logged_in) {
         // is not logged in
         next("/login");
     } else {
-        // check if in login page
-        if (to.name === "Login") {
-            next("/");
-        }
-
         // is logged in
-        if (to.meta.role && to.meta.role == authStore.user.role) {
+        if (to.meta.role && to.meta.role.includes(authStore.user.role)) {
             next();
-        } else if (to.meta.role && to.meta.role !== authStore.user.role) {
+        } else if (
+            to.meta.role &&
+            !to.meta.role.includes(authStore.user.role)
+        ) {
             next("/unauthorized");
         } else {
+            // check if in login page
+            // if (to.name === "Login") {
+            //     next("/");
+            // } else {
+            //     next();
+            // }
             next();
         }
     }

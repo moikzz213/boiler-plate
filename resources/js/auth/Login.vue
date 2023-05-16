@@ -59,8 +59,8 @@ const appName = ref(import.meta.env.VITE_APP_NAME);
 const authStore = useAuthStore();
 const router = useRouter();
 const credentials = ref({
-  login: "admin",
-  password: "admin@112211",
+  login: "employee",
+  password: "gag@112211",
 });
 const loadingLogin = ref(false);
 const login = async () => {

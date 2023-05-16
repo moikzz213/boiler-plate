@@ -15,7 +15,8 @@ export const routes = [
         component: () => import("../pages/Home.vue"),
         name: "Home",
         meta: {
-            requiresAuth: false,
+            requiresAuth: true,
+            role: ["admin", "employee", "manager"],
             title: "Home",
         },
     },
@@ -33,6 +34,24 @@ export const routes = [
         },
     },
 
+    // logged in user
+    {
+        path: "/dashboard",
+        component: () => import("../pages/Dashboard.vue"),
+        name: "Dashboard",
+        meta: {
+            requiresAuth: true,
+            role: ["admin", "employee", "manager"],
+            title: "Dashboard",
+            // meta: {
+            //     middleware: [
+            //         isAuthenticated
+            //     ]
+            // }
+        },
+    },
+
+
     /**
      * Admin routes
      */
@@ -43,23 +62,8 @@ export const routes = [
         name: "AdminRoot",
         meta: {
             requiresAuth: true,
-            role: "admin",
+            role: ["admin"],
             title: "Dashboard",
-        },
-    },
-    {
-        path: "/admin/dashboard",
-        component: () => import("../pages/admin/Dashboard.vue"),
-        name: "Dashboard",
-        meta: {
-            requiresAuth: true,
-            role: "admin",
-            title: "Dashboard",
-            // meta: {
-            //     middleware: [
-            //         isAuthenticated
-            //     ]
-            // }
         },
     },
     {
@@ -68,7 +72,7 @@ export const routes = [
         name: "Users",
         meta: {
             requiresAuth: true,
-            role: "admin",
+            role: ["admin"],
             title: "Users",
         },
     },
@@ -78,7 +82,7 @@ export const routes = [
         name: "EditUser",
         meta: {
             requiresAuth: true,
-            role: "admin",
+            role: ["admin"],
             title: "Edit User",
         },
     },
@@ -88,7 +92,7 @@ export const routes = [
         name: "Logs",
         meta: {
             requiresAuth: true,
-            role: "admin",
+            role: ["admin"],
             title: "Logs",
         },
     },
@@ -98,7 +102,7 @@ export const routes = [
         name: "Departments",
         meta: {
             requiresAuth: true,
-            role: "admin",
+            role: ["admin"],
             title: "Departments",
         },
     },
@@ -108,7 +112,7 @@ export const routes = [
         name: "Companies",
         meta: {
             requiresAuth: true,
-            role: "admin",
+            role: ["admin"],
             title: "Companies",
         },
     },
@@ -122,13 +126,12 @@ export const routes = [
         name: "Account",
         meta: {
             requiresAuth: true,
+            role: ["admin", "employee", "manager"],
             title: "Account",
         },
     },
 
-    /**
-     * Normal user routes
-     */
+    // unauthorized
     {
         path: "/unauthorized",
         component: () => import("../pages/Unauthorized.vue"),
@@ -138,4 +141,8 @@ export const routes = [
             title: "Unauthorized",
         },
     },
+
+    // employee routes
+
+
 ];

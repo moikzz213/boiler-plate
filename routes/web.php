@@ -32,6 +32,7 @@ Auth::routes([
  */
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/login', [PageController::class, 'home'])->name('login');
+Route::get('/dashboard', [PageController::class, 'home'])->name('login');
 
 
 /**
