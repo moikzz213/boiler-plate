@@ -32,9 +32,9 @@
         >
           Employee Capability Development {{ "(" + ecdArray.length + ")" }}
         </v-card>
-        <div class="ml-auto text-h6 font-weight-bold">Rate: 4</div>
+        <div class="ml-auto text-h6">Rate: 4</div>
       </div>
-      <v-card flat class="rounded-lg">
+      <v-card flat>
         <v-card-title class="text-uppercase text-primary px-5 py-5">
           {{ selectedTab }}
         </v-card-title>
@@ -120,10 +120,10 @@
 </template>
 
 <script setup>
-import { watch, ref, defineProps } from "vue";
+import { watch, ref } from "vue";
 import { mdiPrinter } from "@mdi/js";
 import VueDatePicker from "@vuepic/vue-datepicker";
-import "@vuepic/vue-datepicker/dist/main.css";
+// import "@vuepic/vue-datepicker/dist/main.css";
 
 // employee
 const props = defineProps({

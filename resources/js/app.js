@@ -78,7 +78,7 @@ app.use(router);
 /**
  * Vuetify
  */
-import vuetify from "./plugins/vuetify";
+import vuetify from "./vuetify/vuetify";
 app.use(vuetify);
 
 /**

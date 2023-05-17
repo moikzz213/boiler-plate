@@ -1,6 +1,6 @@
 <template>
   <v-container class="pb-16">
-    <v-row class="mt-10 mb-5">
+    <v-row class="my-5">
       <div class="v-col-12">
         <div class="text-h6 mb-3">My KPI</div>
         <v-card class="rounded-lg">
@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { watch, ref, computed, defineAsyncComponent } from "vue";
+import { computed, defineAsyncComponent } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import KpiContent from "@/components/kpi/KpiContent.vue";
 

@@ -95,7 +95,7 @@
           <div class="pms-avatar-wrapper">
             <div class="d-flex align-start">
               <v-avatar color="grey-lighten-1" size="90">
-                <div class="text-h5 text-primary">
+                <div class="text-h4 text-primary">
                   {{ printInitials(authStore.user.username) }}
                 </div>
               </v-avatar>
