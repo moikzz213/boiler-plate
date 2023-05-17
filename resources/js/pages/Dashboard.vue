@@ -1,7 +1,7 @@
 <template>
-  <v-container>
-    <v-row>
-      <div class="v-col-12 mt-10">
+  <v-container class="pb-16">
+    <v-row class="mt-10 mb-5">
+      <div class="v-col-12">
         <div class="text-h6 mb-3">My KPI</div>
         <v-card class="rounded-lg">
           <v-card-text>
@@ -11,12 +11,16 @@
         </v-card>
       </div>
     </v-row>
+    <KpiContent :selected-employee="authUser.user" />
   </v-container>
 </template>
 
 <script setup>
-import { computed, defineAsyncComponent } from "vue";
+import { watch, ref, computed, defineAsyncComponent } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import KpiContent from "@/components/kpi/KpiContent.vue";
+
+// dynamic components
 const KpiProgress = defineAsyncComponent(() =>
   import("../components/kpi/KpiProgress.vue")
 );
@@ -27,6 +31,6 @@ const KpiProgressProbation = defineAsyncComponent(() =>
 // authenticated user object
 const authStore = useAuthStore();
 const authUser = computed(() => {
-  return authStore.user;
+  return authStore.user ? authStore.user : null;
 });
 </script>
