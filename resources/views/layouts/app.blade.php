@@ -15,10 +15,10 @@
     {{-- <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet"> --}}
 
     {{-- Fav --}}
-    <link rel="icon" href="{{ Vite::asset('../../../public/assets/images/fav.png') }}" sizes="32x32">
+    {{-- <link rel="icon" href="{{ Vite::asset('../../../public/assets/images/fav.png') }}" sizes="32x32">
     <link rel="icon" href="{{ Vite::asset('../../../public/assets/images/fav.png') }}" sizes="192x192">
     <link rel="apple-touch-icon" href="{{ Vite::asset('../../../public/assets/images/fav.png') }}">
-    <meta name="msapplication-TileImage" content="{{ Vite::asset('../../../public/assets/images/fav.png') }}">
+    <meta name="msapplication-TileImage" content="{{ Vite::asset('../../../public/assets/images/fav.png') }}"> --}}
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])

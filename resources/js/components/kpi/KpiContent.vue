@@ -46,11 +46,11 @@
           <div class="text-uppercase text-primary">
             {{ selectedTab }}
           </div>
-          <div class="ml-auto">Remaining weightage: 25%</div>
+          <div class="ml-auto text-body-1">Remaining weightage: 25%</div>
         </v-card-title>
-        <v-card-text class="px-5 pb-5">
+        <v-card-text class="px-5 pb-10">
           <v-row v-show="selectedTab == 'kpi'" class="mt-n3">
-            <div class="v-col-12" v-for="kpi in kpiArray" :key="kpi.id">
+            <div class="v-col-12 pb-0" v-for="kpi in kpiArray" :key="kpi.id">
               <v-card class="rounded-lg">
                 <v-card-text>
                   <v-row>
@@ -61,10 +61,26 @@
                           {{ kpi.title }}
                         </div>
                       </div>
-                      <div>
+                      <div v-if="authStore.authUser.role == 'manager'">
                         <v-btn color="primary" class="rounded-xl px-5" size="small"
                           >review</v-btn
                         >
+                        <v-btn
+                          @click="() => editKPI(kpi)"
+                          density="compact"
+                          size="30"
+                          color="primary"
+                          class="rounded-xl elevation-2 ml-2"
+                          ><v-icon size="small" :icon="mdiPencil"></v-icon
+                        ></v-btn>
+                        <v-btn
+                          @click="() => removeKPI(kpi)"
+                          density="compact"
+                          size="30"
+                          color="primary"
+                          class="rounded-xl elevation-2 ml-2"
+                          ><v-icon size="small" :icon="mdiTrashCan"></v-icon
+                        ></v-btn>
                       </div>
                     </div>
                     <div class="v-col-3">
@@ -89,7 +105,7 @@
             </div>
           </v-row>
           <v-row v-show="selectedTab == 'ecd'" class="mt-n3">
-            <div class="v-col-12" v-for="ecd in ecdArray" :key="ecd.id">
+            <div class="v-col-12 pb-0" v-for="ecd in ecdArray" :key="ecd.id">
               <v-card class="rounded-lg">
                 <v-card-text>
                   <v-row>
@@ -100,10 +116,26 @@
                           {{ ecd.title }}
                         </div>
                       </div>
-                      <div>
+                      <div v-if="authStore.authUser.role == 'manager'">
                         <v-btn color="primary" class="rounded-xl px-5" size="small"
                           >review</v-btn
                         >
+                        <v-btn
+                          @click="() => editKPI(kpi)"
+                          density="compact"
+                          size="30"
+                          color="primary"
+                          class="rounded-xl elevation-2 ml-2"
+                          ><v-icon size="small" :icon="mdiPencil"></v-icon
+                        ></v-btn>
+                        <v-btn
+                          @click="() => removeKPI(kpi)"
+                          density="compact"
+                          size="30"
+                          color="primary"
+                          class="rounded-xl elevation-2 ml-2"
+                          ><v-icon size="small" :icon="mdiTrashCan"></v-icon
+                        ></v-btn>
                       </div>
                     </div>
                     <div class="v-col-3">
@@ -126,15 +158,27 @@
         </v-card-text>
       </v-card>
     </div>
+    <v-dialog v-model="kpi.dialog" width="85%">
+      <v-card class="rounded-lg">
+        <v-card-title>
+          {{ kpi.title }}
+        </v-card-title>
+        <v-card-text>
+          <KpiForm />
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-row>
 </template>
 
 <script setup>
 import { watch, ref } from "vue";
-import { mdiPrinter, mdiPlus } from "@mdi/js";
+import { useAuthStore } from "@/stores/auth";
+import { mdiPrinter, mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
 import VueDatePicker from "@vuepic/vue-datepicker";
 // import "@vuepic/vue-datepicker/dist/main.css";
-
+import KpiForm from "@/components/kpi/KpiForm.vue";
+const authStore = useAuthStore();
 const props = defineProps({
   selectedEmployee: {
     type: Object,
@@ -145,13 +189,12 @@ const props = defineProps({
     default: false,
   },
 });
-console.log("props.isManager", props.isManager);
-const employee = ref({});
+const viewingEmployee = ref({});
 watch(
   () => props.selectedEmployee,
   (newVal) => {
-    employee.value = Object.assign({}, newVal);
-    console.log("watch employee", employee.value);
+    viewingEmployee.value = Object.assign({}, newVal);
+    console.log("watch employee", viewingEmployee.value);
   }
 );
 
@@ -233,9 +276,34 @@ watch(year, async (newVal, oldVal) => {
   getKPI();
 });
 
-// add kpi
+// save kpi
+const kpi = ref({
+  title: "",
+  data: {},
+  dialog: false,
+  loading: false,
+});
 const addKPI = async (type) => {
-  console.log("addKPI", type);
+  kpi.value = {
+    ...kpi.value,
+    ...{
+      title: "Add KPI ",
+      data: {},
+      dialog: true,
+    },
+  };
+  console.log("addKPI", kpi.value);
+};
+const editKPI = async (item) => {
+  kpi.value = {
+    ...kpi.value,
+    ...{
+      title: "Edit KPI ",
+      data: Object.assign({}, item),
+      dialog: true,
+    },
+  };
+  console.log("editKpi", kpi.value);
 };
 </script>
 
