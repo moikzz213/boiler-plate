@@ -7,11 +7,13 @@ import { defineStore } from "pinia";
 export const useAuthStore = defineStore("authClient", {
     state: () => ({
         user: null,
+        profile: null,
         token: null,
         is_logged_in: false,
     }),
     getters: {
         authUser: (state) => state.user,
+        authProfile: (state) => state.profile,
         authToken: (state) => state.token,
         authIsLoggedIn: (state) => state.is_logged_in,
     },
@@ -33,6 +35,9 @@ export const useAuthStore = defineStore("authClient", {
         },
         async setToken(token) {
             this.token = token;
+        },
+        async setProfile(profile) {
+            this.profile = profile;
         },
     },
     persist: true,

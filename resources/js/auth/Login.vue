@@ -95,7 +95,7 @@ const saveClientKey = async (data) => {
   if (response) {
     authStore.setCredentials(data).then(() => {
       loadingLogin.value = false;
-      router.push({ path: "/admin" });
+      router.push({ path: "/dashboard" });
     });
   }
   return response;

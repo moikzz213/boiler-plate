@@ -78,7 +78,7 @@
       </div>
     </v-navigation-drawer>
     <v-app-bar
-      v-if="route.name === 'Dashboard'"
+      v-if="profileHeaderList.includes(route.name)"
       density=""
       height="100"
       color="black"
@@ -246,6 +246,7 @@ import {
   mdiBellOutline,
   mdiAccount,
   mdiCog,
+  mdiAccountGroup,
 } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
 import { printInitials } from "@/composables/printInitials";
@@ -254,6 +255,9 @@ import { authApi } from "@/services/sacntumApi";
 
 const appName = ref(import.meta.env.VITE_APP_NAME);
 const logo = ref(import.meta.env.VITE_APP_URL + "/assets/images/fav.png");
+
+// profile header
+const profileHeaderList = ref(["Dashboard", "Account", "Teams"]);
 
 // navigation
 const authStore = useAuthStore();
@@ -266,8 +270,9 @@ const sideNavigation = ref([
     path: "/dashboard",
   },
   {
-    title: "Settings",
-    icon: mdiCog,
+    title: "Teams",
+    icon: mdiAccountGroup,
+    path: "/manager/teams",
   },
 ]);
 const openPage = (openPath) => {

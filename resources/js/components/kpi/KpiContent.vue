@@ -35,8 +35,18 @@
         <div class="ml-auto text-h6">Rate: 4</div>
       </div>
       <v-card flat>
-        <v-card-title class="text-uppercase text-primary px-5 py-5">
-          {{ selectedTab }}
+        <v-card-title class="px-5 py-5 d-flex align-center">
+          <v-btn
+            @click="() => addKPI(selectedTab)"
+            density="compact"
+            size="35"
+            class="rounded-xl elevation-2 mr-2"
+            ><v-icon size="small" :icon="mdiPlus"></v-icon
+          ></v-btn>
+          <div class="text-uppercase text-primary">
+            {{ selectedTab }}
+          </div>
+          <div class="ml-auto">Remaining weightage: 25%</div>
         </v-card-title>
         <v-card-text class="px-5 pb-5">
           <v-row v-show="selectedTab == 'kpi'" class="mt-n3">
@@ -121,17 +131,21 @@
 
 <script setup>
 import { watch, ref } from "vue";
-import { mdiPrinter } from "@mdi/js";
+import { mdiPrinter, mdiPlus } from "@mdi/js";
 import VueDatePicker from "@vuepic/vue-datepicker";
 // import "@vuepic/vue-datepicker/dist/main.css";
 
-// employee
 const props = defineProps({
   selectedEmployee: {
     type: Object,
     default: null,
   },
+  isManager: {
+    type: Boolean,
+    default: false,
+  },
 });
+console.log("props.isManager", props.isManager);
 const employee = ref({});
 watch(
   () => props.selectedEmployee,
@@ -218,6 +232,11 @@ const getKPI = async () => {
 watch(year, async (newVal, oldVal) => {
   getKPI();
 });
+
+// add kpi
+const addKPI = async (type) => {
+  console.log("addKPI", type);
+};
 </script>
 
 <style>

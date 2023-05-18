@@ -1,9 +1,9 @@
 <script setup>
-import NormalLayout from "@/layouts/NormalLayout.vue";
+import EmployeeLayout from "@/layouts/EmployeeLayout.vue";
 </script>
 
 <template>
-    <NormalLayout>
+    <EmployeeLayout>
         <router-view></router-view>
-    </NormalLayout>
+    </EmployeeLayout>
 </template>

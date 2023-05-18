@@ -3,7 +3,7 @@
     <v-row class="my-5">
       <div class="v-col-12">
         <div class="text-h6 mb-3">My KPI</div>
-        <v-card class="rounded-lg">
+        <v-card max-width="1200">
           <v-card-text>
             <KpiProgress v-if="authUser && authUser.is_regular == true" />
             <KpiProgressProbation v-else />

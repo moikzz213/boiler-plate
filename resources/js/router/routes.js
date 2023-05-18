@@ -34,7 +34,7 @@ export const routes = [
         },
     },
 
-    // logged in user
+    // All users
     {
         path: "/dashboard",
         component: () => import("../pages/Dashboard.vue"),
@@ -43,14 +43,40 @@ export const routes = [
             requiresAuth: true,
             role: ["admin", "employee", "manager"],
             title: "Dashboard",
-            // meta: {
-            //     middleware: [
-            //         isAuthenticated
-            //     ]
-            // }
+        },
+    },
+    {
+        path: "/account",
+        component: () => import("../pages/account/Account.vue"),
+        name: "Account",
+        meta: {
+            requiresAuth: true,
+            role: ["admin", "employee", "manager"],
+            title: "Account",
         },
     },
 
+    // All users
+    {
+        path: "/manager/teams",
+        component: () => import("../pages/manager/Teams.vue"),
+        name: "Teams",
+        meta: {
+            requiresAuth: true,
+            role: ["manager"],
+            title: "Teams",
+        },
+    },
+    {
+        path: "/manager/teams/member/:id",
+        component: () => import("../pages/manager/SingleTeamMember.vue"),
+        name: "SingleTeamMember",
+        meta: {
+            requiresAuth: true,
+            role: ["manager"],
+            title: "Team Member",
+        },
+    },
 
     /**
      * Admin routes
@@ -117,20 +143,6 @@ export const routes = [
         },
     },
 
-    /**
-     * Normal user routes
-     */
-    {
-        path: "/account",
-        component: () => import("../pages/account/Account.vue"),
-        name: "Account",
-        meta: {
-            requiresAuth: true,
-            role: ["admin", "employee", "manager"],
-            title: "Account",
-        },
-    },
-
     // unauthorized
     {
         path: "/unauthorized",
@@ -143,6 +155,4 @@ export const routes = [
     },
 
     // employee routes
-
-
 ];

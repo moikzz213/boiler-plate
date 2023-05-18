@@ -153,6 +153,7 @@ import {
   mdiHomeOutline,
   mdiBellOutline,
   mdiAccount,
+  mdiAccountGroup,
   mdiCog,
   mdiPlaylistEdit,
   mdiDomain,
@@ -173,28 +174,12 @@ const sideNavigation = ref([
   {
     title: "Dashboard",
     icon: mdiHomeOutline,
-    path: "/admin",
+    path: "/dashboard",
   },
   {
-    title: "Logs",
-    icon: mdiPlaylistEdit,
-    path: "/admin/logs",
-  },
-  {
-    title: "Settings",
-    icon: mdiCog,
-    subs: [
-      {
-        title: "Companies",
-        icon: mdiDomain,
-        path: "/admin/companies",
-      },
-      {
-        title: "Departments",
-        icon: mdiOfficeBuilding,
-        path: "/admin/departments",
-      },
-    ],
+    title: "Teams",
+    icon: mdiAccountGroup,
+    path: "/manager/teams",
   },
 ]);
 const openPage = (openPath) => {

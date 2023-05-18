@@ -14,12 +14,7 @@
     {{-- <link rel="dns-prefetch" href="//fonts.gstatic.com"> --}}
     {{-- <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet"> --}}
 
-
-    {{-- <link rel="icon" href="{{ asset('public/images/fav.png') }}" sizes="32x32">
-    <link rel="icon" href="{{ asset('public/images/fav.png') }}" sizes="192x192">
-    <link rel="apple-touch-icon" href="{{ asset('public/images/fav.png') }}">
-    <meta name="msapplication-TileImage" content="{{ asset('public/images/fav.png') }}"> --}}
-
+    {{-- Fav --}}
     <link rel="icon" href="{{ Vite::asset('../../../public/assets/images/fav.png') }}" sizes="32x32">
     <link rel="icon" href="{{ Vite::asset('../../../public/assets/images/fav.png') }}" sizes="192x192">
     <link rel="apple-touch-icon" href="{{ Vite::asset('../../../public/assets/images/fav.png') }}">
