@@ -42,7 +42,6 @@ const router = createRouter({
     routes,
 });
 router.beforeEach((to, from, next) => {
-    console.log("authStore.user.role", authStore);
     // console.log("to.meta.requiresAuth", to.meta.requiresAuth);
     // console.log("authStore.is_logged_in", authStore.is_logged_in);
     if (to.meta.requiresAuth && !authStore.is_logged_in) {

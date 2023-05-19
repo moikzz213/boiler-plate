@@ -61,7 +61,7 @@
                           {{ kpi.title }}
                         </div>
                       </div>
-                      <div v-if="authStore.authUser.role == 'manager'">
+                      <div v-if="authStore.authIsManager == true">
                         <v-btn
                           color="primary"
                           class="rounded-xl px-5"
@@ -120,7 +120,7 @@
                           {{ ecd.title }}
                         </div>
                       </div>
-                      <div v-if="authStore.authUser.role == 'manager'">
+                      <div v-if="authStore.authIsManager == true">
                         <v-btn
                           color="primary"
                           class="rounded-xl px-5"
@@ -166,14 +166,31 @@
         </v-card-text>
       </v-card>
     </div>
-
     <v-dialog v-model="toRemoveKpi.dialog" width="100%" max-width="480" persistent>
       <v-card class="rounded-lg">
-        <v-card-text> </v-card-text>
+        <v-card-title class="pa-3">Confirm Remove</v-card-title>
+        <v-card-text class="px-3">
+          <div class="pb-3 text-grey">
+            Please confirm that you want to remove
+            <span class="text-primary">{{
+              "'" + toRemoveKpi.data.title.substring(0, 35) + "...'"
+            }}</span>
+          </div>
+          <div class="d-flex justify-end mt-5">
+            <v-btn
+              class="bg-grey-lighten-2 text-primary"
+              variant="text"
+              @click="toRemoveKpi.dialog = false"
+              >Cancel</v-btn
+            >
+            <v-btn color="primary" class="ml-2" @click="confirmRemoveKpi">Remove</v-btn>
+          </div>
+        </v-card-text>
       </v-card>
     </v-dialog>
 
     <KpiDialog :kpi-options="kpiOptions" />
+    <!-- <EcdDialog :kpi-options="kpiOptions" /> -->
   </v-row>
 </template>
 
@@ -189,10 +206,6 @@ const props = defineProps({
   selectedEmployee: {
     type: Object,
     default: null,
-  },
-  isManager: {
-    type: Boolean,
-    default: false,
   },
 });
 const viewingEmployee = ref({});
@@ -341,8 +354,17 @@ const toRemoveKpi = ref({
   dialog: false,
   loading: false,
 });
-const removeKPI = async () => {
-  console.log("removeKPI");
+const removeKPI = async (item) => {
+  toRemoveKpi.value = {
+    ...toRemoveKpi.value,
+    ...{
+      data: Object.assign({}, item),
+      dialog: true,
+    },
+  };
+};
+const confirmRemoveKpi = async () => {
+  console.log("axios request to client");
 };
 </script>
 

@@ -10,17 +10,24 @@ export const useAuthStore = defineStore("authClient", {
         profile: null,
         token: null,
         is_logged_in: false,
+        is_manager: false,
+        is_hr_admin: false,
+        is_hrbp: false,
     }),
     getters: {
         authUser: (state) => state.user,
         authProfile: (state) => state.profile,
         authToken: (state) => state.token,
         authIsLoggedIn: (state) => state.is_logged_in,
+        authIsManager: (state) => state.is_manager,
     },
     actions: {
         async setCredentials(res) {
+            console.log("setCredentials", res);
             this.user = res.user;
             this.token = res.token;
+            this.is_manager =
+                res.user.teams && res.user.teams.length > 0 ? true : false;
             if (res.user && res.token) {
                 this.is_logged_in = true;
             }
