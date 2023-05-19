@@ -62,15 +62,19 @@
                         </div>
                       </div>
                       <div v-if="authStore.authUser.role == 'manager'">
-                        <v-btn color="primary" class="rounded-xl px-5" size="small"
+                        <v-btn
+                          color="primary"
+                          class="rounded-xl px-5"
+                          size="small"
+                          @click="() => reviewKPI(kpi, 'ecd')"
                           >review</v-btn
                         >
                         <v-btn
-                          @click="() => editKPI(kpi)"
+                          @click="() => editKPI(kpi, 'kpi')"
                           density="compact"
                           size="30"
                           color="primary"
-                          class="rounded-xl elevation-2 ml-2"
+                          class="rounded-xl elevation-2 ml-1"
                           ><v-icon size="small" :icon="mdiPencil"></v-icon
                         ></v-btn>
                         <v-btn
@@ -78,7 +82,7 @@
                           density="compact"
                           size="30"
                           color="primary"
-                          class="rounded-xl elevation-2 ml-2"
+                          class="rounded-xl elevation-2 ml-1"
                           ><v-icon size="small" :icon="mdiTrashCan"></v-icon
                         ></v-btn>
                       </div>
@@ -117,23 +121,27 @@
                         </div>
                       </div>
                       <div v-if="authStore.authUser.role == 'manager'">
-                        <v-btn color="primary" class="rounded-xl px-5" size="small"
+                        <v-btn
+                          color="primary"
+                          class="rounded-xl px-5"
+                          size="small"
+                          @click="() => reviewKPI(ecd, 'ecd')"
                           >review</v-btn
                         >
                         <v-btn
-                          @click="() => editKPI(kpi)"
+                          @click="() => editKPI(ecd, 'ecd')"
                           density="compact"
                           size="30"
                           color="primary"
-                          class="rounded-xl elevation-2 ml-2"
+                          class="rounded-xl elevation-2 ml-1"
                           ><v-icon size="small" :icon="mdiPencil"></v-icon
                         ></v-btn>
                         <v-btn
-                          @click="() => removeKPI(kpi)"
+                          @click="() => removeKPI(ecd)"
                           density="compact"
                           size="30"
                           color="primary"
-                          class="rounded-xl elevation-2 ml-2"
+                          class="rounded-xl elevation-2 ml-1"
                           ><v-icon size="small" :icon="mdiTrashCan"></v-icon
                         ></v-btn>
                       </div>
@@ -158,16 +166,14 @@
         </v-card-text>
       </v-card>
     </div>
-    <v-dialog v-model="kpi.dialog" width="85%">
+
+    <v-dialog v-model="toRemoveKpi.dialog" width="100%" max-width="480" persistent>
       <v-card class="rounded-lg">
-        <v-card-title>
-          {{ kpi.title }}
-        </v-card-title>
-        <v-card-text>
-          <KpiForm />
-        </v-card-text>
+        <v-card-text> </v-card-text>
       </v-card>
     </v-dialog>
+
+    <KpiDialog :kpi-options="kpiOptions" />
   </v-row>
 </template>
 
@@ -177,7 +183,7 @@ import { useAuthStore } from "@/stores/auth";
 import { mdiPrinter, mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
 import VueDatePicker from "@vuepic/vue-datepicker";
 // import "@vuepic/vue-datepicker/dist/main.css";
-import KpiForm from "@/components/kpi/KpiForm.vue";
+import KpiDialog from "@/components/kpi/KpiDialog.vue";
 const authStore = useAuthStore();
 const props = defineProps({
   selectedEmployee: {
@@ -216,6 +222,7 @@ const kpiArray = ref([
     target: "121",
     measures: "Units",
     weightage: "25%",
+    kpi_id: 1,
   },
   {
     id: 2,
@@ -225,6 +232,7 @@ const kpiArray = ref([
     target: "121",
     measures: "Units",
     weightage: "25%",
+    kpi_id: 3,
   },
   {
     id: 3,
@@ -234,6 +242,7 @@ const kpiArray = ref([
     target: "121",
     measures: "Units",
     weightage: "25%",
+    kpi_id: 4,
   },
   {
     id: 4,
@@ -243,6 +252,7 @@ const kpiArray = ref([
     target: "121",
     measures: "Units",
     weightage: "25%",
+    kpi_id: 4,
   },
 ]);
 const ecdArray = ref([
@@ -277,33 +287,62 @@ watch(year, async (newVal, oldVal) => {
 });
 
 // save kpi
-const kpi = ref({
+const kpiOptions = ref({
   title: "",
-  data: {},
   dialog: false,
-  loading: false,
+  data: {},
+  type: "",
+  action: "",
+  is_review: false,
 });
 const addKPI = async (type) => {
-  kpi.value = {
-    ...kpi.value,
+  kpiOptions.value = {
+    ...kpiOptions.value,
     ...{
       title: "Add KPI ",
       data: {},
       dialog: true,
+      type: type,
+      action: "add",
+      is_review: false,
     },
   };
-  console.log("addKPI", kpi.value);
 };
-const editKPI = async (item) => {
-  kpi.value = {
-    ...kpi.value,
+const editKPI = async (item, type = "kpi") => {
+  kpiOptions.value = {
+    ...kpiOptions.value,
     ...{
       title: "Edit KPI ",
       data: Object.assign({}, item),
       dialog: true,
+      type: type,
+      action: "edit",
+      is_review: false,
     },
   };
-  console.log("editKpi", kpi.value);
+};
+const reviewKPI = async (item, type = "kpi") => {
+  kpiOptions.value = {
+    ...kpiOptions.value,
+    ...{
+      title: type.toUpperCase(),
+      data: Object.assign({}, item),
+      dialog: true,
+      type: type,
+      action: "review",
+      is_review: true,
+    },
+  };
+};
+
+// remove kpi
+const toRemoveKpi = ref({
+  data: {},
+  dialog: false,
+  loading: false,
+});
+const removeKPI = async () => {
+  console.log("removeKPI");
 };
 </script>
 
