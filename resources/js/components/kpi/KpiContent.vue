@@ -37,6 +37,7 @@
       <v-card flat>
         <v-card-title class="px-5 py-5 d-flex align-center">
           <v-btn
+            v-if="canManage"
             @click="() => addKPI(selectedTab)"
             density="compact"
             size="35"
@@ -61,7 +62,7 @@
                           {{ kpi.title }}
                         </div>
                       </div>
-                      <div v-if="authStore.authIsManager == true">
+                      <div>
                         <v-btn
                           color="primary"
                           class="rounded-xl px-5"
@@ -70,6 +71,7 @@
                           >review</v-btn
                         >
                         <v-btn
+                          v-if="canManage"
                           @click="() => editKPI(kpi, 'kpi')"
                           density="compact"
                           size="30"
@@ -78,6 +80,7 @@
                           ><v-icon size="small" :icon="mdiPencil"></v-icon
                         ></v-btn>
                         <v-btn
+                          v-if="canManage"
                           @click="() => removeKPI(kpi)"
                           density="compact"
                           size="30"
@@ -120,7 +123,7 @@
                           {{ ecd.title }}
                         </div>
                       </div>
-                      <div v-if="authStore.authIsManager == true">
+                      <div>
                         <v-btn
                           color="primary"
                           class="rounded-xl px-5"
@@ -129,6 +132,7 @@
                           >review</v-btn
                         >
                         <v-btn
+                          v-if="canManage"
                           @click="() => editKPI(ecd, 'ecd')"
                           density="compact"
                           size="30"
@@ -137,6 +141,7 @@
                           ><v-icon size="small" :icon="mdiPencil"></v-icon
                         ></v-btn>
                         <v-btn
+                          v-if="canManage"
                           @click="() => removeKPI(ecd)"
                           density="compact"
                           size="30"
@@ -195,8 +200,9 @@
 </template>
 
 <script setup>
-import { watch, ref } from "vue";
+import { ref, computed, watch } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import { useRoute } from "vue-router";
 import { mdiPrinter, mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import KpiDialog from "@/components/kpi/KpiDialog.vue";
@@ -223,6 +229,11 @@ const selectTab = (tab) => {
   selectedTab.value = tab;
   console.log("selectedTab", selectedTab.value);
 };
+const canManage = computed(() => {
+  return authStore.authUser.role == "manager" && useRoute().name == "SingleTeamMember"
+    ? true
+    : false;
+});
 
 // kpi
 const year = ref(new Date().getFullYear());

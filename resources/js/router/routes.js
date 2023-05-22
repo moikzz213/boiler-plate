@@ -59,7 +59,7 @@ export const routes = [
     // All users
     {
         path: "/manager/teams",
-        component: () => import("../pages/manager/Teams.vue"),
+        component: () => import("../pages/manager/team/Teams.vue"),
         name: "Teams",
         meta: {
             requiresAuth: true,
@@ -69,7 +69,7 @@ export const routes = [
     },
     {
         path: "/manager/teams/member/:id",
-        component: () => import("../pages/manager/SingleTeamMember.vue"),
+        component: () => import("../pages/manager/team/SingleTeamMember.vue"),
         name: "SingleTeamMember",
         meta: {
             requiresAuth: true,
@@ -77,6 +77,17 @@ export const routes = [
             title: "Team Member",
         },
     },
+    {
+        path: "/manager/kpi",
+        component: () => import("../pages/manager/kpi/CustomKpi.vue"),
+        name: "ManagerCustomKPI",
+        meta: {
+            requiresAuth: true,
+            role: ["manager"],
+            title: "Custom KPIs",
+        },
+    },
+
 
     /**
      * Admin routes

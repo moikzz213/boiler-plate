@@ -35,6 +35,7 @@ Route::get('/login', [PageController::class, 'home'])->name('login');
 Route::get('/dashboard', [PageController::class, 'home'])->name('dashboard');
 Route::get('/manager/teams', [PageController::class, 'home'])->name('teams');
 Route::get('/manager/teams/member/{id}', [PageController::class, 'home'])->name('teams.single.member');
+Route::get('/manager/kpi', [PageController::class, 'home'])->name('teams.kpi');
 
 
 /**

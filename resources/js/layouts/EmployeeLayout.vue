@@ -245,6 +245,7 @@ import {
   mdiHomeOutline,
   mdiBellOutline,
   mdiAccount,
+  mdiFormatListBulleted,
   mdiCog,
   mdiAccountGroup,
 } from "@mdi/js";
@@ -273,6 +274,11 @@ const sideNavigation = ref([
     title: "Teams",
     icon: mdiAccountGroup,
     path: "/manager/teams",
+  },
+  {
+    title: "Custom KPI",
+    icon: mdiFormatListBulleted,
+    path: "/manager/kpi",
   },
 ]);
 const openPage = (openPath) => {
