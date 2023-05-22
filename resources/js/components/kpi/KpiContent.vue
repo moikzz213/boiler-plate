@@ -66,7 +66,7 @@
                           color="primary"
                           class="rounded-xl px-5"
                           size="small"
-                          @click="() => reviewKPI(kpi, 'ecd')"
+                          @click="() => reviewKPI(kpi, 'kpi')"
                           >review</v-btn
                         >
                         <v-btn
@@ -190,7 +190,7 @@
     </v-dialog>
 
     <KpiDialog :kpi-options="kpiOptions" />
-    <!-- <EcdDialog :kpi-options="kpiOptions" /> -->
+    <EcdDialog :ecd-options="ecdOptions" />
   </v-row>
 </template>
 
@@ -199,8 +199,8 @@ import { watch, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { mdiPrinter, mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
 import VueDatePicker from "@vuepic/vue-datepicker";
-// import "@vuepic/vue-datepicker/dist/main.css";
 import KpiDialog from "@/components/kpi/KpiDialog.vue";
+import EcdDialog from "@/components/kpi/EcdDialog.vue";
 const authStore = useAuthStore();
 const props = defineProps({
   selectedEmployee: {
@@ -299,7 +299,7 @@ watch(year, async (newVal, oldVal) => {
   getKPI();
 });
 
-// save kpi
+// save kpi & ecd
 const kpiOptions = ref({
   title: "",
   dialog: false,
@@ -308,44 +308,98 @@ const kpiOptions = ref({
   action: "",
   is_review: false,
 });
+const ecdOptions = ref({
+  title: "",
+  dialog: false,
+  data: {},
+  type: "",
+  action: "",
+  is_review: false,
+});
 const addKPI = async (type) => {
-  kpiOptions.value = {
-    ...kpiOptions.value,
-    ...{
-      title: "Add KPI ",
-      data: {},
-      dialog: true,
-      type: type,
-      action: "add",
-      is_review: false,
-    },
-  };
+  if (type == "kpi") {
+    kpiOptions.value = {
+      ...kpiOptions.value,
+      ...{
+        title: "Add KPI ",
+        data: {},
+        dialog: true,
+        type: type,
+        action: "add",
+        is_review: false,
+      },
+    };
+  }
+  if (type == "ecd") {
+    ecdOptions.value = {
+      ...ecdOptions.value,
+      ...{
+        title: "Add Technical & Behavioural Program",
+        data: {},
+        dialog: true,
+        type: type,
+        action: "add",
+        is_review: false,
+      },
+    };
+  }
 };
 const editKPI = async (item, type = "kpi") => {
-  kpiOptions.value = {
-    ...kpiOptions.value,
-    ...{
-      title: "Edit KPI ",
-      data: Object.assign({}, item),
-      dialog: true,
-      type: type,
-      action: "edit",
-      is_review: false,
-    },
-  };
+  if (type == "kpi") {
+    kpiOptions.value = {
+      ...kpiOptions.value,
+      ...{
+        title: "Edit KPI ",
+        data: Object.assign({}, item),
+        dialog: true,
+        type: type,
+        action: "edit",
+        is_review: false,
+      },
+    };
+  }
+  if (type == "ecd") {
+    ecdOptions.value = {
+      ...ecdOptions.value,
+      ...{
+        title: "Edit ECD ",
+        data: Object.assign({}, item),
+        dialog: true,
+        type: type,
+        action: "edit",
+        is_review: false,
+      },
+    };
+  }
 };
 const reviewKPI = async (item, type = "kpi") => {
-  kpiOptions.value = {
-    ...kpiOptions.value,
-    ...{
-      title: type.toUpperCase(),
-      data: Object.assign({}, item),
-      dialog: true,
-      type: type,
-      action: "review",
-      is_review: true,
-    },
-  };
+  if (type == "kpi") {
+    kpiOptions.value = {
+      ...kpiOptions.value,
+      ...{
+        title: type.toUpperCase(),
+        data: Object.assign({}, item),
+        dialog: true,
+        type: type,
+        action: "review",
+        is_review: true,
+      },
+    };
+  }
+
+  if (type == "ecd") {
+    ecdOptions.value = {
+      ...ecdOptions.value,
+      ...{
+        title: type.toUpperCase(),
+        data: Object.assign({}, item),
+        dialog: true,
+        type: type,
+        action: "review",
+        is_review: true,
+      },
+    };
+  }
 };
 
 // remove kpi
