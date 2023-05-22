@@ -16,7 +16,7 @@ export const routes = [
         name: "Home",
         meta: {
             requiresAuth: true,
-            role: ["admin", "employee", "manager"],
+            role: ["superadmin", "employee", "manager"],
             title: "Home",
         },
     },
@@ -41,7 +41,7 @@ export const routes = [
         name: "Dashboard",
         meta: {
             requiresAuth: true,
-            role: ["admin", "employee", "manager"],
+            role: ["superadmin", "employee", "manager"],
             title: "Dashboard",
         },
     },
@@ -51,19 +51,19 @@ export const routes = [
         name: "Account",
         meta: {
             requiresAuth: true,
-            role: ["admin", "employee", "manager"],
+            role: ["superadmin", "employee", "manager"],
             title: "Account",
         },
     },
 
-    // All users
+    // Manager routes
     {
         path: "/manager/teams",
         component: () => import("../pages/manager/team/Teams.vue"),
         name: "Teams",
         meta: {
             requiresAuth: true,
-            role: ["manager"],
+            role: ["manager", "superadmin"],
             title: "Teams",
         },
     },
@@ -73,7 +73,7 @@ export const routes = [
         name: "SingleTeamMember",
         meta: {
             requiresAuth: true,
-            role: ["manager"],
+            role: ["manager", "superadmin"],
             title: "Team Member",
         },
     },
@@ -83,15 +83,36 @@ export const routes = [
         name: "ManagerCustomKPI",
         meta: {
             requiresAuth: true,
-            role: ["manager"],
+            role: ["manager", "superadmin"],
             title: "Custom KPIs",
         },
     },
 
+    // hr routes
+    {
+        path: "/hr/employees",
+        component: () => import("../pages/hr/employees/Employees.vue"),
+        // component: Dashboard,
+        name: "Employees",
+        meta: {
+            requiresAuth: true,
+            role: ["hradmin", "hrbp", "superadmin"],
+            title: "Employees",
+        },
+    },
+    {
+        path: "/hr/employees/:ecode",
+        component: () => import("../pages/hr/employees/SingleEmployee.vue"),
+        // component: Dashboard,
+        name: "SingleEmployee",
+        meta: {
+            requiresAuth: true,
+            role: ["hradmin", "hrbp", "superadmin"],
+            title: "Employee",
+        },
+    },
 
-    /**
-     * Admin routes
-     */
+    // Admin routes
     {
         path: "/admin",
         component: () => import("../pages/admin/Dashboard.vue"),
@@ -99,7 +120,7 @@ export const routes = [
         name: "AdminRoot",
         meta: {
             requiresAuth: true,
-            role: ["admin"],
+            role: ["superadmin"],
             title: "Dashboard",
         },
     },
@@ -109,7 +130,7 @@ export const routes = [
         name: "Users",
         meta: {
             requiresAuth: true,
-            role: ["admin"],
+            role: ["superadmin"],
             title: "Users",
         },
     },
@@ -119,7 +140,7 @@ export const routes = [
         name: "EditUser",
         meta: {
             requiresAuth: true,
-            role: ["admin"],
+            role: ["superadmin"],
             title: "Edit User",
         },
     },
@@ -129,7 +150,7 @@ export const routes = [
         name: "Logs",
         meta: {
             requiresAuth: true,
-            role: ["admin"],
+            role: ["superadmin"],
             title: "Logs",
         },
     },
@@ -139,7 +160,7 @@ export const routes = [
         name: "Departments",
         meta: {
             requiresAuth: true,
-            role: ["admin"],
+            role: ["superadmin"],
             title: "Departments",
         },
     },
@@ -149,7 +170,7 @@ export const routes = [
         name: "Companies",
         meta: {
             requiresAuth: true,
-            role: ["admin"],
+            role: ["superadmin"],
             title: "Companies",
         },
     },

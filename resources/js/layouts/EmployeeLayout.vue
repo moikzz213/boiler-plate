@@ -248,6 +248,7 @@ import {
   mdiFormatListBulleted,
   mdiCog,
   mdiAccountGroup,
+  mdiAccountSupervisor
 } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
 import { printInitials } from "@/composables/printInitials";
@@ -258,7 +259,7 @@ const appName = ref(import.meta.env.VITE_APP_NAME);
 const logo = ref(import.meta.env.VITE_APP_URL + "/assets/images/fav.png");
 
 // profile header
-const profileHeaderList = ref(["Dashboard", "Account", "Teams"]);
+const profileHeaderList = ref(["Dashboard", "Account", "Teams", "ManagerCustomKPI"]);
 
 // navigation
 const authStore = useAuthStore();
@@ -272,7 +273,7 @@ const sideNavigation = ref([
   },
   {
     title: "Teams",
-    icon: mdiAccountGroup,
+    icon: mdiAccountSupervisor,
     path: "/manager/teams",
   },
   {

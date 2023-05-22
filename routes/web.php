@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ClientKeyController;
 use App\Http\Controllers\CustomAuthController;
 use App\Http\Controllers\PublicPageController;
@@ -33,10 +34,12 @@ Auth::routes([
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/login', [PageController::class, 'home'])->name('login');
 Route::get('/dashboard', [PageController::class, 'home'])->name('dashboard');
-Route::get('/manager/teams', [PageController::class, 'home'])->name('teams');
-Route::get('/manager/teams/member/{id}', [PageController::class, 'home'])->name('teams.single.member');
-Route::get('/manager/kpi', [PageController::class, 'home'])->name('teams.kpi');
+Route::get('/manager/teams', [PageController::class, 'home'])->name('manager.teams');
+Route::get('/manager/teams/member/{id}', [PageController::class, 'home'])->name('manager.teams.single.member');
+Route::get('/manager/kpi', [PageController::class, 'home'])->name('manager.teams.kpi');
 
+Route::get('/hr/employees', [PageController::class, 'home'])->name('hr.employees');
+Route::get('/hr/employees/paginated', [EmployeeController::class, 'getPaginatedEmployees'])->name('hr.employees.paginated');
 
 /**
  * Error pages
