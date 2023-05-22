@@ -4,7 +4,7 @@
     <v-row>
       <div class="v-col-12">
         <div class="text-h6">
-          Employee List {{ "(" + authStore.authUser.teams.length + ")" }}
+          Employee List {{ "(" + employees.length + ")" }}
         </div>
       </div>
       <div class="v-col-12 v-col-md-3">

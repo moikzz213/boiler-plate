@@ -40,6 +40,7 @@ Route::get('/manager/kpi', [PageController::class, 'home'])->name('manager.teams
 
 Route::get('/hr/employees', [PageController::class, 'home'])->name('hr.employees');
 Route::get('/hr/employees/paginated', [EmployeeController::class, 'getPaginatedEmployees'])->name('hr.employees.paginated');
+Route::get('/hr/employees/{ecode}', [PageController::class, 'home'])->name('hr.employees.single');
 
 /**
  * Error pages
