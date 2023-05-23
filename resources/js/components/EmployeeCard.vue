@@ -35,7 +35,7 @@ const props = defineProps({
 });
 
 const profileTest = ref({
-  fulldisplay_name_name: "Romel Indemne",
+  display_name: "Romel Indemne",
   designation: "Web Developer",
   ecode: "100264",
   status: "open",

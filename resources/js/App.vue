@@ -1,9 +1,9 @@
 <template>
   <div>
-    <Admin v-if="authUser && authUser.role == 'superadmin'" />
-    <Employee v-else-if="authUser && authUser.role == 'employee'" />
+    <Admin v-if="authUser && authUser.role == 'app_admin'" />
+    <Employee v-else-if="authUser && authUser.role == 'normal'" />
     <Manager v-else-if="authUser && authUser.role == 'manager'" />
-    <Hr v-else-if="authUser && authUser.role == 'hr'" />
+    <Hr v-else-if="authUser && authUser.role == 'hr_admin'" />
     <Public v-else />
   </div>
 </template>

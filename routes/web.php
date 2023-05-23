@@ -8,6 +8,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ClientKeyController;
 use App\Http\Controllers\CustomAuthController;
 use App\Http\Controllers\PublicPageController;
+use App\Http\Controllers\PerformanceSettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,8 +40,12 @@ Route::get('/manager/teams/member/{id}', [PageController::class, 'home'])->name(
 Route::get('/manager/kpi', [PageController::class, 'home'])->name('manager.teams.kpi');
 
 Route::get('/hr/employees', [PageController::class, 'home'])->name('hr.employees');
-Route::get('/hr/employees/paginated', [EmployeeController::class, 'getPaginatedEmployees'])->name('hr.employees.paginated');
 Route::get('/hr/employees/{ecode}', [PageController::class, 'home'])->name('hr.employees.single');
+Route::get('/hr/kpi', [PageController::class, 'home'])->name('hr.custom.kpi');
+Route::get('/hr/settings/pms', [PageController::class, 'home'])->name('hr.settings.pms');
+Route::get('/hr/settings/pms/{id}', [PageController::class, 'home'])->name('hr.settings.pms.single');
+Route::get('/hr/settings/pms/new', [PageController::class, 'home'])->name('hr.settings.pms.new');
+
 
 /**
  * Error pages

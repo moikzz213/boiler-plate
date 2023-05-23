@@ -248,7 +248,7 @@ import {
   mdiFormatListBulleted,
   mdiCog,
   mdiAccountGroup,
-  mdiAccountSupervisor
+  mdiAccountSupervisor,
 } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
 import { printInitials } from "@/composables/printInitials";
@@ -256,6 +256,7 @@ import { useRouter, useRoute } from "vue-router";
 import { authApi } from "@/services/sacntumApi";
 
 const appName = ref(import.meta.env.VITE_APP_NAME);
+// const appName = "Ghassan Aboud Group";
 const logo = ref(import.meta.env.VITE_APP_URL + "/assets/images/fav.png");
 
 // profile header
@@ -280,6 +281,11 @@ const sideNavigation = ref([
     title: "Custom KPI",
     icon: mdiFormatListBulleted,
     path: "/manager/kpi",
+  },
+  {
+    title: "PMS Settings",
+    icon: mdiCog,
+    path: "/hr/settings/pms",
   },
 ]);
 const openPage = (openPath) => {
