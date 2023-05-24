@@ -11,15 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('key_performance_indicator_masters', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('industry');
-            $table->string('definition');
-            $table->string('formula');
-            $table->string('measures');
-            $table->string('calculation_example');
-            $table->string('evaluation_pattern');
             $table->timestamps();
         });
     }
@@ -29,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('key_performance_indicator_masters');
+        Schema::dropIfExists('companies');
     }
 };

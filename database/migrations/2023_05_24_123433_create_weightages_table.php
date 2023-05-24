@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('performance_settings', function (Blueprint $table) {
+        Schema::create('weightages', function (Blueprint $table) {
             $table->id();
-            $table->string('company')->nullable();
-            $table->string('year')->nullable();
+            $table->string('title');
             $table->timestamps();
         });
     }
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('performance_settings');
+        Schema::dropIfExists('weightages');
     }
 };

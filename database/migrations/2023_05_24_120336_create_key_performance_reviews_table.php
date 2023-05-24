@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('key_performance_indicator_masters', function (Blueprint $table) {
+        Schema::create('key_performance_reviews', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('review_id')->constrained();
             $table->string('title');
             $table->string('industry');
             $table->string('definition');
@@ -20,6 +21,18 @@ return new class extends Migration
             $table->string('measures');
             $table->string('calculation_example');
             $table->string('evaluation_pattern');
+
+            $table->string('type'); // kpi/ecd
+            $table->string('ecd_type')->nullable(); // technical/soft/soft-tech
+
+            $table->string('target_type'); // min/max
+            $table->string('measure'); // units/percentage/ratio
+            $table->float('target', 10, 0);
+            $table->float('achievement_midyear', 10, 0);
+            $table->float('achievement_yearend', 10, 0);
+            $table->float('revised_annual_target', 10, 0);
+            $table->integer('weightage'); // 5,10,15,20
+
             $table->timestamps();
         });
     }
@@ -29,6 +42,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('key_performance_indicator_masters');
+        Schema::dropIfExists('key_performance_reviews');
     }
 };

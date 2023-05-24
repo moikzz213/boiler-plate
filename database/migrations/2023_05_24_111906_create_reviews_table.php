@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('profile_id')->constrained();
+            $table->string('state')->default('setting'); // setting/mid/year-end/first_review/final_review
+            $table->string('status')->default('open'); // Open/Closed/Completed/Inprogress/Locked
+            $table->string('year');
+            $table->string('type'); // probation/regular
             $table->timestamps();
         });
     }
