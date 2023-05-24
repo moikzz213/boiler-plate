@@ -77,7 +77,99 @@
         </v-btn> -->
       </div>
     </v-navigation-drawer>
-    <v-app-bar density="compact" color="white" elevation="0">
+    <v-app-bar
+      v-if="profileHeaderList.includes(route.name)"
+      density=""
+      height="100"
+      color="black"
+      elevation="0"
+      style="overflow: visible"
+    >
+      <div class="d-flex align-start py-3 px-3 w-100 h-100">
+        <div class="d-flex" style="position: relative">
+          <v-app-bar-nav-icon
+            v-if="mobile == true"
+            @click="drawer = !drawer"
+            size="small"
+          ></v-app-bar-nav-icon>
+          <div class="pms-avatar-wrapper">
+            <div class="d-flex align-start">
+              <v-avatar color="grey-lighten-1" size="90">
+                <div class="text-h4 text-primary">
+                  {{ printInitials(authStore.user.username) }}
+                </div>
+              </v-avatar>
+              <div class="pl-3 pt-2" style="height: 56px; overflow: hidden">
+                <div class="text-body-2 text-capitalize">
+                  {{ authStore.user.username }}
+                  {{ authStore.user.ecode ? " - " + authStore.user.ecode : "" }}
+                </div>
+                <div class="text-caption">{{ authStore.user.email }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <v-spacer></v-spacer>
+        <div class="d-flex">
+          <v-btn size="36" class="mx-2" color="grey-darken-3" icon variant="flat">
+            <v-icon color="white" size="small" :icon="mdiBellOutline"></v-icon>
+          </v-btn>
+          <v-menu v-model="menu" :close-on-content-click="false" location="bottom">
+            <template v-slot:activator="{ props }">
+              <v-btn size="36" color="grey-darken-3" icon variant="flat">
+                <v-avatar
+                  color="grey-darken-3"
+                  :size="36"
+                  class="d-flex align-center justify-center"
+                  v-bind="props"
+                  style="cursor: pointer"
+                >
+                  <div class="text-white">
+                    {{ printInitials(authStore.user.username) }}
+                  </div>
+                </v-avatar>
+              </v-btn>
+            </template>
+            <v-card min-width="300" class="rounded-lg mt-1">
+              <div class="d-flex align-center pa-3">
+                <v-avatar
+                  color="grey-lighten-3"
+                  :size="36"
+                  class="d-flex align-center justify-center mr-3"
+                  style="cursor: pointer"
+                >
+                  <div>{{ printInitials(authStore.user.username) }}</div>
+                </v-avatar>
+                <div>
+                  <div class="text-body-1">{{ authStore.user.username }}</div>
+                  <div class="text-caption">{{ authStore.user.email }}</div>
+                </div>
+              </div>
+              <v-divider></v-divider>
+              <v-list nav density="compact" class="d-flex flex-column">
+                <v-list-item
+                  :prepend-icon="mdiAccount"
+                  title="Account Settings"
+                  @click="() => openPage('/account')"
+                ></v-list-item>
+              </v-list>
+              <v-divider></v-divider>
+              <div class="pa-3">
+                <v-btn
+                  :loading="loadingLogout"
+                  @click="logout"
+                  width="100%"
+                  color="primary"
+                >
+                  Logout
+                </v-btn>
+              </div>
+            </v-card>
+          </v-menu>
+        </div>
+      </div>
+    </v-app-bar>
+    <v-app-bar v-else density="compact" color="white" elevation="0">
       <template v-slot:prepend>
         <div class="d-flex align-center">
           <v-app-bar-nav-icon
@@ -153,23 +245,27 @@ import {
   mdiHomeOutline,
   mdiBellOutline,
   mdiAccount,
-  mdiAccountGroup,
+  mdiFormatListBulleted,
   mdiCog,
-  mdiPlaylistEdit,
-  mdiDomain,
-  mdiOfficeBuilding,
+  mdiAccountGroup,
+  mdiAccountSupervisor,
 } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
 import { printInitials } from "@/composables/printInitials";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { authApi } from "@/services/sacntumApi";
 
 const appName = ref(import.meta.env.VITE_APP_NAME);
+// const appName = "Ghassan Aboud Group";
 const logo = ref(import.meta.env.VITE_APP_URL + "/assets/images/fav.png");
+
+// profile header
+const profileHeaderList = ref(["Dashboard", "Account", "Teams", "ManagerCustomKPI"]);
 
 // navigation
 const authStore = useAuthStore();
 const router = useRouter();
+const route = useRoute();
 const sideNavigation = ref([
   {
     title: "Dashboard",
@@ -178,8 +274,35 @@ const sideNavigation = ref([
   },
   {
     title: "Teams",
-    icon: mdiAccountGroup,
+    icon: mdiAccountSupervisor,
     path: "/manager/teams",
+  },
+  {
+    title: "Employees",
+    icon: mdiAccountGroup,
+    path: "/hr/employees",
+  },
+  {
+    title: "My Custom KPI",
+    icon: mdiFormatListBulleted,
+    path: "/manager/kpi",
+  },
+  {
+    title: "Settings",
+    icon: mdiCog,
+    path: "",
+    subs: [
+      {
+        title: "Pms Settings",
+        icon: mdiFormatListBulleted,
+        path: "/hr/settings/pms",
+      },
+      {
+        title: "Custom KPIs",
+        icon: mdiFormatListBulleted,
+        path: "/hr/kpi",
+      },
+    ],
   },
 ]);
 const openPage = (openPath) => {
@@ -254,3 +377,14 @@ const removeClientKey = async () => {
   }
 };
 </script>
+
+<style scoped>
+.pms-avatar-wrapper {
+  position: absolute;
+  z-index: 100;
+  bottom: auto;
+  left: 15px;
+  top: calc(30px);
+  right: auto;
+}
+</style>
