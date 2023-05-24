@@ -89,11 +89,11 @@ const authLogin = async () => {
 const saveClientKey = async (data) => {
   let ckData = {
     key: data.token,
-    user_id: data.user.id,
+    user_ecode: data.user.ecode,
   };
   const response = await axios.post("/client/savekey", ckData);
   if (response) {
-    authStore.setCredentials(data).then(() => {
+    authStore.setCredentials(response.data).then(() => {
       loadingLogin.value = false;
       router.push({ path: "/dashboard" });
     });

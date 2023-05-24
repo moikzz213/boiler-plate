@@ -63,18 +63,6 @@
             @click="rail = !rail"
           ></v-list-item>
         </v-list>
-        <!-- <v-btn
-          v-if="mobile == false"
-          icon
-          color="transparent"
-          @click="navStore.toggleDrawer"
-          class="mr-1 mb-3"
-        >
-          <v-icon
-            color="white"
-            :icon="navStore.railState == false ? mdiChevronLeft : mdiChevronRight"
-          ></v-icon>
-        </v-btn> -->
       </div>
     </v-navigation-drawer>
     <v-app-bar
@@ -96,15 +84,26 @@
             <div class="d-flex align-start">
               <v-avatar color="grey-lighten-1" size="90">
                 <div class="text-h4 text-primary">
-                  {{ printInitials(authStore.user.username) }}
+                  {{ printInitials(authStore.authProfile.display_name) }}
                 </div>
               </v-avatar>
-              <div class="pl-3 pt-2" style="height: 56px; overflow: hidden">
+              <div
+                class="pl-3 pt-2"
+                style="
+                  height: 56px;
+                  overflow: hidden;
+                  min-width: 300px;
+                  max-width: 300px;
+                  width: 100%;
+                "
+              >
                 <div class="text-body-2 text-capitalize">
-                  {{ authStore.user.username }}
-                  {{ authStore.user.ecode ? " - " + authStore.user.ecode : "" }}
+                  {{ authStore.authProfile.display_name }}
+                  {{
+                    authStore.authProfile.ecode ? " - " + authStore.authProfile.ecode : ""
+                  }}
                 </div>
-                <div class="text-caption">{{ authStore.user.email }}</div>
+                <div class="text-caption">{{ authStore.authProfile.email }}</div>
               </div>
             </div>
           </div>
@@ -125,7 +124,7 @@
                   style="cursor: pointer"
                 >
                   <div class="text-white">
-                    {{ printInitials(authStore.user.username) }}
+                    {{ printInitials(authStore.authProfile.display_name) }}
                   </div>
                 </v-avatar>
               </v-btn>
@@ -138,11 +137,11 @@
                   class="d-flex align-center justify-center mr-3"
                   style="cursor: pointer"
                 >
-                  <div>{{ printInitials(authStore.user.username) }}</div>
+                  <div>{{ printInitials(authStore.authProfile.display_name) }}</div>
                 </v-avatar>
                 <div>
-                  <div class="text-body-1">{{ authStore.user.username }}</div>
-                  <div class="text-caption">{{ authStore.user.email }}</div>
+                  <div class="text-body-1">{{ authStore.authProfile.display_name }}</div>
+                  <div class="text-caption">{{ authStore.authProfile.email }}</div>
                 </div>
               </div>
               <v-divider></v-divider>
@@ -195,7 +194,7 @@
             v-bind="props"
             style="cursor: pointer"
           >
-            <div>{{ printInitials(authStore.user.username) }}</div>
+            <div>{{ printInitials(authStore.authProfile.display_name) }}</div>
           </v-avatar>
         </template>
         <v-card min-width="300" class="rounded-lg mt-1">
@@ -206,11 +205,11 @@
               class="d-flex align-center justify-center mr-3"
               style="cursor: pointer"
             >
-              <div>{{ printInitials(authStore.user.username) }}</div>
+              <div>{{ printInitials(authStore.authProfile.display_name) }}</div>
             </v-avatar>
             <div>
-              <div class="text-body-1">{{ authStore.user.username }}</div>
-              <div class="text-caption">{{ authStore.user.email }}</div>
+              <div class="text-body-1">{{ authStore.authProfile.display_name }}</div>
+              <div class="text-caption">{{ authStore.authProfile.email }}</div>
             </div>
           </div>
           <v-divider></v-divider>
@@ -356,7 +355,7 @@ const logout = async () => {
 // auth logout to sanctum
 const authlogout = async () => {
   let data = {
-    username: authStore.user.username,
+    username: authStore.profile.ecode,
   };
   const response = await authApi.post("/api/sanctumlogout", data);
   return response;

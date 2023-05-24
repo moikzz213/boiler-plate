@@ -227,10 +227,9 @@ watch(
 const selectedTab = ref("kpi");
 const selectTab = (tab) => {
   selectedTab.value = tab;
-  console.log("selectedTab", selectedTab.value);
 };
 const canManage = computed(() => {
-  return authStore.authUser.role == "manager" && useRoute().name == "SingleTeamMember"
+  return authStore.authRole.includes("manager") && useRoute().name == "SingleTeamMember"
     ? true
     : false;
 });

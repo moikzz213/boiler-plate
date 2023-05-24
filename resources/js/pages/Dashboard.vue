@@ -5,18 +5,18 @@
         <div class="text-h6 mb-3">My KPI</div>
         <v-card max-width="1200">
           <v-card-text>
-            <KpiProgress v-if="authUser && authUser.is_regular == true" />
+            <KpiProgress v-if="authStore.authProfile && authStore.authProfile.is_regular == true" />
             <KpiProgressProbation v-else />
           </v-card-text>
         </v-card>
       </div>
     </v-row>
-    <KpiContent :selected-employee="authUser.user" />
+    <KpiContent :selected-employee="authStore.authProfile" />
   </v-container>
 </template>
 
 <script setup>
-import { computed, defineAsyncComponent } from "vue";
+import { defineAsyncComponent } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import KpiContent from "@/components/kpi/KpiContent.vue";
 
@@ -30,7 +30,4 @@ const KpiProgressProbation = defineAsyncComponent(() =>
 
 // authenticated user object
 const authStore = useAuthStore();
-const authUser = computed(() => {
-  return authStore.user ? authStore.user : null;
-});
 </script>

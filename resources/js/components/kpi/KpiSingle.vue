@@ -10,7 +10,7 @@
                 {{ ecd.title }}
               </div>
             </div>
-            <div v-if="authStore.authUser.role == 'manager'">
+            <div v-if="authStore.authRole.includes('manager') == true">
               <v-btn color="primary" class="rounded-xl px-5" size="small">review</v-btn>
               <v-btn
                 @click="() => editKPI(kpi)"

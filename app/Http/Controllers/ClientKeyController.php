@@ -13,12 +13,12 @@ class ClientKeyController extends Controller
         // client key
         $clientKey = ClientKey::firstOrCreate([
             'key' => $request['key'],
-            'user_id' => $request['user_id'] ? $request['user_id'] : null,
+            'ecode' => $request['user_ecode'] ? $request['user_ecode'] : null,
         ]);
 
         // save employee profile
         // return profile with role for hrbp hr_admin
-        $profile = Profile::where('user_id', $request['user_id'])->first();
+        $profile = Profile::where('ecode', $request['user_ecode'])->with('teams')->first();
 
         return response()->json([
             "message" => 'Key saved successfully',
