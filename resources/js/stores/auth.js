@@ -9,9 +9,11 @@ export const useAuthStore = defineStore("authClient", {
         user: null,
         profile: null,
         token: null,
+        role: ["manager", "hr_admin"],
         is_logged_in: false,
-        is_manager: false,
+        is_app_admin: false,
         is_hr_admin: false,
+        is_manager: false,
         is_hrbp: false,
     }),
     getters: {

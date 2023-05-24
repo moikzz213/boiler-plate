@@ -63,7 +63,7 @@ export const routes = [
         name: "Teams",
         meta: {
             requiresAuth: true,
-            role: ["manager", "app_admin"],
+            role: ["manager", "app_admin", "hr_admin"],
             title: "Teams",
         },
     },

@@ -278,14 +278,26 @@ const sideNavigation = ref([
     path: "/manager/teams",
   },
   {
-    title: "Custom KPI",
+    title: "My Custom KPI",
     icon: mdiFormatListBulleted,
     path: "/manager/kpi",
   },
   {
-    title: "PMS Settings",
+    title: "Settings",
     icon: mdiCog,
-    path: "/hr/settings/pms",
+    path: "",
+    subs: [
+      {
+        title: "Pms Settings",
+        icon: mdiFormatListBulleted,
+        path: "/hr/settings/pms",
+      },
+      {
+        title: "Custom KPIs",
+        icon: mdiFormatListBulleted,
+        path: "/hr/kpi",
+      },
+    ],
   },
 ]);
 const openPage = (openPath) => {

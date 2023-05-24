@@ -125,8 +125,9 @@ const openPage = (pathName, openParams = null) => {
 const employees = ref([]);
 const getEmployees = async () => {
   await clientApi
-    .get("/hr/employees/paginated")
+    .get("/api/hr/employees/paginated")
     .then((res) => {
+        console.log("emp", res);
       employees.value = res.data.data;
     })
     .catch((err) => {

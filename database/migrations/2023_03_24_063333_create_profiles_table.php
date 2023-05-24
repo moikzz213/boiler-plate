@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('designation')->nullable();
             $table->date('dob')->nullable();
             $table->string('nationality')->nullable();
-            // $table->foreignId('user_id')->constrained();
+            $table->string('role')->nullable(); // hr_admin, hrbp, app_admin
             $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
         });

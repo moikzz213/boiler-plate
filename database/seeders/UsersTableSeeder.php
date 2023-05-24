@@ -54,5 +54,17 @@ class UsersTableSeeder extends Seeder
             'designation' => 'HRBP',
         ]);
         $profile->save();
+
+        // $profile = new \App\Models\Profile([
+        //     'display_name' => 'Test Employee',
+        //     'fist_name' => 'Test',
+        //     'last_name' => 'Employee',
+        //     'email' => 'indemnetest+2@gmail.com',
+        //     'company' => "Ghassan Aboud Group FZE",
+        //     'ecode' => '10003',
+        //     'superior_ecode' => '10003',
+        //     'designation' => 'HRBP',
+        // ]);
+        // $profile->save();
     }
 }

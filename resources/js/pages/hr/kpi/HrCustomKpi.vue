@@ -1,22 +1,10 @@
 <template>
   <v-container class="pb-16">
+    <PageHeader title="Custom KPIs" />
     <v-row class="my-5">
-      <div class="v-col-12">
-        <div class="text-h6">Custom KPI List</div>
-      </div>
       <div class="v-col-12">
         <v-card v-if="kpiList.length > 0" class="mb-3 rounded-lg">
           <v-card-title class="d-flex align-center">
-            <v-btn
-              size="small"
-              icon
-              @click="addKPI"
-              color="white"
-              :loading="kpiForm.loading"
-              class="text-capitalize mr-3"
-            >
-              <v-icon :icon="mdiPlus"></v-icon>
-            </v-btn>
             <div class="text-primary text-capitalize">KPI List</div>
           </v-card-title>
           <v-table>
@@ -56,7 +44,7 @@
         </v-card>
       </div>
     </v-row>
-    <CustomKpiDialog :kpi-options="kpiOptions" />
+    <CustomKpiDialog :kpi-options="kpiOptions" :is-hr="true" />
   </v-container>
 </template>
 
@@ -64,6 +52,7 @@
 import { ref } from "vue";
 import { mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
 import CustomKpiDialog from "@/components/CustomKpiDialog.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 // kpi
 const kpiOptions = ref({

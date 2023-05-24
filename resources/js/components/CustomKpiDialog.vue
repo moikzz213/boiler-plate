@@ -11,6 +11,7 @@
                 variant="outlined"
                 density="compact"
                 label="Title*"
+                :readonly="props.isHr"
               >
                 <template v-slot:selection="{ props, item }">
                   <span v-bind="props">
@@ -28,6 +29,7 @@
                 variant="outlined"
                 density="compact"
                 label="Select Industry*"
+                :readonly="props.isHr"
               >
               </v-autocomplete>
             </div>
@@ -37,6 +39,7 @@
                 label="KPI Definition*"
                 variant="outlined"
                 rows="2"
+                :readonly="props.isHr"
               ></v-textarea>
             </div>
             <div class="v-col-12 py-0">
@@ -45,6 +48,7 @@
                 label="Calulation Formula*"
                 variant="outlined"
                 rows="2"
+                :readonly="props.isHr"
               ></v-textarea>
             </div>
             <div class="v-col-12 py-0">
@@ -53,6 +57,7 @@
                 label="Subordinate Measures*"
                 variant="outlined"
                 rows="2"
+                :readonly="props.isHr"
               ></v-textarea>
             </div>
             <div class="v-col-12 py-0">
@@ -61,6 +66,7 @@
                 label="KPI Calulation Example*"
                 variant="outlined"
                 rows="2"
+                :readonly="props.isHr"
               ></v-textarea>
             </div>
             <div class="v-col-12 py-0">
@@ -69,6 +75,7 @@
                 label="KPI Evaluation Method*"
                 variant="outlined"
                 rows="2"
+                :readonly="props.isHr"
               ></v-textarea>
             </div>
             <div class="v-col-12 py-0">
@@ -78,7 +85,16 @@
               <v-btn color="primary" variant="text" @click="kpiData.dialog = false"
                 >Cancel</v-btn
               >
-              <v-btn color="primary" class="ml-2 px-8" @click="saveKpi">save</v-btn>
+              <v-btn
+                v-if="props.isHr == false"
+                color="primary"
+                class="ml-2 px-8"
+                @click="saveKpi"
+                >save</v-btn
+              >
+              <v-btn v-else color="primary" class="ml-2 px-8" @click="approveKpi"
+                >Approve</v-btn
+              >
             </div>
           </v-row>
         </div>
@@ -94,37 +110,13 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  isHr: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-// save kpi
-const kpiFormData = {
-  data: {},
-  loading: false,
-};
 const kpiData = ref({});
-const kpiList = ref([
-  {
-    id: 1,
-    title:
-      "Percentage Cost of logistics for shipping orders with healthcare products and equipment",
-    industry: "Healthcare Trading",
-  },
-  {
-    id: 2,
-    title: "logistics for shipping orders with healthcare products and equipment",
-    industry: "Healthcare Trading",
-  },
-  {
-    id: 3,
-    title: "Hipping orders with healthcare products and equipment",
-    industry: "Healthcare Trading",
-  },
-  {
-    id: 4,
-    title: "Cost of logistics for shipping orders with healthcare products and equipment",
-    industry: "Healthcare Trading",
-  },
-]);
 const selectedKpi = ref(null);
 const industryList = ref([
   {
@@ -137,14 +129,11 @@ const industryList = ref([
   },
 ]);
 const selectedIndustry = ref(null);
-const targetTypeList = ref(["min", "max"]);
-const measuresList = ref(["Percentage", "Units"]);
-const kpiWeightageList = ref(["5%", "10%", "15%"]);
 const saveKpi = () => {
   console.log("saveKpi");
 };
-const submitReview = () => {
-  console.log("submitReview");
+const approveKpi = () => {
+  console.log("approveKpi");
 };
 watch(
   () => props.kpiOptions,
