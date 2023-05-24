@@ -64,7 +64,7 @@ const credentials = ref({
   password: "gag@112211",
   url: key.value
 });
-console.log(credentials.value);
+ 
 const hasError = ref(false);
 const message = ref('');
 const loadingLogin = ref(false);
