@@ -11,7 +11,7 @@
     <v-card class="mt-8 pa-3 rounded-lg elevation-3" width="90%" max-width="450">
       <v-card-title class="px-5 pb-0 primary--text">Login</v-card-title>
       <v-card-text class="py-5">
-        <v-form autocomplete="off" ref="form">
+        <v-form autocomplete="off" ref="form" @keydown.enter="login">
           <v-text-field
             v-model="credentials.login"
             variant="outlined"
@@ -29,7 +29,7 @@
             label="Password"
             type="password"
           >
-          </v-text-field>
+          </v-text-field> 
           <v-btn
             @click="login"
             width="100%"
@@ -39,6 +39,7 @@
             :loading="loadingLogin"
             >Login</v-btn
           >
+          <div class="text-error mt-3">{{ hasError == true ? message : '' }}</div>
         </v-form>
       </v-card-text>
     </v-card>
@@ -54,20 +55,26 @@ import GuestLayout from "../layouts/GuestLayout.vue";
 import WhiteLogo from "@/Components/logo/WhiteLogo.vue";
 
 const appName = ref(import.meta.env.VITE_APP_NAME);
-
+const key = ref(import.meta.env.VITE_APP_KEY);
 // login
 const authStore = useAuthStore();
 const router = useRouter();
 const credentials = ref({
-  login: "employee",
+  login: "E00434",
   password: "gag@112211",
+  url: key.value
 });
+console.log(credentials.value);
+const hasError = ref(false);
+const message = ref('');
 const loadingLogin = ref(false);
 const login = async () => {
   loadingLogin.value = true;
   authLogin()
     .then((res) => {
-      saveClientKey(res.data);
+      if(res){
+        saveClientKey(res.data);
+      }
     })
     .catch((err) => {
       loadingLogin.value = false;
@@ -80,8 +87,16 @@ const authLogin = async () => {
   let data = {
     username: credentials.value.login,
     password: credentials.value.password,
+    url: credentials.value.url,
   };
+  
   const response = await authApi.post("/api/sanctumlogin", data);
+  if(response.data.status == false){
+    hasError.value = true;  
+    message.value = response.data.message;
+    loadingLogin.value = false;
+    return false;
+  }
   return response;
 };
 

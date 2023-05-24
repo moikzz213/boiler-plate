@@ -16,7 +16,7 @@ export const routes = [
         name: "Home",
         meta: {
             requiresAuth: true,
-            role: ["admin", "employee", "manager"],
+            role: ["admin", "employee", "manager", "normal", "superadmin"],
             title: "Home",
         },
     },
@@ -41,7 +41,7 @@ export const routes = [
         name: "Dashboard",
         meta: {
             requiresAuth: true,
-            role: ["admin", "employee", "manager"],
+            role: ["admin", "employee", "manager", "normal", "superadmin"],
             title: "Dashboard",
         },
     },
@@ -51,7 +51,7 @@ export const routes = [
         name: "Account",
         meta: {
             requiresAuth: true,
-            role: ["admin", "employee", "manager"],
+            role: ["admin", "employee", "manager", "normal", "superadmin"],
             title: "Account",
         },
     },

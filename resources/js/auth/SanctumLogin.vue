@@ -26,6 +26,7 @@
                         type="password"
                     >
                     </v-text-field>
+                    <div class="text-error mb-3">{{ hasError == true ? message : '' }}</div>
                     <v-btn
                         @click="login"
                         width="100%"
@@ -49,18 +50,23 @@ import { useAuthStore } from "@/stores/auth";
 
 import { samctumApi } from "@/services/sacntumApi";
 
+const key = import.meta.env.VITE_APP_KEY;
 const authStore = useAuthStore();
 const router = useRouter();
 const credentials = ref({
     login: "",
     password: "",
+    url: key
 });
+const hasError = ref(false);
+const message = ref('');
 const loadingLogin = ref(false);
 const login = async () => {
     loadingLogin.value = true;
     let data = {
         username: credentials.value.login,
         password: credentials.value.password,
+        url: credentials.value.key
     };
     await samctumApi
         .get("/sanctum/csrf-cookie")
@@ -69,11 +75,15 @@ const login = async () => {
             samctumApi
                 .post("api/sanctumlogin", data)
                 .then((loginres) => {
-                    console.log("loginres", loginres);
-                    authStore.setCredentials(loginres.data).then(() => {
-                        loadingLogin.value = false;
-                        router.push({ path: "/admin" });
-                    });
+                    if (loginres.data.status) {
+                        authStore.setCredentials(loginres.data).then(() => {
+                            loadingLogin.value = false;
+                            router.push({ path: "/admin" });
+                        });
+                    }else{
+                        hasError.value = true;  
+                        message.value = loginres.data.message;
+                    }
                 })
                 .catch((loginerr) => {
                     console.log("loginerr", loginerr);
