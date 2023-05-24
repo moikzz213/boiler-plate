@@ -33,7 +33,7 @@ class UsersTableSeeder extends Seeder
             'username' => '10001',
             'superior_ecode' => '10003',
             'is_regular' => true,
-            'role' => 'normal',
+            'role' => 'app_admin',
             'designation' => 'Web Developer',
         ]);
         $profile->save();

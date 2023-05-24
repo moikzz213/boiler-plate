@@ -3,9 +3,7 @@
     <PageHeader title="Employees" />
     <v-row>
       <div class="v-col-12">
-        <div class="text-h6">
-          Employee List {{ "(" + employees.length + ")" }}
-        </div>
+        <div class="text-h6">Employee List {{ "(" + employees.length + ")" }}</div>
       </div>
       <div class="v-col-12 v-col-md-3">
         <v-text-field
@@ -72,7 +70,7 @@
           <v-card-text>
             <v-row>
               <div class="v-col-12 v-col-md-3">
-                <EmployeeCard :profile="profile"/>
+                <EmployeeCard :profile="profile" />
               </div>
               <div class="v-col-12 v-col-md-8">
                 <KpiProgress :density="'compact'" />
@@ -97,7 +95,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { clientApi } from "@/services/clientApi";
@@ -127,14 +125,16 @@ const getEmployees = async () => {
   await clientApi
     .get("/api/hr/employees/paginated")
     .then((res) => {
-        console.log("emp", res);
+      console.log("emp", res);
       employees.value = res.data.data;
     })
     .catch((err) => {
       console.log("getEmployees", err);
     });
 };
-getEmployees();
+onMounted(() => {
+  getEmployees();
+});
 
 // filter employee
 const year = ref(new Date().getFullYear());
@@ -166,7 +166,7 @@ const runFilter = async () => {
 
 // open Employee
 const openEmployee = (profile) => {
-    console.log("profile", profile);
+  console.log("profile", profile);
   openPage("SingleEmployee", { ecode: profile.ecode });
 };
 </script>

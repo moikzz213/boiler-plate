@@ -18,41 +18,43 @@
         <v-divider></v-divider>
         <v-list nav>
           <div v-for="item in sideNavigation" :key="item.title" :value="item.title">
-            <v-list-group v-if="item.subs" :value="item.title">
-              <template v-slot:activator="{ props }">
-                <v-list-item
-                  nav
-                  v-bind="props"
-                  :prepend-icon="item.icon"
-                  :title="item.title"
-                ></v-list-item>
-              </template>
-              <div class="bg-grey-darken-4" style="border-radius: 4px">
-                <v-list-item
-                  density="compact"
-                  style="padding-left: 12px !important"
-                  v-for="(sub, i) in item.subs"
-                  :key="i"
-                  :title="sub.title"
-                  :value="sub.title"
-                  @click="() => openPage(sub.path)"
-                >
-                  <template v-slot:title>
-                    <div style="font-size: 12px">{{ sub.title }}</div>
-                  </template>
-                  <template v-slot:prepend>
-                    <v-icon size="16" :icon="sub.icon"></v-icon>
-                  </template>
-                </v-list-item>
-              </div>
-            </v-list-group>
-            <v-list-item
-              v-else
-              :prepend-icon="item.icon"
-              :title="item.title"
-              :value="item.title"
-              @click="() => openPage(item.path)"
-            ></v-list-item>
+            <div v-if="hasAccess(item.roles) == true">
+              <v-list-group v-if="item.subs" :value="item.title">
+                <template v-slot:activator="{ props }">
+                  <v-list-item
+                    nav
+                    v-bind="props"
+                    :prepend-icon="item.icon"
+                    :title="item.title"
+                  ></v-list-item>
+                </template>
+                <div class="bg-grey-darken-4" style="border-radius: 4px">
+                  <v-list-item
+                    density="compact"
+                    style="padding-left: 12px !important"
+                    v-for="(sub, i) in item.subs"
+                    :key="i"
+                    :title="sub.title"
+                    :value="sub.title"
+                    @click="() => openPage(sub.path)"
+                  >
+                    <template v-slot:title>
+                      <div style="font-size: 12px">{{ sub.title }}</div>
+                    </template>
+                    <template v-slot:prepend>
+                      <v-icon size="16" :icon="sub.icon"></v-icon>
+                    </template>
+                  </v-list-item>
+                </div>
+              </v-list-group>
+              <v-list-item
+                v-else
+                :prepend-icon="item.icon"
+                :title="item.title"
+                :value="item.title"
+                @click="() => openPage(item.path)"
+              ></v-list-item>
+            </div>
           </div>
         </v-list>
         <v-divider></v-divider>
@@ -244,10 +246,11 @@ import {
   mdiHomeOutline,
   mdiBellOutline,
   mdiAccount,
-  mdiFormatListBulleted,
+  mdiChartTimelineVariant,
   mdiCog,
   mdiAccountGroup,
   mdiAccountSupervisor,
+  mdiCogOutline,
 } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
 import { printInitials } from "@/composables/printInitials";
@@ -269,41 +272,51 @@ const sideNavigation = ref([
   {
     title: "Dashboard",
     icon: mdiHomeOutline,
+    roles: ["app_admin", "normal", "manager", "hr_admin", "hrbp"],
     path: "/dashboard",
   },
   {
     title: "Teams",
     icon: mdiAccountSupervisor,
+    roles: ["app_admin", "manager"],
     path: "/manager/teams",
+  },
+  {
+    title: "My Custom KPI",
+    icon: mdiChartTimelineVariant,
+    roles: ["app_admin", "manager"],
+    path: "/manager/kpi",
   },
   {
     title: "Employees",
     icon: mdiAccountGroup,
+    roles: ["app_admin", "hr_admin"],
     path: "/hr/employees",
-  },
-  {
-    title: "My Custom KPI",
-    icon: mdiFormatListBulleted,
-    path: "/manager/kpi",
   },
   {
     title: "Settings",
     icon: mdiCog,
+    roles: ["app_admin", "hr_admin"],
     path: "",
     subs: [
       {
         title: "Pms Settings",
-        icon: mdiFormatListBulleted,
+        icon: mdiCogOutline,
         path: "/hr/settings/pms",
       },
       {
         title: "Custom KPIs",
-        icon: mdiFormatListBulleted,
+        icon: mdiChartTimelineVariant,
         path: "/hr/kpi",
       },
     ],
   },
 ]);
+const hasAccess = (rolesArray) => {
+  let filteredRoles = [];
+  filteredRoles = rolesArray.filter((r) => authStore.authRole.includes(r));
+  return filteredRoles.length > 0 ? true : false;
+};
 const openPage = (openPath) => {
   menu.value = false;
   router
