@@ -1,11 +1,11 @@
 <script setup>
-import EmployeeLayout from "@/layouts/EmployeeLayout.vue";
+import LoggedInLayout from "@/layouts/LoggedInLayout.vue";
 </script>
 
 <template>
   <div>
-    <EmployeeLayout>
+    <LoggedInLayout>
       <router-view></router-view>
-    </EmployeeLayout>
+    </LoggedInLayout>
   </div>
 </template>

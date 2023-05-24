@@ -92,8 +92,8 @@ const runFilter = async () => {
 };
 
 // selected employee
-const selectedEmployee = ref(authStore.authUser);
-const teamList = ref(authStore.authUser.teams);
+const selectedEmployee = ref(authStore.authProfile);
+const teamList = ref(authStore.authProfile.teams);
 const getEmployeeToView = () => {
   console.log("getEmployeeToView", selectedEmployee.value);
 };

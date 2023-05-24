@@ -6,46 +6,36 @@ import { defineStore } from "pinia";
 // the first argument is a unique id of the store across your application
 export const useAuthStore = defineStore("authClient", {
     state: () => ({
-        user: null,
         profile: null,
         token: null,
-        role: ["manager", "hr_admin"],
+        role: [], // superadmin, app_admin, normal, hr_admin, hrbp, manager
         is_logged_in: false,
-        is_app_admin: false,
-        is_hr_admin: false,
-        is_manager: false,
-        is_hrbp: false,
     }),
     getters: {
-        authUser: (state) => state.user,
         authProfile: (state) => state.profile,
         authToken: (state) => state.token,
+        authRole: (state) => state.role,
         authIsLoggedIn: (state) => state.is_logged_in,
-        authIsManager: (state) => state.is_manager,
     },
     actions: {
         async setCredentials(res) {
-            // set user
-            this.user = res.user;
+            // set profile into user
+            this.profile = res.profile;
 
             // set token
-            this.token = res.token;
+            this.token = res.client.key;
+
+            // set role
+            this.role = [];
+            this.role.push(res.profile.role);
 
             // set is manager, to remove
-            this.is_manager =
-                res.user.teams && res.user.teams.length > 0 ? true : false;
-
-            // set role to manager if user have teams
-            if (this.is_manager == true) {
-                this.user = {
-                    ...this.user,
-                    ...{
-                        role: "manager",
-                    },
-                };
+            if (res.profile.teams && res.profile.teams.length > 0) {
+                this.role.push("manager");
             }
+
             // set is logged_in
-            if (res.user && res.token) {
+            if (res.profile && res.client.key) {
                 this.is_logged_in = true;
             }
         },

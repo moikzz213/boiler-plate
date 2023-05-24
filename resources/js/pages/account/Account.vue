@@ -66,7 +66,7 @@ const sbOptions = ref({
 const authStore = useAuthStore();
 const user = ref({
   loading: false,
-  data: Object.assign({}, authStore.user),
+  data: Object.assign({}, authStore.authProfile),
 });
 
 // tabs

@@ -51,7 +51,7 @@ export const routes = [
         name: "Account",
         meta: {
             requiresAuth: true,
-            role: ["app_admin", "normal", "manager", "hr_admin", "hrbp"],
+            role: ["app_admin", "manager", "normal", "hr_admin", "hrbp"],
             title: "Account",
         },
     },
@@ -63,7 +63,7 @@ export const routes = [
         name: "Teams",
         meta: {
             requiresAuth: true,
-            role: ["manager", "app_admin", "hr_admin"],
+            role: ["app_admin", "manager"],
             title: "Teams",
         },
     },
@@ -73,7 +73,7 @@ export const routes = [
         name: "SingleTeamMember",
         meta: {
             requiresAuth: true,
-            role: ["manager", "app_admin"],
+            role: ["app_admin", "manager"],
             title: "Team Member",
         },
     },
@@ -83,7 +83,7 @@ export const routes = [
         name: "ManagerCustomKPI",
         meta: {
             requiresAuth: true,
-            role: ["app_admin", "manager", "hr_admin", "hrbp"],
+            role: ["app_admin", "manager"],
             title: "Custom KPIs",
         },
     },
@@ -96,7 +96,7 @@ export const routes = [
         name: "Employees",
         meta: {
             requiresAuth: true,
-            role: ["hr_admin", "hrbp", "app_admin"],
+            role: ["app_admin", "hr_admin", "hrbp"],
             title: "Employees",
         },
     },
@@ -107,7 +107,7 @@ export const routes = [
         name: "SingleEmployee",
         meta: {
             requiresAuth: true,
-            role: ["hr_admin", "hrbp", "app_admin"],
+            role: ["app_admin", "hr_admin", "hrbp"],
             title: "normal",
         },
     },
@@ -118,7 +118,7 @@ export const routes = [
         name: "HrCustomKpi",
         meta: {
             requiresAuth: true,
-            role: ["hr_admin", "hrbp", "app_admin"],
+            role: ["app_admin", "hr_admin", "hrbp"],
             title: "KPI List",
         },
     },
@@ -129,7 +129,7 @@ export const routes = [
         name: "Pms",
         meta: {
             requiresAuth: true,
-            role: ["hr_admin", "hrbp", "app_admin"],
+            role: ["app_admin", "hr_admin", "hrbp"],
             title: "Performance Settings",
         },
     },
@@ -140,7 +140,7 @@ export const routes = [
         name: "SinglePms",
         meta: {
             requiresAuth: true,
-            role: ["hr_admin", "hrbp", "app_admin"],
+            role: ["app_admin", "hr_admin", "hrbp"],
             title: "Performance Settings",
         },
     },
@@ -151,7 +151,7 @@ export const routes = [
         name: "NewPms",
         meta: {
             requiresAuth: true,
-            role: ["hr_admin", "hrbp", "app_admin"],
+            role: ["app_admin", "hr_admin", "hrbp"],
             title: "Performance Settings",
         },
     },

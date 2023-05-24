@@ -42,19 +42,24 @@ const router = createRouter({
     routes,
 });
 router.beforeEach((to, from, next) => {
-    // console.log("to.meta.requiresAuth", to.meta.requiresAuth);
-    // console.log("authStore.is_logged_in", authStore.is_logged_in);
+    // console.log("authStore.authProfile", authStore);
+
+    let hasTheSameRoles = false;
+    if (to.meta.role) {
+        let checkRoles = to.meta.role.filter((r) =>
+            authStore.authRole.includes(r)
+        );
+        hasTheSameRoles = checkRoles.length > 0 ? true : false;
+    }
+
     if (to.meta.requiresAuth && !authStore.is_logged_in) {
         // is not logged in
         next("/login");
     } else {
         // is logged in
-        if (to.meta.role && to.meta.role.includes(authStore.user.role)) {
+        if (to.meta.role && hasTheSameRoles) {
             next();
-        } else if (
-            to.meta.role &&
-            !to.meta.role.includes(authStore.user.role)
-        ) {
+        } else if (to.meta.role && !hasTheSameRoles) {
             next("/unauthorized");
         } else {
             // check if in login page

@@ -18,41 +18,43 @@
         <v-divider></v-divider>
         <v-list nav>
           <div v-for="item in sideNavigation" :key="item.title" :value="item.title">
-            <v-list-group v-if="item.subs" :value="item.title">
-              <template v-slot:activator="{ props }">
-                <v-list-item
-                  nav
-                  v-bind="props"
-                  :prepend-icon="item.icon"
-                  :title="item.title"
-                ></v-list-item>
-              </template>
-              <div class="bg-grey-darken-4" style="border-radius: 4px">
-                <v-list-item
-                  density="compact"
-                  style="padding-left: 12px !important"
-                  v-for="(sub, i) in item.subs"
-                  :key="i"
-                  :title="sub.title"
-                  :value="sub.title"
-                  @click="() => openPage(sub.path)"
-                >
-                  <template v-slot:title>
-                    <div style="font-size: 12px">{{ sub.title }}</div>
-                  </template>
-                  <template v-slot:prepend>
-                    <v-icon size="16" :icon="sub.icon"></v-icon>
-                  </template>
-                </v-list-item>
-              </div>
-            </v-list-group>
-            <v-list-item
-              v-else
-              :prepend-icon="item.icon"
-              :title="item.title"
-              :value="item.title"
-              @click="() => openPage(item.path)"
-            ></v-list-item>
+            <div v-if="hasAccess(item.roles) == true">
+              <v-list-group v-if="item.subs" :value="item.title">
+                <template v-slot:activator="{ props }">
+                  <v-list-item
+                    nav
+                    v-bind="props"
+                    :prepend-icon="item.icon"
+                    :title="item.title"
+                  ></v-list-item>
+                </template>
+                <div class="bg-grey-darken-4" style="border-radius: 4px">
+                  <v-list-item
+                    density="compact"
+                    style="padding-left: 12px !important"
+                    v-for="(sub, i) in item.subs"
+                    :key="i"
+                    :title="sub.title"
+                    :value="sub.title"
+                    @click="() => openPage(sub.path)"
+                  >
+                    <template v-slot:title>
+                      <div style="font-size: 12px">{{ sub.title }}</div>
+                    </template>
+                    <template v-slot:prepend>
+                      <v-icon size="16" :icon="sub.icon"></v-icon>
+                    </template>
+                  </v-list-item>
+                </div>
+              </v-list-group>
+              <v-list-item
+                v-else
+                :prepend-icon="item.icon"
+                :title="item.title"
+                :value="item.title"
+                @click="() => openPage(item.path)"
+              ></v-list-item>
+            </div>
           </div>
         </v-list>
         <v-divider></v-divider>
@@ -63,18 +65,6 @@
             @click="rail = !rail"
           ></v-list-item>
         </v-list>
-        <!-- <v-btn
-          v-if="mobile == false"
-          icon
-          color="transparent"
-          @click="navStore.toggleDrawer"
-          class="mr-1 mb-3"
-        >
-          <v-icon
-            color="white"
-            :icon="navStore.railState == false ? mdiChevronLeft : mdiChevronRight"
-          ></v-icon>
-        </v-btn> -->
       </div>
     </v-navigation-drawer>
     <v-app-bar
@@ -96,15 +86,26 @@
             <div class="d-flex align-start">
               <v-avatar color="grey-lighten-1" size="90">
                 <div class="text-h4 text-primary">
-                  {{ printInitials(authStore.user.username) }}
+                  {{ printInitials(authStore.authProfile.display_name) }}
                 </div>
               </v-avatar>
-              <div class="pl-3 pt-2" style="height: 56px; overflow: hidden">
+              <div
+                class="pl-3 pt-2"
+                style="
+                  height: 56px;
+                  overflow: hidden;
+                  min-width: 300px;
+                  max-width: 300px;
+                  width: 100%;
+                "
+              >
                 <div class="text-body-2 text-capitalize">
-                  {{ authStore.user.username }}
-                  {{ authStore.user.ecode ? " - " + authStore.user.ecode : "" }}
+                  {{ authStore.authProfile.display_name }}
+                  {{
+                    authStore.authProfile.ecode ? " - " + authStore.authProfile.ecode : ""
+                  }}
                 </div>
-                <div class="text-caption">{{ authStore.user.email }}</div>
+                <div class="text-caption">{{ authStore.authProfile.email }}</div>
               </div>
             </div>
           </div>
@@ -125,7 +126,7 @@
                   style="cursor: pointer"
                 >
                   <div class="text-white">
-                    {{ printInitials(authStore.user.username) }}
+                    {{ printInitials(authStore.authProfile.display_name) }}
                   </div>
                 </v-avatar>
               </v-btn>
@@ -138,11 +139,11 @@
                   class="d-flex align-center justify-center mr-3"
                   style="cursor: pointer"
                 >
-                  <div>{{ printInitials(authStore.user.username) }}</div>
+                  <div>{{ printInitials(authStore.authProfile.display_name) }}</div>
                 </v-avatar>
                 <div>
-                  <div class="text-body-1">{{ authStore.user.username }}</div>
-                  <div class="text-caption">{{ authStore.user.email }}</div>
+                  <div class="text-body-1">{{ authStore.authProfile.display_name }}</div>
+                  <div class="text-caption">{{ authStore.authProfile.email }}</div>
                 </div>
               </div>
               <v-divider></v-divider>
@@ -195,7 +196,7 @@
             v-bind="props"
             style="cursor: pointer"
           >
-            <div>{{ printInitials(authStore.user.username) }}</div>
+            <div>{{ printInitials(authStore.authProfile.display_name) }}</div>
           </v-avatar>
         </template>
         <v-card min-width="300" class="rounded-lg mt-1">
@@ -206,11 +207,11 @@
               class="d-flex align-center justify-center mr-3"
               style="cursor: pointer"
             >
-              <div>{{ printInitials(authStore.user.username) }}</div>
+              <div>{{ printInitials(authStore.authProfile.display_name) }}</div>
             </v-avatar>
             <div>
-              <div class="text-body-1">{{ authStore.user.username }}</div>
-              <div class="text-caption">{{ authStore.user.email }}</div>
+              <div class="text-body-1">{{ authStore.authProfile.display_name }}</div>
+              <div class="text-caption">{{ authStore.authProfile.email }}</div>
             </div>
           </div>
           <v-divider></v-divider>
@@ -245,10 +246,11 @@ import {
   mdiHomeOutline,
   mdiBellOutline,
   mdiAccount,
-  mdiFormatListBulleted,
+  mdiChartTimelineVariant,
   mdiCog,
   mdiAccountGroup,
   mdiAccountSupervisor,
+  mdiCogOutline,
 } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
 import { printInitials } from "@/composables/printInitials";
@@ -270,36 +272,51 @@ const sideNavigation = ref([
   {
     title: "Dashboard",
     icon: mdiHomeOutline,
+    roles: ["app_admin", "normal", "manager", "hr_admin", "hrbp"],
     path: "/dashboard",
   },
   {
     title: "Teams",
     icon: mdiAccountSupervisor,
+    roles: ["app_admin", "manager"],
     path: "/manager/teams",
   },
   {
     title: "My Custom KPI",
-    icon: mdiFormatListBulleted,
+    icon: mdiChartTimelineVariant,
+    roles: ["app_admin", "manager"],
     path: "/manager/kpi",
+  },
+  {
+    title: "Employees",
+    icon: mdiAccountGroup,
+    roles: ["app_admin", "hr_admin"],
+    path: "/hr/employees",
   },
   {
     title: "Settings",
     icon: mdiCog,
+    roles: ["app_admin", "hr_admin"],
     path: "",
     subs: [
       {
         title: "Pms Settings",
-        icon: mdiFormatListBulleted,
+        icon: mdiCogOutline,
         path: "/hr/settings/pms",
       },
       {
         title: "Custom KPIs",
-        icon: mdiFormatListBulleted,
+        icon: mdiChartTimelineVariant,
         path: "/hr/kpi",
       },
     ],
   },
 ]);
+const hasAccess = (rolesArray) => {
+  let filteredRoles = [];
+  filteredRoles = rolesArray.filter((r) => authStore.authRole.includes(r));
+  return filteredRoles.length > 0 ? true : false;
+};
 const openPage = (openPath) => {
   menu.value = false;
   router
@@ -351,7 +368,7 @@ const logout = async () => {
 // auth logout to sanctum
 const authlogout = async () => {
   let data = {
-    username: authStore.user.username,
+    username: authStore.profile.ecode,
   };
   const response = await authApi.post("/api/sanctumlogout", data);
   return response;

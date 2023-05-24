@@ -58,7 +58,7 @@
         </v-card>
       </div>
     </v-row>
-    <KpiContent :selected-employee="authUser.user" />
+    <KpiContent :selected-employee="authStore.authProfile" />
     <ConfirmDialog :options="confOptions" @confirm="confirmResponse" />
   </v-container>
 </template>
@@ -73,9 +73,6 @@ import ConfirmDialog from "@/components/ConfirmDialog.vue";
 
 // authenticated user object
 const authStore = useAuthStore();
-const authUser = computed(() => {
-  return authStore.user ? authStore.user : null;
-});
 
 // select employee
 const search = ref({
@@ -98,7 +95,7 @@ const reopenReview = () => {
     dialog: true,
     title: "Confirm Reopen",
     text:
-      "Please confirm that you want to reopen the KPI for " + authStore.user.email + ".",
+      "Please confirm that you want to reopen the KPI for " + authStore.authProfile.email + ".",
     btnColor: "primary",
     btnTitle: "Confirm",
   };

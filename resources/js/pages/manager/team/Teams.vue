@@ -20,7 +20,7 @@
     <v-row>
       <div class="v-col-12 pb-0">
         <div class="text-h6">
-          My Team {{ "(" + authStore.authUser.teams.length + ")" }}
+          My Team {{ "(" + authStore.authProfile.teams.length + ")" }}
         </div>
       </div>
       <div class="v-col-12 v-col-md-3">
@@ -56,9 +56,9 @@
       </div>
     </v-row>
     <v-row>
-      <div v-if="authStore.authUser.teams.length > 0" class="v-col-12">
+      <div v-if="authStore.authProfile.teams.length > 0" class="v-col-12">
         <v-card
-          v-for="user in authStore.authUser.teams"
+          v-for="user in authStore.authProfile.teams"
           :key="user.id"
           class="mb-3 elevation-0"
           @click="() => openMember(user)"
