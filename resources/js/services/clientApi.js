@@ -5,7 +5,7 @@ import { useAuthStore } from "@/stores/auth";
  * Local api calls with bearer token
  */
 const authStore = useAuthStore();
-const bearerToken = authStore.token;
+const bearerToken = authStore.authToken;
 const apiUrl = import.meta.env.VITE_APP_URL;
 const clientApi = axios.create({
     baseURL: apiUrl,

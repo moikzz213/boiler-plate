@@ -9,18 +9,42 @@ export const useAuthStore = defineStore("authClient", {
         user: null,
         profile: null,
         token: null,
+        role: ["manager", "hr_admin"],
         is_logged_in: false,
+        is_app_admin: false,
+        is_hr_admin: false,
+        is_manager: false,
+        is_hrbp: false,
     }),
     getters: {
         authUser: (state) => state.user,
         authProfile: (state) => state.profile,
         authToken: (state) => state.token,
         authIsLoggedIn: (state) => state.is_logged_in,
+        authIsManager: (state) => state.is_manager,
     },
     actions: {
         async setCredentials(res) {
+            // set user
             this.user = res.user;
+
+            // set token
             this.token = res.token;
+
+            // set is manager, to remove
+            this.is_manager =
+                res.user.teams && res.user.teams.length > 0 ? true : false;
+
+            // set role to manager if user have teams
+            if (this.is_manager == true) {
+                this.user = {
+                    ...this.user,
+                    ...{
+                        role: "manager",
+                    },
+                };
+            }
+            // set is logged_in
             if (res.user && res.token) {
                 this.is_logged_in = true;
             }

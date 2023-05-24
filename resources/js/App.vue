@@ -1,9 +1,9 @@
 <template>
   <div>
-    <Admin v-if="authUser && authUser.role == 'admin'" />
-    <Hr v-else-if="authUser && authUser.role == 'hr'" />
-    <Manager v-else-if="authUser && authUser.team == 'manager'" />
-    <Employee v-else-if="authUser && authUser.role == 'employee'" />
+    <!-- <Admin v-if="authUser && authUser.role == 'app_admin'" /> -->
+    <Employee v-if="authStore && authStore.authIsLoggedIn == true" />
+    <!-- <Manager v-else-if="authUser && authUser.role == 'manager'" /> -->
+    <!-- <Hr v-else-if="authUser && authUser.role == 'hr_admin'" /> -->
     <Public v-else />
   </div>
 </template>
@@ -18,7 +18,5 @@ const Hr = defineAsyncComponent(() => import("./portals/Hr.vue"));
 
 // authenticated user object
 const authStore = useAuthStore();
-const authUser = computed(() => {
-  return authStore.user;
-});
+
 </script>

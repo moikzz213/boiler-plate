@@ -60,7 +60,7 @@ const key = ref(import.meta.env.VITE_APP_KEY);
 const authStore = useAuthStore();
 const router = useRouter();
 const credentials = ref({
-  login: "E00434",
+  login: "normal",
   password: "gag@112211",
   url: key.value
 });

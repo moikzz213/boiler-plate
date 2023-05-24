@@ -13,10 +13,17 @@ return new class extends Migration
     {
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
-            $table->string('full_name')->nullable();
+            $table->string('ecode')->nullable();
+            $table->string('display_name')->nullable();
+            $table->string('fist_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('company')->nullable();
+            $table->string('department')->nullable();
+            $table->string('designation')->nullable();
             $table->date('dob')->nullable();
             $table->string('nationality')->nullable();
-            // $table->foreignId('user_id')->constrained();
+            $table->string('role')->nullable(); // hr_admin, hrbp, app_admin
             $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
         });

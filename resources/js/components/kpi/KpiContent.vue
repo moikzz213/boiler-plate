@@ -37,6 +37,7 @@
       <v-card flat>
         <v-card-title class="px-5 py-5 d-flex align-center">
           <v-btn
+            v-if="canManage"
             @click="() => addKPI(selectedTab)"
             density="compact"
             size="35"
@@ -61,15 +62,16 @@
                           {{ kpi.title }}
                         </div>
                       </div>
-                      <div v-if="authStore.authUser.role == 'manager'">
+                      <div>
                         <v-btn
                           color="primary"
                           class="rounded-xl px-5"
                           size="small"
-                          @click="() => reviewKPI(kpi, 'ecd')"
+                          @click="() => reviewKPI(kpi, 'kpi')"
                           >review</v-btn
                         >
                         <v-btn
+                          v-if="canManage"
                           @click="() => editKPI(kpi, 'kpi')"
                           density="compact"
                           size="30"
@@ -78,6 +80,7 @@
                           ><v-icon size="small" :icon="mdiPencil"></v-icon
                         ></v-btn>
                         <v-btn
+                          v-if="canManage"
                           @click="() => removeKPI(kpi)"
                           density="compact"
                           size="30"
@@ -120,7 +123,7 @@
                           {{ ecd.title }}
                         </div>
                       </div>
-                      <div v-if="authStore.authUser.role == 'manager'">
+                      <div>
                         <v-btn
                           color="primary"
                           class="rounded-xl px-5"
@@ -129,6 +132,7 @@
                           >review</v-btn
                         >
                         <v-btn
+                          v-if="canManage"
                           @click="() => editKPI(ecd, 'ecd')"
                           density="compact"
                           size="30"
@@ -137,6 +141,7 @@
                           ><v-icon size="small" :icon="mdiPencil"></v-icon
                         ></v-btn>
                         <v-btn
+                          v-if="canManage"
                           @click="() => removeKPI(ecd)"
                           density="compact"
                           size="30"
@@ -166,33 +171,47 @@
         </v-card-text>
       </v-card>
     </div>
-
     <v-dialog v-model="toRemoveKpi.dialog" width="100%" max-width="480" persistent>
       <v-card class="rounded-lg">
-        <v-card-text> </v-card-text>
+        <v-card-title class="pa-3">Confirm Remove</v-card-title>
+        <v-card-text class="px-3">
+          <div class="pb-3 text-grey">
+            Please confirm that you want to remove
+            <span class="text-primary">{{
+              "'" + toRemoveKpi.data.title.substring(0, 35) + "...'"
+            }}</span>
+          </div>
+          <div class="d-flex justify-end mt-5">
+            <v-btn
+              class="bg-grey-lighten-2 text-primary"
+              variant="text"
+              @click="toRemoveKpi.dialog = false"
+              >Cancel</v-btn
+            >
+            <v-btn color="primary" class="ml-2" @click="confirmRemoveKpi">Remove</v-btn>
+          </div>
+        </v-card-text>
       </v-card>
     </v-dialog>
 
     <KpiDialog :kpi-options="kpiOptions" />
+    <EcdDialog :ecd-options="ecdOptions" />
   </v-row>
 </template>
 
 <script setup>
-import { watch, ref } from "vue";
+import { ref, computed, watch } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import { useRoute } from "vue-router";
 import { mdiPrinter, mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
 import VueDatePicker from "@vuepic/vue-datepicker";
-// import "@vuepic/vue-datepicker/dist/main.css";
 import KpiDialog from "@/components/kpi/KpiDialog.vue";
+import EcdDialog from "@/components/kpi/EcdDialog.vue";
 const authStore = useAuthStore();
 const props = defineProps({
   selectedEmployee: {
     type: Object,
     default: null,
-  },
-  isManager: {
-    type: Boolean,
-    default: false,
   },
 });
 const viewingEmployee = ref({});
@@ -210,6 +229,11 @@ const selectTab = (tab) => {
   selectedTab.value = tab;
   console.log("selectedTab", selectedTab.value);
 };
+const canManage = computed(() => {
+  return authStore.authUser.role == "manager" && useRoute().name == "SingleTeamMember"
+    ? true
+    : false;
+});
 
 // kpi
 const year = ref(new Date().getFullYear());
@@ -286,7 +310,7 @@ watch(year, async (newVal, oldVal) => {
   getKPI();
 });
 
-// save kpi
+// save kpi & ecd
 const kpiOptions = ref({
   title: "",
   dialog: false,
@@ -295,44 +319,98 @@ const kpiOptions = ref({
   action: "",
   is_review: false,
 });
+const ecdOptions = ref({
+  title: "",
+  dialog: false,
+  data: {},
+  type: "",
+  action: "",
+  is_review: false,
+});
 const addKPI = async (type) => {
-  kpiOptions.value = {
-    ...kpiOptions.value,
-    ...{
-      title: "Add KPI ",
-      data: {},
-      dialog: true,
-      type: type,
-      action: "add",
-      is_review: false,
-    },
-  };
+  if (type == "kpi") {
+    kpiOptions.value = {
+      ...kpiOptions.value,
+      ...{
+        title: "Add KPI ",
+        data: {},
+        dialog: true,
+        type: type,
+        action: "add",
+        is_review: false,
+      },
+    };
+  }
+  if (type == "ecd") {
+    ecdOptions.value = {
+      ...ecdOptions.value,
+      ...{
+        title: "Add Technical & Behavioural Program",
+        data: {},
+        dialog: true,
+        type: type,
+        action: "add",
+        is_review: false,
+      },
+    };
+  }
 };
 const editKPI = async (item, type = "kpi") => {
-  kpiOptions.value = {
-    ...kpiOptions.value,
-    ...{
-      title: "Edit KPI ",
-      data: Object.assign({}, item),
-      dialog: true,
-      type: type,
-      action: "edit",
-      is_review: false,
-    },
-  };
+  if (type == "kpi") {
+    kpiOptions.value = {
+      ...kpiOptions.value,
+      ...{
+        title: "Edit KPI ",
+        data: Object.assign({}, item),
+        dialog: true,
+        type: type,
+        action: "edit",
+        is_review: false,
+      },
+    };
+  }
+  if (type == "ecd") {
+    ecdOptions.value = {
+      ...ecdOptions.value,
+      ...{
+        title: "Edit ECD ",
+        data: Object.assign({}, item),
+        dialog: true,
+        type: type,
+        action: "edit",
+        is_review: false,
+      },
+    };
+  }
 };
 const reviewKPI = async (item, type = "kpi") => {
-  kpiOptions.value = {
-    ...kpiOptions.value,
-    ...{
-      title: type.toUpperCase(),
-      data: Object.assign({}, item),
-      dialog: true,
-      type: type,
-      action: "review",
-      is_review: true,
-    },
-  };
+  if (type == "kpi") {
+    kpiOptions.value = {
+      ...kpiOptions.value,
+      ...{
+        title: type.toUpperCase(),
+        data: Object.assign({}, item),
+        dialog: true,
+        type: type,
+        action: "review",
+        is_review: true,
+      },
+    };
+  }
+
+  if (type == "ecd") {
+    ecdOptions.value = {
+      ...ecdOptions.value,
+      ...{
+        title: type.toUpperCase(),
+        data: Object.assign({}, item),
+        dialog: true,
+        type: type,
+        action: "review",
+        is_review: true,
+      },
+    };
+  }
 };
 
 // remove kpi
@@ -341,8 +419,17 @@ const toRemoveKpi = ref({
   dialog: false,
   loading: false,
 });
-const removeKPI = async () => {
-  console.log("removeKPI");
+const removeKPI = async (item) => {
+  toRemoveKpi.value = {
+    ...toRemoveKpi.value,
+    ...{
+      data: Object.assign({}, item),
+      dialog: true,
+    },
+  };
+};
+const confirmRemoveKpi = async () => {
+  console.log("axios request to client");
 };
 </script>
 

@@ -19,7 +19,7 @@
         <v-card class="mb-3 elevation-0">
           <v-card-text>
             <v-row>
-              <div class="v-col-12 v-col-md-3">
+              <div class="v-col-12 v-col-md-3 d-flex align-center">
                 <EmployeeCard />
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">

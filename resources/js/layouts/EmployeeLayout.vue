@@ -245,8 +245,10 @@ import {
   mdiHomeOutline,
   mdiBellOutline,
   mdiAccount,
+  mdiFormatListBulleted,
   mdiCog,
   mdiAccountGroup,
+  mdiAccountSupervisor,
 } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
 import { printInitials } from "@/composables/printInitials";
@@ -254,10 +256,11 @@ import { useRouter, useRoute } from "vue-router";
 import { authApi } from "@/services/sacntumApi";
 
 const appName = ref(import.meta.env.VITE_APP_NAME);
+// const appName = "Ghassan Aboud Group";
 const logo = ref(import.meta.env.VITE_APP_URL + "/assets/images/fav.png");
 
 // profile header
-const profileHeaderList = ref(["Dashboard", "Account", "Teams"]);
+const profileHeaderList = ref(["Dashboard", "Account", "Teams", "ManagerCustomKPI"]);
 
 // navigation
 const authStore = useAuthStore();
@@ -271,8 +274,30 @@ const sideNavigation = ref([
   },
   {
     title: "Teams",
-    icon: mdiAccountGroup,
+    icon: mdiAccountSupervisor,
     path: "/manager/teams",
+  },
+  {
+    title: "My Custom KPI",
+    icon: mdiFormatListBulleted,
+    path: "/manager/kpi",
+  },
+  {
+    title: "Settings",
+    icon: mdiCog,
+    path: "",
+    subs: [
+      {
+        title: "Pms Settings",
+        icon: mdiFormatListBulleted,
+        path: "/hr/settings/pms",
+      },
+      {
+        title: "Custom KPIs",
+        icon: mdiFormatListBulleted,
+        path: "/hr/kpi",
+      },
+    ],
   },
 ]);
 const openPage = (openPath) => {
