@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\IndustryController;
 use App\Http\Controllers\PerformanceSettingController;
 
 /*
@@ -17,3 +18,8 @@ use App\Http\Controllers\PerformanceSettingController;
 |
 */
 
+Route::middleware('authkey')->prefix('hr')->group(function () {
+    Route::get('/industries', [IndustryController::class, 'getPaginatedIndustries'])->name('hr.industry.paginated');
+    Route::post('/industry/save', [IndustryController::class, 'saveIndustry'])->name('hr.industry.save');
+    Route::post('/industry/remove/{id}', [IndustryController::class, 'removeIndustry'])->name('hr.industry.remove');
+});

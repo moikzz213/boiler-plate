@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('status')->default('open'); // Open/Closed/Completed/Inprogress/Locked
             $table->string('year');
             $table->string('type'); // probation/regular
+            $table->string('author')->constrained(); // <display_name - ecode>
             $table->timestamps();
         });
     }
