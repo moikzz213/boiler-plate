@@ -97,3 +97,6 @@ Route::prefix('account')->group(function () {
  * Custom authentication
  */
 Route::post('login', [CustomAuthController::class, 'login'])->name('custom.login');
+
+require __DIR__.'/dev/web/jc.php';
+require __DIR__.'/dev/web/ri.php';

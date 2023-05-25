@@ -37,3 +37,6 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
     Route::get('/employees/paginated', [EmployeeController::class, 'getPaginatedEmployees'])->name('hr.employees.paginated');
     Route::get('/settings/pms/paginated', [PerformanceSettingController::class, 'getPaginatedPerformanceSettings'])->name('hr.settings.pms.paginated');
 });
+
+require __DIR__.'/dev/api/jc.php';
+require __DIR__.'/dev/api/ri.php';
