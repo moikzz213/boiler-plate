@@ -129,7 +129,7 @@ const save = async () => {
         sbOptions.value = {
           status: true,
           type: "success",
-          text: "Default Message",
+          text: res.data.message,
         };
       });
     })
