@@ -252,7 +252,9 @@ import {
   mdiAccountSupervisor,
   mdiCogOutline,
   mdiFormatListBulleted,
-  mdiDomain
+  mdiDomain,
+  mdiPercent,
+  mdiRuler
 } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
 import { printInitials } from "@/composables/printInitials";
@@ -320,6 +322,16 @@ const sideNavigation = ref([
         title: "Industries",
         icon: mdiDomain,
         path: "/hr/industries",
+      },
+      {
+        title: "Measures",
+        icon: mdiRuler,
+        path: "/hr/measures",
+      },
+      {
+        title: "Weightage",
+        icon: mdiPercent,
+        path: "/hr/weightage",
       },
     ],
   },

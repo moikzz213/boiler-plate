@@ -10,4 +10,26 @@ export const ri = [
             title: "Industries",
         },
     },
+    {
+        path: "/hr/measures",
+        component: () => import("../../pages/hr/measures/Measures.vue"),
+        // component: Dashboard,
+        name: "Measures",
+        meta: {
+            requiresAuth: true,
+            role: ["app_admin", "hr_admin", "hrbp"],
+            title: "Measures",
+        },
+    },
+    {
+        path: "/hr/weightage",
+        component: () => import("../../pages/hr/weightage/Weightage.vue"),
+        // component: Dashboard,
+        name: "Weightage",
+        meta: {
+            requiresAuth: true,
+            role: ["app_admin", "hr_admin", "hrbp"],
+            title: "Weightage",
+        },
+    },
 ];

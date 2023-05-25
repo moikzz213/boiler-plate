@@ -1,24 +1,22 @@
 <template>
   <v-container class="pb-16">
-    <PageHeader title="Custom KPIs" />
+    <PageHeader title="Weightage" />
     <v-row class="my-5">
       <div class="v-col-12">
         <v-card v-if="kpiList.length > 0" class="mb-3 rounded-lg">
           <v-card-title class="d-flex align-center">
-            <div class="text-primary text-capitalize">Custom KPI List</div>
+            <div class="text-primary text-capitalize">Weightage</div>
           </v-card-title>
           <v-table>
             <thead>
               <tr>
                 <th class="text-left text-capitalize">Title</th>
-                <th class="text-left text-capitalize">Author</th>
                 <th class="text-right text-capitalize">Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="item in kpiList" :key="item.id">
                 <td>{{ item.title }}</td>
-                <td>{{ item.author }}</td>
                 <td>
                   <div class="d-flex align-center justify-end">
                     <v-icon

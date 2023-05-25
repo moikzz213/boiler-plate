@@ -1,6 +1,6 @@
 <template>
   <v-container class="pb-16">
-    <PageHeader title="KPI Master List" />
+    <PageHeader title="KPI" />
     <v-row class="my-5">
       <div class="v-col-12">
         <v-card v-if="kpiList.length > 0" class="mb-3 rounded-lg">
