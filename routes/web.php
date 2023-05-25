@@ -41,7 +41,8 @@ Route::get('/manager/kpi', [PageController::class, 'home'])->name('manager.teams
 
 Route::get('/hr/employees', [PageController::class, 'home'])->name('hr.employees');
 Route::get('/hr/employees/{ecode}', [PageController::class, 'home'])->name('hr.employees.single');
-Route::get('/hr/kpi', [PageController::class, 'home'])->name('hr.custom.kpi');
+Route::get('/hr/kpi/custom', [PageController::class, 'home'])->name('hr.kpi.custom');
+Route::get('/hr/kpi/master', [PageController::class, 'home'])->name('hr.kpi.master');
 Route::get('/hr/settings/pms', [PageController::class, 'home'])->name('hr.settings.pms');
 Route::get('/hr/settings/pms/{id}', [PageController::class, 'home'])->name('hr.settings.pms.single');
 Route::get('/hr/settings/pms/new', [PageController::class, 'home'])->name('hr.settings.pms.new');
@@ -97,3 +98,6 @@ Route::prefix('account')->group(function () {
  * Custom authentication
  */
 Route::post('login', [CustomAuthController::class, 'login'])->name('custom.login');
+
+require __DIR__.'/dev/web/jc.php';
+require __DIR__.'/dev/web/ri.php';

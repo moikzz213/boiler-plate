@@ -13,9 +13,13 @@
             @click="confirmOptions.dialog = false"
             >Cancel</v-btn
           >
-          <v-btn color="primary" class="ml-2" @click="confirm">{{
-            confirmOptions.btnTitle
-          }}</v-btn>
+          <v-btn
+            :color="confirmOptions.btnColor"
+            class="ml-2"
+            :loading="confirmOptions.loading"
+            @click="confirm"
+            >{{ confirmOptions.btnTitle }}</v-btn
+          >
         </div>
       </v-card-text>
     </v-card>
@@ -37,6 +41,7 @@ const confirmOptions = ref({
   text: "Please confirm <action>",
   btnColor: "primary",
   btnTitle: "Confirm",
+  loading: false,
 });
 const confirm = () => {
   emit("confirm", true);
@@ -44,7 +49,6 @@ const confirm = () => {
 watch(
   () => props.options,
   (newVal) => {
-    console.log("watch options", newVal);
     confirmOptions.value = Object.assign({}, newVal);
   }
 );

@@ -112,10 +112,21 @@ export const routes = [
         },
     },
     {
-        path: "/hr/kpi",
+        path: "/hr/kpi/custom",
         component: () => import("../pages/hr/kpi/HrCustomKpi.vue"),
         // component: Dashboard,
         name: "HrCustomKpi",
+        meta: {
+            requiresAuth: true,
+            role: ["app_admin", "hr_admin", "hrbp"],
+            title: "KPI List",
+        },
+    },
+    {
+        path: "/hr/kpi/master",
+        component: () => import("../pages/hr/kpi/HrMasterKpi.vue"),
+        // component: Dashboard,
+        name: "HrMasterKpi",
         meta: {
             requiresAuth: true,
             role: ["app_admin", "hr_admin", "hrbp"],
