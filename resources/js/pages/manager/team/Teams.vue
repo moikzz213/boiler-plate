@@ -1,6 +1,6 @@
 <template>
   <v-container class="pb-16">
-    <v-row class="my-5">
+    <!-- <v-row class="my-5">
       <div class="v-col-12">
         <div class="text-h6 mb-3">My KPI</div>
         <v-card max-width="1200">
@@ -16,8 +16,8 @@
           >Open My Own KPI</v-btn
         >
       </div>
-    </v-row>
-    <v-row>
+    </v-row> -->
+    <v-row class="mt-5">
       <div class="v-col-12 pb-0">
         <div class="text-h6">
           My Team {{ "(" + authStore.authProfile.teams.length + ")" }}

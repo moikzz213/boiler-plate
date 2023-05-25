@@ -13,19 +13,19 @@ class PerformanceSettingsTableSeeder extends Seeder
     public function run(): void
     {
         $PerformanceSetting = new \App\Models\PerformanceSetting([
-            'company' => 'Ghassan Aboud Group FZE',
+            'company_id' => 1,
             'year' => '2023',
         ]);
         $PerformanceSetting->save();
 
         $PerformanceSetting = new \App\Models\PerformanceSetting([
-            'company' => 'Grandiose Supermarket',
+            'company_id' => 2,
             'year' => '2023',
         ]);
         $PerformanceSetting->save();
 
         $PerformanceSetting = new \App\Models\PerformanceSetting([
-            'company' => 'Gallega',
+            'company_id' => 3,
             'year' => '2023',
         ]);
         $PerformanceSetting->save();
