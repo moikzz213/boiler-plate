@@ -34,12 +34,14 @@ const authStore = useAuthStore();
  */
 import { createRouter, createWebHistory } from "vue-router";
 import { routes } from "./router/routes";
+import { ri } from "./router/dev/ri";
+import { jc } from "./router/dev/jc";
 const router = createRouter({
     // history: createWebHistory(process.env.BASE_URL),
     // history: createWebHistory(import.meta.env.VITE_APP_URL),
     // history: createWebHistory(import.meta.env.APP_URL),
     history: createWebHistory(),
-    routes,
+    routes: [...routes, ...jc, ...ri],
 });
 router.beforeEach((to, from, next) => {
     // console.log("authStore.authProfile", authStore);

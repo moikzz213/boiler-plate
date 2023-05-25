@@ -21,3 +21,4 @@ use App\Http\Controllers\PerformanceSettingController;
 |
 */
 
+Route::get('/hr/industries', [PageController::class, 'home'])->name('hr.industries');

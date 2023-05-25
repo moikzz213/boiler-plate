@@ -251,6 +251,8 @@ import {
   mdiAccountGroup,
   mdiAccountSupervisor,
   mdiCogOutline,
+  mdiFormatListBulleted,
+  mdiDomain
 } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
 import { printInitials } from "@/composables/printInitials";
@@ -300,14 +302,24 @@ const sideNavigation = ref([
     path: "",
     subs: [
       {
-        title: "Pms Settings",
+        title: "PMS Settings",
         icon: mdiCogOutline,
         path: "/hr/settings/pms",
       },
       {
         title: "Custom KPIs",
         icon: mdiChartTimelineVariant,
-        path: "/hr/kpi",
+        path: "/hr/kpi/custom",
+      },
+      {
+        title: "KPIs",
+        icon: mdiFormatListBulleted,
+        path: "/hr/kpi/master",
+      },
+      {
+        title: "Industries",
+        icon: mdiDomain,
+        path: "/hr/industries",
       },
     ],
   },
