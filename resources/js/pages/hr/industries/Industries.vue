@@ -47,6 +47,16 @@
             <v-card-text class="text-center"> No records found </v-card-text>
           </v-card>
         </v-card>
+
+        <v-pagination
+          v-if="totalPageCount > 1"
+          v-model="currentPage"
+          class="my-4"
+          :length="totalPageCount"
+          variant="elevated"
+          active-color="primary"
+          density="comfortable"
+        ></v-pagination>
       </div>
     </v-row>
     <v-dialog v-model="industryForm.dialog" width="100%" max-width="480px" persistent>
@@ -224,4 +234,8 @@ const confirmResponse = (v) => {
       };
     });
 };
+
+// pagination
+const totalPageCount = ref(3);
+const currentPage = ref(1);
 </script>
