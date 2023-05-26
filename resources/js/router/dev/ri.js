@@ -1,23 +1,43 @@
 export const ri = [
+    // {
+    //     path: "/hr/industries",
+    //     component: () => import("../../pages/hr/industries/Industries.vue"),
+    //     // component: Dashboard,
+    //     name: "Industries",
+    //     meta: {
+    //         requiresAuth: true,
+    //         role: ["app_admin", "hr_admin", "hrbp"],
+    //         title: "Industries",
+    //     },
+    // },
     {
-        path: "/hr/industries",
+        path: "/hr/industries/page/:page",
         component: () => import("../../pages/hr/industries/Industries.vue"),
-        // component: Dashboard,
-        name: "Industries",
+        name: "PaginatedIndustries",
         meta: {
             requiresAuth: true,
-            role: ["app_admin", "hr_admin", "hrbp"],
+            role: ["app_admin", "hr_admin"],
             title: "Industries",
         },
     },
+    // {
+    //     path: "/hr/measures",
+    //     component: () => import("../../pages/hr/measures/Measures.vue"),
+    //     // component: Dashboard,
+    //     name: "Measures",
+    //     meta: {
+    //         requiresAuth: true,
+    //         role: ["app_admin", "hr_admin", "hrbp"],
+    //         title: "Measures",
+    //     },
+    // },
     {
-        path: "/hr/measures",
+        path: "/hr/measures/page/:page",
         component: () => import("../../pages/hr/measures/Measures.vue"),
-        // component: Dashboard,
-        name: "Measures",
+        name: "PaginatedMeasures",
         meta: {
             requiresAuth: true,
-            role: ["app_admin", "hr_admin", "hrbp"],
+            role: ["app_admin", "hr_admin"],
             title: "Measures",
         },
     },

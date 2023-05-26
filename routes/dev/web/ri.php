@@ -21,5 +21,10 @@ use App\Http\Controllers\PerformanceSettingController;
 |
 */
 
-Route::get('/hr/industries', [PageController::class, 'home'])->name('hr.industries');
-Route::get('/hr/industries/page/{page}', [PageController::class, 'home'])->name('hr.industries');
+Route::prefix('hr')->group(function () {
+    // industries
+    // Route::get('/hr/industries', [PageController::class, 'home'])->name('hr.industries');
+    Route::get('/industries/page/{page}', [PageController::class, 'home'])->name('hr.industries');
+    // measure
+    Route::get('/measures/page/{page}', [PageController::class, 'home'])->name('hr.measures');
+});

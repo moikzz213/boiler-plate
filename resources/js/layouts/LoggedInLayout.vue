@@ -325,7 +325,7 @@ const sideNavigation = ref([
       {
         title: "Measures",
         icon: mdiRuler,
-        path: "/hr/measures",
+        path: "/hr/measures/page/1",
       },
       {
         title: "Weightage",

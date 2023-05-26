@@ -159,26 +159,6 @@ export const routes = [
             title: "Performance Settings",
         },
     },
-    // {
-    //     path: "/hr/industries",
-    //     component: () => import("../pages/hr/industries/Industries.vue"),
-    //     name: "Industries",
-    //     meta: {
-    //         requiresAuth: true,
-    //         role: ["app_admin", "hr_admin"],
-    //         title: "Industries",
-    //     },
-    // },
-    {
-        path: "/hr/industries/page/:page",
-        component: () => import("../pages/hr/industries/Industries.vue"),
-        name: "PaginatedIndustries",
-        meta: {
-            requiresAuth: true,
-            role: ["app_admin", "hr_admin"],
-            title: "Industries",
-        },
-    },
 
     // Admin routes
     {
