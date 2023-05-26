@@ -17,13 +17,13 @@
           <v-table>
             <thead>
               <tr>
-                <th class="text-left text-capitalize">Title</th>
+                <th class="text-left text-capitalize">{{ "Weightage (%)" }}</th>
                 <th class="text-right text-capitalize">Actions</th>
               </tr>
             </thead>
             <tbody v-if="weightages && weightages.length > 0">
               <tr v-for="item in weightages" :key="item.id">
-                <td>{{ item.title }}</td>
+                <td>{{ item.title + "%" }}</td>
                 <td>
                   <div class="d-flex align-center justify-end">
                     <v-icon
@@ -66,6 +66,7 @@
               <div class="v-col-12">{{ weightageForm.title }} {{}}</div>
               <div class="v-col-12 py-0">
                 <v-text-field
+                  type="number"
                   v-model="weightageForm.data.title"
                   label="Weightage*"
                   variant="outlined"
