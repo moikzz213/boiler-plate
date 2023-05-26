@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Profile;
 use App\Models\ClientKey;
 use Illuminate\Http\Request;
 
@@ -9,14 +10,20 @@ class ClientKeyController extends Controller
 {
     public function saveKey(Request $request)
     {
+        // client key
         $clientKey = ClientKey::firstOrCreate([
             'key' => $request['key'],
-            'user_id' => $request['user_id'] ? $request['user_id'] : null,
+            'ecode' => $request['user_ecode'] ? $request['user_ecode'] : null,
         ]);
+
+        // save employee profile
+        // return profile with role for hrbp hr_admin
+        $profile = Profile::where('ecode', $request['user_ecode'])->with('teams')->first();
 
         return response()->json([
             "message" => 'Key saved successfully',
-            "client" => $clientKey
+            "client" => $clientKey,
+            "profile" => $profile
         ], 200);
     }
 

@@ -1,7 +1,6 @@
 <template>
-  <v-container>
-    <PageHeader title="Account" />
-    <v-row>
+  <v-container class="pb-16">
+    <v-row class="mt-10 mb-5">
       <div class="v-col-12 v-col-md-8">
         <div class="d-flex flex-wrap">
           <v-btn
@@ -67,7 +66,7 @@ const sbOptions = ref({
 const authStore = useAuthStore();
 const user = ref({
   loading: false,
-  data: Object.assign({}, authStore.user),
+  data: Object.assign({}, authStore.authProfile),
 });
 
 // tabs

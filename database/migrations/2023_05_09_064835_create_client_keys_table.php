@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('client_keys', function (Blueprint $table) {
             $table->id();
             $table->string('key', 100)->unique();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('ecode')->nullable();
             $table->timestamps();
         });
     }

@@ -15,4 +15,14 @@ class Profile extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function teams()
+    {
+        return $this->hasMany(Profile::class, 'superior_ecode', 'ecode');
+    }
+
+    public function managed_by()
+    {
+        return $this->belongsTo(Profile::class, 'superior_ecode', 'ecode');
+    }
 }

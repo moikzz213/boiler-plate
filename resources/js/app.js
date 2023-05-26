@@ -34,28 +34,34 @@ const authStore = useAuthStore();
  */
 import { createRouter, createWebHistory } from "vue-router";
 import { routes } from "./router/routes";
+import { ri } from "./router/dev/ri";
+import { jc } from "./router/dev/jc";
 const router = createRouter({
     // history: createWebHistory(process.env.BASE_URL),
     // history: createWebHistory(import.meta.env.VITE_APP_URL),
     // history: createWebHistory(import.meta.env.APP_URL),
     history: createWebHistory(),
-    routes,
+    routes: [...routes, ...jc, ...ri],
 });
 router.beforeEach((to, from, next) => {
-    console.log("authStore.user.role", authStore);
-    // console.log("to.meta.requiresAuth", to.meta.requiresAuth);
-    // console.log("authStore.is_logged_in", authStore.is_logged_in);
+    // console.log("authStore.authProfile", authStore);
+
+    let hasTheSameRoles = false;
+    if (to.meta.role) {
+        let checkRoles = to.meta.role.filter((r) =>
+            authStore.authRole.includes(r)
+        );
+        hasTheSameRoles = checkRoles.length > 0 ? true : false;
+    }
+
     if (to.meta.requiresAuth && !authStore.is_logged_in) {
         // is not logged in
         next("/login");
     } else {
         // is logged in
-        if (to.meta.role && to.meta.role.includes(authStore.user.role)) {
+        if (to.meta.role && hasTheSameRoles) {
             next();
-        } else if (
-            to.meta.role &&
-            !to.meta.role.includes(authStore.user.role)
-        ) {
+        } else if (to.meta.role && !hasTheSameRoles) {
             next("/unauthorized");
         } else {
             // check if in login page
@@ -78,7 +84,7 @@ app.use(router);
 /**
  * Vuetify
  */
-import vuetify from "./plugins/vuetify";
+import vuetify from "./vuetify/vuetify";
 app.use(vuetify);
 
 /**

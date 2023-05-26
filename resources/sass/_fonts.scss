@@ -1,0 +1,29 @@
+@font-face {
+    font-family: "Futura";
+    src: local("Futura Medium"), local("Futura-Medium"),
+        url("../fonts/Futura-Medium.woff2") format("woff2"),
+        url("../fonts/Futura-Medium.woff") format("woff");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+// @font-face {
+//     font-family: "Futura";
+//     src: local("Futura Condensed Medium"), local("Futura-CondensedMedium"),
+//         url("../fonts/Futura-CondensedMedium.woff2") format("woff2"),
+//         url("../fonts/Futura-CondensedMedium.woff") format("woff");
+//     font-weight: 500;
+//     font-style: normal;
+//     font-display: swap;
+// }
+
+@font-face {
+    font-family: "Futura";
+    src: local("Futura Condensed ExtraBold"), local("Futura-CondensedExtraBold"),
+        url("../fonts/Futura-CondensedExtraBold.woff2") format("woff2"),
+        url("../fonts/Futura-CondensedExtraBold.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}

@@ -4,9 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ClientKeyController;
 use App\Http\Controllers\CustomAuthController;
 use App\Http\Controllers\PublicPageController;
+use App\Http\Controllers\PerformanceSettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +34,18 @@ Auth::routes([
  */
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/login', [PageController::class, 'home'])->name('login');
-Route::get('/dashboard', [PageController::class, 'home'])->name('login');
+Route::get('/dashboard', [PageController::class, 'home'])->name('dashboard');
+Route::get('/manager/teams', [PageController::class, 'home'])->name('manager.teams');
+Route::get('/manager/teams/member/{id}', [PageController::class, 'home'])->name('manager.teams.single.member');
+Route::get('/manager/kpi', [PageController::class, 'home'])->name('manager.teams.kpi');
+
+Route::get('/hr/employees', [PageController::class, 'home'])->name('hr.employees');
+Route::get('/hr/employees/{ecode}', [PageController::class, 'home'])->name('hr.employees.single');
+Route::get('/hr/kpi/custom', [PageController::class, 'home'])->name('hr.kpi.custom');
+Route::get('/hr/kpi/master', [PageController::class, 'home'])->name('hr.kpi.master');
+Route::get('/hr/settings/pms', [PageController::class, 'home'])->name('hr.settings.pms');
+Route::get('/hr/settings/pms/{id}', [PageController::class, 'home'])->name('hr.settings.pms.single');
+Route::get('/hr/settings/pms/new', [PageController::class, 'home'])->name('hr.settings.pms.new');
 
 
 /**
@@ -85,3 +98,6 @@ Route::prefix('account')->group(function () {
  * Custom authentication
  */
 Route::post('login', [CustomAuthController::class, 'login'])->name('custom.login');
+
+require __DIR__.'/dev/web/jc.php';
+require __DIR__.'/dev/web/ri.php';

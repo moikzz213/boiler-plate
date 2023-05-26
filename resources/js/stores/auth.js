@@ -6,20 +6,36 @@ import { defineStore } from "pinia";
 // the first argument is a unique id of the store across your application
 export const useAuthStore = defineStore("authClient", {
     state: () => ({
-        user: null,
+        profile: null,
         token: null,
+        role: [], // superadmin, app_admin, normal, hr_admin, hrbp, manager
         is_logged_in: false,
     }),
     getters: {
-        authUser: (state) => state.user,
+        authProfile: (state) => state.profile,
         authToken: (state) => state.token,
+        authRole: (state) => state.role,
         authIsLoggedIn: (state) => state.is_logged_in,
     },
     actions: {
         async setCredentials(res) {
-            this.user = res.user;
-            this.token = res.token;
-            if (res.user && res.token) {
+            // set profile into user
+            this.profile = res.profile;
+
+            // set token
+            this.token = res.client.key;
+
+            // set role
+            this.role = [];
+            this.role.push(res.profile.role);
+
+            // set is manager, to remove
+            if (res.profile.teams && res.profile.teams.length > 0) {
+                this.role.push("manager");
+            }
+
+            // set is logged_in
+            if (res.profile && res.client.key) {
                 this.is_logged_in = true;
             }
         },
@@ -33,6 +49,9 @@ export const useAuthStore = defineStore("authClient", {
         },
         async setToken(token) {
             this.token = token;
+        },
+        async setProfile(profile) {
+            this.profile = profile;
         },
     },
     persist: true,
