@@ -4,120 +4,84 @@
       <VueDatePicker v-model="year" year-picker class="pms-date-picker" />
     </div>
     <div class="v-col-12 v-col-md-2">
-      <v-btn
-        @click="printKPI"
-        color="white"
-        :loading="loadingLogin"
-        class="text-capitalize"
-        >Print KPI <v-icon :icon="mdiPrinter" class="ml-3"> </v-icon
-      ></v-btn>
+      <v-btn @click="printKPI" color="white" :loading="loadingLogin" class="text-capitalize">Print KPI <v-icon
+          :icon="mdiPrinter" class="ml-3"> </v-icon></v-btn>
     </div>
     <div class="v-col-12">
       <div class="d-flex align-center px-3">
-        <v-card
-          @click="() => selectTab('kpi')"
-          flat
-          :class="`
+        <v-card @click="() => selectTab('kpi')" flat :class="`
           ${selectedTab == 'kpi' ? '' : 'bg-grey-darken-3 text-white'}
-          d-flex align-center justify-center px-3 text-center pms-tab`"
-        >
-          KPI {{ kpiArray ? "(" + kpiArray.length + ")" : "("+0+")" }}
+          d-flex align-center justify-center px-3 text-center pms-tab`">
+          KPI {{ kpiArray ? "(" + kpiArray.length + ")" : "(" + 0 + ")" }}
         </v-card>
-        <v-card
-          @click="() => selectTab('ecd')"
-          flat
-          :class="`${
-            selectedTab == 'ecd' ? '' : 'bg-grey-darken-3 text-white'
-          } d-flex align-center justify-center px-3 text-caption text-center pms-tab`"
-        >
+        <v-card @click="() => selectTab('ecd')" flat :class="`${selectedTab == 'ecd' ? '' : 'bg-grey-darken-3 text-white'
+          } d-flex align-center justify-center px-3 text-caption text-center pms-tab`">
           Employee Capability Development {{ "(" + ecdArray.length + ")" }}
         </v-card>
         <div class="ml-auto text-h6">Rate: 4</div>
       </div>
       <v-card flat>
         <v-card-title class="px-5 py-5 d-flex align-center">
-          <v-btn
-            v-if="canManage"
-            @click="() => addKPI(selectedTab)"
-            density="compact"
-            size="35"
-            class="rounded-xl elevation-2 mr-2"
-            ><v-icon size="small" :icon="mdiPlus"></v-icon
-          ></v-btn>
-          <div class="text-uppercase text-primary" v-if="(selectedTab == 'kpi' && kpiArray && kpiArray.length > 0) || selectedTab == 'ecd' && ecdArray && ecdArray.length > 0">
-            {{ selectedTab }} List
+          <v-btn v-if="canManage" @click="() => addKPI(selectedTab)" density="compact" size="35"
+            class="rounded-xl elevation-2 mr-2"><v-icon size="small" :icon="mdiPlus"></v-icon></v-btn>
+          <div class="text-uppercase text-primary"
+            v-if="(selectedTab == 'kpi' && kpiArray && kpiArray.length > 0) || selectedTab == 'ecd' && ecdArray && ecdArray.length > 0">
+            {{ selectedTab == 'ecd' ? 'Employee Capability Development' : selectedTab }} List
           </div>
           <div v-else-if="!canManage" class="text-uppercase text-center" style="display: block !important; width:100%;">
-              {{selectedTab}} not set
+            {{ selectedTab }} not set
           </div>
           <div v-else class="text-uppercase text-center">
-              {{selectedTab}} List
+            {{ selectedTab == 'ecd' ? 'Employee Capability Development' : selectedTab }} List
           </div>
           <div v-if="canManage" class="ml-auto text-body-1">Remaining weightage: 70%</div>
         </v-card-title>
         <v-card-text class="px-5 pb-10">
           <v-row v-show="selectedTab == 'kpi'" class="mt-n3">
             <template v-if="kpiArray && kpiArray.length > 0">
-            <div class="v-col-12 pb-0" v-for="kpi in kpiArray" :key="kpi.id">
-              <v-card class="rounded-lg">
-                <v-card-text>
-                  <v-row>
-                    <div class="v-col-12 pb-0 d-flex justify-space-between">
-                      <div>
-                        <div class="text-grey text-caption">KPI</div>
-                        <div class="text-primary text-body-1">
-                          {{ kpi.title }}
+              <div class="v-col-12 pb-0" v-for="kpi in kpiArray" :key="kpi.id">
+                <v-card class="rounded-lg">
+                  <v-card-text>
+                    <v-row>
+                      <div class="v-col-12 pb-0 d-flex justify-space-between">
+                        <div>
+                          <div class="text-grey text-caption">KPI</div>
+                          <div class="text-primary text-body-1">
+                            {{ kpi.title }}
+                          </div>
+                        </div>
+                        <div>
+                          <v-btn color="primary" class="rounded-xl px-5" size="small"
+                            @click="() => reviewKPI(kpi, 'kpi')">review</v-btn>
+                          <v-btn v-if="canManage" @click="() => editKPI(kpi, 'kpi')" density="compact" size="30"
+                            color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
+                              :icon="mdiPencil"></v-icon></v-btn>
+                          <v-btn v-if="canManage" @click="() => removeKPI(kpi)" density="compact" size="30"
+                            color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
+                              :icon="mdiTrashCan"></v-icon></v-btn>
                         </div>
                       </div>
-                      <div>
-                        <v-btn
-                          color="primary"
-                          class="rounded-xl px-5"
-                          size="small"
-                          @click="() => reviewKPI(kpi, 'kpi')"
-                          >review</v-btn
-                        >
-                        <v-btn
-                          v-if="canManage"
-                          @click="() => editKPI(kpi, 'kpi')"
-                          density="compact"
-                          size="30"
-                          color="primary"
-                          class="rounded-xl elevation-2 ml-1"
-                          ><v-icon size="small" :icon="mdiPencil"></v-icon
-                        ></v-btn>
-                        <v-btn
-                          v-if="canManage"
-                          @click="() => removeKPI(kpi)"
-                          density="compact"
-                          size="30"
-                          color="primary"
-                          class="rounded-xl elevation-2 ml-1"
-                          ><v-icon size="small" :icon="mdiTrashCan"></v-icon
-                        ></v-btn>
+                      <div class="v-col-3">
+                        <div class="text-grey text-caption">Industry</div>
+                        <div class="text-primary text-body-1">{{ kpi.industry }}</div>
                       </div>
-                    </div>
-                    <div class="v-col-3">
-                      <div class="text-grey text-caption">Industry</div>
-                      <div class="text-primary text-body-1">{{ kpi.industry }}</div>
-                    </div>
-                    <div class="v-col-3">
-                      <div class="text-grey text-caption">Target</div>
-                      <div class="text-primary text-body-1">{{ kpi.target }}</div>
-                    </div>
-                    <div class="v-col-3">
-                      <div class="text-grey text-caption">Measure</div>
-                      <div class="text-primary text-body-1">{{ kpi.measures }}</div>
-                    </div>
-                    <div class="v-col-3">
-                      <div class="text-grey text-caption">{{ "KPI's Weightage(%)" }}</div>
-                      <div class="text-primary text-body-1">{{ kpi.weightage }}</div>
-                    </div>
-                  </v-row>
-                </v-card-text>
-              </v-card>
-            </div>
-          </template>
+                      <div class="v-col-3">
+                        <div class="text-grey text-caption">Target ({{ kpi.target_type }})</div>
+                        <div class="text-primary text-body-1"> {{ kpi.target }}</div>
+                      </div>
+                      <div class="v-col-3">
+                        <div class="text-grey text-caption">Measure</div>
+                        <div class="text-primary text-body-1">{{ kpi.measures }}</div>
+                      </div>
+                      <div class="v-col-3">
+                        <div class="text-grey text-caption">{{ "KPI's Weightage(%)" }}</div>
+                        <div class="text-primary text-body-1">{{ kpi.weightage }}</div>
+                      </div>
+                    </v-row>
+                  </v-card-text>
+                </v-card>
+              </div>
+            </template>
           </v-row>
           <v-row v-show="selectedTab == 'ecd'" class="mt-n3">
             <div class="v-col-12 pb-0" v-for="ecd in ecdArray" :key="ecd.id">
@@ -132,31 +96,13 @@
                         </div>
                       </div>
                       <div>
-                        <v-btn
-                          color="primary"
-                          class="rounded-xl px-5"
-                          size="small"
-                          @click="() => reviewKPI(ecd, 'ecd')"
-                          >review</v-btn
-                        >
-                        <v-btn
-                          v-if="canManage"
-                          @click="() => editKPI(ecd, 'ecd')"
-                          density="compact"
-                          size="30"
-                          color="primary"
-                          class="rounded-xl elevation-2 ml-1"
-                          ><v-icon size="small" :icon="mdiPencil"></v-icon
-                        ></v-btn>
-                        <v-btn
-                          v-if="canManage"
-                          @click="() => removeKPI(ecd)"
-                          density="compact"
-                          size="30"
-                          color="primary"
-                          class="rounded-xl elevation-2 ml-1"
-                          ><v-icon size="small" :icon="mdiTrashCan"></v-icon
-                        ></v-btn>
+                        <v-btn color="primary" class="rounded-xl px-5" size="small"
+                          @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
+                        <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd')" density="compact" size="30"
+                          color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
+                            :icon="mdiPencil"></v-icon></v-btn>
+                        <v-btn v-if="canManage" @click="() => removeKPI(ecd)" density="compact" size="30" color="primary"
+                          class="rounded-xl elevation-2 ml-1"><v-icon size="small" :icon="mdiTrashCan"></v-icon></v-btn>
                       </div>
                     </div>
                     <div class="v-col-3">
@@ -168,7 +114,7 @@
                     <div class="v-col-3">
                       <div class="text-grey text-caption">Type</div>
                       <div class="text-primary text-body-1">
-                        {{ ecd.type }}
+                        {{ ecd.ecd_type }}
                       </div>
                     </div>
                   </v-row>
@@ -190,53 +136,59 @@
             }}</span>
           </div>
           <div class="d-flex justify-end mt-5">
-            <v-btn
-              class="bg-grey-lighten-2 text-primary"
-              variant="text"
-              @click="toRemoveKpi.dialog = false"
-              >Cancel</v-btn
-            >
+            <v-btn class="bg-grey-lighten-2 text-primary" variant="text"
+              @click="toRemoveKpi.dialog = false">Cancel</v-btn>
             <v-btn color="primary" class="ml-2" @click="confirmRemoveKpi">Remove</v-btn>
           </div>
         </v-card-text>
       </v-card>
     </v-dialog>
 
-    <KpiDialog :kpi-options="kpiOptions" :submit-button="props.submitButton"/>
-    <EcdDialog :ecd-options="ecdOptions" :submit-button="props.submitButton"/>
+    <KpiDialog :kpi-options="kpiOptions" :submit-button="props.submitButton" />
+    <EcdDialog :ecd-options="ecdOptions" :submit-button="props.submitButton" />
   </v-row>
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, defineEmits } from "vue";
 import { useAuthStore } from "@/stores/auth";
-import { clientApi } from "@/services/clientApi";
 import { useRoute } from "vue-router";
 import { mdiPrinter, mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import KpiDialog from "@/components/kpi/KpiDialog.vue";
 import EcdDialog from "@/components/kpi/EcdDialog.vue";
+
+const kpiEmit = defineEmits(['yearchange'])
+
 const authStore = useAuthStore();
 const props = defineProps({
   selectedEmployee: {
     type: Object,
     default: null,
   },
-  submitButton:{
+  submitButton: {
     type: Boolean,
     default: true
   }
 });
-console.log(props.submitButton);
-// const viewingEmployee = ref({});
- 
-// watch(
-//   () => props.selectedEmployee,
-//   (newVal) => {
-//     viewingEmployee.value = Object.assign({}, newVal);
-//     console.log("watch employee", viewingEmployee.value);
-//   }
-// );
+
+const viewingEmployee = ref(props.selectedEmployee);
+
+const kpiArray = computed(() => {
+  if (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0) return [];
+  return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'kpi'); 
+});
+const ecdArray = computed(() => {
+  if (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0) return [];
+    return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'ecd');  
+});
+
+watch(
+  () => props.selectedEmployee,
+  (newVal) => {  
+    viewingEmployee.value = Object.assign({}, newVal); 
+  }
+);
 
 // tabs
 const selectedTab = ref("kpi");
@@ -251,55 +203,14 @@ const canManage = computed(() => {
 
 // kpi
 const year = ref(new Date().getFullYear());
-const kpiArray = ref([
-  // {
-  //   id: 1,
-  //   title:
-  //     "Percentage Cost of logistics for shipping orders with healthcare products and equipment",
-  //   industry: "Healthcare Trading",
-  //   target: "121",
-  //   measures: "Units",
-  //   weightage: "25%",
-  //   kpi_id: 1,
-  // }
-]);
  
-const ecdArray = ref([
-  // {
-  //   id: 1,
-  //   title: "Organizational Behaviour - Personality and Learning",
-  //   type: "Technical",
-  //   weightage: "25%",
-  // }, 
-]);
 const printKPI = () => {
   // opens kpi slug in new window
   console.log("printKPI route");
 };
-const getKPI = async () => {
-  await clientApi
-    .get("/api/dashboard/my-kpi/"+year.value)
-    .then((res) => {
-      console.log( res.data.result);
-      if(res.data && res.data.result && res.data.result.key_review && res.data.result.key_review.length > 0){
-        res.data.result.key_review.map((o,i) =>{
-          if(o.type == 'kpi'){
-            kpiArray.value.push(o);
-          }else{
-            ecdArray.value.push(o);
-          }
-        })
-      }
-      console.log('kpiArray',kpiArray.value);
-      
-    })
-    .catch((err) => {
-       
-    });
-};
-getKPI();
+
 watch(year, async (newVal, oldVal) => {
-  getKPI();
+  kpiEmit('yearchange', newVal);
 });
 
 // save kpi & ecd
@@ -435,7 +346,7 @@ const confirmRemoveKpi = async () => {
   border-bottom-right-radius: 0;
 }
 
-.pms-tab:hover > .v-card__overlay {
+.pms-tab:hover>.v-card__overlay {
   display: none;
 }
 </style>

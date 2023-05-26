@@ -5,21 +5,21 @@
         <div class="text-h6 mb-3">My KPI</div>
         <v-card max-width="1200">
           <v-card-text>
-            <KpiProgress v-if="authStore.authProfile && authStore.authProfile.is_regular == true" />
-            <KpiProgressProbation v-else />
+            <KpiProgress :selected-employee="selectedProfileKpi" v-if="authStore.authProfile && authStore.authProfile.is_regular == true" />
+            <KpiProgressProbation :selected-employee="selectedProfileKpi" v-else />
           </v-card-text>
         </v-card>
       </div>
     </v-row>
-    <KpiContent :selected-employee="authStore.authProfile" :submit-button="false" />
+    <KpiContent :selected-employee="selectedProfileKpi" @yearchange="selectedYearResponse" :submit-button="false" />
   </v-container>
 </template>
 
 <script setup>
-import { defineAsyncComponent } from "vue";
+import { defineAsyncComponent, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import KpiContent from "@/components/kpi/KpiContent.vue";
-
+import { clientApi } from "@/services/clientApi";
 // dynamic components
 const KpiProgress = defineAsyncComponent(() =>
   import("../components/kpi/KpiProgress.vue")
@@ -30,5 +30,33 @@ const KpiProgressProbation = defineAsyncComponent(() =>
 
 // authenticated user object
 const authStore = useAuthStore();
-console.log(authStore);
+const selectedProfileKpi = ref(authStore.authProfile);
+
+const selectedYearResponse = (v) => {
+  getKPI(v)
+}
+const getKPI = async (year) => {
+  await clientApi
+    .get("/api/dashboard/my-kpi/" + year)
+    .then((res) => {
+      if (res.data.result == null) {
+        selectedProfileKpi.value = {
+          ...selectedProfileKpi.value, ...{
+            reviews: []
+          }
+        }
+      } else {
+        selectedProfileKpi.value = {
+          ...selectedProfileKpi.value, ...{
+            reviews: [res.data.result]
+          }
+        }
+      }
+
+     
+    })
+    .catch((err) => {
+
+    });
+};
 </script>

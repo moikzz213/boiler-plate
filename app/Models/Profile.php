@@ -25,4 +25,9 @@ class Profile extends Model
     {
         return $this->belongsTo(Profile::class, 'superior_ecode', 'ecode');
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }

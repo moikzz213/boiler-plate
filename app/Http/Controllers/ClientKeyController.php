@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Profile;
 use App\Models\ClientKey;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class ClientKeyController extends Controller
 {
@@ -18,7 +19,10 @@ class ClientKeyController extends Controller
 
         // save employee profile
         // return profile with role for hrbp hr_admin
-        $profile = Profile::where('ecode', $request['user_ecode'])->with('teams')->first();
+        $profile = Profile::where('ecode', $request['user_ecode'])
+        ->with('teams', 'reviews.keyReview')->with('reviews',function ($q) {
+            $q->where('year', 2023);
+        })->first();
 
         return response()->json([
             "message" => 'Key saved successfully',
