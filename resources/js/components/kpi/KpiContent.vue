@@ -7,7 +7,6 @@
       <v-btn
         @click="printKPI"
         color="white"
-        :loading="loadingLogin"
         class="text-capitalize"
         >Print KPI <v-icon :icon="mdiPrinter" class="ml-3"> </v-icon
       ></v-btn>

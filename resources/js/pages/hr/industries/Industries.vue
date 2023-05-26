@@ -47,7 +47,6 @@
             <v-card-text class="text-center"> No records found </v-card-text>
           </v-card>
         </v-card>
-
         <v-pagination
           v-if="totalPageCount > 1"
           v-model="currentPage"
@@ -96,13 +95,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
 import PageHeader from "@/components/PageHeader.vue";
 import { clientApi } from "@/services/clientApi";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import SnackBar from "@/components/SnackBar.vue";
 
+const router = useRouter();
+const route = useRoute();
 const sbOptions = ref({});
 
 // Industries
@@ -114,10 +116,14 @@ const industryForm = ref({
   dialog: false,
   action: "add",
 });
-const getData = async () => {
+const totalPageCount = ref(0);
+const currentPage = ref(route.params ? route.params.page : 1);
+const getData = async (page) => {
   await clientApi
-    .get("/api/hr/industries")
+    .get("/api/hr/industries?page=" + page)
     .then((res) => {
+      totalPageCount.value = res.data.last_page;
+      currentPage.value = res.data.current_page;
       industries.value = res.data.data;
     })
     .catch((err) => {
@@ -133,7 +139,7 @@ const save = async () => {
   await clientApi
     .post("/api/hr/industry/save", data)
     .then((res) => {
-      getData().then(() => {
+      getData(currentPage.value).then(() => {
         industryForm.value.loading = false;
         industryForm.value.dialog = false;
         sbOptions.value = {
@@ -170,8 +176,21 @@ const edit = (item) => {
     },
   };
 };
+watch(currentPage, (newValue, oldValue) => {
+  if (newValue != oldValue) {
+    router
+      .push({
+        name: "PaginatedIndustries",
+        params: {
+          page: currentPage.value,
+        },
+      })
+      .catch((err) => {});
+    getData(currentPage.value);
+  }
+});
 onMounted(() => {
-  getData();
+  getData(1);
 });
 
 // remove industry
@@ -191,7 +210,7 @@ const confirmRemove = async () => {
   await clientApi
     .post("/api/hr/industry/remove/" + toRemove.value.id)
     .then((res) => {
-      getData().then(() => {
+      getData(currentPage.value).then(() => {
         sbOptions.value = {
           status: true,
           type: "success",
@@ -200,7 +219,6 @@ const confirmRemove = async () => {
       });
     })
     .catch((err) => {
-      console.log("industries", err);
       sbOptions.value = {
         status: true,
         type: "error",
@@ -234,8 +252,4 @@ const confirmResponse = (v) => {
       };
     });
 };
-
-// pagination
-const totalPageCount = ref(3);
-const currentPage = ref(1);
 </script>

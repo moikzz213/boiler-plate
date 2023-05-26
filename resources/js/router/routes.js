@@ -92,7 +92,6 @@ export const routes = [
     {
         path: "/hr/employees",
         component: () => import("../pages/hr/employees/Employees.vue"),
-        // component: Dashboard,
         name: "Employees",
         meta: {
             requiresAuth: true,
@@ -103,7 +102,6 @@ export const routes = [
     {
         path: "/hr/employees/:ecode",
         component: () => import("../pages/hr/employees/SingleEmployee.vue"),
-        // component: Dashboard,
         name: "SingleEmployee",
         meta: {
             requiresAuth: true,
@@ -114,7 +112,6 @@ export const routes = [
     {
         path: "/hr/kpi/custom",
         component: () => import("../pages/hr/kpi/HrCustomKpi.vue"),
-        // component: Dashboard,
         name: "HrCustomKpi",
         meta: {
             requiresAuth: true,
@@ -125,7 +122,6 @@ export const routes = [
     {
         path: "/hr/kpi/master",
         component: () => import("../pages/hr/kpi/HrMasterKpi.vue"),
-        // component: Dashboard,
         name: "HrMasterKpi",
         meta: {
             requiresAuth: true,
@@ -136,7 +132,6 @@ export const routes = [
     {
         path: "/hr/settings/pms",
         component: () => import("../pages/hr/settings/Pms.vue"),
-        // component: Dashboard,
         name: "Pms",
         meta: {
             requiresAuth: true,
@@ -147,7 +142,6 @@ export const routes = [
     {
         path: "/hr/settings/pms/:id",
         component: () => import("../pages/hr/settings/SinglePms.vue"),
-        // component: Dashboard,
         name: "SinglePms",
         meta: {
             requiresAuth: true,
@@ -158,7 +152,6 @@ export const routes = [
     {
         path: "/hr/settings/pms/new",
         component: () => import("../pages/hr/settings/NewPms.vue"),
-        // component: Dashboard,
         name: "NewPms",
         meta: {
             requiresAuth: true,
@@ -166,12 +159,31 @@ export const routes = [
             title: "Performance Settings",
         },
     },
+    // {
+    //     path: "/hr/industries",
+    //     component: () => import("../pages/hr/industries/Industries.vue"),
+    //     name: "Industries",
+    //     meta: {
+    //         requiresAuth: true,
+    //         role: ["app_admin", "hr_admin"],
+    //         title: "Industries",
+    //     },
+    // },
+    {
+        path: "/hr/industries/page/:page",
+        component: () => import("../pages/hr/industries/Industries.vue"),
+        name: "PaginatedIndustries",
+        meta: {
+            requiresAuth: true,
+            role: ["app_admin", "hr_admin"],
+            title: "Industries",
+        },
+    },
 
     // Admin routes
     {
         path: "/admin",
         component: () => import("../pages/admin/Dashboard.vue"),
-        // component: Dashboard,
         name: "AdminRoot",
         meta: {
             requiresAuth: true,
