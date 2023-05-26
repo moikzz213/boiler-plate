@@ -1,6 +1,6 @@
 <template>
   <v-container class="pb-16">
-    <PageHeader title="Measures" />
+    <PageHeader title="Weightages" />
     <v-row class="my-5">
       <div class="v-col-12">
         <v-card class="rounded-lg">
@@ -12,7 +12,7 @@
               class="rounded-xl elevation-2 mr-2"
               ><v-icon size="small" :icon="mdiPlus"></v-icon
             ></v-btn>
-            <div class="text-primary text-capitalize">Measures</div>
+            <div class="text-primary text-capitalize">Weightages</div>
           </v-card-title>
           <v-table>
             <thead>
@@ -21,8 +21,8 @@
                 <th class="text-right text-capitalize">Actions</th>
               </tr>
             </thead>
-            <tbody v-if="measures && measures.length > 0">
-              <tr v-for="item in measures" :key="item.id">
+            <tbody v-if="weightages && weightages.length > 0">
+              <tr v-for="item in weightages" :key="item.id">
                 <td>{{ item.title }}</td>
                 <td>
                   <div class="d-flex align-center justify-end">
@@ -43,7 +43,7 @@
               </tr>
             </tbody>
           </v-table>
-          <v-card v-if="measures && measures.length == 0">
+          <v-card v-if="weightages && weightages.length == 0">
             <v-card-text class="text-center"> No records found </v-card-text>
           </v-card>
         </v-card>
@@ -58,27 +58,30 @@
         ></v-pagination>
       </div>
     </v-row>
-    <v-dialog v-model="measureForm.dialog" width="100%" max-width="480px" persistent>
+    <v-dialog v-model="weightageForm.dialog" width="100%" max-width="480px" persistent>
       <v-card class="rounded-lg">
         <v-row class="ma-0 pa-0">
           <div :class="`v-col-12 px-4`">
             <v-row>
-              <div class="v-col-12">{{ measureForm.title }} {{}}</div>
+              <div class="v-col-12">{{ weightageForm.title }} {{}}</div>
               <div class="v-col-12 py-0">
                 <v-text-field
-                  v-model="measureForm.data.title"
-                  label="Measure*"
+                  v-model="weightageForm.data.title"
+                  label="Weightage*"
                   variant="outlined"
                   density="compact"
                 ></v-text-field>
               </div>
               <div class="v-col-12 d-flex justify-end">
-                <v-btn color="primary" variant="text" @click="measureForm.dialog = false"
+                <v-btn
+                  color="primary"
+                  variant="text"
+                  @click="weightageForm.dialog = false"
                   >Cancel</v-btn
                 >
                 <v-btn
                   color="primary"
-                  :loading="measureForm.loading"
+                  :loading="weightageForm.loading"
                   class="ml-2 px-8"
                   @click="save"
                   >save</v-btn
@@ -107,9 +110,9 @@ const router = useRouter();
 const route = useRoute();
 const sbOptions = ref({});
 
-// measures
-const measures = ref([]);
-const measureForm = ref({
+// weightages
+const weightages = ref([]);
+const weightageForm = ref({
   title: "",
   data: {},
   loading: false,
@@ -120,28 +123,28 @@ const totalPageCount = ref(0);
 const currentPage = ref(route.params ? route.params.page : 1);
 const getData = async (page) => {
   await clientApi
-    .get("/api/hr/measures?page=" + page)
+    .get("/api/hr/weightages?page=" + page)
     .then((res) => {
       totalPageCount.value = res.data.last_page;
       currentPage.value = res.data.current_page;
-      measures.value = res.data.data;
+      weightages.value = res.data.data;
     })
     .catch((err) => {
-      console.log("measures", err);
+      console.log("weightages", err);
     });
 };
 const save = async () => {
   let data = {
-    id: measureForm.value.action == "edit" ? measureForm.value.data.id : null,
-    title: measureForm.value.data.title,
+    id: weightageForm.value.action == "edit" ? weightageForm.value.data.id : null,
+    title: weightageForm.value.data.title,
   };
-  measureForm.value.loading = true;
+  weightageForm.value.loading = true;
   await clientApi
-    .post("/api/hr/measure/save", data)
+    .post("/api/hr/weightage/save", data)
     .then((res) => {
       getData(currentPage.value).then(() => {
-        measureForm.value.loading = false;
-        measureForm.value.dialog = false;
+        weightageForm.value.loading = false;
+        weightageForm.value.dialog = false;
         sbOptions.value = {
           status: true,
           type: "success",
@@ -150,20 +153,20 @@ const save = async () => {
       });
     })
     .catch((err) => {
-      measureForm.value.loading = false;
-      console.log("measures", err);
+      weightageForm.value.loading = false;
+      console.log("weightages", err);
       sbOptions.value = {
         status: true,
         type: "error",
-        text: "Error while saving measure",
+        text: "Error while saving weightage",
       };
     });
 };
 const add = () => {
-  measureForm.value = {
-    ...measureForm.value,
+  weightageForm.value = {
+    ...weightageForm.value,
     ...{
-      title: "Add Measure",
+      title: "Add Weightage",
       data: {},
       dialog: true,
       action: "add",
@@ -171,8 +174,8 @@ const add = () => {
   };
 };
 const edit = (item) => {
-  measureForm.value = {
-    ...measureForm.value,
+  weightageForm.value = {
+    ...weightageForm.value,
     ...{
       title: "Edit " + item.title,
       data: Object.assign({}, item),
@@ -185,7 +188,7 @@ watch(currentPage, (newValue, oldValue) => {
   if (newValue != oldValue) {
     router
       .push({
-        name: "PaginatedMeasures",
+        name: "PaginatedWeightages",
         params: {
           page: currentPage.value,
         },
@@ -213,7 +216,7 @@ const remove = (item) => {
 };
 const confirmRemove = async () => {
   await clientApi
-    .post("/api/hr/measure/remove/" + toRemove.value.id)
+    .post("/api/hr/weightage/remove/" + toRemove.value.id)
     .then((res) => {
       getData(currentPage.value).then(() => {
         sbOptions.value = {

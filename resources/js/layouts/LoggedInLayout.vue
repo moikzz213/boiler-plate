@@ -330,7 +330,7 @@ const sideNavigation = ref([
       {
         title: "Weightage",
         icon: mdiPercent,
-        path: "/hr/weightage",
+        path: "/hr/weightages/page/1",
       },
     ],
   },

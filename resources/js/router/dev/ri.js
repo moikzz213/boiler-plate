@@ -41,15 +41,25 @@ export const ri = [
             title: "Measures",
         },
     },
+    // {
+    //     path: "/hr/weightages",
+    //     component: () => import("../../pages/hr/weightage/Weightages.vue"),
+    //     // component: Dashboard,
+    //     name: "Weightages",
+    //     meta: {
+    //         requiresAuth: true,
+    //         role: ["app_admin", "hr_admin"],
+    //         title: "Weightage",
+    //     },
+    // },
     {
-        path: "/hr/weightage",
-        component: () => import("../../pages/hr/weightage/Weightage.vue"),
-        // component: Dashboard,
-        name: "Weightage",
+        path: "/hr/weightages/page/:page",
+        component: () => import("../../pages/hr/weightage/Weightages.vue"),
+        name: "PaginatedWeightages",
         meta: {
             requiresAuth: true,
-            role: ["app_admin", "hr_admin", "hrbp"],
-            title: "Weightage",
+            role: ["app_admin", "hr_admin"],
+            title: "Weightages",
         },
     },
 ];

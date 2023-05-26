@@ -152,6 +152,11 @@ const save = async () => {
     .catch((err) => {
       industryForm.value.loading = false;
       console.log("industries", err);
+      sbOptions.value = {
+        status: true,
+        type: "error",
+        text: "Error while saving weightage",
+      };
     });
 };
 const add = () => {

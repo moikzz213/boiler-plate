@@ -6,6 +6,7 @@ use App\Http\Controllers\MeasureController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\IndustryController;
+use App\Http\Controllers\WeightageController;
 use App\Http\Controllers\PerformanceSettingController;
 
 /*
@@ -28,4 +29,8 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
     Route::get('/measures', [MeasureController::class, 'getPaginatedMeasures'])->name('hr.measure.paginated');
     Route::post('/measure/save', [MeasureController::class, 'saveMeasure'])->name('hr.measure.save');
     Route::post('/measure/remove/{id}', [MeasureController::class, 'removeMeasure'])->name('hr.measure.remove');
+    // weightages
+    Route::get('/weightages', [WeightageController::class, 'getPaginatedWeightages'])->name('hr.weightage.paginated');
+    Route::post('/weightage/save', [WeightageController::class, 'saveWeightage'])->name('hr.weightage.save');
+    Route::post('/weightage/remove/{id}', [WeightageController::class, 'removeWeightage'])->name('hr.weightage.remove');
 });
