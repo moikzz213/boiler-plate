@@ -8,6 +8,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\IndustryController;
 use App\Http\Controllers\WeightageController;
 use App\Http\Controllers\PerformanceSettingController;
+use App\Http\Controllers\KeyPerformanceIndicatorMasterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +35,7 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
     Route::post('/weightage/save', [WeightageController::class, 'saveWeightage'])->name('hr.weightage.save');
     Route::post('/weightage/remove/{id}', [WeightageController::class, 'removeWeightage'])->name('hr.weightage.remove');
     // kpi master
-    Route::get('/kpis', [WeightageController::class, 'getPaginatedKps'])->name('hr.kpi.paginated');
-    Route::post('/kpi/save', [WeightageController::class, 'saveKpi'])->name('hr.kpi.save');
-    Route::post('/kpi/remove/{id}', [WeightageController::class, 'removeKpi'])->name('hr.kpi.remove');
+    Route::get('/kpis', [KeyPerformanceIndicatorMasterController::class, 'getPaginatedKpis'])->name('hr.kpi.paginated');
+    Route::post('/kpi/save', [KeyPerformanceIndicatorMasterController::class, 'saveKpi'])->name('hr.kpi.save');
+    Route::post('/kpi/remove/{id}', [KeyPerformanceIndicatorMasterController::class, 'removeKpi'])->name('hr.kpi.remove');
 });
