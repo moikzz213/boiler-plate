@@ -208,7 +208,7 @@
                 @click="kpiData.dialog = false"
                 >Cancel</v-btn
               >
-              <v-btn color="primary" class="ml-2" @click="submitReview">Submit</v-btn>
+              <v-btn v-if="props.submitButton" color="primary" class="ml-2" @click="submitReview">Submit</v-btn>
             </div>
           </v-row>
         </div>
@@ -224,6 +224,10 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  submitButton:{
+    type: Boolean,
+    default: true
+  }
 });
 
 // save kpi
@@ -275,6 +279,7 @@ const submitReview = () => {
 watch(
   () => props.kpiOptions,
   (newVal) => {
+    
     kpiData.value = Object.assign({}, newVal);
     selectedIndustry.value = newVal.action == "edit" ? newVal.data.industry : null;
     selectedKpi.value = newVal.action == "edit" ? newVal.data.kpi_id : null;

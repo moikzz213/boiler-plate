@@ -1,10 +1,9 @@
 <?php
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\PerformanceSettingController;
+use Illuminate\Support\Facades\Route; 
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\KeyPerformanceReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +16,7 @@ use App\Http\Controllers\PerformanceSettingController;
 |
 */
 
+Route::middleware('authkey')->group(function () {
+    Route::get('/dashboard/my-kpi/{year}', [ReviewController::class, 'KeyPerformance'])->name('dashboard.kpi');
+    
+});

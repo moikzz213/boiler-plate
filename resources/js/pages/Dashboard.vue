@@ -11,7 +11,7 @@
         </v-card>
       </div>
     </v-row>
-    <KpiContent :selected-employee="authStore.authProfile" />
+    <KpiContent :selected-employee="authStore.authProfile" :submit-button="false" />
   </v-container>
 </template>
 
@@ -30,4 +30,5 @@ const KpiProgressProbation = defineAsyncComponent(() =>
 
 // authenticated user object
 const authStore = useAuthStore();
+console.log(authStore);
 </script>
