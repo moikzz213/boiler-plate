@@ -33,4 +33,8 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
     Route::get('/weightages', [WeightageController::class, 'getPaginatedWeightages'])->name('hr.weightage.paginated');
     Route::post('/weightage/save', [WeightageController::class, 'saveWeightage'])->name('hr.weightage.save');
     Route::post('/weightage/remove/{id}', [WeightageController::class, 'removeWeightage'])->name('hr.weightage.remove');
+    // kpi master
+    Route::get('/kpis', [WeightageController::class, 'getPaginatedKps'])->name('hr.kpi.paginated');
+    Route::post('/kpi/save', [WeightageController::class, 'saveKpi'])->name('hr.kpi.save');
+    Route::post('/kpi/remove/{id}', [WeightageController::class, 'removeKpi'])->name('hr.kpi.remove');
 });

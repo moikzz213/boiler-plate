@@ -4,10 +4,7 @@
       <VueDatePicker v-model="year" year-picker class="pms-date-picker" />
     </div>
     <div class="v-col-12 v-col-md-2">
-      <v-btn
-        @click="printKPI"
-        color="white"
-        class="text-capitalize"
+      <v-btn @click="printKPI" color="white" class="text-capitalize"
         >Print KPI <v-icon :icon="mdiPrinter" class="ml-3"> </v-icon
       ></v-btn>
     </div>
