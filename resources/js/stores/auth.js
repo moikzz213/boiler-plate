@@ -10,11 +10,13 @@ export const useAuthStore = defineStore("authClient", {
         token: null,
         role: [], // superadmin, app_admin, normal, hr_admin, hrbp, manager
         is_logged_in: false,
+        globalKeyStatus: null
     }),
     getters: {
         authProfile: (state) => state.profile,
         authToken: (state) => state.token,
         authRole: (state) => state.role,
+        authGlobalKeyStatus: (state) => state.globalKeyStatus,
         authIsLoggedIn: (state) => state.is_logged_in,
     },
     actions: {
@@ -24,7 +26,7 @@ export const useAuthStore = defineStore("authClient", {
 
             // set token
             this.token = res.client.key;
-
+            this.globalKeyStatus = res.globalKeyStatus;
             // set role
             this.role = [];
             this.role.push(res.profile.role);

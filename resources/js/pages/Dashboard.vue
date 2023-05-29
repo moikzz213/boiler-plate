@@ -5,13 +5,12 @@
         <div class="text-h6 mb-3">My KPI</div>
         <v-card max-width="1200">
           <v-card-text>
-            <KpiProgress :selected-employee="selectedProfileKpi" v-if="authStore.authProfile && authStore.authProfile.is_regular == true" />
-            <KpiProgressProbation :selected-employee="selectedProfileKpi" v-else />
+            <KpiProgress :selected-employee="authStore.authProfile" :global-keystatus="authStore.authGlobalKeyStatus"/> 
           </v-card-text>
         </v-card>
       </div>
     </v-row>
-    <KpiContent :selected-employee="selectedProfileKpi" @yearchange="selectedYearResponse" :submit-button="false" />
+    <KpiContent :selected-employee="selectedProfileKpi"  @yearchange="selectedYearResponse" :submit-button="false" />
   </v-container>
 </template>
 
@@ -23,15 +22,12 @@ import { clientApi } from "@/services/clientApi";
 // dynamic components
 const KpiProgress = defineAsyncComponent(() =>
   import("../components/kpi/KpiProgress.vue")
-);
-const KpiProgressProbation = defineAsyncComponent(() =>
-  import("../components/kpi/KpiProgressProbation.vue")
-);
+); 
 
 // authenticated user object
 const authStore = useAuthStore();
 const selectedProfileKpi = ref(authStore.authProfile);
-
+ 
 const selectedYearResponse = (v) => {
   getKPI(v)
 }
@@ -52,8 +48,6 @@ const getKPI = async (year) => {
           }
         }
       }
-
-     
     })
     .catch((err) => {
 

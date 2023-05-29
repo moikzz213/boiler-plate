@@ -13,6 +13,12 @@ class IndustryController extends Controller
         return response()->json($industries, 200);
     }
 
+    public function getNonPaginatedIndustries()
+    {
+        $industries = Industry::get();
+        return response()->json($industries, 200);
+    }
+
     public function saveIndustry(Request $request)
     {
         if($request['id']){

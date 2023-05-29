@@ -21,3 +21,4 @@ use App\Http\Controllers\PerformanceSettingController;
 |
 */
 
+Route::get('/print/kpi/{year}/{ecode}', [PageController::class, 'home'])->name('hr.settings.pms.new');

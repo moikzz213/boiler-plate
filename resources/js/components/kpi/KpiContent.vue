@@ -4,7 +4,7 @@
       <VueDatePicker v-model="year" year-picker class="pms-date-picker" />
     </div>
     <div class="v-col-12 v-col-md-2">
-      <v-btn @click="printKPI" color="white" :loading="loadingLogin" class="text-capitalize">Print KPI <v-icon
+      <v-btn v-if="viewingEmployee.reviews && viewingEmployee.reviews.length > 0" @click="printKPI" color="white" :loading="loadingLogin" class="text-capitalize">Print KPI <v-icon
           :icon="mdiPrinter" class="ml-3"> </v-icon></v-btn>
     </div>
     <div class="v-col-12">
@@ -18,7 +18,9 @@
           } d-flex align-center justify-center px-3 text-caption text-center pms-tab`">
           Employee Capability Development {{ "(" + ecdArray.length + ")" }}
         </v-card>
-        <div class="ml-auto text-h6">Rate: 4</div>
+        
+        <!-- Final Rating here -->
+        <div class="ml-auto text-h6" v-if="viewingEmployee.reviews && viewingEmployee.reviews.length > 0 && viewingEmployee.reviews[0].state == 'yearend' && viewingEmployee.reviews[0].status =='submitted'">Rate: Coming Soon</div>
       </div>
       <v-card flat>
         <v-card-title class="px-5 py-5 d-flex align-center">
@@ -150,7 +152,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, defineEmits } from "vue";
+import { ref, computed, watch } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRoute } from "vue-router";
 import { mdiPrinter, mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
@@ -173,7 +175,7 @@ const props = defineProps({
 });
 
 const viewingEmployee = ref(props.selectedEmployee);
-
+ console.log(viewingEmployee.value);
 const kpiArray = computed(() => {
   if (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0) return [];
   return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'kpi'); 
@@ -314,6 +316,7 @@ const reviewKPI = async (item, type = "kpi") => {
       },
     };
   }
+  console.log('kpiOptions.value',kpiOptions.value);
 };
 
 // remove kpi

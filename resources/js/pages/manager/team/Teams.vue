@@ -67,10 +67,10 @@
           <v-card-text>
             <v-row>
               <div class="v-col-12 v-col-md-3">
-                <EmployeeCard />
+                <EmployeeCard :profile="user"/>
               </div>
               <div class="v-col-12 v-col-md-8">
-                <KpiProgress :density="'compact'" />
+                <KpiProgress :density="'compact'" :global-keystatus="authStore.authGlobalKeyStatus" :selected-employee="user"/>
               </div>
               <div class="v-col-12 v-col-md-1 d-flex justify-end align-center">
                 <div>
@@ -124,7 +124,7 @@ const openPage = (pathName, openParams = null) => {
 
 // authenticated user object
 const authStore = useAuthStore();
-
+ 
 // filter employee
 const employeeTypeList = ref(["Regular", "Probation"]);
 const selectedEmployeeType = ref("Regular");

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route; 
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\KeyPerformanceReviewController;
+use App\Http\Controllers\IndustryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,5 +19,5 @@ use App\Http\Controllers\KeyPerformanceReviewController;
 
 Route::middleware('authkey')->group(function () {
     Route::get('/dashboard/my-kpi/{year}', [ReviewController::class, 'KeyPerformance'])->name('dashboard.kpi');
-    
+    Route::get('/fetch/industries/non-paginate', [IndustryController::class, 'getNonPaginatedIndustries'])->name('fetch.industries.non-paginate');
 });

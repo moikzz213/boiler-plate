@@ -35,18 +35,17 @@ const props = defineProps({
 });
 
 const profileTest = ref({
-  display_name: "Romel Indemne",
-  designation: "Web Developer",
-  ecode: "100264",
-  status: "open",
+  display_name: "Steve Ayala",
+  designation: "Sr. Full Stack Software Developer",
+  ecode: "100194",
+  status: "locked",
 });
 if (props.profile !== null) {
   profileTest.value = props.profile;
 }
 watch(
   () => props.profile,
-  (newVal) => {
-    console.log("newVal", newVal);
+  (newVal) => { 
     profileTest.value = newVal;
   }
 );

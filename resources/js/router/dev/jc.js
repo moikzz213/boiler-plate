@@ -1,13 +1,13 @@
 export const jc = [
-    // {
-    //     path: "/hr/indutries",
-    //     component: () => import("../../pages/hr/industries/Industries.vue"),
-    //     // component: Dashboard,
-    //     name: "Industries",
-    //     meta: {
-    //         requiresAuth: true,
-    //         role: ["app_admin", "hr_admin", "hrbp"],
-    //         title: "Industries",
-    //     },
-    // },
+    {
+        path: "/print/kpi/:year/:ecode",
+        component: () => import("../../pages/Print.vue"),
+        
+        name: "print",
+        meta: {
+            requiresAuth: true,
+            role: ["app_admin", "hr_admin", "hrbp","normal", "manager"],
+            title: "Key Performance",
+        },
+    },
 ];
