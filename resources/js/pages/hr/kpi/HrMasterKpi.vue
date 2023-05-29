@@ -102,7 +102,9 @@ import PageHeader from "@/components/PageHeader.vue";
 import { clientApi } from "@/services/clientApi";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import SnackBar from "@/components/SnackBar.vue";
+import { useAuthStore } from "@/stores/auth";
 
+const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 const sbOptions = ref({});
@@ -119,7 +121,7 @@ const kpiForm = ref({
 const totalPageCount = ref(0);
 const currentPage = ref(route.params ? route.params.page : 1);
 const getData = async (page) => {
-  await clientApi
+  await clientApi(authStore.authToken)
     .get("/api/hr/kpis?page=" + page)
     .then((res) => {
       totalPageCount.value = res.data.last_page;
@@ -136,7 +138,7 @@ const save = async () => {
     title: kpiForm.value.data.title,
   };
   kpiForm.value.loading = true;
-  await clientApi
+  await clientApi(authStore.authToken)
     .post("/api/hr/kpi/save", data)
     .then((res) => {
       getData(currentPage.value).then(() => {
@@ -212,7 +214,7 @@ const remove = (item) => {
   };
 };
 const confirmRemove = async () => {
-  await clientApi
+  await clientApi(authStore.authToken)
     .post("/api/hr/kpi/remove/" + toRemove.value.id)
     .then((res) => {
       getData(currentPage.value).then(() => {

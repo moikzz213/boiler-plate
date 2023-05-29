@@ -186,6 +186,9 @@
 import { ref } from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import { clientApi } from "@/services/clientApi";
+import { useAuthStore } from "@/stores/auth";
+
+const authStore = useAuthStore();
 
 // PMS
 const pms = ref({
@@ -198,7 +201,7 @@ const pms = ref({
 });
 const pmsList = ref([]);
 const getPmsSettings = async () => {
-  await clientApi
+  await clientApi(authStore.authToken)
     .get("/hr/employees/paginated")
     .then((res) => {
       pmsList.value = res.data.data;

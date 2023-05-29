@@ -67,7 +67,18 @@ const login = async () => {
   loadingLogin.value = true;
   authLogin()
     .then((res) => {
-      saveClientKey(res.data);
+      // redirect to previous path
+      //   console.log(router.options.history.state.back);
+      //   let previousPath = router.options.history.state.back
+      //     ? router.options.history.state.back
+      //     : null;
+      //   authStore.saveClientKey(res.data).then(() => {
+      //     router.push({ path: previousPath ? previousPath : "/dashboard" });
+      //   });
+      authStore.saveClientKey(res.data).then(() => {
+        loadingLogin.value = false;
+        router.push({ path: "/dashboard" });
+      });
     })
     .catch((err) => {
       loadingLogin.value = false;
@@ -82,22 +93,6 @@ const authLogin = async () => {
     password: credentials.value.password,
   };
   const response = await authApi.post("/api/sanctumlogin", data);
-  return response;
-};
-
-// save client key
-const saveClientKey = async (data) => {
-  let ckData = {
-    key: data.token,
-    user_ecode: data.user.ecode,
-  };
-  const response = await axios.post("/client/savekey", ckData);
-  if (response) {
-    authStore.setCredentials(response.data).then(() => {
-      loadingLogin.value = false;
-      router.push({ path: "/dashboard" });
-    });
-  }
   return response;
 };
 </script>
