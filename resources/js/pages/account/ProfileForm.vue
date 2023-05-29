@@ -66,10 +66,11 @@ import nationalities from "@/json/nationalities.json";
 import { useRoute } from "vue-router";
 import { clientApi } from "@/services/clientApi";
 import { VAutocomplete } from "vuetify/components/VAutocomplete";
+import { useAuthStore } from "@/stores/auth";
 
+const authStore = useAuthStore();
 const route = useRoute();
 const props = defineProps(["user"]);
-console.log();
 
 // profile
 const emit = defineEmits(["saved"]);
@@ -96,7 +97,7 @@ watch(
 );
 console.log("profileData.value.data", profileData.value.data);
 const getProfile = async () => {
-  await clientApi
+  await clientApi(authStore.authToken)
     .get("/api/account/profile/" + props.user.id)
     .then((res) => {
       profileData.value.data = Object.assign({}, res.data);
@@ -122,7 +123,7 @@ const saveProfile = async () => {
       id: props.user.id,
     },
   };
-  await clientApi
+  await clientApi(authStore.authToken)
     .post("/api/account/profile/save", profileData.value.data)
     .then((response) => {
       profileData.value.loading = false;
