@@ -51,12 +51,10 @@ export const useAuthStore = defineStore("authClient", {
             return response;
         },
         async logout() {
-            this.user = null;
+            this.profile = null;
+            this.role = [];
             this.token = null;
             this.is_logged_in = false;
-        },
-        async setUser(user) {
-            this.user = user;
         },
         async setToken(token) {
             this.token = token;
