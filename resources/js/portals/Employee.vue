@@ -11,17 +11,24 @@ import LoggedInLayout from "@/layouts/LoggedInLayout.vue";
 import { axiosWithBearer } from "@/services/sacntumApi";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
+import { useSettingStore } from "@/stores/settings";
 
 const authStore = useAuthStore();
+const settingStore = useSettingStore();
 const router = useRouter();
 
 const refreshAuth = async () => {
-  //   console.log("refreshAuth", authStore.authToken);
+  settingStore.setPageLoading(true);
   await axiosWithBearer(authStore.authToken)
     .get("/api/checkuser")
     .then((res) => {
       // update the user token in pinia
-      authStore.saveClientKey(res.data);
+      authStore.saveClientKey(res.data).then((saveResponse) => {
+        settingStore.setPageLoading(false);
+        settingStore.setIsFromLogin(false);
+        console.log("res.data", saveResponse);
+        // settingStore.setPmsSettings(res.data.pms_settings);
+      });
     })
     .catch((err) => {
       console.log("error", err.response.status);
@@ -31,8 +38,10 @@ const refreshAuth = async () => {
         localStorage.removeItem("authClient");
         router.push({ path: "/login" });
       }
+      settingStore.setPageLoading(false);
     });
 };
-// console.log("employee portal", router.options.history.state.back);
-refreshAuth();
+if (settingStore.isFromLogin == false) {
+  refreshAuth();
+}
 </script>
