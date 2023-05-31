@@ -7,15 +7,17 @@ export const useSettingStore = defineStore("setting", {
             msg: "",
         },
         is_from_login: false,
-        settings: null,
+        pms_settings: null,
     }),
     getters: {
         isFromLogin: (state) => state.is_from_login,
         isPageLoading: (state) => state.page_loading,
-        pmsSettings: (state) => state.settings,
+        pmsSettings: (state) => state.pms_settings,
     },
     actions: {
-        async setSettings(res) {},
+        async setPmsSettings(res) {
+            this.pms_settings = Object.assign({}, res);
+        },
         async setPageLoading(status, msg) {
             this.page_loading = {
                 ...this.page_loading,
