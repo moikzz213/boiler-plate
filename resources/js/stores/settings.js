@@ -11,19 +11,21 @@ export const useSettingStore = defineStore("setting", {
     }),
     getters: {
         isFromLogin: (state) => state.is_from_login,
-        isPageLoading: (state) => state.page_loading,
+        pageLoading: (state) => state.page_loading,
         pmsSettings: (state) => state.pms_settings,
     },
     actions: {
         async setPmsSettings(res) {
             this.pms_settings = Object.assign({}, res);
         },
-        async setPageLoading(status, msg) {
+        async setPageLoading(status, msg = null) {
+            let text = msg ? msg : "checking account";
+            console.log("setPageLoading", status, msg, text);
             this.page_loading = {
                 ...this.page_loading,
                 ...{
                     status: status,
-                    msg: msg ? msg : "checking account",
+                    msg: text,
                 },
             };
         },

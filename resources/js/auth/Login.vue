@@ -76,26 +76,37 @@ const login = async () => {
   loadingLogin.value = true;
   authLogin()
     .then((res) => {
-      // redirect to previous path
-      //   console.log(router.options.history.state.back);
-      //   let previousPath = router.options.history.state.back
-      //     ? router.options.history.state.back
-      //     : null;
-      //   authStore.saveClientKey(res.data).then(() => {
-      //     router.push({ path: previousPath ? previousPath : "/dashboard" });
-      //   });
       settingStore.setPageLoading(true, "logging in");
+
+      // redirect to previous path
+      // console.log(router.options.history.state.back);
+      let previousPath = router.options.history.state.back
+        ? router.options.history.state.back
+        : null;
       authStore
         .saveClientKey(res.data)
         .then(() => {
           loadingLogin.value = false;
-          router.push({ path: "/dashboard" });
-          settingStore.setPageLoading(false);
+          router.push({ path: previousPath ? previousPath : "/dashboard" });
+          settingStore.setPageLoading(false, "logging in");
         })
         .catch(() => {
           loadingLogin.value = false;
-          settingStore.setPageLoading(false);
+          settingStore.setPageLoading(false, "logging in");
         });
+
+      // redirect to /dashboard
+      //   authStore
+      //     .saveClientKey(res.data)
+      //     .then(() => {
+      //       loadingLogin.value = false;
+      //       router.push({ path: "/dashboard" });
+      //       settingStore.setPageLoading(false, "logging in");
+      //     })
+      //     .catch(() => {
+      //       loadingLogin.value = false;
+      //       settingStore.setPageLoading(false, "logging in");
+      //     });
     })
     .catch((err) => {
       loadingLogin.value = false;

@@ -388,12 +388,12 @@ const logout = async () => {
     .then(() => {
       settingStore.setPageLoading(true, "logging out");
       removeClientKey().then(() => {
-        settingStore.setPageLoading(false);
+        settingStore.setPageLoading(false, "logging out");
       });
     })
     .catch((err) => {
       loadingLogout.value = false;
-      settingStore.setPageLoading(false);
+      settingStore.setPageLoading(false, "logging out");
       console.log("error while trying to logout to server", err);
     });
 };
