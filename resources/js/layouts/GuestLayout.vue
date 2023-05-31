@@ -17,6 +17,11 @@
 
 <script setup>
 import { onMounted, onUnmounted, ref } from "vue";
+import { useSettingStore } from "@/stores/settings";
+
+const settingStore = useSettingStore();
+settingStore.setPageLoading(false);
+
 const baseUrl = ref(import.meta.env.VITE_APP_URL);
 const interval = ref(null);
 const bgCurrent = ref(1);
@@ -43,7 +48,6 @@ onMounted(() => {
     bgUpdate();
   }, 10000);
 });
-
 onUnmounted(() => clearInterval(interval.value));
 </script>
 

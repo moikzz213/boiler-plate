@@ -53,12 +53,22 @@ import { useAuthStore } from "@/stores/auth";
 import { authApi } from "@/services/sacntumApi";
 import GuestLayout from "../layouts/GuestLayout.vue";
 import WhiteLogo from "@/Components/logo/WhiteLogo.vue";
+import { useSettingStore } from "@/stores/settings";
 
-const appName = ref(import.meta.env.VITE_APP_NAME);
-const key = ref(import.meta.env.VITE_APP_KEY);
-// login
-const authStore = useAuthStore();
+// router
 const router = useRouter();
+
+const settingStore = useSettingStore();
+const appName = ref(import.meta.env.VITE_APP_NAME);
+
+// authStore
+const authStore = useAuthStore();
+if (authStore.authIsLoggedIn == true) {
+  router.push({ path: "/dashboard" });
+}
+
+// login
+const loadingLogin = ref(false);
 const credentials = ref({
   login: "103839",
   password: "103839",
@@ -67,7 +77,7 @@ const credentials = ref({
  
 const hasError = ref(false);
 const message = ref('');
-const loadingLogin = ref(false);
+ 
 const login = async () => {
   loadingLogin.value = true;
   authLogin()
@@ -80,10 +90,18 @@ const login = async () => {
       //   authStore.saveClientKey(res.data).then(() => {
       //     router.push({ path: previousPath ? previousPath : "/dashboard" });
       //   });
-      authStore.saveClientKey(res.data).then(() => {
-        loadingLogin.value = false;
-        router.push({ path: "/dashboard" });
-      });
+      settingStore.setPageLoading(true, "logging in");
+      authStore
+        .saveClientKey(res.data)
+        .then(() => {
+          loadingLogin.value = false;
+          router.push({ path: "/dashboard" });
+          settingStore.setPageLoading(false);
+        })
+        .catch(() => {
+          loadingLogin.value = false;
+          settingStore.setPageLoading(false);
+        });
     })
     .catch((err) => {
       loadingLogin.value = false;
@@ -108,4 +126,7 @@ const authLogin = async () => {
   }
   return response;
 };
+
+// set from login
+settingStore.setIsFromLogin(true);
 </script>

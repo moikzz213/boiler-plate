@@ -3,6 +3,7 @@
       <v-row class="my-5" v-if="kpiDataEncrypted">
         <div class="v-col-12"> 
           <div id="divToPrint" width="100%" >
+             
             <div class="text-h6 mb-1 header-title text-center" style="text-align: center; margin-bottom: 10px;">PERFORMANCE REVIEW {{ year }}</div>
             <div class="mb-5 text-center" style="text-align: center; margin-bottom: 15px;font-size:12px;text-transform: uppercase;">
               {{ printState(kpiDataEncrypted.reviews[0].type) }} - {{ printState(kpiDataEncrypted.reviews[0].state) }} - {{ printState(kpiDataEncrypted.reviews[0].status) }}</div>
@@ -118,7 +119,7 @@
                   </tr>
               </thead>
             </table>
-        
+         
           </div> 
           <v-btn size="small" color="primary" class="btn btn-primary noprint mt-5" @click="printDocument()">View as PDF</v-btn>
         </div>
@@ -132,10 +133,11 @@
   
 <script setup>
 import {  ref, computed,onMounted } from "vue"; 
-//import { clientApi } from "@/services/clientApi";
+
+import pdfFonts from "pdfmake/build/vfs_fonts.js";
 import pdfMake from 'pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
 import htmlToPdfmake from 'html-to-pdfmake'; 
+
 import { useRoute } from "vue-router";
 
 const route = useRoute(); 
@@ -155,7 +157,7 @@ const ecdArray = computed(() => {
   if (!kpiDataEncrypted.value.reviews || kpiDataEncrypted.value.reviews.length == 0) return [];
     return kpiDataEncrypted.value.reviews[0].key_review.filter((kpi) => kpi.type == 'ecd');  
 });
- 
+
 const printState = (v) => {
   switch(v) {
     case 'setting':
@@ -180,21 +182,23 @@ const printState = (v) => {
    const pdfTable = document.getElementById('divToPrint');
     //html to pdf format
     var html = htmlToPdfmake(pdfTable.innerHTML,{tableAutoSize:true});
-  
+    
     const documentDefinition = { content: html };
-    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+    pdfMake.vfs = pdfFonts;
     pdfMake.createPdf(documentDefinition).open();
      
   }
 
 onMounted(() => {
-  
-  if(is_print.value == 1){
-     window.print();
-  }else{
-     printDocument();
-  } 
- 
+  setTimeout(() => {
+    
+    if(is_print.value == 1){
+      window.print();
+    }else{
+      printDocument();
+    } 
+  }, 2000);
+    
 });
   
 </script>
