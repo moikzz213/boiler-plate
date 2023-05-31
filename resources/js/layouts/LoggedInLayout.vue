@@ -253,13 +253,15 @@ import {
   mdiFormatListBulleted,
   mdiDomain,
   mdiPercent,
-  mdiRuler
+  mdiRuler,
 } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
 import { printInitials } from "@/composables/printInitials";
 import { useRouter, useRoute } from "vue-router";
 import { authApi } from "@/services/sacntumApi";
+import { useSettingStore } from "@/stores/settings";
 
+const settingStore = useSettingStore();
 const appName = ref(import.meta.env.VITE_APP_NAME);
 // const appName = "Ghassan Aboud Group";
 const logo = ref(import.meta.env.VITE_APP_URL + "/assets/images/fav.png");
@@ -380,10 +382,14 @@ const logout = async () => {
   loadingLogout.value = true;
   authlogout()
     .then(() => {
-      removeClientKey();
+      settingStore.setPageLoading(true, "logging out");
+      removeClientKey().then(() => {
+        settingStore.setPageLoading(false);
+      });
     })
     .catch((err) => {
       loadingLogout.value = false;
+      settingStore.setPageLoading(false);
       console.log("error while trying to logout to server", err);
     });
 };
@@ -402,14 +408,13 @@ const removeClientKey = async () => {
   let data = {
     key: authStore.token,
   };
-  const response = await axios.post("/client/removekey", data);
-  if (response) {
+  await axios.post("/client/removekey", data).then(() => {
     authStore.logout().then(() => {
-      localStorage.removeItem("authClient");
       loadingLogout.value = false;
       router.push({ path: "/login" });
+      localStorage.removeItem("authClient");
     });
-  }
+  });
 };
 </script>
 

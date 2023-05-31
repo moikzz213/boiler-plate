@@ -1,21 +1,32 @@
 import { defineStore } from "pinia";
-import axios from "axios";
+// import axios from "axios";
 export const useSettingStore = defineStore("setting", {
     state: () => ({
-        is_loading: false,
+        page_loading: {
+            status: true,
+            msg: "",
+        },
+        is_from_login: false,
         settings: null,
     }),
     getters: {
-        isLoading: (state) => state.is_loading,
+        isFromLogin: (state) => state.is_from_login,
+        isPageLoading: (state) => state.page_loading,
         pmsSettings: (state) => state.settings,
     },
     actions: {
         async setSettings(res) {},
-        async setLoadingOn() {
-            this.is_loading = true;
+        async setPageLoading(status, msg) {
+            this.page_loading = {
+                ...this.page_loading,
+                ...{
+                    status: status,
+                    msg: msg ? msg : "checking account",
+                },
+            };
         },
-        async setLoadingOff() {
-            this.is_loading = false;
+        async setIsFromLogin(status) {
+            this.is_from_login = status;
         },
     },
 });

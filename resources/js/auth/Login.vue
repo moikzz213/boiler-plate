@@ -52,17 +52,26 @@ import { useAuthStore } from "@/stores/auth";
 import { authApi } from "@/services/sacntumApi";
 import GuestLayout from "../layouts/GuestLayout.vue";
 import WhiteLogo from "@/Components/logo/WhiteLogo.vue";
+import { useSettingStore } from "@/stores/settings";
 
+// router
+const router = useRouter();
+
+const settingStore = useSettingStore();
 const appName = ref(import.meta.env.VITE_APP_NAME);
 
-// login
+// authStore
 const authStore = useAuthStore();
-const router = useRouter();
+if (authStore.authIsLoggedIn == true) {
+  router.push({ path: "/dashboard" });
+}
+
+// login
+const loadingLogin = ref(false);
 const credentials = ref({
   login: "normal",
   password: "gag@112211",
 });
-const loadingLogin = ref(false);
 const login = async () => {
   loadingLogin.value = true;
   authLogin()
@@ -75,10 +84,18 @@ const login = async () => {
       //   authStore.saveClientKey(res.data).then(() => {
       //     router.push({ path: previousPath ? previousPath : "/dashboard" });
       //   });
-      authStore.saveClientKey(res.data).then(() => {
-        loadingLogin.value = false;
-        router.push({ path: "/dashboard" });
-      });
+      settingStore.setPageLoading(true, "logging in");
+      authStore
+        .saveClientKey(res.data)
+        .then(() => {
+          loadingLogin.value = false;
+          router.push({ path: "/dashboard" });
+          settingStore.setPageLoading(false);
+        })
+        .catch(() => {
+          loadingLogin.value = false;
+          settingStore.setPageLoading(false);
+        });
     })
     .catch((err) => {
       loadingLogin.value = false;
@@ -95,4 +112,7 @@ const authLogin = async () => {
   const response = await authApi.post("/api/sanctumlogin", data);
   return response;
 };
+
+// set from login
+settingStore.setIsFromLogin(true);
 </script>
