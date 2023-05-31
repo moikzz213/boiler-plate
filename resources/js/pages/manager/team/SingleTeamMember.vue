@@ -53,34 +53,24 @@
         </v-card>
       </div>
     </v-row>
-    <KpiContent :selected-employee="selectedEmployee" :is-manager="true" />
+    <KpiContent :selected-employee="selectedEmployee[0]" @yearchange="selectedYearResponse" :is-manager="true" />
   </v-container>
 </template>
 
 <script setup>
 import { ref, watch } from "vue";
-import { useRouter } from "vue-router";
+ 
 import { useAuthStore } from "@/stores/auth";
 import KpiContent from "@/components/kpi/KpiContent.vue";
-import EmployeeCard from "@/components/EmployeeCard.vue";
+import EmployeeCard from "@/components/EmployeeCard.vue"; 
+import { useRoute } from "vue-router";
+import { clientApi } from "@/services/clientApi";
 
-const router = useRouter();
-const openPage = (openPath, openParams = null) => {
-  let paramsValue = openParams ? Object.assign({}, openParams) : false;
-  router
-    .push({
-      path: openPath,
-      params: paramsValue,
-    })
-    .catch((err) => {});
-};
-
+const route = useRoute(); 
+const ecode = ref(route.params.id); 
+ 
 // authenticated user object
-const authStore = useAuthStore();
-
-// filter employee
-const employeeTypeList = ref(["Regular", "Probation"]);
-const selectedEmployeeType = ref("Regular");
+const authStore = useAuthStore(); 
 const filter = ref({
   data: {
     employee: "",
@@ -92,15 +82,46 @@ const runFilter = async () => {
 };
 
 // selected employee
-const selectedEmployee = ref(authStore.authProfile);
 const teamList = ref(authStore.authProfile.teams);
+const selectedEmployee = ref({});
+if(teamList.value && teamList.value.length > 0){
+  selectedEmployee.value = teamList.value.filter((o) => { return o.username == ecode.value })
+}
+
+
+console.log(selectedEmployee.value);
+//const selectedEmployee = ref(authStore.authProfile);
 const getEmployeeToView = () => {
   console.log("getEmployeeToView", selectedEmployee.value);
 };
-watch(
-  () => selectedEmployee.value,
-  (newVal) => {
-    console.log("newVal", newVal);
-  }
-);
+
+const submitForReview = () => {
+  console.log("submit review");
+};
+ 
+const selectedYearResponse = (v) => {
+  getKPI(v)
+}
+const getKPI = async (year) => {
+  await clientApi(authStore.authToken)
+    .get("/api/dashboard/my-kpi/"+selectedEmployee.value[0].id+'/' + year)
+    .then((res) => {
+      if (res.data.result == null) {
+        selectedProfileKpi.value = {
+          ...selectedProfileKpi.value, ...{
+            reviews: []
+          }
+        }
+      } else {
+        selectedProfileKpi.value = {
+          ...selectedProfileKpi.value, ...{
+            reviews: [res.data.result]
+          }
+        }
+      }
+    })
+    .catch((err) => {
+
+    });
+};
 </script>

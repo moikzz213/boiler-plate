@@ -16,14 +16,12 @@ class ClientKeyController extends Controller
         $clientKey = ClientKey::firstOrCreate([
             'key' => $request['key'],
             'ecode' => $request['user_ecode'] ? $request['user_ecode'] : null,
-        ]);
-
-       
+        ]); 
 
         // save employee profile
         // return profile with role for hrbp hr_admin
         $profile = Profile::where('ecode', $request['user_ecode'])
-        ->with('teams.reviews.keyReview', 'reviews.keyReview')->with('reviews',function ($q) {
+        ->with('teams.reviews.keyReview','teams.company', 'reviews.keyReview','company')->with('reviews',function ($q) {
             $q->where('year', Carbon::now()->format('Y'));
         })->first();
 

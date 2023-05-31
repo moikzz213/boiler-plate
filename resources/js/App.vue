@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Employee v-if="authStore && authStore.authIsLoggedIn == true" />
+    <Employee v-if="authStore.authIsLoggedIn == true" />
     <Public v-else />
   </div>
 </template>

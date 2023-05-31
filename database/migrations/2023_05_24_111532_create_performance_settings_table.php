@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('performance_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('year');
+            $table->unsignedSmallInteger('year');
             $table->string('state')->default('setting'); // setting/mid/year-end/first_review/final_review
             $table->string('status')->default('open'); // Open/Closed/Completed/Inprogress/Locked
-            $table->integer('employee_review_allowed_days');
+            $table->unsignedTinyInteger('employee_review_allowed_days');
 
             $table->date('annual_kpi_setting_start');
             $table->date('annual_kpi_setting_end');
@@ -25,11 +25,11 @@ return new class extends Migration
             $table->date('end_year_review_start');
             $table->date('end_year_review_end');
 
-            $table->date('probation_kpi_setting');
-            $table->date('probation_first_review_start');
-            $table->date('probation_first_review_end');
-            $table->date('probation_final_review_start');
-            $table->date('probation_final_review_end');
+            $table->unsignedTinyInteger('probation_kpi_setting');
+            $table->unsignedTinyInteger('probation_first_review_start');
+            $table->unsignedTinyInteger('probation_first_review_end');
+            $table->unsignedTinyInteger('probation_final_review_start');
+            $table->unsignedTinyInteger('probation_final_review_end');
 
             $table->foreignId('company_id')->constrained();
             $table->timestamps();

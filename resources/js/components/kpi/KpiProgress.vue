@@ -46,12 +46,12 @@ const states = computed(() => {
     {
       state: 'midyear',
       title: 'Mid Year Review & Revised Target Setting',
-      status: [{ status: 'open', title: 'Open' }, { status: 'inprogress', title: 'In Progress' }, { status: 'inreview', title: 'In Review' }, { status: 'submitted', title: 'Submitted' }]
+      status: [{ status: 'open', title: 'Open' }, { status: 'inprogress', title: 'In Progress' },  { status: 'submitted', title: 'Submitted' }]
     },
     {
       state: 'yearend',
       title: 'Year End Review and Submission',
-      status: [{ status: 'open', title: 'Open' }, { status: 'inprogress', title: 'In Progress' }, { status: 'inreview', title: 'In Review' }, { status: 'submitted', title: 'Submitted' }]
+      status: [{ status: 'open', title: 'Open' }, { status: 'inprogress', title: 'In Progress' },  { status: 'submitted', title: 'Submitted' }]
     }
   ];
   let probationStates = [
@@ -63,16 +63,16 @@ const states = computed(() => {
     {
       state: 'first_review',
       title: 'First Probation Review',
-      status: [{ status: 'open', title: 'Open' }, { status: 'inprogress', title: 'In Progress' }, { status: 'inreview', title: 'In Review' }, { status: 'submitted', title: 'Submitted' }]
+      status: [{ status: 'open', title: 'Open' }, { status: 'inprogress', title: 'In Progress' },   { status: 'submitted', title: 'Submitted' }]
     },
     {
       state: 'final_review',
       title: 'Final Probation Review',
-      status: [{ status: 'open', title: 'Open' }, { status: 'inprogress', title: 'In Progress' }, { status: 'inreview', title: 'In Review' }, { status: 'submitted', title: 'Submitted' }]
+      status: [{ status: 'open', title: 'Open' }, { status: 'inprogress', title: 'In Progress' },   { status: 'submitted', title: 'Submitted' }]
     }
   ]
   
-  return kpiSettings.value.is_regular ? regularStates : probationStates;
+  return kpiSettings.value && kpiSettings.value.is_regular ? regularStates : probationStates;
 })
 
 const printColor = (userState, index, statusIndex) => {

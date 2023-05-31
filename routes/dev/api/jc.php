@@ -18,6 +18,6 @@ use App\Http\Controllers\IndustryController;
 */
 
 Route::middleware('authkey')->group(function () {
-    Route::get('/dashboard/my-kpi/{year}', [ReviewController::class, 'KeyPerformance'])->name('dashboard.kpi');
+    Route::get('/dashboard/my-kpi/{id}/{year}', [ReviewController::class, 'KeyPerformance'])->name('dashboard.kpi');
     Route::get('/fetch/industries/non-paginate', [IndustryController::class, 'getNonPaginatedIndustries'])->name('fetch.industries.non-paginate');
 });

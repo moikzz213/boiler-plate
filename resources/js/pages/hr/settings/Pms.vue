@@ -93,6 +93,9 @@ import VueDatePicker from "@vuepic/vue-datepicker";
 import PageHeader from "@/components/PageHeader.vue";
 import { clientApi } from "@/services/clientApi";
 import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
+
+const authStore = useAuthStore();
 const router = useRouter();
 
 // PMS
@@ -106,7 +109,7 @@ const pms = ref({
 });
 const pmsList = ref([]);
 const getPmsSettings = async () => {
-  await clientApi
+  await clientApi(authStore.authToken)
     .get("/api/hr/settings/pms/paginated")
     .then((res) => {
       pmsList.value = res.data.data;

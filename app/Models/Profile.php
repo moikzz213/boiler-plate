@@ -4,16 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+ 
+use App\Models\Companies;
+use App\Models\Review; 
 class Profile extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $guarded = []; 
 
-    public function user()
+    public function company()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Companies::class);
     }
 
     public function teams()

@@ -9,7 +9,7 @@ class IndustryController extends Controller
 {
     public function getPaginatedIndustries()
     {
-        $industries = Industry::paginate(20);
+        $industries = Industry::paginate(10);
         return response()->json($industries, 200);
     }
 

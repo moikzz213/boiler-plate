@@ -145,7 +145,7 @@ const confirmOpenMember = () => {
   // update status using axios request
 
   // redirect to SingleTeamMember
-  openPage("SingleTeamMember", { id: selectedUser.value.id });
+  openPage("SingleTeamMember", { id: selectedUser.value.username });
 };
 const openMember = (user) => {
   selectedUser.value = Object.assign({}, user);

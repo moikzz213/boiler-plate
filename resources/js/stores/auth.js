@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-
+import axios from "axios";
 // You can name the return value of `defineStore()` anything you want,
 // but it's best to use the name of the store and surround it with `use`
 // and `Store` (e.g. `useUserStore`, `useCartStore`, `useProductStore`)
@@ -41,16 +41,28 @@ export const useAuthStore = defineStore("authClient", {
                 this.is_logged_in = true;
             }
         },
+        async saveClientKey(data) {
+            let ckData = {
+                key: data.token,
+                user_ecode: data.user.username,
+            };
+            const response = await axios.post("/client/savekey", ckData);
+            if (response) {
+                this.setCredentials(response.data);
+            }
+            return response;
+        },
         async logout() {
-            this.user = null;
+            this.profile = null;
+            this.role = [];
             this.token = null;
             this.is_logged_in = false;
         },
-        async setUser(user) {
-            this.user = user;
-        },
         async setToken(token) {
             this.token = token;
+        },
+        async setLoggedIn() {
+            this.is_logged_in = true;
         },
         async setProfile(profile) {
             this.profile = profile;

@@ -32,8 +32,8 @@ const selectedYearResponse = (v) => {
   getKPI(v)
 }
 const getKPI = async (year) => {
-  await clientApi
-    .get("/api/dashboard/my-kpi/" + year)
+  await clientApi(authStore.authToken)
+    .get("/api/dashboard/my-kpi/"+selectedProfileKpi.value.id+ "/" + year)
     .then((res) => {
       if (res.data.result == null) {
         selectedProfileKpi.value = {

@@ -72,9 +72,18 @@ const login = async () => {
   loadingLogin.value = true;
   authLogin()
     .then((res) => {
-      if(res){
-        saveClientKey(res.data);
-      }
+      // redirect to previous path
+      //   console.log(router.options.history.state.back);
+      //   let previousPath = router.options.history.state.back
+      //     ? router.options.history.state.back
+      //     : null;
+      //   authStore.saveClientKey(res.data).then(() => {
+      //     router.push({ path: previousPath ? previousPath : "/dashboard" });
+      //   });
+      authStore.saveClientKey(res.data).then(() => {
+        loadingLogin.value = false;
+        router.push({ path: "/dashboard" });
+      });
     })
     .catch((err) => {
       loadingLogin.value = false;
@@ -96,22 +105,6 @@ const authLogin = async () => {
     message.value = response.data.message;
     loadingLogin.value = false;
     return false;
-  }
-  return response;
-};
-
-// save client key
-const saveClientKey = async (data) => {
-  let ckData = {
-    key: data.token,
-    user_ecode: data.user.username,
-  };
-  const response = await axios.post("/client/savekey", ckData);
-  if (response) {
-    authStore.setCredentials(response.data).then(() => {
-      loadingLogin.value = false;
-      router.push({ path: "/dashboard" });
-    });
   }
   return response;
 };

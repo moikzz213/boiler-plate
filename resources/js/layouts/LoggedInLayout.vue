@@ -69,7 +69,6 @@
     </v-navigation-drawer>
     <v-app-bar
       v-if="profileHeaderList.includes(route.name)"
-      density=""
       height="100"
       color="black"
       elevation="0"
@@ -321,17 +320,17 @@ const sideNavigation = ref([
       {
         title: "Industries",
         icon: mdiDomain,
-        path: "/hr/industries",
+        path: "/hr/industries/page/1",
       },
       {
         title: "Measures",
         icon: mdiRuler,
-        path: "/hr/measures",
+        path: "/hr/measures/page/1",
       },
       {
         title: "Weightage",
         icon: mdiPercent,
-        path: "/hr/weightage",
+        path: "/hr/weightages/page/1",
       },
     ],
   },

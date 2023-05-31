@@ -7,9 +7,10 @@ use App\Models\Review;
 
 class ReviewController extends Controller
 {
-    public function KeyPerformance($year){
+    public function KeyPerformance($id, $year){
          
         $query = Review::where([
+            'profile_id' => $id,
             'year' => $year
         ])->with('keyReview')->first(); 
 

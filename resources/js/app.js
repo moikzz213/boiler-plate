@@ -36,10 +36,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import { routes } from "./router/routes";
 import { ri } from "./router/dev/ri";
 import { jc } from "./router/dev/jc";
-const router = createRouter({
-    // history: createWebHistory(process.env.BASE_URL),
-    // history: createWebHistory(import.meta.env.VITE_APP_URL),
-    // history: createWebHistory(import.meta.env.APP_URL),
+const router = createRouter({ 
     history: createWebHistory(),
     routes: [...routes, ...jc, ...ri],
 });

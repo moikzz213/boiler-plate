@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
             $table->string('status')->nullable()->default('active');; // active, inactive
-            $table->string('ecode')->nullable();
+            $table->string('ecode')->unique()->nullable();
             $table->string('username')->nullable();
             $table->string('superior_ecode')->nullable();
             $table->string('display_name')->nullable();

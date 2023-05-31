@@ -4,7 +4,7 @@
       <VueDatePicker v-model="year" year-picker class="pms-date-picker" />
     </div>
     <div class="v-col-12 v-col-md-2">
-      <v-btn v-if="viewingEmployee.reviews && viewingEmployee.reviews.length > 0" @click="printKPI" color="white" :loading="loadingLogin" class="text-capitalize">Print KPI <v-icon
+      <v-btn v-if="viewingEmployee && viewingEmployee.reviews && viewingEmployee.reviews.length > 0" @click="printKPI" color="white" class="text-capitalize">Print KPI <v-icon
           :icon="mdiPrinter" class="ml-3"> </v-icon></v-btn>
     </div>
     <div class="v-col-12">
@@ -20,7 +20,7 @@
         </v-card>
         
         <!-- Final Rating here -->
-        <div class="ml-auto text-h6" v-if="viewingEmployee.reviews && viewingEmployee.reviews.length > 0 && viewingEmployee.reviews[0].state == 'yearend' && viewingEmployee.reviews[0].status =='submitted'">Rate: Coming Soon</div>
+        <div class="ml-auto text-h6" v-if="viewingEmployee && viewingEmployee.reviews && viewingEmployee.reviews.length > 0 && viewingEmployee.reviews[0].state == 'yearend' && viewingEmployee.reviews[0].status =='submitted'">Rate: Coming Soon</div>
       </div>
       <v-card flat>
         <v-card-title class="px-5 py-5 d-flex align-center">
@@ -73,11 +73,11 @@
                       </div>
                       <div class="v-col-3">
                         <div class="text-grey text-caption">Measure</div>
-                        <div class="text-primary text-body-1">{{ kpi.measures }}</div>
+                        <div class="text-primary text-body-1">{{ kpi.measure }}</div>
                       </div>
                       <div class="v-col-3">
                         <div class="text-grey text-caption">{{ "KPI's Weightage(%)" }}</div>
-                        <div class="text-primary text-body-1">{{ kpi.weightage }}</div>
+                        <div class="text-primary text-body-1">{{ kpi.weightage }}%</div>
                       </div>
                     </v-row>
                   </v-card-text>
@@ -159,7 +159,8 @@ import { mdiPrinter, mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import KpiDialog from "@/components/kpi/KpiDialog.vue";
 import EcdDialog from "@/components/kpi/EcdDialog.vue";
-
+import { useRouter } from "vue-router";
+const router = useRouter();
 const kpiEmit = defineEmits(['yearchange'])
 
 const authStore = useAuthStore();
@@ -175,13 +176,13 @@ const props = defineProps({
 });
 
 const viewingEmployee = ref(props.selectedEmployee);
- console.log(viewingEmployee.value);
+ 
 const kpiArray = computed(() => {
-  if (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0) return [];
+  if (!viewingEmployee.value || (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0)) return [];
   return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'kpi'); 
 });
 const ecdArray = computed(() => {
-  if (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0) return [];
+  if (!viewingEmployee.value || (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0)) return [];
     return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'ecd');  
 });
 
@@ -205,13 +206,21 @@ const canManage = computed(() => {
 
 // kpi
 const year = ref(new Date().getFullYear());
- 
+ console.log('viewingEmployee.value',viewingEmployee.value);
 const printKPI = () => {
   // opens kpi slug in new window
-  console.log("printKPI route");
+  const routeData = router.resolve({
+    path: '/print/kpi/'+year.value+'/'+viewingEmployee.value.username, 
+    params: {
+      year: year.value
+    },
+    query: {print:1, kpi: btoa(JSON.stringify(viewingEmployee.value))}
+  });
+window.open(routeData.href, '_blank');
+ 
 };
 
-watch(year, async (newVal, oldVal) => {
+watch(year, async (newVal, oldVal) => { 
   kpiEmit('yearchange', newVal);
 });
 

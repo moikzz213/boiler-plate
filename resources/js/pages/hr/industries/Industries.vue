@@ -47,6 +47,15 @@
             <v-card-text class="text-center"> No records found </v-card-text>
           </v-card>
         </v-card>
+        <v-pagination
+          v-if="totalPageCount > 1"
+          v-model="currentPage"
+          class="my-4"
+          :length="totalPageCount"
+          variant="elevated"
+          active-color="primary"
+          density="comfortable"
+        ></v-pagination>
       </div>
     </v-row>
     <v-dialog v-model="industryForm.dialog" width="100%" max-width="480px" persistent>
@@ -86,13 +95,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
 import PageHeader from "@/components/PageHeader.vue";
 import { clientApi } from "@/services/clientApi";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import SnackBar from "@/components/SnackBar.vue";
+import { useAuthStore } from "@/stores/auth";
 
+const authStore = useAuthStore();
+const router = useRouter();
+const route = useRoute();
 const sbOptions = ref({});
 
 // Industries
@@ -104,10 +118,14 @@ const industryForm = ref({
   dialog: false,
   action: "add",
 });
-const getData = async () => {
-  await clientApi
-    .get("/api/hr/industries")
+const totalPageCount = ref(0);
+const currentPage = ref(route.params ? route.params.page : 1);
+const getData = async (page) => {
+  await clientApi(authStore.authToken)
+    .get("/api/hr/industries?page=" + page)
     .then((res) => {
+      totalPageCount.value = res.data.last_page;
+      currentPage.value = res.data.current_page;
       industries.value = res.data.data;
     })
     .catch((err) => {
@@ -120,22 +138,27 @@ const save = async () => {
     title: industryForm.value.data.title,
   };
   industryForm.value.loading = true;
-  await clientApi
+  await clientApi(authStore.authToken)
     .post("/api/hr/industry/save", data)
     .then((res) => {
-      getData().then(() => {
+      getData(currentPage.value).then(() => {
         industryForm.value.loading = false;
         industryForm.value.dialog = false;
         sbOptions.value = {
           status: true,
           type: "success",
-          text: "Default Message",
+          text: res.data.message,
         };
       });
     })
     .catch((err) => {
       industryForm.value.loading = false;
       console.log("industries", err);
+      sbOptions.value = {
+        status: true,
+        type: "error",
+        text: "Error while saving weightage",
+      };
     });
 };
 const add = () => {
@@ -160,8 +183,21 @@ const edit = (item) => {
     },
   };
 };
+watch(currentPage, (newValue, oldValue) => {
+  if (newValue != oldValue) {
+    router
+      .push({
+        name: "PaginatedIndustries",
+        params: {
+          page: currentPage.value,
+        },
+      })
+      .catch((err) => {});
+    getData(currentPage.value);
+  }
+});
 onMounted(() => {
-  getData();
+  getData(1);
 });
 
 // remove industry
@@ -178,10 +214,10 @@ const remove = (item) => {
   };
 };
 const confirmRemove = async () => {
-  await clientApi
+  await clientApi(authStore.authToken)
     .post("/api/hr/industry/remove/" + toRemove.value.id)
     .then((res) => {
-      getData().then(() => {
+      getData(currentPage.value).then(() => {
         sbOptions.value = {
           status: true,
           type: "success",
@@ -190,7 +226,6 @@ const confirmRemove = async () => {
       });
     })
     .catch((err) => {
-      console.log("industries", err);
       sbOptions.value = {
         status: true,
         type: "error",
