@@ -54,11 +54,11 @@
                 <EmployeeCard :profile="user"/>
               </div>
               <div class="v-col-12 v-col-md-8">
-                <KpiProgress :density="'compact'" :global-keystatus="authStore.authGlobalKeyStatus" :selected-employee="user"/>
+                <KpiProgress :density="'compact'" :selected-employee="user"/>
               </div>
               <div class="v-col-12 v-col-md-1 d-flex justify-end align-center"> 
                
-                <div v-if="authStore.authGlobalKeyStatus.state != 'yearend' || (user.reviews && user.reviews.length > 0 && user.reviews[0].type == 'probation' && user.reviews[0].state != 'final_review')">
+                <div v-if="settingStore.pmsSettings.state != 'yearend' || (user.reviews && user.reviews.length > 0 && user.reviews[0].type == 'probation' && user.reviews[0].state != 'final_review')">
                   <div>
                     
                     {{ ratingOrWeightage(user) }} / 100
@@ -110,6 +110,7 @@ import { useAuthStore } from "@/stores/auth";
 import KpiProgress from "@/components/kpi/KpiProgress.vue";
 import EmployeeCard from "@/components/EmployeeCard.vue";
 import { clientApi } from "@/services/clientApi";
+import { useSettingStore } from "@/stores/settings";
 const router = useRouter();
 const openPage = (pathName, openParams = null) => {
   let paramsValue = openParams ? Object.assign({}, openParams) : false;
@@ -123,6 +124,7 @@ const openPage = (pathName, openParams = null) => {
 
 // authenticated user object
 const authStore = useAuthStore();
+const settingStore = useSettingStore();
 
 const managerTeam = ref(authStore.authProfile.teams);
 const year = ref(new Date().getFullYear());
@@ -161,7 +163,7 @@ const confirmOpenMember = () => {
     { ecode: selectedUser.value.ecode, 
       manager_ecode: authStore.authProfile.ecode,
       is_regular: selectedUser.value.is_regular, 
-      setting: authStore.authGlobalKeyStatus, 
+      setting: settingStore.pmsSettings, 
       year: year.value,
       author: authStore.authProfile.display_name + " " + authStore.authProfile.ecode
     })
@@ -180,12 +182,12 @@ const openMember = (user) => {
   if(user.reviews && user.reviews.length > 0){
     openPage("SingleTeamMember", { id: user.ecode });
   }else{
-    if(authStore.authGlobalKeyStatus.status == 'open' && authStore.authGlobalKeyStatus.state == 'setting'){
+    if(settingStore.pmsSettings.status == 'open' && settingStore.pmsSettings.state == 'setting'){
       dialogOpenMember.value = true;
     }else{
       if(user.is_regular == 0){
           let date = new Date(user.doj);
-          date.setDate(date.getDate() + parseInt(authStore.authGlobalKeyStatus.probation_kpi_setting));
+          date.setDate(date.getDate() + parseInt(settingStore.pmsSettings.probation_kpi_setting));
            
           if(date >= currentDate.value){
             dialogOpenMember.value = true;

@@ -34,7 +34,7 @@
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">KPI's Target Year</div>
-                <div class="text-body-2">{{globalStatus.year}}</div>
+                <div class="text-body-2">{{settingStore.pmsSettings && settingStore.pmsSettings.year}}</div>
               </div>
               <div class="v-col-12 v-col-md-1 d-flex flex-column">
                 <div class="text-caption text-grey">Total KPI</div>
@@ -66,19 +66,21 @@ import KpiContent from "@/components/kpi/KpiContent.vue";
 import EmployeeCard from "@/components/EmployeeCard.vue"; 
 import { useRoute,useRouter } from "vue-router";
 import { clientApi } from "@/services/clientApi";
+import { useSettingStore } from "@/stores/settings";
 const router = useRouter();
 const route = useRoute(); 
 const ecode = ref(route.params.id); 
  
 // authenticated user object
 const authStore = useAuthStore(); 
+const settingStore = useSettingStore();
+
 const filter = ref({
   data: {
     employee: "",
     employee_type: "",
   },
 }); 
-const globalStatus = ref(authStore.globalKeyStatus);
 
 // selected employee
 const teamList = ref(authStore.authProfile.teams);
@@ -88,7 +90,7 @@ if(teamList.value && teamList.value.length > 0){
   selectedEmployeeArr.value = teamList.value.filter((o) => { return o.username == ecode.value })
   selEmployeeObj.value = selectedEmployeeArr.value[0];
 }
-console.log('globalStatus: SingleTeam',globalStatus.value);
+
 const changeEmployee = () => {
   router
     .push({

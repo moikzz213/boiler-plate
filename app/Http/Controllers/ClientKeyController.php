@@ -6,8 +6,7 @@ use App\Models\Profile;
 use App\Models\ClientKey;
 use App\Models\PerformanceSetting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use App\Models\PerformanceSetting;
+use Illuminate\Support\Carbon; 
 
 class ClientKeyController extends Controller
 {
@@ -30,7 +29,7 @@ class ClientKeyController extends Controller
             'company_id' => $profile->company_id,
             'year'      => Carbon::now()->format('Y')
         ])->first();
-        
+
         return response()->json([
             "message" => 'Key saved successfully',
             "client" => $clientKey,

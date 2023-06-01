@@ -18,7 +18,7 @@
 </template>
 <script setup>
 import { ref, computed, watch } from "vue";
-
+import { useSettingStore } from "@/stores/settings";
 const props = defineProps({
   selectedEmployee: {
     type: Object,
@@ -33,9 +33,8 @@ const props = defineProps({
     default: "",
   },
 });
+const settingStore = useSettingStore();
 
-const currentGlobalKPIStatus = ref(props.globalKeystatus);
- 
 const states = computed(() => {
   let regularStates = [
     {
@@ -102,8 +101,8 @@ const reviewSettings = computed(() => {
 
   if (kpiSettings.value == null || !kpiSettings.value.reviews || kpiSettings.value.reviews.length == 0) {
     return [{
-      state: currentGlobalKPIStatus.value.state,
-      status: currentGlobalKPIStatus.value.status,
+      state: settingStore.pms_settings.state,
+      status: settingStore.pms_settings.status,
       }
     ];
   };

@@ -81,19 +81,26 @@ const message = ref('');
 const login = async () => {
   loadingLogin.value = true;
   authLogin()
-    .then((res) => { 
+    .then((res) => {
       settingStore.setPageLoading(true, "logging in");
+
+      // redirect to previous path
+      // console.log(router.options.history.state.back);
+      let previousPath = router.options.history.state.back
+        ? router.options.history.state.back
+        : null;
       authStore
         .saveClientKey(res.data)
-        .then(() => {
+        .then((keyResponse) => {
           loadingLogin.value = false;
-          router.push({ path: "/dashboard" });
-          settingStore.setPageLoading(false);
+          settingStore.setPageLoading(false, "logging in");
+          settingStore.setPmsSettings(keyResponse.data.pms_settings);
+          router.push({ path: previousPath ? previousPath : "/dashboard" });
         })
         .catch(() => {
           loadingLogin.value = false;
-          settingStore.setPageLoading(false);
-        });
+          settingStore.setPageLoading(false, "logging in");
+        }); 
     })
     .catch((err) => {
       loadingLogin.value = false;

@@ -5,7 +5,7 @@
         <div class="text-h6 mb-3">My KPI</div>
         <v-card max-width="1200">
           <v-card-text>
-            <KpiProgress :selected-employee="authStore.authProfile" :global-keystatus="authStore.authGlobalKeyStatus"/> 
+            <KpiProgress :selected-employee="authStore.authProfile"/> 
           </v-card-text>
         </v-card>
       </div>
