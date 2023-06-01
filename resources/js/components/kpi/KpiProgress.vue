@@ -101,8 +101,8 @@ const reviewSettings = computed(() => {
 
   if (kpiSettings.value == null || !kpiSettings.value.reviews || kpiSettings.value.reviews.length == 0) {
     return [{
-      state: settingStore.pms_settings.state,
-      status: settingStore.pms_settings.status,
+      state: settingStore.pms_settings ? settingStore.pms_settings.state : null,
+      status: settingStore.pms_settings ? settingStore.pms_settings.status : null,
       }
     ];
   };
