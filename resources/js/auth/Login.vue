@@ -85,10 +85,11 @@ const login = async () => {
         : null;
       authStore
         .saveClientKey(res.data)
-        .then(() => {
+        .then((keyResponse) => {
           loadingLogin.value = false;
-          router.push({ path: previousPath ? previousPath : "/dashboard" });
           settingStore.setPageLoading(false, "logging in");
+          settingStore.setPmsSettings(keyResponse.data.pms_settings);
+          router.push({ path: previousPath ? previousPath : "/dashboard" });
         })
         .catch(() => {
           loadingLogin.value = false;

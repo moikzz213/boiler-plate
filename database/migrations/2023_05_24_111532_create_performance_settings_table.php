@@ -25,7 +25,7 @@ return new class extends Migration
             $table->date('end_year_review_start');
             $table->date('end_year_review_end');
 
-            $table->unsignedTinyInteger('probation_kpi_setting');
+            $table->unsignedTinyInteger('probation_kpi_setting'); // max allowed days
             $table->unsignedTinyInteger('probation_first_review_start');
             $table->unsignedTinyInteger('probation_first_review_end');
             $table->unsignedTinyInteger('probation_final_review_start');

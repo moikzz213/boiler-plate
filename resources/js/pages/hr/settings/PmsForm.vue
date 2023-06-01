@@ -3,17 +3,26 @@
     <v-row>
       <div class="v-col-12 v-col-md-6">
         <v-autocomplete
-          v-model="pms.data.company"
-          :items="companyList"
+          v-model="pms.data.company_id"
+          :items="companyStore.companies"
+          item-title="title"
+          item-value="id"
           variant="outlined"
           density="compact"
           class="bg-white"
-          label="Select Company"
+          :label="loadingCompany ? 'Loading...' : 'Select Company'"
           hide-details
+          :loading="loadingCompany"
+          @focus="selectCompany"
         >
           <template v-slot:selection="{ props, item }">
             <span v-bind="props">
-              {{ item?.raw?.substring(0, 20) + "..." }}
+              {{
+                item.raw.title && item.raw.title.length > 30
+                  ? item.raw.title.substring(0, 30) + "..."
+                  : item.raw.title
+              }}
+              <!-- {{ item?.raw?.title?.substring(0, 30) + "..." }} -->
             </span>
           </template>
         </v-autocomplete>
@@ -24,11 +33,12 @@
     </v-row>
     <v-row class="mt-6">
       <div class="v-col-12 d-flex align-center">
-        <div class="mr-3" style="font-size: 18px">Regular Employee</div>
+        <div class="mr-3 text-subtitle-1" style="min-width: 150px">Regular Employee</div>
+        <v-divider></v-divider>
       </div>
       <div class="v-col-12 py-0">
         <v-text-field
-          v-model="pms.data.review_allowed_days"
+          v-model="pms.data.employee_review_allowed_days"
           variant="outlined"
           density="compact"
           class="bg-white"
@@ -44,7 +54,7 @@
         <v-text-field
           type="date"
           label="Start Date (mm/dd/yyyy)"
-          :model-value="pms.data.annual_start_date"
+          v-model="pms.data.annual_kpi_setting_start"
           variant="outlined"
           density="compact"
           class="bg-white"
@@ -54,7 +64,7 @@
         <v-text-field
           type="date"
           label="End Date (mm/dd/yyyy)"
-          :model-value="pms.data.annual_end_date"
+          v-model="pms.data.annual_kpi_setting_end"
           variant="outlined"
           density="compact"
           class="bg-white"
@@ -67,7 +77,7 @@
         <v-text-field
           type="date"
           label="Start Date (mm/dd/yyyy)"
-          :model-value="pms.data.mid_year_start_date"
+          v-model="pms.data.mid_year_review_start"
           variant="outlined"
           density="compact"
           class="bg-white"
@@ -77,7 +87,7 @@
         <v-text-field
           type="date"
           label="End Date (mm/dd/yyyy)"
-          :model-value="pms.data.mid_year_end_date"
+          v-model="pms.data.mid_year_review_end"
           variant="outlined"
           density="compact"
           class="bg-white"
@@ -91,7 +101,7 @@
         <v-text-field
           type="date"
           label="Start Date (mm/dd/yyyy)"
-          :model-value="pms.data.end_year_start_date"
+          v-model="pms.data.end_year_review_start"
           variant="outlined"
           density="compact"
           class="bg-white"
@@ -101,7 +111,7 @@
         <v-text-field
           type="date"
           label="End Date (mm/dd/yyyy)"
-          :model-value="pms.data.end_year_end_date"
+          v-model="pms.data.end_year_review_end"
           variant="outlined"
           density="compact"
           class="bg-white"
@@ -110,11 +120,14 @@
     </v-row>
     <v-row class="mt-6">
       <div class="v-col-12 d-flex align-center">
-        <div class="mr-3" style="font-size: 18px">Probation</div>
+        <div class="mr-3 text-subtitle-1" style="min-width: 150px">
+          Probation Employee
+        </div>
+        <v-divider></v-divider>
       </div>
       <div class="v-col-12 py-0">
         <v-text-field
-          v-model="pms.data.probation_setting_max_allowed_days"
+          v-model="pms.data.probation_kpi_setting"
           variant="outlined"
           density="compact"
           class="bg-white"
@@ -128,7 +141,7 @@
       </div>
       <div class="v-col-12 v-col-md-6 py-0">
         <v-text-field
-          v-model="pms.data.probation_first_review_start_date"
+          v-model="pms.data.probation_first_review_start"
           variant="outlined"
           density="compact"
           class="bg-white"
@@ -139,7 +152,7 @@
       </div>
       <div class="v-col-12 v-col-md-6 py-0">
         <v-text-field
-          v-model="pms.data.probation_first_review_end_date"
+          v-model="pms.data.probation_first_review_end"
           variant="outlined"
           density="compact"
           class="bg-white"
@@ -153,7 +166,7 @@
       </div>
       <div class="v-col-12 v-col-md-6 py-0">
         <v-text-field
-          v-model="pms.data.probation_final_review_start_date"
+          v-model="pms.data.probation_final_review_start"
           variant="outlined"
           density="compact"
           class="bg-white"
@@ -164,7 +177,7 @@
       </div>
       <div class="v-col-12 v-col-md-6 py-0">
         <v-text-field
-          v-model="pms.data.probation_final_review_end_date"
+          v-model="pms.data.probation_final_review_end"
           variant="outlined"
           density="compact"
           class="bg-white"
@@ -175,20 +188,35 @@
       </div>
     </v-row>
     <div class="d-flex justify-end mt-5">
-      <v-btn size="x-large" color="primary" class="px-10" @click="saveSetting"
+      <v-btn
+        size="x-large"
+        color="primary"
+        :loading="pms.loading"
+        class="px-10"
+        @click="saveSetting"
         >save</v-btn
       >
     </div>
+    <SnackBar :options="sbOptions" />
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import VueDatePicker from "@vuepic/vue-datepicker";
+import { ref, watch } from "vue";
 import { clientApi } from "@/services/clientApi";
 import { useAuthStore } from "@/stores/auth";
+import { useCompanyStore } from "@/stores/company";
+import VueDatePicker from "@vuepic/vue-datepicker";
+import SnackBar from "@/components/SnackBar.vue";
 
+const sbOptions = ref({});
 const authStore = useAuthStore();
+const props = defineProps({
+  pms: {
+    type: Object,
+    default: {},
+  },
+});
 
 // PMS
 const pms = ref({
@@ -196,61 +224,82 @@ const pms = ref({
   dialog: true,
   data: {
     year: new Date().getFullYear(),
+    company_id: null,
+    employee_review_allowed_days: "",
+    probation_final_review_end: "",
+    probation_final_review_start: "",
+    probation_first_review_end: "",
+    probation_first_review_start: "",
+    probation_kpi_setting: "",
+    annual_kpi_setting_start: "",
+    annual_kpi_setting_end: "",
+    mid_year_review_start: "",
+    mid_year_review_end: "",
+    end_year_review_start: "",
+    end_year_review_end: "",
   },
   loading: false,
 });
-const pmsList = ref([]);
+watch(
+  () => props.pms,
+  (newVal) => {
+    selectCompany();
+    pms.value = {
+      ...pms.value,
+      ...{
+        data: newVal,
+      },
+    };
+  }
+);
+
 const getPmsSettings = async () => {
+  pms.value.loading = true;
   await clientApi(authStore.authToken)
     .get("/hr/employees/paginated")
     .then((res) => {
-      pmsList.value = res.data.data;
+      pms.value.loading = false;
     })
     .catch((err) => {
+      pms.value.loading = false;
       console.log("getEmployees", err);
+    });
+};
+const saveSetting = async () => {
+  pms.value.loading = true;
+  await clientApi(authStore.authToken)
+    .post("/api/hr/pms-settings/save", pms.value.data)
+    .then((res) => {
+      pms.value.loading = false;
+      sbOptions.value = {
+        status: true,
+        type: "success",
+        text: res.data.message,
+      };
+    })
+    .catch((err) => {
+      pms.value.loading = false;
+      if (err.response.status == 422) {
+        sbOptions.value = {
+          status: true,
+          type: "error",
+          text: err.response.data.message,
+        };
+      }
+      console.log("err", err);
     });
 };
 getPmsSettings();
 
-const addPms = () => {
-  pms.value = {
-    ...pms.value,
-    ...{
-      title: "Add PMS Setting",
-      data: {},
-      dialog: true,
-    },
-  };
-};
-const editPms = (item) => {
-  pms.value = {
-    ...pms.value,
-    ...{
-      title: "Edit PMS Setting",
-      data: Object.assign({}, item),
-      dialog: true,
-    },
-  };
-};
-const removePms = () => {
-  console.log("open remove kpi in a dialog");
-};
-const saveSetting = () => {
-  console.log("saveSetting");
-};
-
-// filter
-const filter = ref({
-  company: "Ghassan Aboud Group FZE",
-  year: new Date().getFullYear(),
-});
-const companyList = ref([
-  "Ghassan Aboud Group FZE",
-  "Grandiose Supermarket",
-  "Grandiose Catering",
-  "Gallega",
-]);
-const filterPms = () => {
-  console.log("filter", filter.value);
+// companies
+const companyStore = useCompanyStore();
+const loadingCompany = ref(false);
+const selectCompany = () => {
+  if (companyStore.companies.length == 0) {
+    loadingCompany.value = true;
+    companyStore.getCompanies(authStore.authToken).then(() => {
+      loadingCompany.value = false;
+    });
+  }
 };
 </script>
