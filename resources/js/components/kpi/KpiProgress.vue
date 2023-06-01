@@ -57,7 +57,7 @@ const states = computed(() => {
   let probationStates = [
     {
       state: 'setting',
-      title: 'KPI & Annual Target Setting',
+      title: 'KPI & Probation Target Setting',
       status: [{ status: 'open', title: 'Open' }, { status: 'inprogress', title: 'In Progress' }, { status: 'inreview', title: 'In Review' }, { status: 'submitted', title: 'Submitted' }]
     },
     {
@@ -99,6 +99,7 @@ const printColor = (userState, index, statusIndex) => {
 const kpiSettings = ref(props.selectedEmployee);
  
 const reviewSettings = computed(() => {
+
   if (kpiSettings.value == null || !kpiSettings.value.reviews || kpiSettings.value.reviews.length == 0) {
     return [{
       state: currentGlobalKPIStatus.value.state,

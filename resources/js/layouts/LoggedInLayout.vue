@@ -295,7 +295,7 @@ const sideNavigation = ref([
   {
     title: "Employees",
     icon: mdiAccountGroup,
-    roles: ["app_admin", "hr_admin"],
+    roles: ["app_admin", "hr_admin","hrbp"],
     path: "/hr/employees",
   },
   {

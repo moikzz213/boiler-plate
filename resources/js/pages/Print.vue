@@ -1,9 +1,10 @@
 <template>
     <v-container class="pb-16">
-      <v-row class="my-5" v-if="kpiDataEncrypted">
+      <v-row class="my-5" v-if="have_access && kpiDataEncrypted">
         <div class="v-col-12"> 
-          <div id="divToPrint" width="100%" >
-             
+          <v-btn size="small" color="primary" class="btn btn-primary noprint mr-1 mt-5" @click="() => printDocument(null,pdfcont)">Download PDF</v-btn>
+          <v-btn size="small" color="primary" class="btn btn-primary noprint ml-1 mt-5" @click="() => printDocument(1)">PRINT</v-btn>
+          <div id="divToPrint" ref="pdfcont" width="100%" > 
             <div class="text-h6 mb-1 header-title text-center" style="text-align: center; margin-bottom: 10px;">PERFORMANCE REVIEW {{ year }}</div>
             <div class="mb-5 text-center" style="text-align: center; margin-bottom: 15px;font-size:12px;text-transform: uppercase;">
               {{ printState(kpiDataEncrypted.reviews[0].type) }} - {{ printState(kpiDataEncrypted.reviews[0].state) }} - {{ printState(kpiDataEncrypted.reviews[0].status) }}</div>
@@ -57,12 +58,15 @@
                     <tr v-if="kpiDataEncrypted.reviews[0].state != 'setting'">
                       <td style="text-align:left; font-size:12px; padding: 0 10px; margin:2px 10px;" >
                         {{kpiDataEncrypted.reviews[0].type == 'regular' ? 'Mid Year' : 'First Review'}}
-                        <div  class="secondary-title" style="color:#a3a3a3;font-size:10px;font-weight:normal;">Revised Annual Target</div> 
-                        {{ item.revised_annual_target }}
+                        <div  class="secondary-title" style="color:#a3a3a3;font-size:10px;font-weight:normal;">
+                          {{kpiDataEncrypted.reviews[0].type == 'regular' ? 'Revised Annual Target' : 'Revised Final Target'}} 
+                        </div> 
+                        {{ item.revised_annual_target && item.revised_annual_target != 0 ? item.revised_annual_target : '&nbsp;' }}
                       </td>
                       
                       <td style="text-align:left; font-size:12px; padding: 0 10px; margin:2px 10px;" colspan="3">&nbsp;
-                          <div  class="secondary-title" style="color:#a3a3a3;font-size:10px;">Mid Year Achievement</div> 
+                          <div  class="secondary-title" style="color:#a3a3a3;font-size:10px;">
+                            {{kpiDataEncrypted.reviews[0].type == 'regular' ? 'Mid Year Achievement' : 'Achievement'}}</div> 
                         {{ item.achievement_midyear }}
                       </td>
                         
@@ -99,7 +103,7 @@
                   <!--  -->
                   <tr v-if="kpiDataEncrypted.reviews[0].state != 'setting'">
                     <td style="text-align:left; font-size:12px; padding: 5px 10px; margin:2px 10px;" colspan="2">
-                      MID YEAR 
+                      {{kpiDataEncrypted.reviews[0].type == 'regular' ? 'Mid Year' : 'First Review'}} 
                       <div style="display:flex;">
                         <div class="secondary-title" style="color:#a3a3a3;font-size:10px;font-weight:normal;margin-right:10px;">Achievement</div> 
                       {{ item.revised_annual_target }}
@@ -110,7 +114,7 @@
                   <!--  -->
                   <tr v-if="kpiDataEncrypted.reviews[0].state == 'yearend'">
                     <td style="text-align:left; font-size:12px; padding: 5px 10px; margin:2px 10px;" colspan="2">
-                      YEAR END 
+                      {{kpiDataEncrypted.reviews[0].type == 'regular' ? 'Year End' : 'Final Review'}} 
                       <div style="display:flex;">
                       <div  class="secondary-title" style="color:#a3a3a3;font-size:10px;font-weight:normal;margin-right:10px;">Achievement</div> 
                       {{ item.achievement_yearend }}
@@ -121,11 +125,12 @@
             </table>
          
           </div> 
-          <v-btn size="small" color="primary" class="btn btn-primary noprint mt-5" @click="printDocument()">View as PDF</v-btn>
+          <v-btn size="small" color="primary" class="btn btn-primary noprint mr-1 mt-5" @click="() => printDocument(null,pdfcont)">Download PDF</v-btn>
+          <v-btn size="small" color="primary" class="btn btn-primary noprint ml-1 mt-5" @click="() => printDocument(1)">PRINT</v-btn>
         </div>
       </v-row>  
           <div v-else class="mt-5 text-center">
-            <small>Invalid link provided.</small>
+            <small>Sorry but you dont have access to this KPI / Link is invalid.</small>
           </div>
       <!-- selectedProfileKpi -->
     </v-container>
@@ -133,22 +138,72 @@
   
 <script setup>
 import {  ref, computed,onMounted } from "vue"; 
-
-import pdfFonts from "pdfmake/build/vfs_fonts.js";
-import pdfMake from 'pdfmake';
-import htmlToPdfmake from 'html-to-pdfmake'; 
-
+import { useAuthStore } from "@/stores/auth";
+import html2pdf from "html2pdf.js"; 
 import { useRoute } from "vue-router";
+import { clientApi } from "@/services/clientApi";
+const doc = html2pdf();
+const pdfcont = ref(null);
 
+const authStore = useAuthStore();
 const route = useRoute(); 
 const year = ref(route.params.year); 
+const ecode = ref(route.params.ecode); 
 const is_print = ref(route.query.print); 
-const kpiDataEncrypted = ref(route.query.kpi);
+const kpiDataEncrypted = ref(null); 
 
-if(kpiDataEncrypted.value){
-  kpiDataEncrypted.value = JSON.parse(atob(kpiDataEncrypted.value));  
-} 
+const teamList = ref(authStore.authProfile.teams);
+const have_access = ref(false);
+const adminRoles = ref(['hr_admin','app_admin']);
+if(authStore.authProfile.ecode == ecode.value || adminRoles.value.includes(authStore.authProfile.role)){
+  have_access.value = true;
+}else if(teamList.value && teamList.value.length > 0){
+  let selected = teamList.value.filter((o) => { return o.username == ecode.value })
 
+  if(selected.length > 0){
+    have_access.value = true;
+  } 
+}
+
+const printDocument = (isPrint,container) => {
+  if(isPrint){
+      window.print();
+  }else{
+      doc.set({
+          margin: 0.3,
+          filename: "Performance-Review-"+year.value+"-"+ecode.value+".pdf",
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+        })
+        .from(container)
+        .save(); 
+  }
+}
+
+const fetchEmployeeKPIbyYear = async () => {
+  await clientApi(authStore.authToken)
+    .get("/api/print/employee-kpi/year/"+ecode.value+ "/" + year.value)
+    .then((res) => {
+      console.log(res.data.result);
+        kpiDataEncrypted.value = res.data.result;
+    })
+    .catch((err) => { 
+    });
+}; 
+
+onMounted(() => {
+  if(have_access.value){
+    fetchEmployeeKPIbyYear();
+
+    setTimeout(() => {
+      if(is_print.value == 1){
+        window.print();
+      }
+    }, 2000);
+  } 
+});
+  
 const kpiArray = computed(() => {
   if (!kpiDataEncrypted.value.reviews || kpiDataEncrypted.value.reviews.length == 0) return [];
   return kpiDataEncrypted.value.reviews[0].key_review.filter((kpi) => kpi.type == 'kpi'); 
@@ -161,62 +216,36 @@ const ecdArray = computed(() => {
 const printState = (v) => {
   switch(v) {
     case 'setting':
-      return 'Setting'; 
+      return 'Setting';
     case 'probation':
-      return 'Probation'; 
+      return 'Probation';
     case 'inreview':
-      return 'In-Review'; 
+      return 'In-Review';
     case 'submitted':
       return 'Submitted';
     case 'first_review':
-      return 'First Review'; 
+      return 'First Review';
     case 'final_review':
-      return 'Final Review'; 
+      return 'Final Review';
     default:
-      return 'In-Progress'; 
+      return 'In-Progress';
   }
 } 
-
-  const printDocument = () => {
-   //get table html
-   const pdfTable = document.getElementById('divToPrint');
-    //html to pdf format
-    var html = htmlToPdfmake(pdfTable.innerHTML,{tableAutoSize:true});
-    
-    const documentDefinition = { content: html };
-    pdfMake.vfs = pdfFonts;
-    pdfMake.createPdf(documentDefinition).open();
-     
-  }
-
-onMounted(() => {
-  setTimeout(() => {
-    
-    if(is_print.value == 1){
-      window.print();
-    }else{
-      printDocument();
-    } 
-  }, 2000);
-    
-});
-  
 </script>
-  
 <style>
-.v-navigation-drawer, header, .v-toolbar__content { display: none !important;}
-main, .v-main, .v-container, .v-container .v-row.my-5{ padding-top: 0px; padding-left:0px; padding-right:0; padding-bottom: 0; }
-.v-container .v-row.my-5{ margin: 0 !important;}
-.v-theme--mel{max-width: 100% !important;}
-.parent-tr{ background-color: #dbdbdb;}
-@media print{
-  .noprint { 
-    display:none !important;
-    visibility:hidden !important
+  .v-navigation-drawer, header, .v-toolbar__content { display: none !important; }
+  main, .v-main, .v-container, .v-container .v-row.my-5{ padding-top: 0px; padding-left:0px; padding-right:0; padding-bottom: 0; }
+  .v-container .v-row.my-5{ margin: 0 !important; }
+  .v-theme--mel{ max-width: 100% !important; }
+  .parent-tr{ background-color: #dbdbdb; }
+  @media print{
+    .noprint { 
+      display:none !important;
+      visibility:hidden !important
+    }
+    #divToPrint{ width:100% !important; max-width: 100%; }
+    td,th { font-size: 8px !important; margin: 0 30px; }
+    .secondary-title{ font-size: 8px !important; }
+    .header-title { margin-top: 0 !important; padding-top: 0 !important; margin-bottom: 10px !important; }
   }
-  #divToPrint{ width:100% !important; max-width: 100%;}
-  td,th { font-size: 8px !important; margin: 0 30px;}
-  .secondary-title{font-size: 8px !important; }
-  .header-title { margin-top: 0 !important; padding-top: 0 !important; margin-bottom: 10px !important;}
-}
 </style>

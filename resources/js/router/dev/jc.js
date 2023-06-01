@@ -4,7 +4,7 @@ export const jc = [
         component: () => import("../../pages/Print.vue"), 
         name: "print",
         meta: {
-            requiresAuth: false, 
+            requiresAuth: true, 
             title: "Performance Review",
         },
     },

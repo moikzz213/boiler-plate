@@ -1,22 +1,5 @@
 <template>
-  <v-container class="pb-16">
-    <!-- <v-row class="my-5">
-      <div class="v-col-12">
-        <div class="text-h6 mb-3">My KPI</div>
-        <v-card max-width="1200">
-          <v-card-text>
-            <KpiProgress />
-          </v-card-text>
-        </v-card>
-        <v-btn
-          size="x-large"
-          color="secondary"
-          class="mt-5"
-          @click="() => openPage('Dashboard')"
-          >Open My Own KPI</v-btn
-        >
-      </div>
-    </v-row> -->
+  <v-container class="pb-16"> 
     <v-row class="mt-5">
       <div class="v-col-12 pb-0">
         <div class="text-h6">
@@ -30,14 +13,15 @@
           density="compact"
           class="bg-white"
           hide-details
-          label="Input Employee"
+          clearable
+          label="Input Employee Code"
         >
         </v-text-field>
       </div>
       <div class="v-col-12 v-col-md-3">
         <v-select
-          v-model="selectedEmployeeType"
-          :items="employeeTypeList"
+          v-model="filter.data.employee_type"
+          :items="employeeTypeList" 
           variant="outlined"
           density="compact"
           class="bg-white"
@@ -47,7 +31,7 @@
         </v-select>
       </div>
       <div class="v-col-12 v-col-md-2">
-        <v-btn @click="runFilter" block color="white" class="text-capitalize"
+        <v-btn @click="runFilter" block color="primary" class="text-capitalize"
           >Filter</v-btn
         >
       </div>
@@ -56,9 +40,9 @@
       </div>
     </v-row>
     <v-row>
-      <div v-if="authStore.authProfile.teams.length > 0" class="v-col-12">
+      <div v-if="managerTeam.length > 0" class="v-col-12">
         <v-card
-          v-for="user in authStore.authProfile.teams"
+          v-for="user in managerTeam"
           :key="user.id"
           class="mb-3 elevation-0"
           @click="() => openMember(user)"
@@ -72,9 +56,13 @@
               <div class="v-col-12 v-col-md-8">
                 <KpiProgress :density="'compact'" :global-keystatus="authStore.authGlobalKeyStatus" :selected-employee="user"/>
               </div>
-              <div class="v-col-12 v-col-md-1 d-flex justify-end align-center">
-                <div>
-                  <div>50/100</div>
+              <div class="v-col-12 v-col-md-1 d-flex justify-end align-center"> 
+               
+                <div v-if="authStore.authGlobalKeyStatus.state != 'yearend' || (user.reviews && user.reviews.length > 0 && user.reviews[0].type == 'probation' && user.reviews[0].state != 'final_review')">
+                  <div>
+                    
+                    {{ ratingOrWeightage(user) }} / 100
+                  </div>
                   <div class="text-caption text-grey">Total KPI</div>
                 </div>
               </div>
@@ -101,16 +89,27 @@
         </div>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="noKPIEmployee" width="450">
+      <v-card class="rounded-lg">
+        <v-card-text>
+          Employee doesn't have a KPI review setup for this year.
+        </v-card-text>
+        <div class="pa-3 mt-3 d-flex justify-end">
+          <v-btn color="primary" variant="text" @click="noKPIEmployee = false"
+            >Close</v-btn > 
+        </div>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
-
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import KpiProgress from "@/components/kpi/KpiProgress.vue";
 import EmployeeCard from "@/components/EmployeeCard.vue";
-
+import { clientApi } from "@/services/clientApi";
 const router = useRouter();
 const openPage = (pathName, openParams = null) => {
   let paramsValue = openParams ? Object.assign({}, openParams) : false;
@@ -124,31 +123,97 @@ const openPage = (pathName, openParams = null) => {
 
 // authenticated user object
 const authStore = useAuthStore();
- 
+
+const managerTeam = ref(authStore.authProfile.teams);
+const year = ref(new Date().getFullYear());
+const currentDate = ref(new Date());
 // filter employee
-const employeeTypeList = ref(["Regular", "Probation"]);
-const selectedEmployeeType = ref("Regular");
+const employeeTypeList = ref(["All","Regular", "Probation"]);
+ 
 const filter = ref({
   data: {
     employee: "",
-    employee_type: "",
+    employee_type: "All",
   },
 });
 const runFilter = async () => {
   console.log("filter data in pinia store");
+  filterTeamMethod();
+  console.log('filter.value.data.ecode',filter.value.data.employee);
 };
 
+const ratingOrWeightage = (user) => {
+  let sum = 0 ;
+  if(user.reviews && user.reviews.length > 0 && user.reviews[0].key_review){   
+    user.reviews[0].key_review.map((o,i) =>{
+      sum += o.weightage;
+    });
+  }
+  return sum;
+};
 // open team member
 const selectedUser = ref({});
 const dialogOpenMember = ref(false);
+const noKPIEmployee = ref(false);
 const confirmOpenMember = () => {
-  // update status using axios request
+  clientApi(authStore.authToken)
+    .post('/api/create/employee-review/year', 
+    { ecode: selectedUser.value.ecode, 
+      manager_ecode: authStore.authProfile.ecode,
+      is_regular: selectedUser.value.is_regular, 
+      setting: authStore.authGlobalKeyStatus, 
+      year: year.value,
+      author: authStore.authProfile.display_name + " " + authStore.authProfile.ecode
+    })
+    .then((res) => { 
+      authStore.setProfile(res.data.result);
+    })
+    .catch((err) => {
+
+    });  
 
   // redirect to SingleTeamMember
-  openPage("SingleTeamMember", { id: selectedUser.value.username });
+  openPage("SingleTeamMember", { id: selectedUser.value.ecode });
 };
 const openMember = (user) => {
   selectedUser.value = Object.assign({}, user);
-  dialogOpenMember.value = true;
-};
+  if(user.reviews && user.reviews.length > 0){
+    openPage("SingleTeamMember", { id: user.ecode });
+  }else{
+    if(authStore.authGlobalKeyStatus.status == 'open' && authStore.authGlobalKeyStatus.state == 'setting'){
+      dialogOpenMember.value = true;
+    }else{
+      if(user.is_regular == 0){
+          let date = new Date(user.doj);
+          date.setDate(date.getDate() + parseInt(authStore.authGlobalKeyStatus.probation_kpi_setting));
+           
+          if(date >= currentDate.value){
+            dialogOpenMember.value = true;
+          }else{
+            noKPIEmployee.value = true;
+          }
+      }else{ 
+        noKPIEmployee.value = true;
+      }
+    }
+  } 
+}; 
+
+const filterTeamMethod = () => {
+  console.log(authStore.authProfile.teams);
+  let result = authStore.authProfile.teams.filter(function(el) {
+      if(filter.value.data.employee){ 
+        console.log(el.ecode + " = "+ filter.value.data.employee);
+          return el.ecode == filter.value.data.employee;
+      }else if(filter.value.data.employee_type == 'Probation'){
+          return el.is_regular == 0;
+      }else if(filter.value.data.employee_type  == 'Regular'){
+          return el.is_regular == 1;
+      }else{
+          return el;
+      }
+    }); 
+    managerTeam.value = result; 
+}
+
 </script>

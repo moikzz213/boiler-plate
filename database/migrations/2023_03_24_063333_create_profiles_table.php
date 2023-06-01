@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('department')->nullable();
             $table->string('designation')->nullable();
             $table->date('dob')->nullable();
+            $table->date('doj')->nullable();
             $table->string('nationality')->nullable();
             $table->string('role')->nullable(); // hr_admin, hrbp
             $table->boolean('is_regular')->nullable()->default(true);

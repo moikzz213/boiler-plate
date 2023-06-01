@@ -60,7 +60,7 @@ const router = useRouter();
 
 const settingStore = useSettingStore();
 const appName = ref(import.meta.env.VITE_APP_NAME);
-
+const key = ref(import.meta.env.VITE_APP_KEY);
 // authStore
 const authStore = useAuthStore();
 if (authStore.authIsLoggedIn == true) {

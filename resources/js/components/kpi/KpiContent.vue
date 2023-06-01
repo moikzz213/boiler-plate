@@ -176,7 +176,7 @@ const props = defineProps({
 });
 
 const viewingEmployee = ref(props.selectedEmployee);
- 
+
 const kpiArray = computed(() => {
   if (!viewingEmployee.value || (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0)) return [];
   return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'kpi'); 
@@ -199,14 +199,14 @@ const selectTab = (tab) => {
   selectedTab.value = tab;
 };
 const canManage = computed(() => {
-  return authStore.authRole.includes("manager") && useRoute().name == "SingleTeamMember"
+  return authStore.authRole.includes("manager") && useRoute().name == "SingleTeamMember" && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')
     ? true
     : false;
 });
 
 // kpi
 const year = ref(new Date().getFullYear());
- console.log('viewingEmployee.value',viewingEmployee.value);
+
 const printKPI = () => {
   // opens kpi slug in new window
   const routeData = router.resolve({
@@ -214,7 +214,7 @@ const printKPI = () => {
     params: {
       year: year.value
     },
-    query: {print:1, kpi: btoa(JSON.stringify(viewingEmployee.value))}
+    query: {print:1}
   });
 window.open(routeData.href, '_blank');
  
@@ -325,7 +325,7 @@ const reviewKPI = async (item, type = "kpi") => {
       },
     };
   }
-  console.log('kpiOptions.value',kpiOptions.value);
+ 
 };
 
 // remove kpi

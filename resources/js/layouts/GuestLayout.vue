@@ -12,7 +12,7 @@
     </div>
     <div class="gag-guest-bg-fill"></div>
     <slot />
-  </div> 
+  </div>
 </template>
 
 <script setup>
@@ -28,16 +28,40 @@ const bgCurrent = ref(1);
 const bgItems = ref([
   {
     id: 1,
-    src: baseUrl.value + "assets/images/login-slider/Performance-Reviews.png",
+    src: baseUrl.value + "/assets/images/login-slider/slider-1.jpg",
   },
   {
     id: 2,
-    src: baseUrl.value + "assets/images/login-slider/slider-6.jpg",
-  }, 
+    src: baseUrl.value + "/assets/images/login-slider/slider-2.jpg",
+  },
+  {
+    id: 3,
+    src: baseUrl.value + "/assets/images/login-slider/slider-3.jpg",
+  },
+  {
+    id: 4,
+    src: baseUrl.value + "/assets/images/login-slider/slider-4.jpg",
+  },
+  {
+    id: 5,
+    src: baseUrl.value + "/assets/images/login-slider/slider-5.jpg",
+  },
+  {
+    id: 6,
+    src: baseUrl.value + "/assets/images/login-slider/slider-6.jpg",
+  },
+  {
+    id: 7,
+    src: baseUrl.value + "/assets/images/login-slider/slider-7.jpg",
+  },
+  {
+    id: 8,
+    src: baseUrl.value + "/assets/images/login-slider/slider-8.jpg",
+  },
 ]);
 
 const bgUpdate = () => {
-  if (bgCurrent.value == 2) {
+  if (bgCurrent.value == 8) {
     bgCurrent.value = 1;
   } else {
     bgCurrent.value = bgCurrent.value + 1;
