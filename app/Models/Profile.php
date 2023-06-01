@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Company;
+use App\Models\Review;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
- 
-use App\Models\Companies;
-use App\Models\Review; 
+
 class Profile extends Model
 {
     use HasFactory;
@@ -15,7 +15,7 @@ class Profile extends Model
 
     public function company()
     {
-        return $this->belongsTo(Companies::class);
+        return $this->belongsTo(Company::class);
     }
 
     public function teams()
