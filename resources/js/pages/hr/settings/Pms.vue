@@ -4,17 +4,25 @@
     <v-row class="my-5">
       <div class="v-col-12 v-col-md-3">
         <v-autocomplete
-          v-model="filter.company"
-          :items="companyList"
+          v-model="filter.company_id"
+          :items="companyStore.companies"
+          item-title="title"
+          item-value="id"
           variant="outlined"
           density="compact"
           class="bg-white"
-          label="Select Company"
           hide-details
+          :label="loadingCompany ? 'Loading...' : 'Select Company'"
+          :loading="loadingCompany"
+          @focus="selectCompany"
         >
           <template v-slot:selection="{ props, item }">
             <span v-bind="props">
-              {{ item?.raw?.substring(0, 20) + "..." }}
+              {{
+                item.raw.title && item.raw.title.length > 30
+                  ? item.raw.title.substring(0, 30) + "..."
+                  : item.raw.title
+              }}
             </span>
           </template>
         </v-autocomplete>
@@ -33,8 +41,8 @@
         >
       </div>
       <div class="v-col-12">
-        <v-card class="mb-3 rounded-lg">
-          <v-card-title class="d-flex align-center">
+        <v-card class="mb-3 rounded-lg" :loading="loadingPms">
+          <v-card-title class="d-flex align-center py-3">
             <v-btn
               size="small"
               icon
@@ -56,7 +64,7 @@
             </thead>
             <tbody v-if="pmsList && pmsList.length > 0">
               <tr v-for="item in pmsList" :key="item.id">
-                <td>{{ item.company }}</td>
+                <td>{{ item.company.title }}</td>
                 <td>{{ item.year }}</td>
                 <td>
                   <div class="d-flex align-center justify-end">
@@ -87,40 +95,35 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import PageHeader from "@/components/PageHeader.vue";
 import { clientApi } from "@/services/clientApi";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import { useCompanyStore } from "@/stores/company";
 
 const authStore = useAuthStore();
 const router = useRouter();
 
-// PMS
-const pms = ref({
-  title: "Add PMS Setting",
-  dialog: true,
-  data: {
-    year: new Date().getFullYear(),
-  },
-  loading: false,
-});
+// PMS List
+const loadingPms = ref(false);
 const pmsList = ref([]);
 const getPmsSettings = async () => {
+  loadingPms.value = true;
   await clientApi(authStore.authToken)
     .get("/api/hr/settings/pms/paginated")
     .then((res) => {
       pmsList.value = res.data.data;
+      loadingPms.value = false;
     })
     .catch((err) => {
+      loadingPms.value = false;
       console.log("getEmployees", err);
     });
 };
-onMounted(() => {
-  getPmsSettings();
-});
+getPmsSettings();
 
 const addPms = () => {
   router
@@ -143,17 +146,23 @@ const removePms = () => {
   console.log("open remove kpi in a dialog");
 };
 
+// companies
+const companyStore = useCompanyStore();
+const loadingCompany = ref(false);
+const selectCompany = () => {
+  if (companyStore.companies.length == 0) {
+    loadingCompany.value = true;
+    companyStore.getCompanies(authStore.authToken).then(() => {
+      loadingCompany.value = false;
+    });
+  }
+};
+
 // filter
 const filter = ref({
-  company: "Ghassan Aboud Group FZE",
+  company_id: null,
   year: new Date().getFullYear(),
 });
-const companyList = ref([
-  "Ghassan Aboud Group FZE",
-  "Grandiose Supermarket",
-  "Grandiose Catering",
-  "Gallega",
-]);
 const filterPms = () => {
   console.log("filter", filter.value);
 };

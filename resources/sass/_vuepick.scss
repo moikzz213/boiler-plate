@@ -885,3 +885,12 @@
         border-color: rgba(0, 0, 0, 1);
     }
 }
+
+.pms-date-picker {
+    .dp__overlay_row {
+        flex-direction: column;
+        .dp__overlay_col {
+            width: 100%;
+        }
+    }
+}

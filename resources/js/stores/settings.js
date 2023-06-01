@@ -20,7 +20,6 @@ export const useSettingStore = defineStore("setting", {
         },
         async setPageLoading(status, msg = null) {
             let text = msg ? msg : "checking account";
-            console.log("setPageLoading", status, msg, text);
             this.page_loading = {
                 ...this.page_loading,
                 ...{
