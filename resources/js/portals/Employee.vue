@@ -23,9 +23,10 @@ const refreshAuth = async () => {
     .get("/api/checkuser")
     .then((res) => {
       // update the user token in pinia
-      authStore.saveClientKey(res.data).then(() => {
+      authStore.saveClientKey(res.data).then((keyResponse) => {
         settingStore.setPageLoading(false);
         settingStore.setIsFromLogin(false);
+        settingStore.setPmsSettings(keyResponse.data.pms_settings);
       });
     })
     .catch((err) => {

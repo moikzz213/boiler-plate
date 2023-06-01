@@ -4,9 +4,7 @@
     <v-row class="my-5">
       <div class="v-col-12">
         <v-card class="rounded-lg">
-          <v-card-title class="d-flex align-center pb-6">
-            <div class="text-primary text-capitalize text-h5">New Performance Setting</div>
-          </v-card-title>
+          <v-card-title class="text-primary mb-3"> New Performance Setting </v-card-title>
           <v-card-text>
             <PmsForm />
           </v-card-text>

@@ -3,7 +3,7 @@
     <Employee v-if="authStore.authIsLoggedIn == true" />
     <Public v-else />
     <v-dialog
-      v-model="settingStore.isPageLoading.status"
+      v-model="settingStore.pageLoading.status"
       fullscreen
       :scrim="false"
       transition="fade-transition"
@@ -15,7 +15,7 @@
           indeterminate
           color="secondary"
         ></v-progress-circular>
-        <div class="text-body-1">checking account</div>
+        <div class="text-body-1">{{ settingStore.pageLoading.msg }}</div>
       </v-card>
     </v-dialog>
   </div>

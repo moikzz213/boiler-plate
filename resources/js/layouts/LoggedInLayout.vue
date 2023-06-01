@@ -124,7 +124,7 @@
                   v-bind="props"
                   style="cursor: pointer"
                 >
-                  <div class="text-white">
+                  <div class="text-white text-body-2">
                     {{ printInitials(authStore.authProfile.display_name) }}
                   </div>
                 </v-avatar>
@@ -135,7 +135,7 @@
                 <v-avatar
                   color="grey-lighten-3"
                   :size="36"
-                  class="d-flex align-center justify-center mr-3"
+                  class="d-flex align-center justify-center mr-3 text-body-2"
                   style="cursor: pointer"
                 >
                   <div>{{ printInitials(authStore.authProfile.display_name) }}</div>
@@ -195,7 +195,9 @@
             v-bind="props"
             style="cursor: pointer"
           >
-            <div>{{ printInitials(authStore.authProfile.display_name) }}</div>
+            <div class="text-body-2">
+              {{ printInitials(authStore.authProfile.display_name) }}
+            </div>
           </v-avatar>
         </template>
         <v-card min-width="300" class="rounded-lg mt-1">
@@ -206,7 +208,9 @@
               class="d-flex align-center justify-center mr-3"
               style="cursor: pointer"
             >
-              <div>{{ printInitials(authStore.authProfile.display_name) }}</div>
+              <div class="text-body-2">
+                {{ printInitials(authStore.authProfile.display_name) }}
+              </div>
             </v-avatar>
             <div>
               <div class="text-body-1">{{ authStore.authProfile.display_name }}</div>
@@ -384,12 +388,12 @@ const logout = async () => {
     .then(() => {
       settingStore.setPageLoading(true, "logging out");
       removeClientKey().then(() => {
-        settingStore.setPageLoading(false);
+        settingStore.setPageLoading(false, "logging out");
       });
     })
     .catch((err) => {
       loadingLogout.value = false;
-      settingStore.setPageLoading(false);
+      settingStore.setPageLoading(false, "logging out");
       console.log("error while trying to logout to server", err);
     });
 };

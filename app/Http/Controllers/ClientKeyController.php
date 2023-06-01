@@ -7,6 +7,7 @@ use App\Models\ClientKey;
 use App\Models\PerformanceSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Models\PerformanceSetting;
 
 class ClientKeyController extends Controller
 {
@@ -23,18 +24,18 @@ class ClientKeyController extends Controller
         $profile = Profile::where('ecode', $request['user_ecode'])
         ->with('teams.reviews.keyReview','teams.company', 'reviews.keyReview','company')->with('reviews',function ($q) {
             $q->where('year', Carbon::now()->format('Y'));
-        })->first();
-
-        $globalKpiStatus = PerformanceSetting::where([
+        })->first(); 
+        
+        $currentPmsSettings = PerformanceSetting::where([
             'company_id' => $profile->company_id,
             'year'      => Carbon::now()->format('Y')
-            ])->orderBy('year', 'desc')->limit(1)->first();
-          
+        ])->first();
+        
         return response()->json([
             "message" => 'Key saved successfully',
             "client" => $clientKey,
-            'globalKeyStatus' => $globalKpiStatus,
-            "profile" => $profile
+            "profile" => $profile,
+            "pms_settings" => $currentPmsSettings
         ], 200);
     }
 

@@ -81,15 +81,7 @@ const message = ref('');
 const login = async () => {
   loadingLogin.value = true;
   authLogin()
-    .then((res) => {
-      // redirect to previous path
-      //   console.log(router.options.history.state.back);
-      //   let previousPath = router.options.history.state.back
-      //     ? router.options.history.state.back
-      //     : null;
-      //   authStore.saveClientKey(res.data).then(() => {
-      //     router.push({ path: previousPath ? previousPath : "/dashboard" });
-      //   });
+    .then((res) => { 
       settingStore.setPageLoading(true, "logging in");
       authStore
         .saveClientKey(res.data)
