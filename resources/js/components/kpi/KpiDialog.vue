@@ -93,18 +93,18 @@
                 density="compact" persistent-hint></v-text-field>
             </div>
             <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
-              Year-year Achievement
+              Year-end Achievement
             </div>
             <div class="v-col-12 py-0 px-1">
               <v-text-field v-model="kpiData.year_end_achievement" label="Year-end Achievement*" variant="outlined"
                 density="compact" persistent-hint></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field v-model="kpiData.year_end_target_variation" label="Mid-year Achievement*" variant="outlined"
+              <v-text-field v-model="kpiData.year_end_target_variation" disabled label="Target Variation*" variant="outlined"
                 density="compact" persistent-hint></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field v-model="kpiData.year_end_remainder_target" label="Target Variation*" variant="outlined"
+              <v-text-field v-model="kpiData.year_end_remainder_target" disabled label="Remainer Annual Target*" variant="outlined"
                 density="compact" persistent-hint></v-text-field>
             </div>
             <div class="v-col-12 d-flex justify-end">
@@ -166,18 +166,10 @@ const submitReview = () => {
 };
 watch(
   () => props.kpiOptions,
-<<<<<<< HEAD
   (newVal) => { 
     listIndustries.value = props.industryList; 
     kpiData.value = Object.assign({}, newVal.data);  
     kpiAction.value = Object.assign({}, newVal);  
-=======
-  (newVal) => {
-
-    kpiData.value = Object.assign({}, newVal);
-    selectedIndustry.value = newVal.action == "edit" ? newVal.data.industry : null;
-    selectedKpi.value = newVal.action == "edit" ? newVal.data.kpi_id : null;
->>>>>>> b8c903cd19bc8f466e1e9294f45f3d5675057279
   }
 );
 </script>
