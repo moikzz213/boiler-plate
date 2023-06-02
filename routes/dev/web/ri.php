@@ -30,3 +30,8 @@ Route::prefix('hr')->group(function () {
     // weitages
     Route::get('/weightages/page/{page}', [PageController::class, 'home'])->name('hr.weightages');
 });
+
+Route::prefix('manager')->group(function () {
+    // my custom kpi
+    Route::get('/custom-kpi/page/{page}', [PageController::class, 'home'])->name('hr.industries');
+});

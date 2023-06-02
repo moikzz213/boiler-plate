@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
-use App\Models\Company;
 use App\Models\Review;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Company;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\KeyPerformanceIndicatorMaster;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Profile extends Model
 {
     use HasFactory;
 
-    protected $guarded = []; 
+    protected $guarded = [];
 
     public function company()
     {
@@ -31,5 +32,10 @@ class Profile extends Model
     public function reviews()
     {
         return $this->hasMany(Review::class);
-    } 
+    }
+
+    public function custom_kpis()
+    {
+        return $this->hasMany(KeyPerformanceIndicatorMaster::class, 'profile_ecode', 'ecode');
+    }
 }

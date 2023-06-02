@@ -166,10 +166,18 @@ const submitReview = () => {
 };
 watch(
   () => props.kpiOptions,
+<<<<<<< HEAD
   (newVal) => { 
     listIndustries.value = props.industryList; 
     kpiData.value = Object.assign({}, newVal.data);  
     kpiAction.value = Object.assign({}, newVal);  
+=======
+  (newVal) => {
+
+    kpiData.value = Object.assign({}, newVal);
+    selectedIndustry.value = newVal.action == "edit" ? newVal.data.industry : null;
+    selectedKpi.value = newVal.action == "edit" ? newVal.data.kpi_id : null;
+>>>>>>> b8c903cd19bc8f466e1e9294f45f3d5675057279
   }
 );
 </script>
