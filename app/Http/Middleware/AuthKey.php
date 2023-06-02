@@ -16,7 +16,8 @@ class AuthKey
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // dd(request());
+        // request()->host()
+        // request()->fullUrl()
         $bearerToken = request()->bearerToken();
         $checkClientKey = ClientKey::where('key', $bearerToken)->exists();
         if (!$checkClientKey) {

@@ -2,10 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Profile;
+use App\Models\Industry;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class KeyPerformanceIndicatorMaster extends Model
 {
     use HasFactory;
+
+    protected $guarded = [];
+
+    public function profile()
+    {
+        return $this->belongsTo(Profile::class, 'profile_ecode', 'ecode');
+    }
+
+    public function industry(Type $var = null)
+    {
+        return $this->belongsTo(Industry::class);
+    }
 }

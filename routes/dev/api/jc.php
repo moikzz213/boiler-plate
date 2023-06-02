@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route; 
 use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\KeyPerformanceReviewController;
+use App\Http\Controllers\KeyPerformanceIndicatorMasterController;
 use App\Http\Controllers\IndustryController;
 use App\Http\Controllers\ProfileController;
 
@@ -25,8 +25,13 @@ Route::middleware('authkey')->group(function () {
     // Fetch Employee KPI by Year & Ecode - check if there is reviews or not
     Route::get('/fetch/employee-kpi/year/{ecode}/{year}', [ProfileController::class, 'KPIEmployeeByYear'])->name('fetch.employee.kpi.year');
 
+    
+    Route::get('/fetch/auth-profile/kpi/{ecode}', [ProfileController::class, 'fetchAuthProfile'])->name('fetch.employee.kpi.list');
+
     // Create Employee Review by Year
     Route::post('/create/employee-review/year', [ProfileController::class, 'createReviewByYear'])->name('create.review.by.year');
     
     Route::get('/fetch/industries/non-paginate', [IndustryController::class, 'getNonPaginatedIndustries'])->name('fetch.industries.non-paginate');
+    Route::get('/fetch/master-kpi/non-paginate', [KeyPerformanceIndicatorMasterController::class, 'getNoNPaginatedKpis'])->name('fetch.master-kpi.non-paginate');
+     
 });

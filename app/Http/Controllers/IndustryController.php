@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class IndustryController extends Controller
 {
+    public function getIndustries()
+    {
+        $industries = Industry::all();
+        return response()->json($industries, 200);
+    }
+
     public function getPaginatedIndustries()
     {
         $industries = Industry::paginate(10);
@@ -15,7 +21,7 @@ class IndustryController extends Controller
 
     public function getNonPaginatedIndustries()
     {
-        $industries = Industry::get();
+        $industries = Industry::orderBy('title', 'ASC')->get();
         return response()->json($industries, 200);
     }
 

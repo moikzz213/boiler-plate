@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('key_performance_indicator_masters', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('status'); // approved/pending
+            $table->string('status')->default('pending'); // approved/pending
 
             $table->string('definition');
             $table->string('formula');
@@ -22,11 +22,11 @@ return new class extends Migration
             $table->string('calculation_example');
             $table->string('evaluation_pattern');
 
-            $table->string('type'); // kpi/ecd
+            $table->string('type')->default('kpi'); // kpi/ecd
             $table->string('ecd_type')->nullable(); // tech/soft/soft-tech
 
             $table->foreignId('industry_id')->constrained();
-            $table->foreignId('profile_id')->constrained();
+            $table->string('profile_ecode')->nullable(); // auther
             $table->timestamps();
         });
     }

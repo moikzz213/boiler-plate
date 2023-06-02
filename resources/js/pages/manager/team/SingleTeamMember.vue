@@ -55,12 +55,12 @@
         </v-card>
       </div>
     </v-row>
-    <KpiContent :selected-employee="selEmployeeObj" @yearchange="selectedYearResponse" :is-manager="true" />
+    <KpiContent :selected-employee="selEmployeeObj" :industry-list="industryWithKPI" :ecd-list="ecdList" @yearchange="selectedYearResponse" :is-manager="true" />
   </v-container>
 </template>
 
 <script setup>
-import { ref, watch } from "vue"; 
+import { onMounted, ref, watch } from "vue"; 
 import { useAuthStore } from "@/stores/auth";
 import KpiContent from "@/components/kpi/KpiContent.vue";
 import EmployeeCard from "@/components/EmployeeCard.vue"; 
@@ -108,6 +108,45 @@ watch(
   }
 );
 
+const industryList = ref([]);
+const Industries = async () => {
+  await clientApi(authStore.authToken)
+    .get("/api/fetch/industries/non-paginate")
+    .then((res) => {
+      industryList.value = res.data;
+    });
+};
+
+const industryWithKPI = ref([]);
+const ecdList = ref([]);
+const kpiMaster = async () => {
+  await clientApi(authStore.authToken)
+    .get("/api/fetch/master-kpi/non-paginate")
+    .then((res) => {
+    
+
+      if(industryList.value && industryList.value.length > 0 && res.data && res.data.length > 0){
+        industryList.value.map((o,i) => {
+          industryWithKPI.value[i] = o;
+          industryWithKPI.value[i].kpis = [];
+          let count = 0;
+          let ecdCount = 0;
+          res.data.map((oo,ii) => {
+            if(o.id == oo.industry_id){
+                industryWithKPI.value[i].kpis[count] = oo;
+                count++;
+            }else if(oo.type == 'ecd'){
+              ecdList.value[ecdCount] = oo;
+              ecdCount++;
+            }
+          });
+
+        });
+         
+      }
+    });
+};
+
 const getEmployeeToView = () => {
   console.log("getEmployeeToView", selectedEmployeeArr.value);
 };
@@ -142,4 +181,10 @@ const getKPI = async (year) => {
 
     });
 };
+
+onMounted(()=>{
+  Industries().then(()=>{
+    kpiMaster();
+  });
+}); 
 </script>

@@ -294,12 +294,12 @@ const sideNavigation = ref([
     title: "My Custom KPI",
     icon: mdiChartTimelineVariant,
     roles: ["app_admin", "manager"],
-    path: "/manager/kpi",
+    path: "/manager/custom-kpi/page/1",
   },
   {
     title: "Employees",
     icon: mdiAccountGroup,
-    roles: ["app_admin", "hr_admin","hrbp"],
+    roles: ["app_admin", "hr_admin", "hrbp"],
     path: "/hr/employees",
   },
   {
