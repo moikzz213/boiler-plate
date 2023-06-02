@@ -98,11 +98,11 @@
 import { ref, onMounted, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
-import PageHeader from "@/components/PageHeader.vue";
 import { clientApi } from "@/services/clientApi";
+import { useAuthStore } from "@/stores/auth";
+import PageHeader from "@/components/PageHeader.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import SnackBar from "@/components/SnackBar.vue";
-import { useAuthStore } from "@/stores/auth";
 
 const authStore = useAuthStore();
 const router = useRouter();

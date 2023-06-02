@@ -61,9 +61,24 @@ class KeyPerformanceIndicatorMasterController extends Controller
             'profile_ecode' => $request['profile_ecode'],
             'industry_id' => $request['industry_id'],
         );
-        $kpis = KeyPerformanceIndicatorMaster::create($kpiArray);
+        if($request['id']){
+            $kpis = KeyPerformanceIndicatorMaster::where('id', $request['id'])->update($kpiArray);
+        }else{
+            $kpis = KeyPerformanceIndicatorMaster::create($kpiArray);
+        }
         return response()->json([
             'message' => 'Custom KPI saved successfully'
+        ], 200);
+    }
+
+    public function removeCustomKpi($id)
+    {
+        $kpi = KeyPerformanceIndicatorMaster::where('id', $id)->first();
+        if($kpi){
+            $kpi->delete();
+        }
+        return response()->json([
+            'message' => 'Custom KPI removed successfully'
         ], 200);
     }
 }

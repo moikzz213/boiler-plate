@@ -144,16 +144,6 @@ const kpiData = ref({
   action: "",
   is_review: false,
 });
-const industryList = ref([
-  {
-    id: 1,
-    title: "Healthcare Trading",
-  },
-  {
-    id: 2,
-    title: "IT",
-  },
-]);
 
 // industries
 const industryStore = useIndustryStore();
@@ -168,13 +158,8 @@ const selectIndustry = () => {
 };
 
 const saveKpi = () => {
-  let kpi_data = Object.assign({}, kpiData.value.data);
   kpiData.value.loading = true;
-  console.log("kpi_data", kpi_data);
-  emit("save", {
-    action: "create",
-    data: kpi_data,
-  });
+  emit("save", kpiData.value.data);
 };
 const approveKpi = () => {
   console.log("approveKpi");
