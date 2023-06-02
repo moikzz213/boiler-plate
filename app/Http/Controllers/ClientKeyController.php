@@ -21,7 +21,12 @@ class ClientKeyController extends Controller
         // save employee profile
         // return profile with role for hrbp hr_admin
         $profile = Profile::where('ecode', $request['user_ecode'])
-        ->with('teams.reviews.keyReview','teams.company', 'reviews.keyReview','company')->with('reviews',function ($q) {
+        ->with(
+            'teams.reviews.keyReview',
+            'teams.company',
+            'reviews.keyReview',
+            'company')
+        ->with('reviews',function ($q) {
             $q->where('year', Carbon::now()->format('Y'));
         })->first(); 
         

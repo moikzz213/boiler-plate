@@ -58,7 +58,7 @@
               </div>
               <div class="v-col-12 v-col-md-1 d-flex justify-end align-center"> 
                
-                <div v-if="settingStore.pmsSettings.state != 'yearend' || (user.reviews && user.reviews.length > 0 && user.reviews[0].type == 'probation' && user.reviews[0].state != 'final_review')">
+                <div v-if="settingStore.pmsSettings && settingStore.pmsSettings.state != 'yearend' || (user.reviews && user.reviews.length > 0 && user.reviews[0].type == 'probation' && user.reviews[0].state != 'final_review')">
                   <div>
                     
                     {{ ratingOrWeightage(user) }} / 100
@@ -125,7 +125,7 @@ const openPage = (pathName, openParams = null) => {
 // authenticated user object
 const authStore = useAuthStore();
 const settingStore = useSettingStore();
-
+console.log('settingStore',settingStore);
 const managerTeam = ref(authStore.authProfile.teams);
 const year = ref(new Date().getFullYear());
 const currentDate = ref(new Date());
@@ -168,14 +168,17 @@ const confirmOpenMember = () => {
       author: authStore.authProfile.display_name + " " + authStore.authProfile.ecode
     })
     .then((res) => { 
-      authStore.setProfile(res.data.result);
+      authStore.setProfile(res.data.result).then(()=>{
+        openPage("SingleTeamMember", { id: selectedUser.value.ecode });
+      });
+      
     })
     .catch((err) => {
 
     });  
 
   // redirect to SingleTeamMember
-  openPage("SingleTeamMember", { id: selectedUser.value.ecode });
+  
 };
 const openMember = (user) => {
   selectedUser.value = Object.assign({}, user);

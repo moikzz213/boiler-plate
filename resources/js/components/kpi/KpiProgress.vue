@@ -71,48 +71,69 @@ const states = computed(() => {
     }
   ]
   
-  return kpiSettings.value && kpiSettings.value.is_regular ? regularStates : probationStates;
+  return userProfile.value && userProfile.value.is_regular ? regularStates : probationStates;
 })
 
+ 
+const currentDate = ref(new Date());
 const printColor = (userState, index, statusIndex) => {
-  if(userState && userState.length > 0){
-    let state = userState[0].state;
-    let status = userState[0].status;
 
+  let currentStatus = 0;
+  
+  if(userState && userState.reviews && userState.reviews.length > 0){ 
+    let state = userState.reviews[0].state;
+    let status = userState.reviews[0].status; 
     let currentState = states.value.findIndex((el) => el.state == state);
-    let currentStatus = 0;
+
     if (index < currentState) {
       return 'bg-grey-darken-1';
     } else if (index == currentState) {
+    
       currentStatus = states.value[index].status.findIndex((el) => el.status == status);
       if (currentStatus == statusIndex) {
         return 'bg-secondary text-white';
       } else if (statusIndex < currentStatus) {
         return 'bg-grey-darken-1';
       }  
-    }  
-  } 
+    }
+  } else if(userState && userState.length > 0) {
+    let user = userState[0].profile;
+    if(user.is_regular == 0){ 
+          let probationState = states.value.findIndex((el) => el.state == 'setting');
+          let date = new Date(user.doj);
+          
+          date.setDate(date.getDate() +  parseInt(userState[0].probation_setting_allow_days));
+        
+          if(date >= currentDate.value  && index == probationState){
+            currentStatus = states.value[index].status.findIndex((el) => el.status == 'open');
+            if (currentStatus == statusIndex) {
+              return 'bg-secondary text-white';
+            }
+          } 
+      }
+  }
   return '';  
 }
 
-const kpiSettings = ref(props.selectedEmployee);
- 
-const reviewSettings = computed(() => {
+const userProfile = ref(props.selectedEmployee);
 
-  if (kpiSettings.value == null || !kpiSettings.value.reviews || kpiSettings.value.reviews.length == 0) {
+const reviewSettings = computed(() => {
+  if (userProfile.value == null || !userProfile.value.reviews || userProfile.value.reviews.length == 0) {
     return [{
       state: settingStore.pms_settings ? settingStore.pms_settings.state : null,
       status: settingStore.pms_settings ? settingStore.pms_settings.status : null,
+      probation_setting_allow_days: settingStore.pms_settings ? settingStore.pms_settings.probation_kpi_setting : null,
+      profile: userProfile.value
       }
     ];
   };
-  return kpiSettings.value.reviews;
+  return userProfile.value;
 });
  
 watch(
   () => props.selectedEmployee,
   (newVal) => {
-    kpiSettings.value = Object.assign({}, newVal);
+    userProfile.value = Object.assign({}, newVal);
   }
 );
 </script>

@@ -21,8 +21,7 @@ return new class extends Migration
             $table->string('fist_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('email')->nullable();
-            $table->string('hrbp_email')->nullable(); 
-            $table->foreignId('company_id')->constrained();
+            $table->string('hrbp_email')->nullable();
             $table->string('department')->nullable();
             $table->string('designation')->nullable();
             $table->date('dob')->nullable();
@@ -30,6 +29,7 @@ return new class extends Migration
             $table->string('nationality')->nullable();
             $table->string('role')->nullable(); // hr_admin, hrbp
             $table->boolean('is_regular')->nullable()->default(true);
+            $table->foreignId('company_id')->constrained();
             $table->timestamps();
         });
     }
