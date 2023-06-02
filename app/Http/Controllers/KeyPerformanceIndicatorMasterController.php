@@ -3,12 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\KeyPerformanceIndicatorMaster;
 
 class KeyPerformanceIndicatorMasterController extends Controller
 {
     public function getPaginatedKpis()
     {
         $kpis = KeyPerformanceIndicatorMaster::paginate(10);
+        return response()->json($kpis, 200);
+    }
+
+    public function getNoNPaginatedKpis()
+    {
+        $kpis = KeyPerformanceIndicatorMaster::where('status','active')->orderBy('title','ASC')->get();
         return response()->json($kpis, 200);
     }
 

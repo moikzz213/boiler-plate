@@ -15,7 +15,7 @@ class IndustryController extends Controller
 
     public function getNonPaginatedIndustries()
     {
-        $industries = Industry::get();
+        $industries = Industry::orderBy('title', 'ASC')->get();
         return response()->json($industries, 200);
     }
 
