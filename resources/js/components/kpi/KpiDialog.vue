@@ -279,7 +279,7 @@ const submitReview = () => {
 watch(
   () => props.kpiOptions,
   (newVal) => {
-    
+
     kpiData.value = Object.assign({}, newVal);
     selectedIndustry.value = newVal.action == "edit" ? newVal.data.industry : null;
     selectedKpi.value = newVal.action == "edit" ? newVal.data.kpi_id : null;

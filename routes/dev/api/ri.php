@@ -47,3 +47,9 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
 
 // companies
 Route::get('/companies', [CompanyController::class, 'getCompanies'])->name('companies.get.list');
+Route::get('/industries', [IndustryController::class, 'getIndustries'])->name('industries.get.list');
+
+Route::middleware('authkey')->prefix('manager')->group(function () {
+    Route::get('/my-custom-kpi/list/{ecode}', [KeyPerformanceIndicatorMasterController::class, 'getCustomKpiByEcode'])->name('manager.custom.kpi.paginated');
+    Route::post('/my-custom-kpi/save', [KeyPerformanceIndicatorMasterController::class, 'saveCustomKpiWithProfileEcode'])->name('manager.custom.kpi.paginated');
+});

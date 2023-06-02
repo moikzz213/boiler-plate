@@ -197,7 +197,7 @@ watch(currentPage, (newValue, oldValue) => {
   }
 });
 onMounted(() => {
-  getData(1);
+  getData(currentPage.value);
 });
 
 // remove measure

@@ -22,15 +22,28 @@
             </div>
             <div class="v-col-12 v-col-md-6 py-0">
               <v-autocomplete
-                v-model="selectedIndustry"
-                :items="industryList"
+                v-model="kpiData.data.industry_id"
+                :items="industryStore.industries"
                 item-title="title"
-                item-value="title"
+                item-value="id"
                 variant="outlined"
                 density="compact"
-                label="Select Industry*"
+                class="bg-white"
                 :readonly="props.isHr"
+                hide-details
+                :label="loadingIndustry ? 'Loading...' : 'Select Industry'"
+                :loading="loadingIndustry"
+                @focus="selectIndustry"
               >
+                <template v-slot:selection="{ props, item }">
+                  <span v-bind="props">
+                    {{
+                      item.raw.title && item.raw.title.length > 30
+                        ? item.raw.title.substring(0, 30) + "..."
+                        : item.raw.title
+                    }}
+                  </span>
+                </template>
               </v-autocomplete>
             </div>
             <div class="v-col-12 py-0">
@@ -44,8 +57,8 @@
             </div>
             <div class="v-col-12 py-0">
               <v-textarea
-                v-model="kpiData.data.calulation_formula"
-                label="Calulation Formula*"
+                v-model="kpiData.data.formula"
+                label="Calculation Formula*"
                 variant="outlined"
                 rows="2"
                 :readonly="props.isHr"
@@ -53,7 +66,7 @@
             </div>
             <div class="v-col-12 py-0">
               <v-textarea
-                v-model="kpiData.data.subordinate_measures"
+                v-model="kpiData.data.measures"
                 label="Subordinate Measures*"
                 variant="outlined"
                 rows="2"
@@ -62,8 +75,8 @@
             </div>
             <div class="v-col-12 py-0">
               <v-textarea
-                v-model="kpiData.data.calulation_example"
-                label="KPI Calulation Example*"
+                v-model="kpiData.data.calculation_example"
+                label="KPI Calculation Example*"
                 variant="outlined"
                 rows="2"
                 :readonly="props.isHr"
@@ -71,7 +84,7 @@
             </div>
             <div class="v-col-12 py-0">
               <v-textarea
-                v-model="kpiData.data.evaluation_method"
+                v-model="kpiData.data.evaluation_pattern"
                 label="KPI Evaluation Method*"
                 variant="outlined"
                 rows="2"
@@ -90,6 +103,7 @@
                 color="primary"
                 class="ml-2 px-8"
                 @click="saveKpi"
+                :loading="kpiData.loading"
                 >save</v-btn
               >
               <v-btn v-else color="primary" class="ml-2 px-8" @click="approveKpi"
@@ -105,6 +119,9 @@
 
 <script setup>
 import { ref, watch } from "vue";
+import { useAuthStore } from "@/stores/auth";
+import { useIndustryStore } from "@/stores/industry";
+const emit = defineEmits(["save"]);
 const props = defineProps({
   kpiOptions: {
     type: Object,
@@ -116,8 +133,17 @@ const props = defineProps({
   },
 });
 
-const kpiData = ref({});
-const selectedKpi = ref(null);
+const authStore = useAuthStore();
+
+const kpiData = ref({
+  title: "",
+  data: {},
+  dialog: false,
+  loading: false,
+  type: "",
+  action: "",
+  is_review: false,
+});
 const industryList = ref([
   {
     id: 1,
@@ -128,9 +154,27 @@ const industryList = ref([
     title: "IT",
   },
 ]);
-const selectedIndustry = ref(null);
+
+// industries
+const industryStore = useIndustryStore();
+const loadingIndustry = ref(false);
+const selectIndustry = () => {
+  if (industryStore.industries.length == 0) {
+    loadingIndustry.value = true;
+    industryStore.getIndustries(authStore.authToken).then(() => {
+      loadingIndustry.value = false;
+    });
+  }
+};
+
 const saveKpi = () => {
-  console.log("saveKpi");
+  let kpi_data = Object.assign({}, kpiData.value.data);
+  kpiData.value.loading = true;
+  console.log("kpi_data", kpi_data);
+  emit("save", {
+    action: "create",
+    data: kpi_data,
+  });
 };
 const approveKpi = () => {
   console.log("approveKpi");
@@ -138,9 +182,8 @@ const approveKpi = () => {
 watch(
   () => props.kpiOptions,
   (newVal) => {
+    selectIndustry();
     kpiData.value = Object.assign({}, newVal);
-    selectedIndustry.value = newVal.action == "edit" ? newVal.data.industry : null;
-    selectedKpi.value = newVal.action == "edit" ? newVal.data.kpi_id : null;
   }
 );
 </script>
