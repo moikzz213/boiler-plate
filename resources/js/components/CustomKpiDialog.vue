@@ -94,7 +94,15 @@
             <div class="v-col-12 py-0">
               <v-divider class="mx-auto"></v-divider>
             </div>
-            <div class="v-col-12 d-flex justify-end">
+            <div
+              v-if="route.name == 'HrMasterKpi' || route.name == 'PaginatedHrMasterKpi'"
+              class="v-col-12 d-flex justify-end"
+            >
+            <v-btn color="primary" @click="kpiData.dialog = false"
+                >Okay</v-btn
+              >
+            </div>
+            <div v-else class="v-col-12 d-flex justify-end">
               <v-btn color="primary" variant="text" @click="kpiData.dialog = false"
                 >Cancel</v-btn
               >
@@ -121,6 +129,8 @@
 import { ref, watch } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useIndustryStore } from "@/stores/industry";
+import { useRoute } from "vue-router";
+const route = useRoute();
 const emit = defineEmits(["save"]);
 const props = defineProps({
   kpiOptions: {

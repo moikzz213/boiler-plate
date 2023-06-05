@@ -5,13 +5,6 @@
       <div class="v-col-12">
         <v-card class="rounded-lg">
           <v-card-title class="d-flex align-center">
-            <v-btn
-              @click="add"
-              density="compact"
-              size="35"
-              class="rounded-xl elevation-2 mr-2"
-              ><v-icon size="small" :icon="mdiPlus"></v-icon
-            ></v-btn>
             <div class="text-primary text-capitalize">KPI Master List</div>
           </v-card-title>
           <v-table>
@@ -58,51 +51,22 @@
         ></v-pagination>
       </div>
     </v-row>
-    <v-dialog v-model="kpiForm.dialog" width="100%" max-width="480px" persistent>
-      <v-card class="rounded-lg">
-        <v-row class="ma-0 pa-0">
-          <div :class="`v-col-12 px-4`">
-            <v-row>
-              <div class="v-col-12">{{ kpiForm.title }} {{}}</div>
-              <div class="v-col-12 py-0">
-                <v-text-field
-                  v-model="kpiForm.data.title"
-                  label="Industry*"
-                  variant="outlined"
-                  density="compact"
-                ></v-text-field>
-              </div>
-              <div class="v-col-12 d-flex justify-end">
-                <v-btn color="primary" variant="text" @click="kpiForm.dialog = false"
-                  >Cancel</v-btn
-                >
-                <v-btn
-                  color="primary"
-                  :loading="kpiForm.loading"
-                  class="ml-2 px-8"
-                  @click="save"
-                  >save</v-btn
-                >
-              </div>
-            </v-row>
-          </div>
-        </v-row>
-      </v-card>
-    </v-dialog>
+    <CustomKpiDialog :kpi-options="kpiForm" :is-hr="true" />
     <ConfirmDialog :options="confOptions" @confirm="confirmResponse" />
     <SnackBar :options="sbOptions" />
   </v-container>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
-import PageHeader from "@/components/PageHeader.vue";
+import { mdiPencil, mdiTrashCan } from "@mdi/js";
 import { clientApi } from "@/services/clientApi";
-import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import SnackBar from "@/components/SnackBar.vue";
 import { useAuthStore } from "@/stores/auth";
+import ConfirmDialog from "@/components/ConfirmDialog.vue";
+import PageHeader from "@/components/PageHeader.vue";
+import SnackBar from "@/components/SnackBar.vue";
+import CustomKpiDialog from "@/components/CustomKpiDialog.vue";
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -119,59 +83,23 @@ const kpiForm = ref({
   action: "add",
 });
 const totalPageCount = ref(0);
-const currentPage = ref(route.params ? route.params.page : 1);
+const currentPage = ref(1);
+currentPage.value = route.params && route.params.page ? route.params.page : 1;
 const getData = async (page) => {
+  console.log("getData", page);
   await clientApi(authStore.authToken)
     .get("/api/hr/kpis?page=" + page)
     .then((res) => {
       totalPageCount.value = res.data.last_page;
       currentPage.value = res.data.current_page;
       kpis.value = res.data.data;
+      console.log("kpis.value", kpis.value);
     })
     .catch((err) => {
       console.log("kpis", err);
     });
 };
-const save = async () => {
-  let data = {
-    id: kpiForm.value.action == "edit" ? kpiForm.value.data.id : null,
-    title: kpiForm.value.data.title,
-  };
-  kpiForm.value.loading = true;
-  await clientApi(authStore.authToken)
-    .post("/api/hr/kpi/save", data)
-    .then((res) => {
-      getData(currentPage.value).then(() => {
-        kpiForm.value.loading = false;
-        kpiForm.value.dialog = false;
-        sbOptions.value = {
-          status: true,
-          type: "success",
-          text: res.data.message,
-        };
-      });
-    })
-    .catch((err) => {
-      kpiForm.value.loading = false;
-      console.log("kpis", err);
-      sbOptions.value = {
-        status: true,
-        type: "error",
-        text: "Error while saving kpi",
-      };
-    });
-};
-const add = () => {
-  kpiForm.value = {
-    ...kpiForm.value,
-    ...{
-      title: "Add KPI",
-      data: {},
-      dialog: true,
-      action: "add",
-    },
-  };
-};
+getData(currentPage.value);
 const edit = (item) => {
   kpiForm.value = {
     ...kpiForm.value,
@@ -187,7 +115,7 @@ watch(currentPage, (newValue, oldValue) => {
   if (newValue != oldValue) {
     router
       .push({
-        name: "PaginatedKPI",
+        name: "PaginatedHrMasterKpi",
         params: {
           page: currentPage.value,
         },
@@ -195,9 +123,6 @@ watch(currentPage, (newValue, oldValue) => {
       .catch((err) => {});
     getData(currentPage.value);
   }
-});
-onMounted(() => {
-  getData(1);
 });
 
 // remove industry

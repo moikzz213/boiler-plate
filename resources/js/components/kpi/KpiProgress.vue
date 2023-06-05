@@ -70,7 +70,7 @@ const states = computed(() => {
       status: [{ status: 'open', title: 'Open' }, { status: 'inprogress', title: 'In Progress' },   { status: 'submitted', title: 'Submitted' }]
     }
   ]
-  
+
   return kpiSettings.value && kpiSettings.value.is_regular ? regularStates : probationStates;
 })
 
@@ -89,26 +89,26 @@ const printColor = (userState, index, statusIndex) => {
         return 'bg-secondary text-white';
       } else if (statusIndex < currentStatus) {
         return 'bg-grey-darken-1';
-      }  
-    }  
-  } 
-  return '';  
+      }
+    }
+  }
+  return '';
 }
 
 const kpiSettings = ref(props.selectedEmployee);
- 
+
 const reviewSettings = computed(() => {
 
   if (kpiSettings.value == null || !kpiSettings.value.reviews || kpiSettings.value.reviews.length == 0) {
     return [{
-      state: settingStore.pms_settings.state,
-      status: settingStore.pms_settings.status,
+      state: settingStore.pms_settings.state ? settingStore.pms_settings.state : null,
+      status: settingStore.pms_settings.status ? settingStore.pms_settings.status : null,
       }
     ];
   };
   return kpiSettings.value.reviews;
 });
- 
+
 watch(
   () => props.selectedEmployee,
   (newVal) => {

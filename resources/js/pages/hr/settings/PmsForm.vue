@@ -208,7 +208,10 @@ import { useAuthStore } from "@/stores/auth";
 import { useCompanyStore } from "@/stores/company";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import SnackBar from "@/components/SnackBar.vue";
+import { useRouter, useRoute } from "vue-router";
 
+const router = useRouter();
+const route = useRoute();
 const sbOptions = ref({});
 const authStore = useAuthStore();
 const props = defineProps({
@@ -276,6 +279,16 @@ const saveSetting = async () => {
         type: "success",
         text: res.data.message,
       };
+      // check if NewPms then redirect
+      setTimeout(() => {
+        if (route.name == "NewPms") {
+          router
+            .push({
+              name: "Pms",
+            })
+            .catch((err) => {});
+        }
+      }, 1000);
     })
     .catch((err) => {
       pms.value.loading = false;
