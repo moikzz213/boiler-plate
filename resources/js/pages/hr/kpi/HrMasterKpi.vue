@@ -22,7 +22,7 @@
                     <v-icon
                       size="small"
                       @click="() => edit(item)"
-                      :icon="mdiPencil"
+                      :icon="mdiEye"
                       class="mx-1"
                     />
                     <v-icon
@@ -60,7 +60,7 @@
 <script setup>
 import { ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { mdiPencil, mdiTrashCan } from "@mdi/js";
+import { mdiEye, mdiTrashCan } from "@mdi/js";
 import { clientApi } from "@/services/clientApi";
 import { useAuthStore } from "@/stores/auth";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
@@ -80,7 +80,7 @@ const kpiForm = ref({
   data: {},
   loading: false,
   dialog: false,
-  action: "add",
+  action: "view",
 });
 const totalPageCount = ref(0);
 const currentPage = ref(1);
@@ -104,10 +104,10 @@ const edit = (item) => {
   kpiForm.value = {
     ...kpiForm.value,
     ...{
-      title: "Edit " + item.title,
+      title: item.title,
       data: Object.assign({}, item),
       dialog: true,
-      action: "edit",
+      action: "view",
     },
   };
 };
