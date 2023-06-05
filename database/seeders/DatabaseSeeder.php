@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             IndustriesTableSeeder::class,
             CompaniesTableSeeder::class,
             UsersTableSeeder::class,
+            PerformanceSettingsTableSeeder::class
         ]);
     }
 }

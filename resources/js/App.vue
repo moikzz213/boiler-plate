@@ -2,14 +2,20 @@
   <div>
     <Employee v-if="authStore.authIsLoggedIn == true" />
     <Public v-else />
-    <v-dialog
-      v-model="settingStore.pageLoading.status"
-      fullscreen
-      :scrim="false"
-      transition="fade-transition"
-      persistent
+    <div
+      v-if="settingStore.pageLoading.status"
+      style="
+        position: fixed;
+        top: 0;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        width: 100%;
+        height: 100vh;
+        z-index: 100000;
+      "
     >
-      <v-card class="w-100 d-flex align-center justify-center">
+      <v-card class="w-100 h-screen d-flex flex-column align-center justify-center">
         <v-progress-circular
           class="mb-3"
           indeterminate
@@ -17,7 +23,7 @@
         ></v-progress-circular>
         <div class="text-body-1">{{ settingStore.pageLoading.msg }}</div>
       </v-card>
-    </v-dialog>
+    </div>
   </div>
 </template>
 <script setup>

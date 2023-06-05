@@ -123,7 +123,7 @@ const openPage = (pathName, openParams = null) => {
 const employees = ref([]);
 const getEmployees = async () => {
   await clientApi(authStore.authToken)
-    .get("/api/hr/employees/paginated")
+    .get("/api/hr/"+authStore.authProfile.ecode+"/employees")
     .then((res) => {
       console.log("emp", res);
       employees.value = res.data.data;

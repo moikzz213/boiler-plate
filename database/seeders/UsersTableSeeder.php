@@ -82,6 +82,7 @@ class UsersTableSeeder extends Seeder
             'superior_ecode' => '10003',
             'designation' => 'Project Manager',
             'role' => 'normal',
+            'hrbp_email' => 'indemnetest+2@gmail.com',
             'is_regular' => true,
         ]);
         $profile->save();
@@ -98,7 +99,24 @@ class UsersTableSeeder extends Seeder
             'superior_ecode' => '10003',
             'designation' => 'HR Manager',
             'is_regular' => false,
+            'hrbp_email' => 'indemnetest+2@gmail.com',
             'role' => 'hr_admin',
+        ]);
+        $profile->save();
+
+        $profile = new \App\Models\Profile([
+            'status' => 'active',
+            'display_name' => 'HRBP',
+            'fist_name' => 'HR',
+            'last_name' => 'BP',
+            'email' => 'indemnetest+2@gmail.com',
+            'company_id' => 1,
+            'ecode' => '10006',
+            'username' => '10006',
+            'superior_ecode' => '10003',
+            'designation' => 'HR Manager',
+            'is_regular' => false,
+            'role' => 'hrbp',
         ]);
         $profile->save();
     }
