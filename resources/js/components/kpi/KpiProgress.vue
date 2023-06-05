@@ -12,8 +12,7 @@
           :class="`${printColor(reviewSettings, index, statusIndex)}`">{{
             itemStatus.title }}</v-chip>
       </div>
-    </div>
-
+    </div> 
   </v-row>
 </template>
 <script setup>
@@ -23,11 +22,7 @@ const props = defineProps({
   selectedEmployee: {
     type: Object,
     default: null,
-  },
-  globalKeystatus:{
-    type: Object,
-    default: null,
-  },
+  }, 
   density: {
     type: String,
     default: "",
@@ -82,23 +77,25 @@ const printColor = (userState, index, statusIndex) => {
   
   if(userState && userState.reviews && userState.reviews.length > 0){ 
     let state = userState.reviews[0].state;
-    let status = userState.reviews[0].status; 
+    let status = userState.reviews[0].status;  
     let currentState = states.value.findIndex((el) => el.state == state);
+      
+          if (index < currentState) {
+            return 'bg-grey-darken-1';
+          } else if (index == currentState) {
+          
+            currentStatus = states.value[index].status.findIndex((el) => el.status == status);
+            if (currentStatus == statusIndex) {
+              return 'bg-secondary text-white';
+            } else if (statusIndex < currentStatus) {
+              return 'bg-grey-darken-1';
+            }  
+          }
 
-    if (index < currentState) {
-      return 'bg-grey-darken-1';
-    } else if (index == currentState) {
-    
-      currentStatus = states.value[index].status.findIndex((el) => el.status == status);
-      if (currentStatus == statusIndex) {
-        return 'bg-secondary text-white';
-      } else if (statusIndex < currentStatus) {
-        return 'bg-grey-darken-1';
-      }  
-    }
   } else if(userState && userState.length > 0) {
+     
     let user = userState[0].profile;
-    if(user.is_regular == 0){ 
+    if(user && user.is_regular == 0){ 
           let probationState = states.value.findIndex((el) => el.state == 'setting');
           let date = new Date(user.doj);
           
@@ -110,15 +107,34 @@ const printColor = (userState, index, statusIndex) => {
               return 'bg-secondary text-white';
             }
           } 
+      }else{
+        let state = userState[0].state;
+        let status = userState[0].status; 
+        let currentState = states.value.findIndex((el) => el.state == state);
+      
+          if (index < currentState) {
+            return 'bg-grey-darken-1';
+          } else if (index == currentState) {
+          
+            currentStatus = states.value[index].status.findIndex((el) => el.status == status);
+            if (currentStatus == statusIndex) {
+              return 'bg-secondary text-white';
+            } else if (statusIndex < currentStatus) {
+              return 'bg-grey-darken-1';
+            }  
+          }
       }
   }
   return '';  
 }
 
+ 
+
 const userProfile = ref(props.selectedEmployee);
 
 const reviewSettings = computed(() => {
   if (userProfile.value == null || !userProfile.value.reviews || userProfile.value.reviews.length == 0) {
+   
     return [{
       state: settingStore.pms_settings ? settingStore.pms_settings.state : null,
       status: settingStore.pms_settings ? settingStore.pms_settings.status : null,

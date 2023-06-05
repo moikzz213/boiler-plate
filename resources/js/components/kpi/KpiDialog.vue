@@ -139,7 +139,7 @@ const kpiEmit = defineEmits(['savedResponse'])
 
 const targetTypeList = ref(["min", "max"]);
 const measuresList = ref(["Percentage", "Units"]);
-const kpiWeightageList = ref(["5%", "10%", "15%"]);
+const kpiWeightageList = ref(["5%", "10%", "15%", "20%"]);
 const kpiAction = ref({});
 
 const kpiData = ref({});
@@ -157,13 +157,14 @@ const changeIndustry = () => {
 
 const saveKpi = () => {
     kpiAction.value.data = kpiData.value;
-    kpiAction.value.dialog = false; 
-  
-  kpiEmit('savedResponse', kpiAction.value);
+    kpiAction.value.dialog = false;
+    kpiEmit('savedResponse', kpiAction.value);
 };
+
 const submitReview = () => {
   console.log("submitReview");
 };
+
 watch(
   () => props.kpiOptions,
   (newVal) => { 

@@ -191,11 +191,11 @@ const settingStore = useSettingStore();
 const viewingEmployee = ref(props.selectedEmployee);
 
 const kpiArray = computed(() => { 
-  if (!viewingEmployee.value || (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0)) return [];
+  if (!viewingEmployee.value || (viewingEmployee.value && (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0))) return [];
   return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'kpi'); 
 });
 const ecdArray = computed(() => {
-  if (!viewingEmployee.value || (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0)) return [];
+  if (!viewingEmployee.value || (viewingEmployee.value && (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0))) return [];
     return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'ecd');  
 });
 
@@ -217,12 +217,12 @@ const canManage = computed(() => {
   
  if(settingStore.pmsSettings && settingStore.pmsSettings.state == 'setting' && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
     return true;
- }else if(viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
+ }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
         return authStore.authRole.includes("manager") && useRoute().name == "SingleTeamMember" && viewingEmployee.value.reviews[0].state == 'setting'
         &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')
           ? true
           : false;
-  } else if(viewingEmployee.value.is_regular == 0){ 
+  } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0){ 
         let date = new Date(viewingEmployee.value.doj);  
         date.setDate(date.getDate() +  parseInt(settingStore.pmsSettings.probation_kpi_setting));  
         if(date >= currentDate.value ){
