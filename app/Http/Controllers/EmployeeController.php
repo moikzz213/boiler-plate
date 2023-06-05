@@ -13,7 +13,7 @@ class EmployeeController extends Controller
         $profile = new Profile;
         $employees = null;
         if($auth->role == 'hrbp'){
-            $employees = Profile::where('hrbp_email',$auth->email)->paginate(20);
+            $employees = Profile::where('hrbp_email',$auth->email)->paginate(10);
         }elseif ($auth->role == 'hr_admin'){
             $employees = Profile::paginate(20);
         }

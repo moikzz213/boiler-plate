@@ -21,17 +21,25 @@
       </div>
       <div class="v-col-12 v-col-md-3">
         <v-autocomplete
-          v-model="selectedCompany"
-          :items="companyList"
+          v-model="filter.data.company_id"
+          :items="companyStore.companies"
+          item-title="title"
+          item-value="id"
           variant="outlined"
           density="compact"
           class="bg-white"
-          label="Select Company"
           hide-details
+          :label="loadingCompany ? 'Loading...' : 'Select Company'"
+          :loading="loadingCompany"
+          @focus="selectCompany"
         >
           <template v-slot:selection="{ props, item }">
             <span v-bind="props">
-              {{ item?.raw?.substring(0, 20) + "..." }}
+              {{
+                item.raw.title && item.raw.title.length > 15
+                  ? item.raw.title.substring(0, 15) + "..."
+                  : item.raw.title
+              }}
             </span>
           </template>
         </v-autocomplete>
@@ -95,7 +103,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { clientApi } from "@/services/clientApi";
@@ -103,6 +111,7 @@ import VueDatePicker from "@vuepic/vue-datepicker";
 import KpiProgress from "@/components/kpi/KpiProgress.vue";
 import EmployeeCard from "@/components/EmployeeCard.vue";
 import PageHeader from "@/components/pageHeader.vue";
+import { useCompanyStore } from "@/stores/company";
 
 // authenticated user object
 const authStore = useAuthStore();
@@ -119,11 +128,46 @@ const openPage = (pathName, openParams = null) => {
     .catch((err) => {});
 };
 
+
+// companies
+const companyStore = useCompanyStore();
+const loadingCompany = ref(false);
+const selectCompany = () => {
+  if (companyStore.companies.length == 0) {
+    loadingCompany.value = true;
+    companyStore.getCompanies(authStore.authToken).then(() => {
+      loadingCompany.value = false;
+    });
+  }
+};
+
+// filter employee
+const year = ref(new Date().getFullYear());
+const employeeTypeList = ref(["Regular", "Probation"]);
+const selectedEmployeeType = ref("Regular");
+const filter = ref({
+  data: {
+    employee: "",
+    company_id: null,
+  },
+});
+const runFilter = async () => {
+  filter.value.data = {
+    ...filter.value.data,
+    ...{
+      employee_type: selectedEmployeeType.value,
+      year: year.value,
+    },
+  };
+  console.log("filter", filter.value);
+};
+
+
 // employees
 const employees = ref([]);
 const getEmployees = async () => {
   await clientApi(authStore.authToken)
-    .get("/api/hr/"+authStore.authProfile.ecode+"/employees")
+    .get("/api/hr/" + authStore.authProfile.ecode + "/employees/page/?page"+1, filter.value)
     .then((res) => {
       console.log("emp", res);
       employees.value = res.data.data;
@@ -132,37 +176,7 @@ const getEmployees = async () => {
       console.log("getEmployees", err);
     });
 };
-onMounted(() => {
-  getEmployees();
-});
-
-// filter employee
-const year = ref(new Date().getFullYear());
-const employeeTypeList = ref(["Regular", "Probation"]);
-const companyList = ref([
-  "Ghassan Aboud Group FZE",
-  "Grandiose Supermarket",
-  "Grandiose Catering",
-  "Gallega",
-]);
-const selectedCompany = ref("Ghassan Aboud Group FZE");
-const selectedEmployeeType = ref("Regular");
-const filter = ref({
-  data: {
-    employee: "",
-  },
-});
-const runFilter = async () => {
-  filter.value.data = {
-    ...filter.value.data,
-    ...{
-      employee_type: selectedEmployeeType.value,
-      company: selectedCompany.value,
-      year: year.value,
-    },
-  };
-  console.log("filter", filter.value);
-};
+getEmployees();
 
 // open Employee
 const openEmployee = (profile) => {
