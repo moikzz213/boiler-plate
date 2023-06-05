@@ -93,8 +93,8 @@
                 style="
                   height: 56px;
                   overflow: hidden;
-                  min-width: 300px;
-                  max-width: 300px;
+                  min-width: 600px;
+                  max-width: 600px;
                   width: 100%;
                 "
               >

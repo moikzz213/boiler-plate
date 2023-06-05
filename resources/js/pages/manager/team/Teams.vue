@@ -15,6 +15,8 @@
           hide-details
           clearable
           label="Input Employee Code"
+          @keydown.enter="runFilter"
+          @click:clear="clearField"
         >
         </v-text-field>
       </div>
@@ -58,7 +60,7 @@
               </div>
               <div class="v-col-12 v-col-md-1 d-flex justify-end align-center"> 
                
-                <div v-if="settingStore.pmsSettings.state != 'yearend' || (user.reviews && user.reviews.length > 0 && user.reviews[0].type == 'probation' && user.reviews[0].state != 'final_review')">
+                <div v-if="settingStore.pmsSettings && settingStore.pmsSettings.state != 'yearend' || (user.reviews && user.reviews.length > 0 && user.reviews[0].type == 'probation' && user.reviews[0].state != 'final_review')">
                   <div>
                     
                     {{ ratingOrWeightage(user) }} / 100
@@ -101,6 +103,7 @@
         </div>
       </v-card>
     </v-dialog>
+    <SnackBar :options="sbOptions" />
   </v-container>
 </template>
 <script setup>
@@ -111,6 +114,7 @@ import KpiProgress from "@/components/kpi/KpiProgress.vue";
 import EmployeeCard from "@/components/EmployeeCard.vue";
 import { clientApi } from "@/services/clientApi";
 import { useSettingStore } from "@/stores/settings";
+import SnackBar from "@/components/SnackBar.vue";
 const router = useRouter();
 const openPage = (pathName, openParams = null) => {
   let paramsValue = openParams ? Object.assign({}, openParams) : false;
@@ -122,10 +126,11 @@ const openPage = (pathName, openParams = null) => {
     .catch((err) => {});
 };
 
+const sbOptions = ref({});
 // authenticated user object
 const authStore = useAuthStore();
 const settingStore = useSettingStore();
-
+ 
 const managerTeam = ref(authStore.authProfile.teams);
 const year = ref(new Date().getFullYear());
 const currentDate = ref(new Date());
@@ -157,25 +162,43 @@ const ratingOrWeightage = (user) => {
 const selectedUser = ref({});
 const dialogOpenMember = ref(false);
 const noKPIEmployee = ref(false);
+
+const clearField = () => { 
+  filter.value.data.employee = '';
+  managerTeam.value = authStore.authProfile.teams;
+};
+
 const confirmOpenMember = () => {
   clientApi(authStore.authToken)
     .post('/api/create/employee-review/year', 
     { ecode: selectedUser.value.ecode, 
-      manager_ecode: authStore.authProfile.ecode,
       is_regular: selectedUser.value.is_regular, 
       setting: settingStore.pmsSettings, 
       year: year.value,
       author: authStore.authProfile.display_name + " " + authStore.authProfile.ecode
     })
+    .then((res) => {  
+      sbOptions.value = {
+        status: true,
+        type: "success",
+        text: res.data.message,
+      };
+    });
+
+    clientApi(authStore.authToken)
+    .get('/api/fetch/auth-profile/kpi/'+authStore.authProfile.ecode 
+     )
     .then((res) => { 
-      authStore.setProfile(res.data.result);
+      authStore.setProfile(res.data.result).then(()=>{
+        openPage("SingleTeamMember", { id: selectedUser.value.ecode });
+      }); 
     })
     .catch((err) => {
 
     });  
 
   // redirect to SingleTeamMember
-  openPage("SingleTeamMember", { id: selectedUser.value.ecode });
+  
 };
 const openMember = (user) => {
   selectedUser.value = Object.assign({}, user);
@@ -216,6 +239,5 @@ const filterTeamMethod = () => {
       }
     }); 
     managerTeam.value = result; 
-}
-
+};
 </script>

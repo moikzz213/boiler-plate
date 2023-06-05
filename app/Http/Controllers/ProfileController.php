@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Profile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class ProfileController extends Controller
 {
@@ -56,6 +57,17 @@ class ProfileController extends Controller
         ], 200);
     }
 
+    public function fetchAuthProfile($ecode){
+        $profile = Profile::where('ecode', $ecode )->with('teams.reviews.keyReview','teams.company', 'reviews.keyReview','company')
+        ->with('reviews',function ($q) {
+            $q->where('year', Carbon::now()->format('Y'));
+        })->first();
+
+        return response()->json([
+            'result' => $profile
+        ], 200);
+    }
+
     public function createReviewByYear(Request $request){
       
         $query = Profile::where('ecode', $request->ecode )->first();  
@@ -68,13 +80,8 @@ class ProfileController extends Controller
             'author'        => $request->author
         ]);
 
-        $profile = Profile::where('ecode', $request->manager_ecode )->with('teams.reviews.keyReview','teams.company', 'reviews.keyReview','company')
-        ->with('reviews',function ($q) {
-            $q->where('year', Carbon::now()->format('Y'));
-        })->first();
-
         return response()->json([
-            'result' => $profile
+            'message' => 'KPI has been created'
         ], 200);
     } 
     

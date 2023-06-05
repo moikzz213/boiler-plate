@@ -21,9 +21,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             IndustriesTableSeeder::class,
-            CompaniesTableSeeder::class,
-            UsersTableSeeder::class,
-            PerformanceSettingsTableSeeder::class
+            // CompaniesTableSeeder::class,
+            // UsersTableSeeder::class,
+            // PerformanceSettingsTableSeeder::class
         ]);
     }
 }

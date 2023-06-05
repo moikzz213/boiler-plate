@@ -36,7 +36,7 @@
           <div v-else class="text-uppercase text-center">
             {{ selectedTab == 'ecd' ? 'Employee Capability Development' : selectedTab }} List
           </div>
-          <div v-if="canManage" class="ml-auto text-body-1">Remaining weightage: 70%</div>
+          <div v-if="canManage" class="ml-auto text-body-1">Remaining weightage: 100%</div>
         </v-card-title>
         <v-card-text class="px-5 pb-10">
           <v-row v-show="selectedTab == 'kpi'" class="mt-n3">
@@ -146,8 +146,9 @@
       </v-card>
     </v-dialog>
 
-    <KpiDialog :kpi-options="kpiOptions" :submit-button="props.submitButton" />
-    <EcdDialog :ecd-options="ecdOptions" :submit-button="props.submitButton" />
+    <KpiDialog :kpi-options="kpiOptions" :industry-list="industryList"  :submit-button="props.submitButton"  @savedResponse="savedResponseMethod"/>
+    <EcdDialog :ecd-options="ecdOptions" :ecd-list="ecdList" :submit-button="props.submitButton" @savedResponse="savedResponseMethod"/>
+    <SnackBar :options="sbOptions" />
   </v-row>
 </template>
 
@@ -160,6 +161,8 @@ import VueDatePicker from "@vuepic/vue-datepicker";
 import KpiDialog from "@/components/kpi/KpiDialog.vue";
 import EcdDialog from "@/components/kpi/EcdDialog.vue";
 import { useRouter } from "vue-router";
+import { useSettingStore } from "@/stores/settings";
+import SnackBar from "@/components/SnackBar.vue";
 const router = useRouter();
 const kpiEmit = defineEmits(['yearchange'])
 
@@ -169,39 +172,66 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  industryList: {
+    type: Object,
+    default: null
+  },
+  ecdList: {
+    type: Object,
+    default: null
+  },
   submitButton: {
     type: Boolean,
     default: true
   }
 });
 
+const sbOptions = ref({});
+const settingStore = useSettingStore();
 const viewingEmployee = ref(props.selectedEmployee);
 
-const kpiArray = computed(() => {
-  if (!viewingEmployee.value || (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0)) return [];
+const kpiArray = computed(() => { 
+  if (!viewingEmployee.value || (viewingEmployee.value && (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0))) return [];
   return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'kpi'); 
 });
 const ecdArray = computed(() => {
-  if (!viewingEmployee.value || (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0)) return [];
+  if (!viewingEmployee.value || (viewingEmployee.value && (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0))) return [];
     return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'ecd');  
 });
 
 watch(
   () => props.selectedEmployee,
-  (newVal) => {  
+  (newVal) => {
     viewingEmployee.value = Object.assign({}, newVal); 
   }
-);
+); 
 
 // tabs
 const selectedTab = ref("kpi");
 const selectTab = (tab) => {
   selectedTab.value = tab;
 };
+
+const currentDate = ref(new Date());
 const canManage = computed(() => {
-  return authStore.authRole.includes("manager") && useRoute().name == "SingleTeamMember" && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')
-    ? true
-    : false;
+  
+ if(settingStore.pmsSettings && settingStore.pmsSettings.state == 'setting' && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
+    return true;
+ }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
+        return authStore.authRole.includes("manager") && useRoute().name == "SingleTeamMember" && viewingEmployee.value.reviews[0].state == 'setting'
+        &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')
+          ? true
+          : false;
+  } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0){ 
+        let date = new Date(viewingEmployee.value.doj);  
+        date.setDate(date.getDate() +  parseInt(settingStore.pmsSettings.probation_kpi_setting));  
+        if(date >= currentDate.value ){
+          return true;
+        } 
+  } 
+//  else{
+//   return false;
+//  }
 });
 
 // kpi
@@ -244,16 +274,14 @@ const ecdOptions = ref({
 const addKPI = async (type) => {
   if (type == "kpi") {
     kpiOptions.value = {
-      ...kpiOptions.value,
-      ...{
-        title: "Add KPI ",
-        data: {},
-        dialog: true,
-        type: type,
-        action: "add",
-        is_review: false,
-      },
-    };
+              title: "Add KPI ",
+              data: {},
+              dialog: true,
+              type: type,
+              action: "add",
+              is_review: false,
+          
+          };
   }
   if (type == "ecd") {
     ecdOptions.value = {
@@ -327,6 +355,15 @@ const reviewKPI = async (item, type = "kpi") => {
   }
  
 };
+
+const savedResponseMethod = (v) => {
+  console.log("KPI COntent Emitted",v);
+  sbOptions.value = {
+        status: true,
+        type: "success",
+        text: "res.data.message",
+      };
+}
 
 // remove kpi
 const toRemoveKpi = ref({

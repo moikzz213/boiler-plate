@@ -13,6 +13,12 @@ class KeyPerformanceIndicatorMasterController extends Controller
         return response()->json($kpis, 200);
     }
 
+    public function getNoNPaginatedKpis()
+    {
+        $kpis = KeyPerformanceIndicatorMaster::where('status','active')->orderBy('title','ASC')->get();
+        return response()->json($kpis, 200);
+    }
+
     public function saveKpi(Request $request)
     {
         if($request['id']){

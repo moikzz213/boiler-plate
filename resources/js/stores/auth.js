@@ -42,7 +42,7 @@ export const useAuthStore = defineStore("authClient", {
         async saveClientKey(data) {
             let ckData = {
                 key: data.token,
-                user_ecode: data.user.ecode,
+                user_ecode: data.user.username,
             };
             const response = await axios.post("/client/savekey", ckData);
             if (response) {

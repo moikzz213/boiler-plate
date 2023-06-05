@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="ecdData.dialog"
+    v-model="kpiAction.dialog"
     width="100%"
     :max-width="`${ecdOptions.is_review == true ? '1240' : '900'} `"
     persistent
@@ -9,7 +9,7 @@
       <v-row class="ma-0 pa-0">
         <div :class="`v-col-12 ${ecdOptions.is_review == true ? 'v-col-md-8' : ''} px-4`">
           <v-row>
-            <div class="v-col-12">{{ ecdData.title }} {{}}</div>
+            <div class="v-col-12">{{ kpiAction.title }} {{}}</div>
 
             <div class="v-col-12 py-0">
               <v-autocomplete
@@ -17,6 +17,7 @@
                 :items="kpiList"
                 item-title="title"
                 item-value="id"
+                return-object
                 variant="outlined"
                 density="compact"
                 label="Select KPI*"
@@ -38,32 +39,20 @@
               ></v-select>
             </div>
             <div class="v-col-12 py-0">
-              <v-autocomplete
-                v-model="ecdData.target_type"
-                :items="skillTypes"
-                item-title="title"
-                item-value="id"
-                variant="outlined"
-                density="compact"
-                label="Select Type*"
-                chips
-                closable-chips
-                multiple
-              >
-              </v-autocomplete>
+              <v-text-field v-model="ecdType" density="company" variant="outlined" disabled></v-text-field>
             </div>
             <div class="v-col-12 py-0">
               <v-divider class="mx-auto"></v-divider>
             </div>
-            <div v-if="!ecdOptions.is_review" class="v-col-12 d-flex justify-end">
-              <v-btn color="primary" variant="text" @click="ecdData.dialog = false"
+            <div v-if="!kpiAction.is_review" class="v-col-12 d-flex justify-end">
+              <v-btn color="primary" variant="text" @click="kpiAction.dialog = false"
                 >Cancel</v-btn
               >
               <v-btn color="primary" class="ml-2 px-8" @click="saveKpi">save</v-btn>
             </div>
           </v-row>
         </div>
-        <div v-if="ecdOptions.is_review" class="v-col-12 v-col-md-4 bg-grey-lighten-4">
+        <div v-if="kpiAction.is_review" class="v-col-12 v-col-md-4 bg-grey-lighten-4">
           <v-row class="px-3">
             <div class="v-col-12 px-1">{{ "Review" }}</div>
             <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
@@ -139,7 +128,7 @@
               <v-btn
                 class="bg-grey-lighten-2 text-primary"
                 variant="text"
-                @click="ecdData.dialog = false"
+                @click="kpiAction.dialog = false"
                 >Cancel</v-btn
               >
               <v-btn color="primary" class="ml-2" @click="submitReview">Submit</v-btn>
@@ -152,75 +141,48 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch } from "vue"; 
+
 const props = defineProps({
   ecdOptions: {
     type: Object,
     default: null,
   },
+  ecdList: {
+    type: Object,
+    default: null,
+  },
 });
 
+const kpiEmit = defineEmits(['savedResponse']);
 // save kpi
 const ecdData = ref({});
-const kpiList = ref([
-  {
-    id: 1,
-    title:
-      "Percentage Cost of logistics for shipping orders with healthcare products and equipment",
-    industry: "Healthcare Trading",
-  },
-  {
-    id: 2,
-    title: "logistics for shipping orders with healthcare products and equipment",
-    industry: "Healthcare Trading",
-  },
-  {
-    id: 3,
-    title: "Hipping orders with healthcare products and equipment",
-    industry: "Healthcare Trading",
-  },
-  {
-    id: 4,
-    title: "Cost of logistics for shipping orders with healthcare products and equipment",
-    industry: "Healthcare Trading",
-  },
-]);
+const kpiList = ref([]);
 const selectedKpi = ref(null);
-const industryList = ref([
-  {
-    id: 1,
-    title: "Healthcare Trading",
-  },
-  {
-    id: 2,
-    title: "IT",
-  },
-]);
-const selectedIndustry = ref(null);
-const skillTypes = ref([
-  {
-    id: 1,
-    title: "Soft Skills",
-  },
-  {
-    id: 2,
-    title: "Technical Skills",
-  },
-]);
-const measuresList = ref(["Percentage", "Units"]);
+const kpiAction = ref({});
+const ecdType = ref(null);
+
 const kpiWeightageList = ref(["5%", "10%", "15%"]);
 const saveKpi = () => {
   console.log("saveKpi");
+  kpiAction.value.data = kpiData.value;
+  kpiAction.value.dialog = false;  
+  kpiEmit('savedResponse', kpiAction.value);
 };
-const submitReview = () => {
-  console.log("submitReview");
-};
+
 watch(
   () => props.ecdOptions,
   (newVal) => {
-    ecdData.value = Object.assign({}, newVal);
-    selectedIndustry.value = newVal.action == "edit" ? newVal.data.industry : null;
-    selectedKpi.value = newVal.action == "edit" ? newVal.data.kpi_id : null;
+    kpiList.value = props.ecdList;
+    ecdData.value = Object.assign({}, newVal.data);
+    kpiAction.value = Object.assign({}, newVal);  
   }
 );
+
+watch (
+  ()=> selectedKpi.value,
+  (newVal) => {
+    ecdType.value = newVal.ecd_type;
+  }
+)
 </script>

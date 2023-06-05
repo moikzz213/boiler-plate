@@ -1,5 +1,10 @@
 <template>
-  <v-container class="pb-16">
+  <v-container class="pb-16"> 
+    <v-row class="my-5" v-if="selectedProfileKpi && (selectedProfileKpi.role == 'hr_admin' || selectedProfileKpi.role == 'app_admin')">
+      <div class="v-col-12">  
+         <GraphAdmin/>
+      </div>
+    </v-row>
     <v-row class="my-5">
       <div class="v-col-12">
         <div class="text-h6 mb-3">My KPI</div>
@@ -23,11 +28,14 @@ import { clientApi } from "@/services/clientApi";
 const KpiProgress = defineAsyncComponent(() =>
   import("../components/kpi/KpiProgress.vue")
 ); 
+const GraphAdmin = defineAsyncComponent(() =>
+  import("../components/Graph.vue")
+); 
 
 // authenticated user object
 const authStore = useAuthStore();
 const selectedProfileKpi = ref(authStore.authProfile);
- 
+ console.log(selectedProfileKpi.value);
 const selectedYearResponse = (v) => {
   getKPI(v)
 }
