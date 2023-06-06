@@ -1,7 +1,6 @@
 <template>
   <v-container class="pb-16">
-    <PageHeader title="Employees" />
-    <v-row>
+    <v-row class="mt-5">
       <div class="v-col-12">
         <div class="text-h6">Employee List {{ "(" + totalResult + ")" }}</div>
       </div>
@@ -110,6 +109,7 @@
           v-model="currentPage"
           class="my-4"
           :length="totalPageCount"
+          :total-visible="8"
           variant="elevated"
           active-color="primary"
           density="comfortable"
@@ -132,7 +132,6 @@ import { clientApi } from "@/services/clientApi";
 import { useCompanyStore } from "@/stores/company";
 import KpiProgress from "@/components/kpi/KpiProgress.vue";
 import EmployeeCard from "@/components/EmployeeCard.vue";
-import PageHeader from "@/components/pageHeader.vue";
 
 // authenticated user object
 const authStore = useAuthStore();

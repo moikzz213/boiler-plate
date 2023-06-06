@@ -271,7 +271,15 @@ const appName = ref(import.meta.env.VITE_APP_NAME);
 const logo = ref(import.meta.env.VITE_APP_URL + "/assets/images/fav.png");
 
 // profile header
-const profileHeaderList = ref(["Dashboard", "Account", "Teams", "ManagerCustomKPI"]);
+const profileHeaderList = ref([
+  "Dashboard",
+  "Account",
+  "Teams",
+  "ManagerCustomKPI",
+  "PaginatedManagerCustomKPI",
+  "Employees",
+  "SingleEmployee"
+]);
 
 // navigation
 const authStore = useAuthStore();
