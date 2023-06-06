@@ -119,7 +119,7 @@ const industryForm = ref({
   action: "add",
 });
 const totalPageCount = ref(0);
-const currentPage = ref(route.params ? route.params.page : 1);
+const currentPage = ref(route.params && route.params.page ? route.params.page : 1);
 const getData = async (page) => {
   await clientApi(authStore.authToken)
     .get("/api/hr/industries?page=" + page)

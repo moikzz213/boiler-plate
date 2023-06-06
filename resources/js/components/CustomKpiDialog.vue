@@ -95,18 +95,33 @@
               <v-divider class="mx-auto"></v-divider>
             </div>
             <div class="v-col-12 d-flex justify-end">
-              <v-btn color="primary" variant="text" @click="kpiData.dialog = false"
+              <v-btn
+                v-if="kpiData.action == 'view'"
+                color="primary"
+                @click="kpiData.dialog = false"
+                >Okay</v-btn
+              >
+              <v-btn
+                v-if="['edit', 'add', 'approve'].includes(kpiData.action) == true"
+                color="primary"
+                variant="text"
+                @click="kpiData.dialog = false"
                 >Cancel</v-btn
               >
               <v-btn
-                v-if="props.isHr == false"
+                v-if="['edit', 'add'].includes(kpiData.action) == true"
                 color="primary"
                 class="ml-2 px-8"
                 @click="saveKpi"
                 :loading="kpiData.loading"
                 >save</v-btn
               >
-              <v-btn v-else color="primary" class="ml-2 px-8" @click="approveKpi"
+              <v-btn
+                v-if="kpiData.action == 'approve'"
+                color="primary"
+                class="ml-2 px-8"
+                :loading="kpiData.loading"
+                @click="approveKpi"
                 >Approve</v-btn
               >
             </div>
@@ -121,7 +136,9 @@
 import { ref, watch } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useIndustryStore } from "@/stores/industry";
-const emit = defineEmits(["save"]);
+import { useRoute } from "vue-router";
+const route = useRoute();
+const emit = defineEmits(["save", "approve"]);
 const props = defineProps({
   kpiOptions: {
     type: Object,
@@ -162,7 +179,8 @@ const saveKpi = () => {
   emit("save", kpiData.value.data);
 };
 const approveKpi = () => {
-  console.log("approveKpi");
+  kpiData.value.loading = true;
+  emit("approve", kpiData.value.data);
 };
 watch(
   () => props.kpiOptions,

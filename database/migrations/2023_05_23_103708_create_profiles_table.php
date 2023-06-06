@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
-            $table->unsignedTinyInteger('grade');
+            $table->unsignedTinyInteger('grade')->nullable();
             $table->string('status')->nullable()->default('active');; // active, inactive
             $table->string('ecode')->unique()->nullable();
             $table->string('username')->nullable();
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->string('nationality')->nullable();
             $table->string('role')->nullable(); // hr_admin, hrbp
             $table->boolean('is_regular')->nullable()->default(true);
-            $table->foreignId('company_id')->constrained();
+            $table->foreignId('company_id')->constrained()->nullable();
             $table->timestamps();
         });
     }

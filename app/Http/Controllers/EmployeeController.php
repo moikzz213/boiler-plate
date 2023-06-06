@@ -7,9 +7,16 @@ use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
 {
-    public function getPaginatedEmployees()
+    public function getEmployees($ecode)
     {
-        $employees = Profile::paginate(20);
+        $auth = Profile::where('ecode',$ecode)->first();
+        $profile = new Profile;
+        $employees = null;
+        if($auth->role == 'hrbp'){
+            $employees = Profile::where('hrbp_email',$auth->email)->paginate(10);
+        }elseif ($auth->role == 'hr_admin'){
+            $employees = Profile::paginate(20);
+        }
         return response()->json($employees, 200);
     }
 }

@@ -42,7 +42,9 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
     // pms settings
     Route::post('/pms-settings/save', [PerformanceSettingController::class, 'saveSetting'])->name('hr.pms.settings.save');
     Route::get('/pms-setting/{id}', [PerformanceSettingController::class, 'getSingleSetting'])->name('hr.pms.settings.single');
-
+    // custom kpi
+    Route::get('/kpi/list/{status}', [KeyPerformanceIndicatorMasterController::class, 'getKpiByStatus'])->name('manager.custom.kpi.paginated');
+    Route::post('/custom-kpi/approve', [KeyPerformanceIndicatorMasterController::class, 'approveCustomKpi'])->name('manager.custom.kpi.approve');
 });
 
 // companies

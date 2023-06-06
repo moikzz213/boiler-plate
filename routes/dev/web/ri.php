@@ -23,12 +23,14 @@ use App\Http\Controllers\PerformanceSettingController;
 
 Route::prefix('hr')->group(function () {
     // industries
-    // Route::get('/hr/industries', [PageController::class, 'home'])->name('hr.industries');
-    Route::get('/industries/page/{page}', [PageController::class, 'home'])->name('hr.industries');
+    Route::get('/industries', [PageController::class, 'home'])->name('hr.industries');
+    Route::get('/industries/page/{page}', [PageController::class, 'home'])->name('hr.industries.paginated');
     // measures
-    Route::get('/measures/page/{page}', [PageController::class, 'home'])->name('hr.measures');
+    Route::get('/measures', [PageController::class, 'home'])->name('hr.measures');
+    Route::get('/measures/page/{page}', [PageController::class, 'home'])->name('hr.measures.paginated');
     // weitages
-    Route::get('/weightages/page/{page}', [PageController::class, 'home'])->name('hr.weightages');
+    Route::get('/weightages', [PageController::class, 'home'])->name('hr.weightages');
+    Route::get('/weightages/page/{page}', [PageController::class, 'home'])->name('hr.weightages.paginated');
 });
 
 Route::prefix('manager')->group(function () {

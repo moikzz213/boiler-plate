@@ -29,7 +29,7 @@
             label="Password"
             type="password"
           >
-          </v-text-field> 
+          </v-text-field>
           <v-btn
             @click="login"
             width="100%"
@@ -39,7 +39,7 @@
             :loading="loadingLogin"
             >Login</v-btn
           >
-          <div class="text-error mt-3">{{ hasError == true ? message : '' }}</div>
+          <div class="text-error mt-3">{{ hasError == true ? message : "" }}</div>
         </v-form>
       </v-card-text>
     </v-card>
@@ -72,12 +72,12 @@ const loadingLogin = ref(false);
 const credentials = ref({
   login: "103839",
   password: "103839",
-  url: key.value
+  url: key.value,
 });
- 
+
 const hasError = ref(false);
-const message = ref('');
- 
+const message = ref("");
+
 const login = async () => {
   loadingLogin.value = true;
   authLogin()
@@ -85,22 +85,22 @@ const login = async () => {
       settingStore.setPageLoading(true, "logging in");
 
       // redirect to previous path
-      // console.log(router.options.history.state.back);
-      let previousPath = router.options.history.state.back
-        ? router.options.history.state.back
-        : null;
+      //   let redirectPath = router.options.history.state.back
+      //     ? router.options.history.state.back
+      //     : "/dashboard";
+      let redirectPath = "/dashboard";
       authStore
         .saveClientKey(res.data)
         .then((keyResponse) => {
           loadingLogin.value = false;
-          settingStore.setPageLoading(false, "logging in");
           settingStore.setPmsSettings(keyResponse.data.pms_settings);
-          router.push({ path: previousPath ? previousPath : "/dashboard" });
+          router.push({ path: redirectPath });
+          settingStore.setPageLoading(false, "logging in");
         })
         .catch(() => {
           loadingLogin.value = false;
           settingStore.setPageLoading(false, "logging in");
-        }); 
+        });
     })
     .catch((err) => {
       loadingLogin.value = false;
@@ -115,10 +115,10 @@ const authLogin = async () => {
     password: credentials.value.password,
     url: credentials.value.url,
   };
-  
+
   const response = await authApi.post("/api/sanctumlogin", data);
-  if(response.data.status == false){
-    hasError.value = true;  
+  if (response.data.status == false) {
+    hasError.value = true;
     message.value = response.data.message;
     loadingLogin.value = false;
     return false;

@@ -87,4 +87,23 @@ class KeyPerformanceIndicatorMasterController extends Controller
             'message' => 'Custom KPI removed successfully'
         ], 200);
     }
+
+    public function getKpiByStatus($status)
+    {
+        $kpis = KeyPerformanceIndicatorMaster::where('status', $status)
+        ->with('industry')
+        ->paginate(10);
+        return response()->json($kpis, 200);
+    }
+
+    public function approveCustomKpi(Request $request)
+    {
+        $kpis = KeyPerformanceIndicatorMaster::where('id', $request['id'])
+        ->update([
+            'status' => 'approved',
+        ]);
+        return response()->json([
+            'message' => 'Custom KPI approved successfully'
+        ], 200);
+    }
 }

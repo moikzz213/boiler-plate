@@ -294,7 +294,7 @@ const sideNavigation = ref([
     title: "My Custom KPI",
     icon: mdiChartTimelineVariant,
     roles: ["app_admin", "manager"],
-    path: "/manager/custom-kpi/page/1",
+    path: "/manager/custom-kpi",
   },
   {
     title: "Employees",
@@ -326,17 +326,17 @@ const sideNavigation = ref([
       {
         title: "Industries",
         icon: mdiDomain,
-        path: "/hr/industries/page/1",
+        path: "/hr/industries",
       },
       {
         title: "Measures",
         icon: mdiRuler,
-        path: "/hr/measures/page/1",
+        path: "/hr/measures",
       },
       {
         title: "Weightage",
         icon: mdiPercent,
-        path: "/hr/weightages/page/1",
+        path: "/hr/weightages",
       },
     ],
   },
