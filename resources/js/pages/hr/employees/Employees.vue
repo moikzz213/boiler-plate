@@ -3,7 +3,7 @@
     <PageHeader title="Employees" />
     <v-row>
       <div class="v-col-12">
-        <div class="text-h6">Employee List {{ "(" + employees.length + ")" }}</div>
+        <div class="text-h6">Employee List {{ "(" + totalResult + ")" }}</div>
       </div>
       <div class="v-col-12 v-col-md-3">
         <v-text-field
@@ -16,10 +16,7 @@
         >
         </v-text-field>
       </div>
-      <div class="v-col-12 v-col-md-2">
-        <VueDatePicker v-model="year" year-picker class="pms-date-picker" />
-      </div>
-      <div class="v-col-12 v-col-md-3">
+      <div class="v-col-12 v-col-md-4">
         <v-autocomplete
           v-model="filter.data.company_id"
           :items="companyStore.companies"
@@ -31,13 +28,14 @@
           hide-details
           :label="loadingCompany ? 'Loading...' : 'Select Company'"
           :loading="loadingCompany"
-          @focus="selectCompany"
+          clearable
+          @focus="loadCompnaies"
         >
           <template v-slot:selection="{ props, item }">
             <span v-bind="props">
               {{
-                item.raw.title && item.raw.title.length > 15
-                  ? item.raw.title.substring(0, 15) + "..."
+                item.raw.title && item.raw.title.length > 20
+                  ? item.raw.title.substring(0, 20) + "..."
                   : item.raw.title
               }}
             </span>
@@ -46,8 +44,10 @@
       </div>
       <div class="v-col-12 v-col-md-2">
         <v-select
-          v-model="selectedEmployeeType"
+          v-model="filter.data.is_regular"
           :items="employeeTypeList"
+          item-title="title"
+          item-value="value"
           variant="outlined"
           density="compact"
           class="bg-white"
@@ -56,15 +56,28 @@
         >
         </v-select>
       </div>
-      <div class="v-col-12 v-col-md-2">
-        <v-btn
-          block
-          @click="runFilter"
-          height="40px"
-          color="primary"
-          class="text-capitalize"
-          >Search</v-btn
-        >
+      <div class="v-col-12 v-col-md-3">
+        <div class="d-flex justify-space-between">
+          <v-btn
+            @click="resetFilter"
+            height="40px"
+            variant="text"
+            color="primary"
+            class="bg-grey-lighten-2 text-capitalize"
+            :loading="filter.loadingReset"
+            style="width: 48%"
+            >Reset</v-btn
+          >
+          <v-btn
+            @click="runFilter"
+            height="40px"
+            color="primary"
+            class="text-capitalize"
+            :loading="filter.loadingFilter"
+            style="width: 48%"
+            >Search</v-btn
+          >
+        </div>
       </div>
     </v-row>
     <v-row>
@@ -92,6 +105,15 @@
             </v-row>
           </v-card-text>
         </v-card>
+        <v-pagination
+          v-if="totalPageCount > 1"
+          v-model="currentPage"
+          class="my-4"
+          :length="totalPageCount"
+          variant="elevated"
+          active-color="primary"
+          density="comfortable"
+        ></v-pagination>
       </div>
       <div v-else class="v-col-12">
         <v-card>
@@ -103,21 +125,21 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { ref, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { clientApi } from "@/services/clientApi";
-import VueDatePicker from "@vuepic/vue-datepicker";
+import { useCompanyStore } from "@/stores/company";
 import KpiProgress from "@/components/kpi/KpiProgress.vue";
 import EmployeeCard from "@/components/EmployeeCard.vue";
 import PageHeader from "@/components/pageHeader.vue";
-import { useCompanyStore } from "@/stores/company";
 
 // authenticated user object
 const authStore = useAuthStore();
 
 // router
 const router = useRouter();
+const route = useRoute();
 const openPage = (pathName, openParams = null) => {
   let paramsValue = openParams ? Object.assign({}, openParams) : false;
   router
@@ -128,11 +150,10 @@ const openPage = (pathName, openParams = null) => {
     .catch((err) => {});
 };
 
-
 // companies
 const companyStore = useCompanyStore();
 const loadingCompany = ref(false);
-const selectCompany = () => {
+const loadCompnaies = () => {
   if (companyStore.companies.length == 0) {
     loadingCompany.value = true;
     companyStore.getCompanies(authStore.authToken).then(() => {
@@ -142,41 +163,96 @@ const selectCompany = () => {
 };
 
 // filter employee
-const year = ref(new Date().getFullYear());
-const employeeTypeList = ref(["Regular", "Probation"]);
-const selectedEmployeeType = ref("Regular");
+const employeeTypeList = ref([
+  {
+    value: 1,
+    title: "Regular",
+  },
+  {
+    value: 0,
+    title: "Probation",
+  },
+]);
 const filter = ref({
+  loadingReset: false,
+  loadingFilter: false,
   data: {
-    employee: "",
+    employee: null,
     company_id: null,
+    is_regular: 1,
   },
 });
 const runFilter = async () => {
-  filter.value.data = {
-    ...filter.value.data,
-    ...{
-      employee_type: selectedEmployeeType.value,
-      year: year.value,
-    },
-  };
-  console.log("filter", filter.value);
+  filter.value.loadingFilter = true;
+  getEmployees(1)
+    .then(() => {
+      filter.value.loadingFilter = false;
+    })
+    .catch((err) => {
+      filter.value.loadingFilter = false;
+    });
 };
-
+const resetFilter = async () => {
+  filter.value.data = {
+    employee: null,
+    company_id: null,
+    is_regular: 1,
+  };
+  filter.value.loadingReset = true;
+  getEmployees(1)
+    .then(() => {
+      filter.value.loadingReset = false;
+    })
+    .catch((err) => {
+      filter.value.loadingReset = false;
+    });
+};
 
 // employees
 const employees = ref([]);
-const getEmployees = async () => {
+const totalPageCount = ref(0);
+const totalResult = ref(0);
+const currentPage = ref(route.params && route.params.page ? route.params.page : 1);
+const getEmployees = async (page) => {
+  let endpoint =
+    "/api/hr/" +
+    authStore.authProfile.ecode +
+    "/employees?&filter[is_regular]=" +
+    filter.value.data.is_regular;
+  if (filter.value.data.company_id !== null) {
+    endpoint += "&filter[company_id]=" + filter.value.data.company_id;
+  }
+  if (filter.value.data.employee !== null) {
+    endpoint += "&filter[employee]=" + filter.value.data.employee;
+  }
+  endpoint += "&page=" + page;
+
   await clientApi(authStore.authToken)
-    .get("/api/hr/" + authStore.authProfile.ecode + "/employees/page/?page"+1, filter.value)
+    .get(endpoint)
     .then((res) => {
-      console.log("emp", res);
+      totalPageCount.value = res.data.last_page;
+      currentPage.value = res.data.current_page;
+      totalResult.value = res.data.total;
       employees.value = res.data.data;
     })
     .catch((err) => {
       console.log("getEmployees", err);
     });
 };
-getEmployees();
+watch(currentPage, (newValue, oldValue) => {
+  if (newValue != oldValue) {
+    router
+      .push({
+        name: "PaginatedEmployees",
+        params: {
+          page: currentPage.value,
+        },
+      })
+      .catch((err) => {});
+    getEmployees(currentPage.value);
+  }
+});
+getEmployees(currentPage.value);
 
 // open Employee
 const openEmployee = (profile) => {
