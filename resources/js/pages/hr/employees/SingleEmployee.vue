@@ -26,7 +26,7 @@
           <v-card-text>
             <v-row>
               <div class="v-col-12 v-col-md-3 d-flex align-center">
-                <EmployeeCard />
+                <EmployeeCard  />
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">Reporting To</div>

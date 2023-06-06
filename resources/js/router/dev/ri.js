@@ -59,7 +59,16 @@ export const ri = [
             title: "Weightages",
         },
     },
-
+    {
+        path: "/manager/custom-kpi",
+        component: () => import("../../pages/manager/kpi/CustomKpi.vue"),
+        name: "ManagerCustomKPI",
+        meta: {
+            requiresAuth: true,
+            role: ["app_admin", "manager"],
+            title: "Custom KPIs",
+        },
+    },
     {
         path: "/manager/custom-kpi/page/:page",
         component: () => import("../../pages/manager/kpi/CustomKpi.vue"),

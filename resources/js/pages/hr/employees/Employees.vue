@@ -94,7 +94,7 @@
                 <EmployeeCard :profile="profile" />
               </div>
               <div class="v-col-12 v-col-md-8">
-                <KpiProgress :density="'compact'" />
+                <KpiProgress :density="'compact'" :selected-employee="profile" />
               </div>
               <div class="v-col-12 v-col-md-1 d-flex justify-end align-center">
                 <div>
