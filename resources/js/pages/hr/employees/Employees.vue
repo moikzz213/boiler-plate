@@ -34,8 +34,8 @@
           <template v-slot:selection="{ props, item }">
             <span v-bind="props">
               {{
-                item.raw.title && item.raw.title.length > 25
-                  ? item.raw.title.substring(0, 25) + "..."
+                item.raw.title && item.raw.title.length > 20
+                  ? item.raw.title.substring(0, 20) + "..."
                   : item.raw.title
               }}
             </span>
