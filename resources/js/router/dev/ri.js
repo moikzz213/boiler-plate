@@ -70,4 +70,15 @@ export const ri = [
             title: "Custom KPIs",
         },
     },
+
+    {
+        path: "/hr/employees/page/:page",
+        component: () => import("../../pages/hr/employees/Employees.vue"),
+        name: "PaginatedEmployees",
+        meta: {
+            requiresAuth: true,
+            role: ["app_admin", "hr_admin", "hrbp"],
+            title: "Employees",
+        },
+    },
 ];
