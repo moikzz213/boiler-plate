@@ -38,7 +38,7 @@
               </div>
               <div class="v-col-12 v-col-md-1 d-flex flex-column">
                 <div class="text-caption text-grey">Total KPI</div>
-                <div class="text-body-2">50/100</div>
+                <div class="text-body-2">{{ ratingOrWeightage(selEmployeeObj) }}/100</div>
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <v-btn
@@ -90,7 +90,7 @@ if(teamList.value && teamList.value.length > 0){
   selectedEmployeeArr.value = teamList.value.filter((o) => { return o.username == ecode.value })
   selEmployeeObj.value = selectedEmployeeArr.value[0];
 }
-
+console.log(selEmployeeObj.value);
 const changeEmployee = () => {
   router
     .push({
@@ -107,6 +107,16 @@ watch(
     selEmployeeObj.value = newVal;
   }
 );
+
+const ratingOrWeightage = (user) => {
+  let sum = 0 ;
+  if(user.reviews && user.reviews.length > 0 && user.reviews[0].key_review){   
+    user.reviews[0].key_review.map((o,i) =>{
+      sum += o.weightage;
+    });
+  }
+  return sum;
+};
 
 const industryList = ref([]);
 const Industries = async () => {

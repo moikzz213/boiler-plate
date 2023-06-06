@@ -36,7 +36,7 @@
           <div v-else class="text-uppercase text-center">
             {{ selectedTab == 'ecd' ? 'Employee Capability Development' : selectedTab }} List
           </div>
-          <div v-if="canManage" class="ml-auto text-body-1">Remaining weightage: 100%</div>
+          <div v-if="canManage" class="ml-auto text-body-1">Remaining weightage: {{ ratingOrWeightage(selectedTab) }}%</div>
         </v-card-title>
         <v-card-text class="px-5 pb-10">
           <v-row v-show="selectedTab == 'kpi'" class="mt-n3">
@@ -383,6 +383,30 @@ const removeKPI = async (item) => {
 const confirmRemoveKpi = async () => {
   console.log("axios request to client");
 };
+
+const ratingOrWeightage = (type) => {
+ let remainingWeightage = 70;
+  
+  if(type == 'ecd'){
+    remainingWeightage = 30;
+
+    if(ecdArray.value && ecdArray.value.length > 0 ){
+      ecdArray.value.map((o,i) => {
+        remainingWeightage -= o.weightage;
+      })
+    }
+  }else{
+    if(kpiArray.value && kpiArray.value.length > 0 ){
+      kpiArray.value.map((o,i) => {
+        remainingWeightage -= o.weightage;
+      })
+    }
+  }
+
+  console.log('kpiArray.value',kpiArray.value);
+  return remainingWeightage;
+  
+}
 </script>
 
 <style>
