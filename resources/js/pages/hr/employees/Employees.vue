@@ -215,10 +215,10 @@ const totalResult = ref(0);
 const currentPage = ref(route.params && route.params.page ? route.params.page : 1);
 const getEmployees = async (page) => {
   let endpoint =
-    "/api/hr/" +
-    authStore.authProfile.ecode +
-    "/employees?&filter[is_regular]=" +
-    filter.value.data.is_regular;
+    "/api/hr/employees?&filter[is_regular]=" +
+    filter.value.data.is_regular +
+    "&filter[hrbp_email]=" +
+    authStore.authProfile.email;
   if (filter.value.data.company_id !== null) {
     endpoint += "&filter[company_id]=" + filter.value.data.company_id;
   }
