@@ -80,12 +80,7 @@
         </div>
       </div>
     </v-row>
-
-    <v-row v-if="filter.loadingFilter" style="min-height: 400px">
-      <v-skeleton-loader type="list-item-two-line"></v-skeleton-loader>
-    </v-row>
-
-    <v-row v-else>
+    <v-row>
       <div v-if="employees.length > 0" class="v-col-12">
         <v-card
           v-for="profile in employees"

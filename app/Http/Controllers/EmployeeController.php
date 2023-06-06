@@ -20,7 +20,13 @@ class EmployeeController extends Controller
                 ->orWhere('last_name', 'like', '%' . $value . '%')
                 ->orWhere('ecode', 'like', '%' . $value . '%');
             }),
-            AllowedFilter::exact('hrbp_email'),
+            // AllowedFilter::exact('hrbp_email'),
+            AllowedFilter::callback('hrbp_email', function ($query, $value) {
+                $auth = Profile::where('email', $value)->first();
+                if ($auth->role == 'hrbp'){
+                    $query->where('hrbp_email', $value);
+                }
+            }),
         ])
         ->paginate(10)
         ->appends(request()->query());
