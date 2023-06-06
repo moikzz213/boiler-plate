@@ -34,7 +34,7 @@ Route::middleware('authkey')->prefix('account')->group(function () {
 });
 
 Route::middleware('authkey')->prefix('hr')->group(function () {
-    Route::get('/{ecode}/employees', [EmployeeController::class, 'getEmployees'])->name('hr.employees.paginated');
+    Route::get('/employees', [EmployeeController::class, 'getEmployees'])->name('hr.employees.paginated');
     Route::get('/settings/pms/paginated', [PerformanceSettingController::class, 'getPaginatedPerformanceSettings'])->name('hr.settings.pms.paginated');
 });
 
