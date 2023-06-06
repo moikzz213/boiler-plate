@@ -77,16 +77,6 @@ export const routes = [
             title: "Team Member",
         },
     },
-    // {
-    //     path: "/manager/kpi/",
-    //     component: () => import("../pages/manager/kpi/CustomKpi.vue"),
-    //     name: "ManagerCustomKPI",
-    //     meta: {
-    //         requiresAuth: true,
-    //         role: ["app_admin", "manager"],
-    //         title: "Custom KPIs",
-    //     },
-    // },
 
     // hr routes
     {

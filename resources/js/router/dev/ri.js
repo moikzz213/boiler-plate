@@ -90,4 +90,16 @@ export const ri = [
             title: "Employees",
         },
     },
+
+    // superadmin
+    {
+        path: "/admin/app-users",
+        component: () => import("../../pages/hr/employees/Employees.vue"),
+        name: "AppUsers",
+        meta: {
+            requiresAuth: true,
+            role: ["app_admin", "hr_admin", "hrbp"],
+            title: "Employees",
+        },
+    },
 ];
