@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Review;
+use App\Models\Profile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use App\Models\PerformanceSetting;
 
 class PerformanceSettingController extends Controller
@@ -21,8 +24,23 @@ class PerformanceSettingController extends Controller
 
     public function saveSetting(Request $request)
     {
+        $currentDate = Carbon::now(); 
+       
+        $status = 'open';
+        if($currentDate >= $request['annual_kpi_setting_start'] && $currentDate <= $request['annual_kpi_setting_end']){
+            $state = 'setting';
+        }elseif($currentDate >= $request['mid_year_review_start'] && $currentDate <= $request['mid_year_review_end']){
+            $state = 'midyear';
+        }elseif($currentDate >= $request['end_year_review_start'] && $currentDate <= $request['end_year_review_end']){
+            $state = 'yearend';
+        }else{
+            $status = 'locked';
+            $state = 'closed';
+        }
         $pmsArray = array(
             'year' => $request['year'],
+            'state' => $state,
+            'status' => $status,
             'company_id' => $request['company_id'],
             'employee_review_allowed_days' => $request['employee_review_allowed_days'],
             'probation_final_review_end' => $request['probation_final_review_end'],
@@ -37,8 +55,23 @@ class PerformanceSettingController extends Controller
             'end_year_review_start' => $request['end_year_review_start'],
             'end_year_review_end' => $request['end_year_review_end'],
         );
+        $profile = array();
         if($request['id']){
-            $setting = PerformanceSetting::where('id', $request['id'])->update($pmsArray);
+            $setting = PerformanceSetting::where('id', $request['id'])->first();
+            $setting->update($pmsArray); 
+            
+            $reviewResult = Review::where('company_id', $request['company_id'])->update(["state" => $state, 'status' => $status]);
+
+            $profile = Profile::where('ecode', $request['profile_ecode'])
+            ->with(
+                'teams.reviews.keyReview',
+                'teams.company',
+                'reviews.keyReview',
+                'company')
+            ->with('reviews',function ($q) {
+                $q->where('year', Carbon::now()->format('Y'));
+            })->first(); 
+            
         }else{
             // check if the company and year are already present in the database
             $check = PerformanceSetting::where([
@@ -50,13 +83,18 @@ class PerformanceSettingController extends Controller
                 return response()->json([
                     'message' => 'PMS Settings already exists'
                 ], 422);
-            }
+            } 
 
             $setting = PerformanceSetting::create($pmsArray);
+
+            // Send Notification to all employees
+            // Code below
         }
 
         return response()->json([
-            'message' => 'PMS settings saved successfully'
+            'message' => 'PMS settings saved successfully',
+            'result' => $setting,
+            'profile' => $profile
         ], 200);
     }
 }

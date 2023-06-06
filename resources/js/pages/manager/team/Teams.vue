@@ -95,7 +95,7 @@
     <v-dialog v-model="noKPIEmployee" width="450">
       <v-card class="rounded-lg">
         <v-card-text>
-          Employee doesn't have a KPI review setup for this year.
+          {{ errorMessage }}
         </v-card-text>
         <div class="pa-3 mt-3 d-flex justify-end">
           <v-btn color="primary" variant="text" @click="noKPIEmployee = false"
@@ -136,7 +136,7 @@ const year = ref(new Date().getFullYear());
 const currentDate = ref(new Date());
 // filter employee
 const employeeTypeList = ref(["All","Regular", "Probation"]);
- 
+const errorMessage = ref('Employee doesn`t have a KPI review setup for this year.');
 const filter = ref({
   data: {
     employee: "",
@@ -201,9 +201,16 @@ const confirmOpenMember = () => {
   
 };
 const openMember = (user) => {
+  let msgError = 'KPI review is currently closed';
+
   selectedUser.value = Object.assign({}, user);
   if(user.reviews && user.reviews.length > 0){
-    openPage("SingleTeamMember", { id: user.ecode });
+    if(user.is_regular == 1 && user.reviews[0].status =='locked' && user.reviews[0].state == 'closed'){
+      errorMessage.value = msgError;
+      noKPIEmployee.value = true;
+    }else{
+      openPage("SingleTeamMember", { id: user.ecode }); 
+    }
   }else{
     if(settingStore.pmsSettings.status == 'open' && settingStore.pmsSettings.state == 'setting'){
       dialogOpenMember.value = true;
@@ -218,6 +225,9 @@ const openMember = (user) => {
             noKPIEmployee.value = true;
           }
       }else{ 
+        if(settingStore.pmsSettings.status =='locked' && settingStore.pmsSettings.state == 'closed'){
+          errorMessage.value = msgError;
+        }
         noKPIEmployee.value = true;
       }
     }

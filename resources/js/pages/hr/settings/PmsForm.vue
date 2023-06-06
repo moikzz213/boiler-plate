@@ -209,7 +209,9 @@ import { useCompanyStore } from "@/stores/company";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import SnackBar from "@/components/SnackBar.vue";
 import { useRouter, useRoute } from "vue-router";
+import { useSettingStore } from "@/stores/settings";
 
+const settingStore = useSettingStore();``
 const router = useRouter();
 const route = useRoute();
 const sbOptions = ref({});
@@ -270,6 +272,7 @@ const getPmsSettings = async () => {
 };
 const saveSetting = async () => {
   pms.value.loading = true;
+  pms.value.data.profile_ecode = authStore.authProfile.ecode;
   await clientApi(authStore.authToken)
     .post("/api/hr/pms-settings/save", pms.value.data)
     .then((res) => {
@@ -279,6 +282,12 @@ const saveSetting = async () => {
         type: "success",
         text: res.data.message,
       };
+
+      settingStore.setPmsSettings(res.data.result);
+      console.log(res.data.profile);
+      if(res.data.profile){
+        authStore.setProfile(res.data.profile);
+      }
       // check if NewPms then redirect
       setTimeout(() => {
         if (route.name == "NewPms") {

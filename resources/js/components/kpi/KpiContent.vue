@@ -3,7 +3,7 @@
     <div class="v-col-12 v-col-md-2">
       <VueDatePicker v-model="year" year-picker class="pms-date-picker" />
     </div>
-    <div class="v-col-12 v-col-md-2">
+    <div class="v-col-12 v-col-md-2"> 
       <v-btn v-if="viewingEmployee && viewingEmployee.reviews && viewingEmployee.reviews.length > 0" @click="printKPI" color="white" class="text-capitalize">Print KPI <v-icon
           :icon="mdiPrinter" class="ml-3"> </v-icon></v-btn>
     </div>
@@ -215,14 +215,14 @@ const selectTab = (tab) => {
 const currentDate = ref(new Date());
 const canManage = computed(() => {
   
- if(settingStore.pmsSettings && settingStore.pmsSettings.state == 'setting' && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
+ if(useRoute().name == "SingleTeamMember" && settingStore.pmsSettings && settingStore.pmsSettings.state == 'setting' && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
     return true;
  }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
         return authStore.authRole.includes("manager") && useRoute().name == "SingleTeamMember" && viewingEmployee.value.reviews[0].state == 'setting'
         &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')
           ? true
           : false;
-  } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0){ 
+  } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && useRoute().name == "SingleTeamMember"){ 
         let date = new Date(viewingEmployee.value.doj);  
         date.setDate(date.getDate() +  parseInt(settingStore.pmsSettings.probation_kpi_setting));  
         if(date >= currentDate.value ){
@@ -272,16 +272,22 @@ const ecdOptions = ref({
   is_review: false,
 });
 const addKPI = async (type) => {
+  console.log(kpiArray.value.length);
   if (type == "kpi") {
-    kpiOptions.value = {
-              title: "Add KPI ",
-              data: {},
-              dialog: true,
-              type: type,
-              action: "add",
-              is_review: false,
-          
-          };
+    if(kpiArray.value.length > 6){
+
+      return false;
+    }else{
+        kpiOptions.value = {
+                  title: "Add KPI ",
+                  data: {},
+                  dialog: true,
+                  type: type,
+                  action: "add",
+                  is_review: false,
+              
+              };
+    }
   }
   if (type == "ecd") {
     ecdOptions.value = {

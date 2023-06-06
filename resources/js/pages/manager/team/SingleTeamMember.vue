@@ -22,7 +22,7 @@
           <v-card-text>
             <v-row>
               <div class="v-col-12 v-col-md-3 d-flex align-center">
-                <EmployeeCard />
+                <EmployeeCard :profile="selEmployeeObj"/>
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">Reporting To</div>
@@ -103,7 +103,7 @@ const changeEmployee = () => {
 watch(
   () => selectedEmployeeArr.value,
   (newVal) => {  
-    console.log(newVal); 
+    console.log('newVal', newVal); 
     selEmployeeObj.value = newVal;
   }
 );

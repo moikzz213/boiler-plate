@@ -1,7 +1,7 @@
 <template>
     <v-card max-width="1200">
         <v-card-text>
-            profileTest
+            Bar Graph will show here for admin only
         </v-card-text> 
     </v-card>
 </template>

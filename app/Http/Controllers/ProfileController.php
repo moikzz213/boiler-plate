@@ -75,6 +75,7 @@ class ProfileController extends Controller
             'performance_settings_id' => $request->setting['id'],
             'state'         => 'setting',
             'status'        => 'inprogress',
+            'company_id'        =>  $request->setting['company_id'],
             'year'          => $request->year,
             'type'          => $request->is_regular ? "regular" : "probation",
             'author'        => $request->author
