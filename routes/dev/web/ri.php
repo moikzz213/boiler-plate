@@ -37,5 +37,6 @@ Route::prefix('hr')->group(function () {
 
 Route::prefix('manager')->group(function () {
     // my custom kpi
-    Route::get('/custom-kpi/page/{page}', [PageController::class, 'home'])->name('hr.industries');
+    Route::get('/custom-kpi', [PageController::class, 'home'])->name('hr.custom.kpi');
+    Route::get('/custom-kpi/page/{page}', [PageController::class, 'home'])->name('hr.paginated.custom.kpi');
 });

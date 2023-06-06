@@ -15,6 +15,7 @@
               <tr>
                 <th class="text-left text-capitalize">Title</th>
                 <th class="text-left text-capitalize">Industry</th>
+                <th class="text-left text-capitalize">Author</th>
                 <th class="text-right text-capitalize">Actions</th>
               </tr>
             </thead>
@@ -22,6 +23,7 @@
               <tr v-for="item in kpiList" :key="item.id">
                 <td>{{ item.title }}</td>
                 <td>{{ item.industry && item.industry.title }}</td>
+                <td>{{ item.profile && item.profile.display_name }}</td>
                 <td>
                   <div class="d-flex align-center justify-end">
                     <v-icon

@@ -9,7 +9,7 @@ class KeyPerformanceIndicatorMasterController extends Controller
 {
     public function getPaginatedKpis()
     {
-        $kpis = KeyPerformanceIndicatorMaster::paginate(10);
+        $kpis = KeyPerformanceIndicatorMaster::with('industry')->paginate(10);
         return response()->json($kpis, 200);
     }
 
@@ -91,7 +91,7 @@ class KeyPerformanceIndicatorMasterController extends Controller
     public function getKpiByStatus($status)
     {
         $kpis = KeyPerformanceIndicatorMaster::where('status', $status)
-        ->with('industry')
+        ->with('industry','profile')
         ->paginate(10);
         return response()->json($kpis, 200);
     }
