@@ -112,11 +112,18 @@ class ProfileController extends Controller
         ])
         ->paginate(10)
         ->appends(request()->query());
-
-        // $rolesArray = array('hrbp', 'hr_admin');
-        // $profiles = Profile::whereIn('role', $rolesArray)->paginate(10);
-        // $profiles = Profile::orderBy('role', 'ASC')->paginate(10);
         return response()->json($profiles, 200);
     }
 
+    public function saveAccount(Request $request)
+    {
+        $profile = Profile::where('ecode', $request['ecode'])->update([
+            'username' => $request['username'],
+            'status' => $request['status'],
+            'role' => $request['role'],
+        ]);
+        return response()->json([
+            'message' => 'Account saved successfully'
+        ], 200);
+    }
 }

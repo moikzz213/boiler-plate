@@ -30,18 +30,14 @@
           >
         </div>
       </div>
-      <div class="v-col-12">
-        <AccountForm
-          v-show="currentForm == 'account'"
-          :user="user.data"
-          @saved="savedResponse"
-        />
-        <ProfileForm
-          v-show="currentForm == 'profile'"
-          :user="user.data"
-          @saved="savedResponse"
-        />
-        <ChangePassword v-show="currentForm == 'change_password'" :user-id="1" />
+      <div v-show="currentForm == 'account'" class="v-col-12 v-col-md-6">
+        <AccountForm :user="user.data" @saved="savedResponse" />
+      </div>
+      <div v-show="currentForm == 'profile'" class="v-col-12">
+        <ProfileForm :user="user.data" @saved="savedResponse" />
+      </div>
+      <div v-show="currentForm == 'change_password'" class="v-col-12 v-col-md-6">
+        <ChangePassword :ecode="user.data.ecode" />
       </div>
     </v-row>
     <Snackbar :options="sbOptions" />
@@ -68,7 +64,7 @@ const sbOptions = ref({
   text: null,
 });
 
-const currentForm = ref("profile");
+const currentForm = ref("account");
 const openForm = async (comp) => {
   currentForm.value = comp;
 };

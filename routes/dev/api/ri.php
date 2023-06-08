@@ -61,4 +61,5 @@ Route::middleware('authkey')->prefix('manager')->group(function () {
 Route::middleware('authkey')->prefix('admin')->group(function () {
     Route::get('/user/all', [ProfileController::class, 'getUsers'])->name('admin.get.all.users');
     Route::get('/user/single/{ecode}', [ProfileController::class, 'getSingleUser'])->name('admin.get.single.user');
+    Route::post('/account/save', [ProfileController::class, 'saveAccount'])->name('admin.save.account');
 });

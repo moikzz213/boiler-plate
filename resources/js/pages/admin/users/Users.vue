@@ -6,7 +6,9 @@
         <v-card :loading="users.loading">
           <v-card-title class="pt-3">
             <v-row class="pa-0">
-              <div class="v-col-12 v-col-md-6 text-primary text-capitalize">Users</div>
+              <div class="v-col-12 v-col-md-6 text-primary text-capitalize">
+                Users {{ "(" + totalResult + ")" }}
+              </div>
               <div class="v-col-12 v-col-md-6">
                 <v-text-field
                   v-model="keywords"

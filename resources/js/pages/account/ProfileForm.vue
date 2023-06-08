@@ -4,18 +4,7 @@
       >Profile Settings</v-card-title
     >
     <v-card-text>
-      <v-row class="pb-3">
-        <div class="v-col-12 py-0">
-          <v-switch
-            :model-value="profileData.data.status == 'Active' ? true : false"
-            class="d-inline-block ma-0"
-            hide-details
-            inset
-            :color="profileData.data.status == 'Active' ? 'success' : 'primary'"
-            :label="`Status: ${profileData.data.status}`"
-            readonly
-          ></v-switch>
-        </div>
+      <v-row class="py-3">
         <div class="v-col-12 v-col-md-6 py-0">
           <v-text-field
             v-model="profileData.data.display_name"
@@ -122,10 +111,12 @@
             readonly
             label="Reporting to"
             :model-value="`${
-              profileData.data.managed_by.display_name +
-              ' (' +
-              profileData.data.managed_by.ecode +
-              ')'
+              profileData.data.managed_by
+                ? profileData.data.managed_by.display_name +
+                  ' (' +
+                  profileData.data.managed_by.ecode +
+                  ')'
+                : 'N/A'
             }
             `"
             variant="outlined"
@@ -163,12 +154,10 @@ const profileData = ref({
     status: "Active",
   },
 });
-const switchStatus = ref(false);
 watch(
   () => props.user,
   (newVal, oldValue) => {
     if (newVal != oldValue) {
-      switchStatus.value = newVal.status == "Active" ? true : false;
       profileData.value.data = Object.assign({}, newVal);
     }
   }
