@@ -72,11 +72,11 @@ Route::prefix('admin')->group(function () {
     Route::get('/', [PageController::class, 'home'])->name('admin');
     Route::get('/{slug}', [PageController::class, 'home'])->name('admin.slug');
 
+    Route::get('/users', [PageController::class, 'home'])->name('admin.users');
+    Route::get('/users/page/{page}', [PageController::class, 'home'])->name('admin.users.paginated');
+
     // users
-    Route::get('/users/{id}', [PageController::class, 'home'])->name('admin.get.users');
-    // users axios
-    Route::get('/user/all', [UserController::class, 'getUsers'])->name('admin.get.all.users');
-    Route::get('/user/single/{id}', [UserController::class, 'getSingleUser'])->name('admin.get.single.user');
+    Route::get('/users/{ecode}', [PageController::class, 'home'])->name('admin.get.users');
 });
 
 /**

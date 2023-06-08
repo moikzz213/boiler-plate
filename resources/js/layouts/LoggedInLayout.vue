@@ -258,6 +258,7 @@ import {
   mdiDomain,
   mdiPercent,
   mdiRuler,
+  mdiAccountCog,
 } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
 import { printInitials } from "@/composables/printInitials";
@@ -278,7 +279,7 @@ const profileHeaderList = ref([
   "ManagerCustomKPI",
   "PaginatedManagerCustomKPI",
   "Employees",
-  "SingleEmployee"
+  "SingleEmployee",
 ]);
 
 // navigation
@@ -345,6 +346,11 @@ const sideNavigation = ref([
         title: "Weightage",
         icon: mdiPercent,
         path: "/hr/weightages",
+      },
+      {
+        title: "User Settings",
+        icon: mdiAccountCog,
+        path: "/admin/users",
       },
     ],
   },
