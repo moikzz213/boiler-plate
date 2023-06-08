@@ -344,12 +344,13 @@ const sideNavigation = ref([
         icon: mdiPercent,
         path: "/hr/weightages",
       },
-      {
-        title: "User Settings",
-        icon: mdiAccountCog,
-        path: "/admin/users",
-      },
     ],
+  },
+  {
+    title: "User Settings",
+    icon: mdiAccountCog,
+    path: "/admin/users",
+    roles: ["app_admin"],
   },
 ]);
 const hasAccess = (rolesArray) => {
