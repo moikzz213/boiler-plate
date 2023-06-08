@@ -9,12 +9,9 @@
       color="primary"
     >
       <div class="d-flex flex-column h-100">
-        <v-list-item
-          nav
-          :prepend-avatar="logo"
-          :title="appName"
-          class="mb-3"
-        ></v-list-item>
+        <v-list-item nav :prepend-avatar="logo" class="mb-3">
+          <div v-show="!rail" class="text-body-2" style="width: 180px">{{ appName }}</div>
+        </v-list-item>
         <v-divider></v-divider>
         <v-list nav>
           <div v-for="item in sideNavigation" :key="item.title" :value="item.title">
