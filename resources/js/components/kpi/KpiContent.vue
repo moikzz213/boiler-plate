@@ -53,7 +53,7 @@
                           </div>
                         </div>
                         <div>
-                          <v-btn color="primary" class="rounded-xl px-5" size="small"
+                          <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
                             @click="() => reviewKPI(kpi, 'kpi')">review</v-btn>
                           <v-btn v-if="canManage" @click="() => editKPI(kpi, 'kpi')" density="compact" size="30"
                             color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
@@ -73,7 +73,7 @@
                       </div>
                       <div class="v-col-3">
                         <div class="text-grey text-caption">Measure</div>
-                        <div class="text-primary text-body-1">{{ kpi.measure }}</div>
+                        <div class="text-primary text-body-1">{{ kpi.measures }}</div>
                       </div>
                       <div class="v-col-3">
                         <div class="text-grey text-caption">{{ "KPI's Weightage(%)" }}</div>
@@ -126,6 +126,7 @@
           </v-row>
         </v-card-text>
       </v-card>
+      
     </div>
     <v-dialog v-model="toRemoveKpi.dialog" width="100%" max-width="480" persistent>
       <v-card class="rounded-lg">
@@ -145,9 +146,9 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-
-    <KpiDialog :kpi-options="kpiOptions" :industry-list="industryList"  :submit-button="props.submitButton"  @savedResponse="savedResponseMethod"/>
-    <EcdDialog :ecd-options="ecdOptions" :ecd-list="ecdList" :submit-button="props.submitButton" @savedResponse="savedResponseMethod"/>
+    
+    <KpiDialog :kpi-options="kpiOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :industry-list="industryList"  :submit-button="props.submitButton"  @savedResponse="savedResponseMethod"/>
+    <EcdDialog :ecd-options="ecdOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :ecd-list="ecdList" :submit-button="props.submitButton" @savedResponse="savedResponseMethod"/>
     <SnackBar :options="sbOptions" />
   </v-row>
 </template>
@@ -163,9 +164,10 @@ import EcdDialog from "@/components/kpi/EcdDialog.vue";
 import { useRouter } from "vue-router";
 import { useSettingStore } from "@/stores/settings";
 import SnackBar from "@/components/SnackBar.vue";
-const router = useRouter();
-const kpiEmit = defineEmits(['yearchange'])
 
+const router = useRouter();
+const kpiEmit = defineEmits(['yearchange', 'savedResponse']); 
+ 
 const authStore = useAuthStore();
 const props = defineProps({
   selectedEmployee: {
@@ -194,6 +196,7 @@ const kpiArray = computed(() => {
   if (!viewingEmployee.value || (viewingEmployee.value && (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0))) return [];
   return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'kpi'); 
 });
+
 const ecdArray = computed(() => {
   if (!viewingEmployee.value || (viewingEmployee.value && (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0))) return [];
     return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'ecd');  
@@ -202,7 +205,12 @@ const ecdArray = computed(() => {
 watch(
   () => props.selectedEmployee,
   (newVal) => {
-    viewingEmployee.value = Object.assign({}, newVal); 
+    if(newVal.length > 0){
+      viewingEmployee.value = Object.assign({}, newVal[0]);
+    }else{
+      viewingEmployee.value = Object.assign({}, newVal);
+    }
+    console.log('viewingEmployee.value',viewingEmployee.value);
   }
 ); 
 
@@ -213,27 +221,49 @@ const selectTab = (tab) => {
 };
 
 const currentDate = ref(new Date());
-const canManage = computed(() => {
-  
- if(useRoute().name == "SingleTeamMember" && settingStore.pmsSettings && settingStore.pmsSettings.state == 'setting' && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
-    return true;
- }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
-        return authStore.authRole.includes("manager") && useRoute().name == "SingleTeamMember" && viewingEmployee.value.reviews[0].state == 'setting'
-        &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')
-          ? true
-          : false;
-  } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && useRoute().name == "SingleTeamMember"){ 
-        let date = new Date(viewingEmployee.value.doj);  
-        date.setDate(date.getDate() +  parseInt(settingStore.pmsSettings.probation_kpi_setting));  
-        if(date >= currentDate.value ){
-          return true;
-        } 
-  } 
-//  else{
-//   return false;
-//  }
+const canManage = computed(() => {  
+    if(useRoute().name == "SingleTeamMember" && settingStore.pmsSettings && settingStore.pmsSettings.state == 'setting' && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
+      return true;
+    }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
+          return authStore.authRole.includes("manager") && useRoute().name == "SingleTeamMember" && viewingEmployee.value.reviews[0].state == 'setting'
+          &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')
+            ? true
+            : false;
+    } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && useRoute().name == "SingleTeamMember"){ 
+          let date = new Date(viewingEmployee.value.doj);  
+          date.setDate(date.getDate() +  parseInt(settingStore.pmsSettings.probation_kpi_setting));  
+          if(date >= currentDate.value ){
+            return true;
+          } 
+    } 
 });
 
+const isReviewStage = computed(() => {
+    if(useRoute().name == "SingleTeamMember" && settingStore.pmsSettings && (settingStore.pmsSettings.state == 'midyear' || settingStore.pmsSettings.state == 'yearend' ) && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
+      console.log("fuck");
+      return true;
+    }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
+          return authStore.authRole.includes("manager") && useRoute().name == "SingleTeamMember" && 
+          (viewingEmployee.value.reviews[0].state == 'midyear' || viewingEmployee.value.reviews[0].state == 'yearend')
+          &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')
+            ? true
+            : false;
+    } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && useRoute().name == "SingleTeamMember"){  
+          let midStart = new Date(viewingEmployee.value.doj);  
+          let midEnd = new Date(viewingEmployee.value.doj);  
+          midStart.setDate(midStart.getDate() +  parseInt(settingStore.pmsSettings.probation_first_review_start));  
+          midEnd.setDate(midEnd.getDate() +  parseInt(settingStore.pmsSettings.probation_first_review_end));  
+
+          let yearEndStart = new Date(viewingEmployee.value.doj);  
+          let yearEnd = new Date(viewingEmployee.value.doj);  
+          yearEndStart.setDate(yearEndStart.getDate() +  parseInt(settingStore.pmsSettings.probation_final_review_start));  
+          yearEnd.setDate(yearEnd.getDate() +  parseInt(settingStore.pmsSettings.probation_final_review_end));  
+          if(yearEndStart >= currentDate.value  && yearEnd <= currentDate.value){
+            return true;
+          } 
+    }
+    return false;
+})
 // kpi
 const year = ref(new Date().getFullYear());
 
@@ -272,11 +302,20 @@ const ecdOptions = ref({
   is_review: false,
 });
 const addKPI = async (type) => {
-  console.log(kpiArray.value.length);
   if (type == "kpi") {
-    if(kpiArray.value.length > 6){
-
-      return false;
+    if(ratingOrWeightage(selectedTab.value) <= 0){
+      sbOptions.value = {
+        status: true,
+        type: "error",
+        text: "Denied: You've reached the weightage limit.",
+      };
+    }else if(kpiArray.value.length > 5){
+      sbOptions.value = {
+        status: true,
+        type: "error",
+        text: "Denied: Max of 6 KPI only. Minimum is 4 KPI",
+      };
+   
     }else{
         kpiOptions.value = {
                   title: "Add KPI ",
@@ -290,6 +329,14 @@ const addKPI = async (type) => {
     }
   }
   if (type == "ecd") {
+    if(ecdArray.value.length > 2){
+      sbOptions.value = {
+        status: true,
+        type: "error",
+        text: "Denied: Max of 3 ECD only. Min 1 each softskill and technical skill", 
+      };
+   
+    }else{
     ecdOptions.value = {
       ...ecdOptions.value,
       ...{
@@ -301,6 +348,7 @@ const addKPI = async (type) => {
         is_review: false,
       },
     };
+  }
   }
 };
 const editKPI = async (item, type = "kpi") => {
@@ -362,13 +410,15 @@ const reviewKPI = async (item, type = "kpi") => {
  
 };
 
-const savedResponseMethod = (v) => {
-  console.log("KPI COntent Emitted",v);
-  sbOptions.value = {
-        status: true,
-        type: "success",
-        text: "res.data.message",
-      };
+const savedResponseMethod = (v) => { 
+  let reviewID = {
+    reviewID : viewingEmployee.value.reviews[0].id,
+    data: v,
+    industryTitle: v.industryTitle
+  }
+
+  kpiEmit('savedResponse', reviewID); 
+ 
 }
 
 // remove kpi
@@ -408,8 +458,6 @@ const ratingOrWeightage = (type) => {
       })
     }
   }
-
-  console.log('kpiArray.value',kpiArray.value);
   return remainingWeightage;
   
 }

@@ -46,9 +46,12 @@ const profileKPI = ref({
 
 const currentDate = ref(new Date());
 const employeeKPIStatus = computed(() => {
-if (props.profile !== null) {
-   profileKPI.value = props.profile; 
-
+  if(props.profile && props.profile.length > 0){
+      profileKPI.value = props.profile[0];
+    }else{
+      profileKPI.value = props.profile;
+    } 
+    
    if(profileKPI.value.reviews && profileKPI.value.reviews.length > 0){ 
       return profileKPI.value.reviews[0].status;
     }else if(settingStore.pmsSettings ){ 
@@ -62,13 +65,17 @@ if (props.profile !== null) {
         return settingStore.pmsSettings.status;
       }
     } 
-}
+ 
 });
  
 watch(
   () => props.profile,
   (newVal) => {
-    profileKPI.value = newVal;
+    if(newVal && newVal.length > 0){
+      profileKPI.value = newVal[0];
+    }else{
+      profileKPI.value = newVal;
+    }  
   }
 );
 </script>

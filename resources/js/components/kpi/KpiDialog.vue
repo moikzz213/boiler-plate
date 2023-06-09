@@ -5,16 +5,18 @@
       <v-row class="ma-0 pa-0">
         <div :class="`v-col-12 ${kpiAction.is_review == true ? 'v-col-md-8' : ''} px-4`">
           <v-row>
-            <div class="v-col-12">{{ kpiAction.title }} {{}}</div>
+            <div class="v-col-12">{{ kpiAction.title }}</div>
             <div class="v-col-12 v-col-md-6 py-0">
-              <v-autocomplete v-model="kpiData.industry" :items="industryList" 
-              item-title="title" item-value="title" @update:modelValue="changeIndustry"
+              <v-autocomplete v-model="industry" :items="industryList" 
+              item-title="title" item-value="title"  
               return-object
                 variant="outlined" density="compact" label="Select Industry*">
               </v-autocomplete>
             </div>
             <div class="v-col-12 v-col-md-6 py-0">
-              <v-autocomplete v-model="kpiData.title" :items="kpiList" item-title="title" item-value="title" variant="outlined"
+              <v-autocomplete v-model="selectedKPI"  :items="kpiList" 
+                item-title="title" item-value="id" 
+                variant="outlined"
                 density="compact" label="Select KPI*">
                 <!-- <template v-slot:selection="{ props, item }">
                   <span v-bind="props">
@@ -46,7 +48,7 @@
               <v-textarea v-model="kpiData.definition" label="KPI Definition*" variant="outlined" rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.calulation_formula" label="Calulation Formula*" variant="outlined"
+              <v-textarea v-model="kpiData.formula" label="Calulation Formula*" variant="outlined"
                 rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0">
@@ -54,19 +56,19 @@
                 rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.calulation_example" label="KPI Calulation Example*" variant="outlined"
+              <v-textarea v-model="kpiData.calculation_example" label="KPI Calulation Example*" variant="outlined"
                 rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.evaluation_method" label="KPI Evaluation Method*" variant="outlined"
+              <v-textarea v-model="kpiData.evaluation_pattern" label="KPI Evaluation Method*" variant="outlined"
                 rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0">
               <v-divider class="mx-auto"></v-divider>
             </div>
             <div v-if="!kpiAction.is_review" class="v-col-12 d-flex justify-end">
-              <v-btn color="primary" variant="text" @click="kpiAction.dialog = false">Cancel</v-btn>
-              <v-btn color="primary" class="ml-2 px-8" @click="saveKpi">save</v-btn>
+              <v-btn color="primary" variant="text" @click="cancelKPI">Cancel</v-btn>
+              <v-btn v-if="isValid" color="primary" class="ml-2 px-8" @click="saveKpi">save</v-btn>
             </div>
           </v-row>
         </div>
@@ -109,17 +111,19 @@
             </div>
             <div class="v-col-12 d-flex justify-end">
               <v-btn class="bg-grey-lighten-2 text-primary" variant="text" @click="kpiAction.dialog = false">Cancel</v-btn>
-              <v-btn v-if="props.submitButton" color="primary" class="ml-2" @click="submitReview">Submit</v-btn>
+              <v-btn v-if="props.submitButton" color="primary" class="ml-2" @click="submitReview">Save</v-btn>
             </div>
           </v-row>
         </div>
       </v-row>
     </v-card>
   </v-dialog>
+  <SnackBar :options="sbOptions" />
 </template>
 
 <script setup>
 import { ref, watch } from "vue";
+import SnackBar from "@/components/SnackBar.vue";
 const props = defineProps({
   kpiOptions: {
     type: Object,
@@ -132,45 +136,104 @@ const props = defineProps({
   industryList: {
     type: Object,
     default: null
-  }, 
+  },
+  remainWeightage:{
+    type: Number,
+    default: 70
+  }
 });
- 
+const sbOptions = ref({});
 const kpiEmit = defineEmits(['savedResponse']) 
 
 const targetTypeList = ref(["min", "max"]);
 const measuresList = ref(["Percentage", "Units"]);
-const kpiWeightageList = ref(["5%", "10%", "15%", "20%"]);
+const kpiWeightageList = ref(["5%", "10%", "15%", "20%", "25%",'30%']);
 const kpiAction = ref({});
 
 const kpiData = ref({});
 const kpiList = ref([]); 
 const listIndustries = ref([]);
+const industry = ref(props.kpiOptions.data.industry); 
+const isValid = ref(false);
 
-const changeIndustry = () => {
-    kpiData.value.title = []; 
-    listIndustries.value.map((el) => {
-      if(el.id == kpiData.value.industry.id){
-        kpiList.value = el.kpis;
-      }
-    });
-};
-
+const selectedKPI = ref(props.kpiOptions.data.title);
+const industryTitle = ref('');
 const saveKpi = () => {
     kpiAction.value.data = kpiData.value;
     kpiAction.value.dialog = false;
+    kpiAction.value.industryTitle = industryTitle.value;
     kpiEmit('savedResponse', kpiAction.value);
+
+    industry.value = props.kpiOptions.data.industry;
 };
 
+const cancelKPI = () => {
+  kpiAction.value.dialog = false;
+  industry.value = props.kpiOptions.data.industry;
+}
 const submitReview = () => {
   console.log("submitReview");
-};
+}; 
 
 watch(
   () => props.kpiOptions,
-  (newVal) => { 
-    listIndustries.value = props.industryList; 
-    kpiData.value = Object.assign({}, newVal.data);  
-    kpiAction.value = Object.assign({}, newVal);  
+  (newVal) => {   
+      listIndustries.value = props.industryList; 
+      kpiData.value = Object.assign({}, newVal.data);  
+      kpiAction.value = Object.assign({}, newVal);   
+
+      console.log('remainWeightage',kpiAction.value);
   }
 );
+watch(
+  () => industry.value,
+  (newVal) => { 
+  
+    kpiData.value = {};
+    selectedKPI.value = null;
+    if(newVal){
+      industryTitle.value = newVal.title;
+      listIndustries.value.map((el) => {
+        if(el.id == newVal.id){
+          kpiList.value = el.kpis; 
+        }
+      }); 
+    }
+  }, 
+); 
+watch(
+  () => selectedKPI.value,
+  (newVal) => { 
+    kpiData.value = {};
+    let newData = kpiList.value.filter((el) => {
+      return el.id == newVal;
+    });
+    if(newData && newData.length > 0){
+      kpiData.value = newData[0];
+    } 
+  }
+);
+
+watch(
+  () => kpiData.value.weightage,
+  (newVal) => { 
+    if(!isNaN(newVal) || newVal == undefined || newVal == null){ 
+      isValid.value = false;
+    }else{
+     if(kpiAction.value.action == 'add'){ 
+        if( parseInt(newVal) > props.remainWeightage){ 
+          isValid.value = false;
+          sbOptions.value = {
+            status: true,
+            type: "error",
+            text: "Weightage is over the limit!",
+          };
+        }else{
+          isValid.value = true;  
+        } 
+     } 
+    } 
+  }
+);
+
 </script>

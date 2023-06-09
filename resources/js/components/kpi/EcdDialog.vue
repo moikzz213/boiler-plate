@@ -152,6 +152,10 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  remainWeightage:{
+    type: Number,
+    default: 30
+  }
 });
 
 const kpiEmit = defineEmits(['savedResponse']);
@@ -176,6 +180,7 @@ watch(
     kpiList.value = props.ecdList;
     ecdData.value = Object.assign({}, newVal.data);
     kpiAction.value = Object.assign({}, newVal);  
+    console.log('remainWeightage',props.remainWeightage);
   }
 );
 

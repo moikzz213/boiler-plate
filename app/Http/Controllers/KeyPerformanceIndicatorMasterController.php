@@ -19,6 +19,12 @@ class KeyPerformanceIndicatorMasterController extends Controller
         return response()->json($kpis, 200);
     }
 
+    public function getNoNPaginatedCustomKpis($ecode)
+    {
+        $kpis = KeyPerformanceIndicatorMaster::where('profile_ecode',$ecode)->orderBy('title','ASC')->get();
+        return response()->json($kpis, 200);
+    }
+
     public function saveKpi(Request $request)
     {
         if($request['id']){

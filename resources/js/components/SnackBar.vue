@@ -19,7 +19,7 @@ const props = defineProps({
 const snackbar = ref({
   status: false,
   type: "primary",
-  text: "Default Message",
+  text: "Default Message", 
 });
 watch(
   () => props.options,

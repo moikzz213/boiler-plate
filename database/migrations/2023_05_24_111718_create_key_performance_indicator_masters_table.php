@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('status')->default('pending'); // approved/pending
 
             $table->string('definition');
-            $table->string('formula');
-            $table->string('measures');
+            $table->string('formula'); 
             $table->string('calculation_example');
+            $table->string('subordinate_measures');
             $table->string('evaluation_pattern');
 
             $table->string('type')->default('kpi'); // kpi/ecd

@@ -1,7 +1,7 @@
 <template>
     <v-card max-width="1200">
         <v-card-text>
-            Bar Graph will show here for admin only
+            Show Graph completion % for admin only
         </v-card-text> 
     </v-card>
 </template>
@@ -15,7 +15,4 @@ const props = defineProps({
         default: null,
     },
 });
-
- 
 </script>
-  
