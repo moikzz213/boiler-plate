@@ -23,6 +23,11 @@ use App\Http\Controllers\KeyPerformanceIndicatorMasterController;
 */
 
 Route::middleware('authkey')->prefix('hr')->group(function () {
+    // companies
+     Route::get('/companies', [CompanyController::class, 'getCompanies'])->name('hr.companies');
+     Route::post('/company/save', [CompanyController::class, 'saveCompany'])->name('hr.company.save');
+     Route::post('/company/remove/{id}', [CompanyController::class, 'removeCompany'])->name('hr.company.remove');
+
     // industries
     Route::get('/industries', [IndustryController::class, 'getPaginatedIndustries'])->name('hr.industry.paginated');
     Route::post('/industry/save', [IndustryController::class, 'saveIndustry'])->name('hr.industry.save');
@@ -65,9 +70,10 @@ Route::middleware('authkey')->prefix('admin')->group(function () {
 Route::middleware('authkey')->group(function () {
     // import
     Route::post('/import/industries', [IndustryController::class, 'importIndustries'])->name('import.industries');
+    Route::post('/import/companies', [CompanyController::class, 'importCompanies'])->name('import.companies');
 
     // companies
-    Route::get('/companies', [CompanyController::class, 'getCompanies'])->name('companies.get.list');
+    Route::get('/companies', [CompanyController::class, 'getCompanyList'])->name('companies.get.list');
 
     // industries
     Route::get('/industries', [IndustryController::class, 'getIndustries'])->name('industries.get.list');

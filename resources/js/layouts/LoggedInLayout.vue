@@ -254,8 +254,9 @@ import {
   mdiFormatListBulleted,
   mdiDomain,
   mdiPercent,
-  mdiRuler,
   mdiAccountCog,
+  mdiOfficeBuilding,
+  mdiClipboardEditOutline
 } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
 import { printInitials } from "@/composables/printInitials";
@@ -335,8 +336,13 @@ const sideNavigation = ref([
         path: "/hr/industries",
       },
       {
+        title: "Companies",
+        icon: mdiOfficeBuilding,
+        path: "/hr/companies",
+      },
+      {
         title: "Measures",
-        icon: mdiRuler,
+        icon: mdiClipboardEditOutline,
         path: "/hr/measures",
       },
       {

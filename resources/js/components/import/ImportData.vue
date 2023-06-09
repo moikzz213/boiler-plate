@@ -23,9 +23,20 @@
             Note: This import function will ignore the data that already exist.
           </div>
         </v-card-text>
-        <div class="pa-3 d-flex justify-end">
+        <div class="pa-3 d-flex justify-space-between">
           <v-btn
-            class="bg-grey-lighten-3 mr-3"
+            v-if="importData.templateFile && importData.templateFile != ''"
+            class="bg-grey-lighten-3"
+            variant="text"
+            color="primary"
+            :href="`${appURL}/assets/csv/${importData.templateFile}`"
+            download
+            >Download CSV Template
+            <v-icon size="small" class="ml-2" :icon="mdiDownload"></v-icon
+          ></v-btn>
+
+          <v-btn
+            class="bg-grey-lighten-3 ml-auto mr-3"
             variant="text"
             color="primary"
             @click="importData.dialog = false"
@@ -42,13 +53,14 @@
 
 <script setup>
 import { ref, watch } from "vue";
-import { mdiPaperclip, mdiTrayArrowUp } from "@mdi/js";
+import { mdiPaperclip, mdiTrayArrowUp, mdiDownload } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
 import { clientApi } from "@/services/clientApi";
 import * as papa from "papaparse";
 
+const appURL = ref(import.meta.env.VITE_APP_URL);
 const authStore = useAuthStore();
-const emit = defineEmits("imported");
+const emit = defineEmits(["imported"]);
 const props = defineProps({
   options: {
     type: Object,
@@ -62,6 +74,7 @@ const importData = ref({
   loading: false,
   cardTitle: "Import",
   endpoint: "",
+  templateFile: "",
 });
 importData.value = { ...importData.value, ...props.options };
 

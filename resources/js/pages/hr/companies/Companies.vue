@@ -1,6 +1,6 @@
 <template>
   <v-container class="pb-16">
-    <PageHeader title="Industries" />
+    <PageHeader title="Companies" />
     <v-row class="my-5">
       <div class="v-col-12">
         <ImportData :options="importOptions" @imported="importResponse" class="mb-3" />
@@ -13,7 +13,7 @@
               class="rounded-xl elevation-2 mr-2"
               ><v-icon size="small" :icon="mdiPlus"></v-icon
             ></v-btn>
-            <div class="text-primary text-capitalize">Industries</div>
+            <div class="text-primary text-capitalize">Companies</div>
           </v-card-title>
           <v-table>
             <thead>
@@ -22,8 +22,8 @@
                 <th class="text-right text-capitalize">Actions</th>
               </tr>
             </thead>
-            <tbody v-if="industries && industries.length > 0">
-              <tr v-for="item in industries" :key="item.id">
+            <tbody v-if="companies && companies.length > 0">
+              <tr v-for="item in companies" :key="item.id">
                 <td>{{ item.title }}</td>
                 <td>
                   <div class="d-flex align-center justify-end">
@@ -44,7 +44,7 @@
               </tr>
             </tbody>
           </v-table>
-          <v-card v-if="industries && industries.length == 0">
+          <v-card v-if="companies && companies.length == 0">
             <v-card-text class="text-center"> No records found </v-card-text>
           </v-card>
         </v-card>
@@ -60,16 +60,16 @@
         ></v-pagination>
       </div>
     </v-row>
-    <v-dialog v-model="industryForm.dialog" width="100%" max-width="480px" persistent>
+    <v-dialog v-model="companyForm.dialog" width="100%" max-width="480px" persistent>
       <v-card class="rounded-lg">
         <v-row class="ma-0 pa-0">
           <div :class="`v-col-12 px-4`">
             <v-row>
-              <div class="v-col-12">{{ industryForm.title }} {{}}</div>
+              <div class="v-col-12">{{ companyForm.title }} {{}}</div>
               <div class="v-col-12 py-0">
                 <v-text-field
-                  v-model="industryForm.data.title"
-                  label="Industry*"
+                  v-model="companyForm.data.title"
+                  label="Company*"
                   variant="outlined"
                   density="compact"
                 ></v-text-field>
@@ -78,7 +78,7 @@
                 <v-btn color="primary" variant="text">Cancel</v-btn>
                 <v-btn
                   color="primary"
-                  :loading="industryForm.loading"
+                  :loading="companyForm.loading"
                   class="ml-2 px-8"
                   @click="save"
                   >save</v-btn
@@ -112,9 +112,9 @@ const sbOptions = ref({});
 
 // import
 const importOptions = ref({
-  cardTitle: "Import Industries",
-  endpoint: "/api/import/industries",
-  templateFile: "import-template-industries.csv",
+  cardTitle: "Import companies",
+  endpoint: "/api/import/companies",
+  templateFile: "import-template-companies.csv",
 });
 const importResponse = (v) => {
   if (v.status == true) {
@@ -141,9 +141,9 @@ const importResponse = (v) => {
   }
 };
 
-// Industries
-const industries = ref([]);
-const industryForm = ref({
+// companies
+const companies = ref([]);
+const companyForm = ref({
   title: "",
   data: {},
   loading: false,
@@ -154,28 +154,28 @@ const totalPageCount = ref(0);
 const currentPage = ref(route.params && route.params.page ? route.params.page : 1);
 const getData = async (page) => {
   await clientApi(authStore.authToken)
-    .get("/api/hr/industries?page=" + page)
+    .get("/api/hr/companies?page=" + page)
     .then((res) => {
       totalPageCount.value = res.data.last_page;
       currentPage.value = res.data.current_page;
-      industries.value = res.data.data;
+      companies.value = res.data.data;
     })
     .catch((err) => {
-      console.log("industries", err);
+      console.log("companies", err);
     });
 };
 const save = async () => {
   let data = {
-    id: industryForm.value.action == "edit" ? industryForm.value.data.id : null,
-    title: industryForm.value.data.title,
+    id: companyForm.value.action == "edit" ? companyForm.value.data.id : null,
+    title: companyForm.value.data.title,
   };
-  industryForm.value.loading = true;
+  companyForm.value.loading = true;
   await clientApi(authStore.authToken)
-    .post("/api/hr/industry/save", data)
+    .post("/api/hr/company/save", data)
     .then((res) => {
       getData(currentPage.value).then(() => {
-        industryForm.value.loading = false;
-        industryForm.value.dialog = false;
+        companyForm.value.loading = false;
+        companyForm.value.dialog = false;
         sbOptions.value = {
           status: true,
           type: "success",
@@ -184,8 +184,8 @@ const save = async () => {
       });
     })
     .catch((err) => {
-      industryForm.value.loading = false;
-      console.log("industries", err);
+      companyForm.value.loading = false;
+      console.log("companies", err);
       sbOptions.value = {
         status: true,
         type: "error",
@@ -194,10 +194,10 @@ const save = async () => {
     });
 };
 const add = () => {
-  industryForm.value = {
-    ...industryForm.value,
+  companyForm.value = {
+    ...companyForm.value,
     ...{
-      title: "Add Industry",
+      title: "Add Company",
       data: {},
       dialog: true,
       action: "add",
@@ -205,8 +205,8 @@ const add = () => {
   };
 };
 const edit = (item) => {
-  industryForm.value = {
-    ...industryForm.value,
+  companyForm.value = {
+    ...companyForm.value,
     ...{
       title: "Edit " + item.title,
       data: Object.assign({}, item),
@@ -219,7 +219,7 @@ watch(currentPage, (newValue, oldValue) => {
   if (newValue != oldValue) {
     router
       .push({
-        name: "PaginatedIndustries",
+        name: "PaginatedCompanies",
         params: {
           page: currentPage.value,
         },
@@ -247,7 +247,7 @@ const remove = (item) => {
 };
 const confirmRemove = async () => {
   await clientApi(authStore.authToken)
-    .post("/api/hr/industry/remove/" + toRemove.value.id)
+    .post("/api/hr/company/remove/" + toRemove.value.id)
     .then((res) => {
       getData(currentPage.value).then(() => {
         sbOptions.value = {

@@ -2,13 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\ClientKeyController;
-use App\Http\Controllers\CustomAuthController;
-use App\Http\Controllers\PublicPageController;
-use App\Http\Controllers\PerformanceSettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +15,9 @@ use App\Http\Controllers\PerformanceSettingController;
 */
 
 Route::prefix('hr')->group(function () {
+    // companies
+    Route::get('/companies', [PageController::class, 'home'])->name('hr.companies');
+    Route::get('/companies/page/{page}', [PageController::class, 'home'])->name('hr.companies.paginated');
     // industries
     Route::get('/industries', [PageController::class, 'home'])->name('hr.industries');
     Route::get('/industries/page/{page}', [PageController::class, 'home'])->name('hr.industries.paginated');
