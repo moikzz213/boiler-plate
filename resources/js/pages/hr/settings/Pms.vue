@@ -43,14 +43,8 @@
       <div class="v-col-12">
         <v-card class="mb-3 rounded-lg" :loading="loadingPms">
           <v-card-title class="d-flex align-center py-3">
-            <v-btn
-              size="small"
-              icon
-              @click="addPms"
-              color="white"
-              class="text-capitalize mr-3"
-            >
-              <v-icon :icon="mdiPlus"></v-icon>
+            <v-btn @click="addPms" size="35" class="rounded-xl elevation-2 mr-2">
+              <v-icon size="small" :icon="mdiPlus"></v-icon>
             </v-btn>
             <div class="text-primary text-capitalize">PMS Settings</div>
           </v-card-title>
