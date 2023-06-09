@@ -77,16 +77,6 @@ export const routes = [
             title: "Team Member",
         },
     },
-    // {
-    //     path: "/manager/kpi/",
-    //     component: () => import("../pages/manager/kpi/CustomKpi.vue"),
-    //     name: "ManagerCustomKPI",
-    //     meta: {
-    //         requiresAuth: true,
-    //         role: ["app_admin", "manager"],
-    //         title: "Custom KPIs",
-    //     },
-    // },
 
     // hr routes
     {
@@ -183,16 +173,6 @@ export const routes = [
 
     // Admin routes
     {
-        path: "/admin",
-        component: () => import("../pages/admin/Dashboard.vue"),
-        name: "AdminRoot",
-        meta: {
-            requiresAuth: true,
-            role: ["app_admin"],
-            title: "Dashboard",
-        },
-    },
-    {
         path: "/admin/users",
         component: () => import("../pages/admin/users/Users.vue"),
         name: "Users",
@@ -203,7 +183,17 @@ export const routes = [
         },
     },
     {
-        path: "/admin/users/:id",
+        path: "/admin/users/page/:page",
+        component: () => import("../pages/admin/users/Users.vue"),
+        name: "PaginatedUsers",
+        meta: {
+            requiresAuth: true,
+            role: ["app_admin"],
+            title: "Users",
+        },
+    },
+    {
+        path: "/admin/users/:ecode",
         component: () => import("../pages/admin/users/EditUser.vue"),
         name: "EditUser",
         meta: {

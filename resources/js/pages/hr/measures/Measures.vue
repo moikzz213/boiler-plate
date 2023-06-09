@@ -52,6 +52,7 @@
           v-model="currentPage"
           class="my-4"
           :length="totalPageCount"
+          :total-visible="8"
           variant="elevated"
           active-color="primary"
           density="comfortable"

@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <PageHeader title="Edit User" />
-    <v-row class="mb-3" :disabled="loadingPage">
+    <v-row class="mb-3" :disabled="user.loadingPage">
       <div class="v-col-12 v-col-md-8">
         <div class="d-flex flex-wrap">
           <v-btn
@@ -30,19 +30,14 @@
           >
         </div>
       </div>
-
-      <div class="v-col-12 v-col-md-8">
-        <AccountForm
-          v-show="currentForm == 'account'"
-          :user="user.data"
-          @saved="savedResponse"
-        />
-        <ProfileForm
-          v-show="currentForm == 'profile'"
-          :user="user.data"
-          @saved="savedResponse"
-        />
-        <ChangePassword v-show="currentForm == 'change_password'" :user-id="1" />
+      <div v-show="currentForm == 'account'" class="v-col-12 v-col-md-6">
+        <AccountForm :user="user.data" @saved="savedResponse" />
+      </div>
+      <div v-show="currentForm == 'profile'" class="v-col-12">
+        <ProfileForm :user="user.data" @saved="savedResponse" />
+      </div>
+      <div v-show="currentForm == 'change_password'" class="v-col-12 v-col-md-6">
+        <ChangePassword :ecode="user.data.ecode" />
       </div>
     </v-row>
     <Snackbar :options="sbOptions" />
@@ -50,35 +45,49 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
+import { useRoute } from "vue-router";
+import { clientApi } from "@/services/clientApi";
+import { useAuthStore } from "@/stores/auth";
 import PageHeader from "@/components/pageHeader.vue";
 import AccountForm from "@/pages/account/AccountForm.vue";
 import ProfileForm from "@/pages/account/ProfileForm.vue";
 import Snackbar from "@/components/SnackBar.vue";
 import ChangePassword from "@/pages/account/ChangePassword.vue";
-import { useRoute } from "vue-router";
-const route = useRoute();
 
-const loadingPage = ref(true);
-const user = ref({
-  loading: false,
-  data: {},
+const route = useRoute();
+const authStore = useAuthStore();
+
+const sbOptions = ref({
+  status: true,
+  type: "info",
+  text: null,
 });
 
+const currentForm = ref("account");
+const openForm = async (comp) => {
+  currentForm.value = comp;
+};
+
+const user = ref({
+  loadingPage: true,
+  data: {},
+});
 const getSingleUser = async () => {
-  loadingPage.value = true;
-  await axios
-    .get("/admin/user/single/" + route.params.id)
+  user.value.loadingPage = true;
+  await clientApi(authStore.authToken)
+    .get("/api/admin/user/single/" + route.params.ecode)
     .then((response) => {
       user.value.data = response.data;
-      loadingPage.value = false;
+      user.value.loadingPage = false;
+      console.log("user.value", user.value);
     })
     .catch((err) => {
-      user.value.loading = false;
-      loadingPage.value = false;
+      user.value.loadingPage = false;
       console.log(err);
     });
 };
+getSingleUser();
 const savedResponse = (resMsg) => {
   getSingleUser().then(() => {
     sbOptions.value = {
@@ -88,18 +97,4 @@ const savedResponse = (resMsg) => {
     };
   });
 };
-onMounted(() => {
-  getSingleUser();
-});
-
-const currentForm = ref("profile");
-const openForm = async (comp) => {
-  currentForm.value = comp;
-};
-
-const sbOptions = ref({
-  status: true,
-  type: "info",
-  text: null,
-});
 </script>

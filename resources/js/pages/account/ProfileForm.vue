@@ -4,134 +4,162 @@
       >Profile Settings</v-card-title
     >
     <v-card-text>
-      <Form as="v-form" :validation-schema="validation">
-        <Field
-          name="full_name"
-          v-slot="{ field, errors }"
-          v-model="profileData.data.full_name"
-        >
+      <v-row class="py-3">
+        <div class="v-col-12 v-col-md-6 py-0">
           <v-text-field
-            v-model="profileData.data.full_name"
-            v-bind="field"
+            v-model="profileData.data.display_name"
             label="Full name"
             variant="outlined"
-            class="mb-2"
-            :error-messages="errors"
+            density="compact"
+            readonly
           />
-        </Field>
-        <Field name="dob" v-slot="{ field, errors }" v-model="profileData.data.dob">
+        </div>
+        <div class="v-col-12 v-col-md-6 py-0">
           <v-text-field
-            v-bind="field"
+            v-model="profileData.data.ecode"
+            label="Ecode"
+            variant="outlined"
+            density="compact"
+            readonly
+          />
+        </div>
+        <div class="v-col-12 v-col-md-6 py-0">
+          <v-text-field
+            v-model="profileData.data.email"
+            label="Email"
+            variant="outlined"
+            density="compact"
+            readonly
+          />
+        </div>
+        <div class="v-col-12 v-col-md-6 py-0">
+          <v-text-field
+            label="Employee Type"
+            :model-value="profileData.data.is_regular ? 'Regular' : 'Probation'"
+            variant="outlined"
+            density="compact"
+            readonly
+          />
+        </div>
+        <div class="v-col-12 v-col-md-6 py-0">
+          <v-text-field
+            v-model="profileData.data.company.title"
+            label="Company"
+            variant="outlined"
+            density="compact"
+            readonly
+          />
+        </div>
+        <div class="v-col-12 v-col-md-6 py-0">
+          <v-text-field
+            readonly
+            label="Designation"
+            :v-model="profileData.data.designation"
+            variant="outlined"
+            density="compact"
+          />
+        </div>
+        <div class="v-col-12 v-col-md-6 py-0">
+          <v-text-field
+            readonly
+            label="Department"
+            v-model="profileData.data.department"
+            variant="outlined"
+            density="compact"
+          />
+        </div>
+        <div class="v-col-12 v-col-md-6 py-0">
+          <v-text-field
+            readonly
             type="date"
             label="Date of Birth"
             :model-value="profileData.data.dob"
             variant="outlined"
-            class="mb-2"
-            :error-messages="errors"
+            density="compact"
           />
-        </Field>
-        <Field
-          name="nationality"
-          v-slot="{ field, errors }"
-          v-model="profileData.data.nationality"
-        >
-          <v-autocomplete
-            v-model="profileData.data.nationality"
-            v-bind="field"
-            :items="nationalityList"
-            item-title="name"
-            item-value="name"
-            label="Nationality"
+        </div>
+        <div class="v-col-12 v-col-md-6 py-0">
+          <v-text-field
+            readonly
+            type="date"
+            label="Date Joined"
+            :model-value="profileData.data.doj"
             variant="outlined"
-            class="mb-2"
-            :error-messages="errors"
-          ></v-autocomplete>
-        </Field>
-        <v-btn
-          color="primary"
-          size="large"
-          :loading="profileData.loading"
-          @click="saveProfile"
-          >Save</v-btn
-        >
-      </Form>
+            density="compact"
+          />
+        </div>
+        <div class="v-col-12 v-col-md-6 py-0">
+          <v-text-field
+            readonly
+            label="Nationality"
+            :model-value="profileData.data.nationality"
+            variant="outlined"
+            density="compact"
+          />
+        </div>
+        <div class="v-col-12 v-col-md-6 py-0">
+          <v-text-field
+            readonly
+            label="Grade"
+            :model-value="profileData.data.grade"
+            variant="outlined"
+            density="compact"
+          />
+        </div>
+        <div class="v-col-12 v-col-md-6 py-0">
+          <v-text-field
+            readonly
+            label="Reporting to"
+            :model-value="`${
+              profileData.data.managed_by
+                ? profileData.data.managed_by.display_name +
+                  ' (' +
+                  profileData.data.managed_by.ecode +
+                  ')'
+                : 'N/A'
+            }
+            `"
+            variant="outlined"
+            density="compact"
+          />
+        </div>
+        <div class="v-col-12 v-col-md-6 py-0">
+          <v-text-field
+            readonly
+            label="HRBP"
+            v-model="profileData.data.hrbp_email"
+            variant="outlined"
+            density="compact"
+          />
+        </div>
+      </v-row>
     </v-card-text>
   </v-card>
 </template>
 <script setup>
-import { ref, watch, onMounted } from "vue";
-import { Form, Field } from "vee-validate";
-import * as yup from "yup";
-import nationalities from "@/json/nationalities.json";
-import { useRoute } from "vue-router";
-import { clientApi } from "@/services/clientApi";
-import { VAutocomplete } from "vuetify/components/VAutocomplete";
-import { useAuthStore } from "@/stores/auth";
-
-const authStore = useAuthStore();
-const route = useRoute();
+import { ref, watch } from "vue";
 const props = defineProps(["user"]);
+const emit = defineEmits(["saved"]);
 
 // profile
-const emit = defineEmits(["saved"]);
-const nationalityList = ref([]);
-nationalityList.value = nationalities;
 const profileData = ref({
   loading: false,
   data: {
-    user_id: route.params.id,
-    full_name: null,
-    dob: null,
-    nationality: null,
+    company: {
+      title: "",
+    },
+    managed_by: {
+      display_name: "",
+    },
+    status: "Active",
   },
 });
-profileData.value.data = Object.assign({}, props.user);
 watch(
   () => props.user,
-  (newVal) => {
-    console.log("props.user", props.user);
-    console.log("newVal", newVal);
-    profileData.value.data = Object.assign({}, newVal);
-    // profileData.value.data = { ...profileData.value.data, ...newVal };
+  (newVal, oldValue) => {
+    if (newVal != oldValue) {
+      profileData.value.data = Object.assign({}, newVal);
+    }
   }
 );
-console.log("profileData.value.data", profileData.value.data);
-const getProfile = async () => {
-  await clientApi(authStore.authToken)
-    .get("/api/account/profile/" + props.user.id)
-    .then((res) => {
-      profileData.value.data = Object.assign({}, res.data);
-    })
-    .catch((err) => {
-      profileData.value.loading = false;
-      console.log("getProfile", err);
-    });
-};
-getProfile();
-
-// save profile
-let validation = yup.object({
-  full_name: yup.string(),
-  dob: yup.string(),
-  nationality: yup.string().notRequired(),
-});
-const saveProfile = async () => {
-  profileData.value.loading = true;
-  profileData.value.data = {
-    ...profileData.value.data,
-    ...{
-      id: props.user.id,
-    },
-  };
-  await clientApi(authStore.authToken)
-    .post("/api/account/profile/save", profileData.value.data)
-    .then((response) => {
-      profileData.value.loading = false;
-      emit("saved", response.data.message);
-    })
-    .catch((err) => {
-      profileData.value.loading = false;
-      console.log(err.response.data);
-    });
-};
 </script>

@@ -9,12 +9,9 @@
       color="primary"
     >
       <div class="d-flex flex-column h-100">
-        <v-list-item
-          nav
-          :prepend-avatar="logo"
-          :title="appName"
-          class="mb-3"
-        ></v-list-item>
+        <v-list-item nav :prepend-avatar="logo" class="mb-3">
+          <div v-show="!rail" class="text-body-2" style="width: 180px">{{ appName }}</div>
+        </v-list-item>
         <v-divider></v-divider>
         <v-list nav>
           <div v-for="item in sideNavigation" :key="item.title" :value="item.title">
@@ -258,6 +255,7 @@ import {
   mdiDomain,
   mdiPercent,
   mdiRuler,
+  mdiAccountCog,
 } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
 import { printInitials } from "@/composables/printInitials";
@@ -271,7 +269,15 @@ const appName = ref(import.meta.env.VITE_APP_NAME);
 const logo = ref(import.meta.env.VITE_APP_URL + "/assets/images/fav.png");
 
 // profile header
-const profileHeaderList = ref(["Dashboard", "Account", "Teams", "ManagerCustomKPI"]);
+const profileHeaderList = ref([
+  "Dashboard",
+  "Account",
+  "Teams",
+  "ManagerCustomKPI",
+  "PaginatedManagerCustomKPI",
+  "Employees",
+  "SingleEmployee",
+]);
 
 // navigation
 const authStore = useAuthStore();
@@ -339,6 +345,12 @@ const sideNavigation = ref([
         path: "/hr/weightages",
       },
     ],
+  },
+  {
+    title: "User Settings",
+    icon: mdiAccountCog,
+    path: "/admin/users",
+    roles: ["app_admin"],
   },
 ]);
 const hasAccess = (rolesArray) => {

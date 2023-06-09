@@ -18,6 +18,7 @@ class EmployeeController extends Controller
             AllowedFilter::callback('employee', function ($query, $value) {
                 $query->where('first_name', 'like', '%' . $value . '%')
                 ->orWhere('last_name', 'like', '%' . $value . '%')
+                ->orWhere('display_name', 'like', '%' . $value . '%')
                 ->orWhere('ecode', 'like', '%' . $value . '%');
             }),
             // AllowedFilter::exact('hrbp_email'),

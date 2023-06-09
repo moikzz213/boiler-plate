@@ -32,28 +32,7 @@
             v-bind="field"
             label="Username"
             variant="outlined"
-            class="mb-2"
-            :error-messages="errors"
-          />
-        </Field>
-        <Field name="email" v-slot="{ field, errors }" v-model="user.data.email">
-          <v-text-field
-            v-model="user.data.email"
-            v-bind="field"
-            label="Email"
-            variant="outlined"
-            class="mb-2"
-            :error-messages="errors"
-          />
-        </Field>
-        <Field name="phone_no" v-slot="{ field, errors }" v-model="user.data.phone_no">
-          <v-text-field
-            v-model="user.data.phone_no"
-            v-bind="field"
-            type="number"
-            label="Phone number"
-            variant="outlined"
-            class="mb-2"
+            density="compact"
             :error-messages="errors"
           />
         </Field>
@@ -64,7 +43,7 @@
             :items="roleList"
             label="Role"
             variant="outlined"
-            class="mb-2"
+            density="compact"
             :error-messages="errors"
           />
         </Field>
@@ -80,8 +59,35 @@ import { ref, watch, computed } from "vue";
 import * as yup from "yup";
 import { Form, Field } from "vee-validate";
 import { mdiCircleMedium } from "@mdi/js";
+import { clientApi } from "@/services/clientApi";
+import { useAuthStore } from "@/stores/auth";
 
+const emit = defineEmits(["saved"]);
 const props = defineProps(["user"]);
+const authStore = useAuthStore();
+
+// status
+const statusList = ref([
+  {
+    title: "Active",
+    color: "success",
+  },
+  {
+    title: "Inactive",
+    color: "error",
+  },
+]);
+const statusColor = computed(() =>
+  user.value.data.status == "Active" ? "success" : "error"
+);
+const selectStatus = (selected) => {
+  user.value.data.status = selected;
+};
+
+// roles
+const roleList = ref(["normal", "hrbp", "hr_admin"]);
+
+// user account
 const user = ref({
   loading: false,
   data: Object.assign({}, props.user),
@@ -92,50 +98,22 @@ watch(
     user.value.data = newVal;
   }
 );
-const emit = defineEmits(["saved"]);
 
-/**
- * Status
- */
-const statusList = ref([
-  {
-    title: "active",
-    color: "success",
-  },
-  {
-    title: "inactive",
-    color: "error",
-  },
-]);
-const statusColor = computed(() => {
-  let color = "";
-  if (user.value.data.status == "active") {
-    color = "success";
-  }
-  if (user.value.data.status == "inactive") {
-    color = "error";
-  }
-  return color;
-});
-const selectStatus = (selected) => {
-  user.value.data.status = selected;
-};
-
-const roleList = ref(["normal", "admin"]);
-
-/**
- * Submit user
- */
+// save user
 let validation = yup.object({
   username: yup.string().required(),
-  email: yup.string().email(),
-  phone_no: yup.number().required(),
+  role: yup.string().required(),
 });
 const saveUser = async () => {
-  let data = user.value.data;
+  let data = {
+    ecode: user.value.data.ecode,
+    username: user.value.data.username,
+    status: user.value.data.status,
+    role: user.value.data.role,
+  };
   user.value.loading = true;
-  await axios
-    .post("/account/save", data)
+  await clientApi(authStore.authToken)
+    .post("/api/admin/account/save", data)
     .then((response) => {
       user.value.loading = false;
       emit("saved", response.data.message);

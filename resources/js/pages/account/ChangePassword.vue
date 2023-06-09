@@ -1,11 +1,11 @@
 <template>
   <div>
     <v-card :loading="password.loading">
-      <Form as="v-form" :validation-schema="validation">
-        <v-card-title class="text-primary text-capitalize mb-3">
-          Change password
-        </v-card-title>
-        <v-card-text class="pb-6">
+      <v-card-title class="text-primary text-capitalize mb-3">
+        Change password
+      </v-card-title>
+      <v-card-text>
+        <Form as="v-form" :validation-schema="validation">
           <Field
             name="password"
             v-slot="{ field, errors }"
@@ -14,10 +14,10 @@
             <v-text-field
               v-model="password.data.password"
               v-bind="field"
-              label="Password"
+              label="Set New Password"
               type="password"
               variant="outlined"
-              class="mb-2"
+              density="compact"
               :error-messages="errors"
             ></v-text-field>
           </Field>
@@ -29,18 +29,18 @@
             <v-text-field
               v-model="password.data.password_confirmation"
               v-bind="field"
-              label="Confirm Password"
+              label="Confirm New Password"
               type="password"
               variant="outlined"
-              class="mb-2"
+              density="compact"
               :error-messages="errors"
             ></v-text-field>
           </Field>
           <div class="d-flex align-center">
             <v-btn color="primary" size="large" @click="changePassword"> Save </v-btn>
           </div>
-        </v-card-text>
-      </Form>
+        </Form>
+      </v-card-text>
     </v-card>
   </div>
 </template>
@@ -49,7 +49,7 @@
 import { ref } from "vue";
 import { Form, Field } from "vee-validate";
 import * as yup from "yup";
-const props = defineProps(["userId"]);
+const props = defineProps(["ecode"]);
 const snackbar = ref({
   status: false,
   type: "",
@@ -59,7 +59,7 @@ const password = ref({
   status: false,
   loading: false,
   data: {
-    user_id: props.userId,
+    ecode: props.ecode,
     password: "",
     password_confirmation: "",
   },
@@ -80,7 +80,7 @@ const changePassword = async () => {
         status: false,
         loading: false,
         data: {
-          user_id: props.userId,
+          user_id: props.ecode,
           password: "",
           password_confirmation: "",
         },
