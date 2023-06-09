@@ -47,10 +47,7 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
     Route::post('/custom-kpi/approve', [KeyPerformanceIndicatorMasterController::class, 'approveCustomKpi'])->name('manager.custom.kpi.approve');
 });
 
-// companies
-Route::get('/companies', [CompanyController::class, 'getCompanies'])->name('companies.get.list');
-Route::get('/industries', [IndustryController::class, 'getIndustries'])->name('industries.get.list');
-
+// manager
 Route::middleware('authkey')->prefix('manager')->group(function () {
     Route::get('/my-custom-kpi/list/{ecode}', [KeyPerformanceIndicatorMasterController::class, 'getCustomKpiByEcode'])->name('manager.custom.kpi.paginated');
     Route::post('/my-custom-kpi/save', [KeyPerformanceIndicatorMasterController::class, 'saveCustomKpiWithProfileEcode'])->name('manager.custom.kpi.paginated');
@@ -62,4 +59,16 @@ Route::middleware('authkey')->prefix('admin')->group(function () {
     Route::get('/user/all', [ProfileController::class, 'getUsers'])->name('admin.get.all.users');
     Route::get('/user/single/{ecode}', [ProfileController::class, 'getSingleUser'])->name('admin.get.single.user');
     Route::post('/account/save', [ProfileController::class, 'saveAccount'])->name('admin.save.account');
+});
+
+// companies
+Route::middleware('authkey')->group(function () {
+    // import
+    Route::post('/import/industries', [IndustryController::class, 'importIndustries'])->name('import.industries');
+
+    // companies
+    Route::get('/companies', [CompanyController::class, 'getCompanies'])->name('companies.get.list');
+
+    // industries
+    Route::get('/industries', [IndustryController::class, 'getIndustries'])->name('industries.get.list');
 });
