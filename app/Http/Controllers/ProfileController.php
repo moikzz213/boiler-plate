@@ -47,7 +47,6 @@ class ProfileController extends Controller
     }
 
     public function KPIEmployeeByYear($ecode, $year){
-
         $query = Profile::whereHas('reviews', function($q) use ($year){
             $q->where('year', $year);
         })->where(

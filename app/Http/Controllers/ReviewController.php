@@ -32,17 +32,17 @@ class ReviewController extends Controller
             $query->update(['status' => 'inprogress']);
             $query->keyReview()->create([
                 'title'                 => $request->data['data']['title'],
-                'industry'              => $request->data['industryTitle'],
-                'definition'            => $request->data['data']['definition'],
-                'formula'               => $request->data['data']['formula'],
-                'measures'              => $request->data['data']['measures'],
-                'calculation_example'   => $request->data['data']['calculation_example'],
-                'evaluation_pattern'    => $request->data['data']['evaluation_pattern'],
+                'industry'              => @$request->data['industryTitle'],
+                'definition'            => @$request->data['data']['definition'],
+                'formula'               => @$request->data['data']['formula'],
+                'measures'              => @$request->data['data']['measures'],
+                'calculation_example'   => @$request->data['data']['calculation_example'],
+                'evaluation_pattern'    => @$request->data['data']['evaluation_pattern'],
                 'type'                  => $request->data['data']['type'],
-                'ecd_type'              => $request->data['data']['ecd_type'],
-                'target_type'           => $request->data['data']['target_type'],
-                'target'                => $request->data['data']['target'],
-                'subordinate_measures'  => $request->data['data']['subordinate_measures'], 
+                'ecd_type'              => @$request->data['data']['ecd_type'],
+                'target_type'           => @$request->data['data']['target_type'],
+                'target'                => @$request->data['data']['target'],
+                'subordinate_measures'  => @$request->data['data']['subordinate_measures'], 
                 'weightage'             => @$weightage[0] ? $weightage[0] : 0
             ]);
 
@@ -50,9 +50,9 @@ class ReviewController extends Controller
         }else{
             $query = KeyPerformanceReview::where('id', $request->data['data']['id'])->first(); 
             $query->update([ 
-                'measures'              => $request->data['data']['measures'], 
-                'target_type'           => $request->data['data']['target_type'],
-                'target'                => $request->data['data']['target'], 
+                'measures'              => @$request->data['data']['measures'], 
+                'target_type'           => @$request->data['data']['target_type'],
+                'target'                => @$request->data['data']['target'], 
                 'weightage'             => @$weightage[0] ? $weightage[0] : 0
             ]);
             $msg = 'KPI has been updated';

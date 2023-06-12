@@ -53,7 +53,7 @@
           <v-card-text>
             <v-row>
               <div class="v-col-12 v-col-md-3">
-                <EmployeeCard :profile="user"/>
+                <EmployeeCard :profile="user" />
               </div>
               <div class="v-col-12 v-col-md-8">
                 <KpiProgress :density="'compact'" :selected-employee="user"/>
@@ -131,7 +131,8 @@ const sbOptions = ref({});
 const authStore = useAuthStore();
 const settingStore = useSettingStore();
  
-const managerTeam = ref(authStore.authProfile.teams);
+const managerTeam = ref(authStore.authProfile.teams); 
+
 const year = ref(new Date().getFullYear());
 const currentDate = ref(new Date());
 // filter employee
@@ -143,10 +144,8 @@ const filter = ref({
     employee_type: "All",
   },
 });
-const runFilter = async () => {
-  console.log("filter data in pinia store");
-  filterTeamMethod();
-  console.log('filter.value.data.ecode',filter.value.data.employee);
+const runFilter = async () => { 
+  filterTeamMethod(); 
 };
 
 const ratingOrWeightage = (user) => {
@@ -234,11 +233,9 @@ const openMember = (user) => {
   } 
 }; 
 
-const filterTeamMethod = () => {
-  console.log(authStore.authProfile.teams);
+const filterTeamMethod = () => { 
   let result = authStore.authProfile.teams.filter(function(el) {
-      if(filter.value.data.employee){ 
-        console.log(el.ecode + " = "+ filter.value.data.employee);
+      if(filter.value.data.employee){
           return el.ecode == filter.value.data.employee;
       }else if(filter.value.data.employee_type == 'Probation'){
           return el.is_regular == 0;

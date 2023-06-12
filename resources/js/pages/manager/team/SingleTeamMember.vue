@@ -16,7 +16,7 @@
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">Reporting To</div>
-                <div class="text-body-2">Tibs</div>
+                <div class="text-body-2">{{managerName}}</div>
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">Business Unit</div>
@@ -40,7 +40,9 @@
         </v-card>
       </div>
     </v-row>
-    <KpiContent :selected-employee="selEmployeeObj" :industry-list="industryWithKPI" :ecd-list="ecdList"
+    <KpiContent 
+      :measures-list="measuresList"
+      :selected-employee="selEmployeeObj" :industry-list="industryWithKPI" :ecd-list="ecdList"
       @savedResponse="savedResponseMethod"
        @errorcheck="errorCheck" 
        @yearchange="selectedYearResponse"
@@ -63,6 +65,14 @@ import { useIndustryStore } from "@/stores/industry";
 import SnackBar from "@/components/SnackBar.vue";
 const router = useRouter();
 const route = useRoute();
+
+const props = defineProps({ 
+  manager: {
+    type: String,
+    default: null
+  }
+});
+
 const ecode = ref(route.params.id);
 
 // authenticated user object
@@ -70,7 +80,7 @@ const authStore = useAuthStore();
 const settingStore = useSettingStore();
 const industryStore = useIndustryStore();
 const sbOptions = ref({}); 
-
+const managerName = authStore.authProfile.display_name;
 // selected employee
 // const teamList = ref(authStore.authProfile ? authStore.authProfile.teams : []);
 const teamList = computed(() => authStore.authProfile.teams);
@@ -79,7 +89,7 @@ const selEmployeeObj = ref({});
  
 const employeePassData = () => {
   let filteredEmp = teamList.value.filter((o) => { return o.username == ecode.value })
-  selEmployeeObj.value = Object.assign({},filteredEmp[0]);  
+  selEmployeeObj.value = Object.assign({},filteredEmp[0]);
 };
 
 const changeEmployee = () => {
@@ -107,14 +117,14 @@ const ratingOrWeightage = (user) => {
 
  
 const industryList = ref([]); 
-const selectIndustry = async () => { 
+const selectIndustry = async () => {
   if (industryStore.industries.length == 0) {
     industryStore.getIndustries(authStore.authToken).then(()=>{
       industryList.value = industryStore.industries; 
     })
   }
-}; 
 
+};
 
 const industryWithKPI = ref([]);
 const ecdList = ref([]);
@@ -122,8 +132,8 @@ const ecdList = ref([]);
 const kpiMaster = async () => {
   await clientApi(authStore.authToken)
     .get("/api/fetch/master-kpi/non-paginate")
-    .then((res) => {
-      console.log('industryList.value',industryList.value);
+    .then((res) => { 
+      console.log(industryList.value);
       if (industryList.value && industryList.value.length > 0 && res.data && res.data.length > 0) {
         industryList.value.map((o, i) => {
           industryWithKPI.value[i] = o;
@@ -141,7 +151,6 @@ const kpiMaster = async () => {
           });
 
         });
-        console.log('industryWithKPI',industryWithKPI.value);
       }
     });
 };
@@ -193,8 +202,7 @@ const removeKPIMethod = (v) => {
         sbOptions.value = {
           status: true,
           type: "success",
-          text: res.data.message,
-          timeout: 5000
+          text: res.data.message, 
         };
 
       }); 
@@ -219,8 +227,7 @@ const savedResponseMethod = (v) => {
       sbOptions.value = {
           status: true,
           type: "success",
-          text: res.data.message,
-          timeout: 5000
+          text: res.data.message, 
       };
       authStore.setProfile(res.data.profile).then(() => {  
           employeePassData();  
@@ -257,11 +264,28 @@ const getKPI = async (year) => {
     });
 };
 
+const measuresList = ref([]);
+const fetchMeasures = async () => { 
+  clientApi(authStore.authToken)
+    .get("/api/fetch/measures/non-paginated")
+    .then((res) => { 
+      measuresList.value = res.data;
+       
+      
+    })
+    .catch((err) => {
+
+    });
+  
+};
+
 onMounted(() => {
   employeePassData();
   selectIndustry().then(() => {
   kpiMaster().then(() => {
-    customKpiMaster();
+    customKpiMaster().then(() => {
+      fetchMeasures();
+    })
   })
   });
    
