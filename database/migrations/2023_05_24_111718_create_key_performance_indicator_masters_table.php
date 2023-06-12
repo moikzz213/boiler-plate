@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('type')->default('kpi'); // kpi/ecd
             $table->string('ecd_type')->nullable(); // tech/soft/soft-tech
 
-            $table->foreignId('industry_id')->constrained();
+            $table->foreignId('industry_id')->nullable()->constrained();
             $table->string('profile_ecode')->nullable(); // author
             $table->timestamps();
         });

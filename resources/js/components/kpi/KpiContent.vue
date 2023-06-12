@@ -24,8 +24,8 @@
       </div>
       <v-card flat>
         <v-card-title class="px-5 py-5 d-flex align-center">
-          <v-btn v-if="canManage" @click="() => addKPI(selectedTab)" density="compact" size="35"
-            class="rounded-xl elevation-2 mr-2"><v-icon size="small" :icon="mdiPlus"></v-icon></v-btn>
+          <v-btn v-if="canManage && selectedTab == 'kpi'" @click="() => addKPI(selectedTab)" density="compact" size="35"
+            class="rounded-xl elevation-2 mr-2" color="primary"><v-icon size="small" :icon="mdiPlus"></v-icon></v-btn>
           <div class="text-uppercase text-primary"
             v-if="(selectedTab == 'kpi' && kpiArray && kpiArray.length > 0) || selectedTab == 'ecd' && ecdArray && ecdArray.length > 0">
             {{ selectedTab == 'ecd' ? 'Employee Capability Development' : selectedTab }} List
@@ -39,7 +39,22 @@
           <div v-if="canManage" class="ml-auto text-body-1">Remaining weightage: {{ ratingOrWeightage(selectedTab) }}%</div>
         </v-card-title>
         <v-card-text class="px-5 pb-10">
-          <v-row v-show="selectedTab == 'kpi'" class="mt-n3">
+          <v-row v-if="hasError">
+          <div class="v-col-12 pb-0"  >
+                <v-card class="rounded-lg" style="border:2px solid red">
+                  <v-card-text>
+                    <v-row>
+                      <div class="v-col-12"> 
+                        <v-icon size="large" color="red" class="mr-1"
+                              :icon="mdiFileAlertOutline "></v-icon>
+                        {{errorMessage}}
+                        </div>
+                    </v-row>
+                  </v-card-text>
+                </v-card>
+              </div>
+          </v-row>
+          <v-row v-show="selectedTab == 'kpi'" class="mt-3">
             <template v-if="kpiArray && kpiArray.length > 0">
               <div class="v-col-12 pb-0" v-for="kpi in kpiArray" :key="kpi.id">
                 <v-card class="rounded-lg">
@@ -86,7 +101,15 @@
             </template>
           </v-row>
           <v-row v-show="selectedTab == 'ecd'" class="mt-n3">
-            <div class="v-col-12 pb-0" v-for="ecd in ecdArray" :key="ecd.id">
+
+            <!-- Start Technical Skill -->
+            <div class="v-col-6 pb-0"><v-btn color="primary" v-if="canManage" @click="() => addKPI(selectedTab,'technical')" density="compact" size="35"
+            class="rounded-xl elevation-2 mr-2"><v-icon size="small" :icon="mdiPlus"></v-icon></v-btn>Technical Skill</div>
+            <div class="v-col-6 pb-0"><v-btn color="primary" v-if="canManage" @click="() => addKPI(selectedTab, 'softskill')" density="compact" size="35"
+            class="rounded-xl elevation-2 mr-2"><v-icon size="small" :icon="mdiPlus"></v-icon></v-btn>Soft Skill</div>
+            <div class="v-col-6 pb-0">
+              <v-row>
+            <div class="v-col-12 pb-0" v-for="ecd in ecdTechnicalSkillArray" :key="ecd.id">
               <v-card class="rounded-lg">
                 <v-card-text>
                   <v-row>
@@ -98,13 +121,14 @@
                         </div>
                       </div>
                       <div>
-                        <v-btn color="primary" class="rounded-xl px-5" size="small"
+                        <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
                           @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
                         <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd')" density="compact" size="30"
                           color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
                             :icon="mdiPencil"></v-icon></v-btn>
-                        <v-btn v-if="canManage" @click="() => removeKPI(ecd)" density="compact" size="30" color="primary"
-                          class="rounded-xl elevation-2 ml-1"><v-icon size="small" :icon="mdiTrashCan"></v-icon></v-btn>
+                            <v-btn v-if="canManage" @click="() => removeKPI(ecd)" density="compact" size="30"
+                            color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
+                              :icon="mdiTrashCan"></v-icon></v-btn>
                       </div>
                     </div>
                     <div class="v-col-3">
@@ -123,6 +147,53 @@
                 </v-card-text>
               </v-card>
             </div>
+            </v-row>
+            </div>
+            <!-- End Technical Skill -->
+            <!-- Start Soft Skill -->
+            <div class="v-col-6 pb-0">
+              <v-row>
+              <div class="v-col-12 pb-0" v-for="ecd in ecdSoftSkillArray" :key="ecd.id">
+                <v-card class="rounded-lg">
+                  <v-card-text>
+                    <v-row>
+                      <div class="v-col-12 pb-0 d-flex justify-space-between">
+                        <div>
+                          <div class="text-grey text-caption">Training</div>
+                          <div class="text-primary text-body-1">
+                            {{ ecd.title }}
+                          </div>
+                        </div>
+                        <div>
+                          <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
+                            @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
+                          <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd')" density="compact" size="30"
+                            color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
+                              :icon="mdiPencil"></v-icon></v-btn>
+                              <v-btn v-if="canManage" @click="() => removeKPI(ecd)" density="compact" size="30"
+                              color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
+                                :icon="mdiTrashCan"></v-icon></v-btn>
+                        </div>
+                      </div>
+                      <div class="v-col-3">
+                        <div class="text-grey text-caption">{{ "KPI's Weightage(%)" }}</div>
+                        <div class="text-primary text-body-1">
+                          {{ ecd.weightage }}
+                        </div>
+                      </div>
+                      <div class="v-col-3">
+                        <div class="text-grey text-caption">Type</div>
+                        <div class="text-primary text-body-1">
+                          {{ ecd.ecd_type }}
+                        </div>
+                      </div>
+                    </v-row>
+                  </v-card-text>
+                </v-card>
+              </div>
+            </v-row>
+          </div>
+            <!-- End Soft Skill -->
           </v-row>
         </v-card-text>
       </v-card>
@@ -147,7 +218,7 @@
       </v-card>
     </v-dialog>
     
-    <KpiDialog :kpi-options="kpiOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :industry-list="industryList"  :submit-button="props.submitButton"  @savedResponse="savedResponseMethod"/>
+    <KpiDialog :measures-list="measuresList" :kpi-options="kpiOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :industry-list="industryList"  :submit-button="props.submitButton"  @savedResponse="savedResponseMethod"/>
     <EcdDialog :ecd-options="ecdOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :ecd-list="ecdList" :submit-button="props.submitButton" @savedResponse="savedResponseMethod"/>
     <SnackBar :options="sbOptions" />
   </v-row>
@@ -156,16 +227,17 @@
 <script setup>
 import { ref, computed, watch } from "vue";
 import { useAuthStore } from "@/stores/auth";
-import { useRoute } from "vue-router";
 import { mdiPrinter, mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import KpiDialog from "@/components/kpi/KpiDialog.vue";
 import EcdDialog from "@/components/kpi/EcdDialog.vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute} from "vue-router";
 import { useSettingStore } from "@/stores/settings";
 import SnackBar from "@/components/SnackBar.vue";
+import { mdiFileAlertOutline  } from '@mdi/js';
 
 const router = useRouter();
+const route = useRoute();
 const kpiEmit = defineEmits(['yearchange', 'savedResponse']); 
  
 const authStore = useAuthStore();
@@ -185,6 +257,10 @@ const props = defineProps({
   submitButton: {
     type: Boolean,
     default: true
+  },
+  measuresList:{
+    type:Object,
+    default: null
   }
 });
 
@@ -202,34 +278,93 @@ const ecdArray = computed(() => {
     return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'ecd');  
 });
 
+const ecdTechnicalSkillArray = computed(() => {
+  if (!viewingEmployee.value || (viewingEmployee.value && (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0))) return [];
+    return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'ecd' && kpi.ecd_type == 'technical');  
+});
+
+const ecdSoftSkillArray = computed(() => {
+  if (!viewingEmployee.value || (viewingEmployee.value && (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0))) return [];
+    return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'ecd' && kpi.ecd_type == 'softskill');  
+});
+
 watch(
   () => props.selectedEmployee,
-  (newVal) => {
+  (newVal) => { 
     if(newVal.length > 0){
       viewingEmployee.value = Object.assign({}, newVal[0]);
     }else{
       viewingEmployee.value = Object.assign({}, newVal);
     }
-    console.log('viewingEmployee.value',viewingEmployee.value);
+  
+    if(  route.name == "SingleTeamMember"){
+      emitResponseWeightageValidation();
+    }
   }
-); 
+);
+
+const emitResponseWeightageValidation = () => {
+  weightageValidation().then(() => {
+    console.log('hasError.value',hasError.value);
+    kpiEmit('errorcheck', {hasError: hasError.value});
+  }) 
+}
+
+const hasError = ref(false);
+const errorMessage = ref('');
+const weightageValidation = async () => { 
+  let message = '';
+  let isError = false;
+   
+  if(selectedTab.value == 'kpi' && kpiArray.value.length < 4 && ratingOrWeightage('kpi') == 0){
+    
+    message = "Invalid: Minimum 4 KPI's needed, kindly update the weightage.";
+    isError = true;
+  }else {
+    
+    message = "Invalid: Should have 1 each, technical and soft skill, kindly update the weightage.";
+  
+    if(ratingOrWeightage('ecd') == 0 && ecdArray.value && ecdArray.value.length > 0 && ecdArray.value.length < 2){
+      isError = true;
+    }else if( ecdArray.value.length > 1 ){
+      let ecdValidation = [];
+      ecdArray.value.map((o,i) =>{
+        ecdValidation.push(o.ecd_type);
+      });
+
+      ecdValidation  = [...new Set(ecdValidation)]; 
+      if(ecdValidation.length < 2){
+        isError = true;
+      } 
+    }
+  }
+  hasError.value = isError;
+  console.log(hasError.value);
+  if(isError){  
+    errorMessage.value = message; 
+  } 
+}
 
 // tabs
 const selectedTab = ref("kpi");
 const selectTab = (tab) => {
   selectedTab.value = tab;
+
+  if( route.name == "SingleTeamMember"){ 
+    emitResponseWeightageValidation();
+  }
 };
 
 const currentDate = ref(new Date());
 const canManage = computed(() => {  
-    if(useRoute().name == "SingleTeamMember" && settingStore.pmsSettings && settingStore.pmsSettings.state == 'setting' && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
+    if(route.name == "SingleTeamMember" && settingStore.pmsSettings && settingStore.pmsSettings.state == 'setting' && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
       return true;
     }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
-          return authStore.authRole.includes("manager") && useRoute().name == "SingleTeamMember" && viewingEmployee.value.reviews[0].state == 'setting'
+          return authStore.authRole.includes("manager") && route.name == "SingleTeamMember" && viewingEmployee.value.reviews[0].state == 'setting'
           &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')
             ? true
             : false;
-    } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && useRoute().name == "SingleTeamMember"){ 
+    } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){ 
           let date = new Date(viewingEmployee.value.doj);  
           date.setDate(date.getDate() +  parseInt(settingStore.pmsSettings.probation_kpi_setting));  
           if(date >= currentDate.value ){
@@ -239,16 +374,15 @@ const canManage = computed(() => {
 });
 
 const isReviewStage = computed(() => {
-    if(useRoute().name == "SingleTeamMember" && settingStore.pmsSettings && (settingStore.pmsSettings.state == 'midyear' || settingStore.pmsSettings.state == 'yearend' ) && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
-      console.log("fuck");
+    if(route.name == "SingleTeamMember" && settingStore.pmsSettings && (settingStore.pmsSettings.state == 'midyear' || settingStore.pmsSettings.state == 'yearend' ) && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
       return true;
     }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
-          return authStore.authRole.includes("manager") && useRoute().name == "SingleTeamMember" && 
+          return authStore.authRole.includes("manager") && route.name == "SingleTeamMember" && 
           (viewingEmployee.value.reviews[0].state == 'midyear' || viewingEmployee.value.reviews[0].state == 'yearend')
           &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')
             ? true
             : false;
-    } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && useRoute().name == "SingleTeamMember"){  
+    } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){  
           let midStart = new Date(viewingEmployee.value.doj);  
           let midEnd = new Date(viewingEmployee.value.doj);  
           midStart.setDate(midStart.getDate() +  parseInt(settingStore.pmsSettings.probation_first_review_start));  
@@ -280,7 +414,7 @@ window.open(routeData.href, '_blank');
  
 };
 
-watch(year, async (newVal, oldVal) => { 
+watch(year, async (newVal, oldVal) => {  
   kpiEmit('yearchange', newVal);
 });
 
@@ -301,14 +435,18 @@ const ecdOptions = ref({
   action: "",
   is_review: false,
 });
-const addKPI = async (type) => {
+const addKPI = async (type,ecdType) => {
+ 
   if (type == "kpi") {
+  
     if(ratingOrWeightage(selectedTab.value) <= 0){
       sbOptions.value = {
         status: true,
         type: "error",
         text: "Denied: You've reached the weightage limit.",
+      
       };
+      
     }else if(kpiArray.value.length > 5){
       sbOptions.value = {
         status: true,
@@ -323,17 +461,15 @@ const addKPI = async (type) => {
                   dialog: true,
                   type: type,
                   action: "add",
-                  is_review: false,
-              
+                  is_review: false, 
               };
     }
-  }
-  if (type == "ecd") {
+  }else {
     if(ecdArray.value.length > 2){
       sbOptions.value = {
         status: true,
         type: "error",
-        text: "Denied: Max of 3 ECD only. Min 1 each softskill and technical skill", 
+        text: "Denied: You've reached the weightage limit.",
       };
    
     }else{
@@ -349,7 +485,7 @@ const addKPI = async (type) => {
       },
     };
   }
-  }
+  } 
 };
 const editKPI = async (item, type = "kpi") => {
   if (type == "kpi") {
@@ -410,15 +546,14 @@ const reviewKPI = async (item, type = "kpi") => {
  
 };
 
-const savedResponseMethod = (v) => { 
-  let reviewID = {
-    reviewID : viewingEmployee.value.reviews[0].id,
-    data: v,
-    industryTitle: v.industryTitle
-  }
-
-  kpiEmit('savedResponse', reviewID); 
- 
+const savedResponseMethod = (v) => {  
+    let reviewID = {
+      reviewID : viewingEmployee.value.reviews[0].id,
+      data: v,
+      industryTitle: v.industryTitle,
+    }
+     
+    kpiEmit('savedResponse', reviewID); 
 }
 
 // remove kpi
@@ -428,6 +563,7 @@ const toRemoveKpi = ref({
   loading: false,
 });
 const removeKPI = async (item) => {
+
   toRemoveKpi.value = {
     ...toRemoveKpi.value,
     ...{
@@ -435,9 +571,14 @@ const removeKPI = async (item) => {
       dialog: true,
     },
   };
+
+  console.log(toRemoveKpi.value);
 };
-const confirmRemoveKpi = async () => {
-  console.log("axios request to client");
+const confirmRemoveKpi = async () => { 
+  let kpiRemove = toRemoveKpi.value.data;
+  toRemoveKpi.value.dialog = false;
+
+  kpiEmit('removeKPI', kpiRemove); 
 };
 
 const ratingOrWeightage = (type) => {

@@ -28,7 +28,7 @@ class KeyPerformanceIndicatorMasterController extends Controller
 
     public function getNoNPaginatedCustomKpis($ecode)
     {
-        $kpis = KeyPerformanceIndicatorMaster::where('profile_ecode',$ecode)->orderBy('title','ASC')->get();
+        $kpis = KeyPerformanceIndicatorMaster::where(['profile_ecode' => $ecode, 'status' => 'pending'])->orderBy('title','ASC')->get();
         return response()->json($kpis, 200);
     }
 

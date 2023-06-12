@@ -16,7 +16,7 @@
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">Reporting To</div>
-                <div class="text-body-2">Tibs</div>
+                <div class="text-body-2">{{managerName}}</div>
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">Business Unit</div>
@@ -31,7 +31,7 @@
                 <div class="text-body-2">{{ ratingOrWeightage(selEmployeeObj) }}/100</div>
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
-                <v-btn v-if="totalWeightage == 100 && selEmployeeObj.reviews[0].status == 'inprogress'"
+                <v-btn v-if="!hasError && totalWeightage == 100 && selEmployeeObj.reviews[0].status == 'inprogress'"
                   @click="submitForReview" block color="secondary" disabled class="text-capitalize rounded-lg">{{
                     selEmployeeObj.reviews[0].state == 'setting' ? 'Submit for Review' : 'Submit' }} </v-btn>
               </div>
@@ -40,8 +40,14 @@
         </v-card>
       </div>
     </v-row>
-    <KpiContent :selected-employee="selEmployeeObj" :industry-list="industryWithKPI" :ecd-list="ecdList"
-      @savedResponse="savedResponseMethod" @yearchange="selectedYearResponse" :is-manager="true" />
+    <KpiContent 
+      :measures-list="measuresList"
+      :selected-employee="selEmployeeObj" :industry-list="industryWithKPI" :ecd-list="ecdList"
+      @savedResponse="savedResponseMethod"
+       @errorcheck="errorCheck" 
+       @yearchange="selectedYearResponse"
+       @removeKPI="removeKPIMethod"
+       :is-manager="true" />
 
     <SnackBar :options="sbOptions" />
   </v-container>
@@ -55,23 +61,26 @@ import EmployeeCard from "@/components/EmployeeCard.vue";
 import { useRoute, useRouter } from "vue-router";
 import { clientApi } from "@/services/clientApi";
 import { useSettingStore } from "@/stores/settings";
+import { useIndustryStore } from "@/stores/industry";
 import SnackBar from "@/components/SnackBar.vue";
 const router = useRouter();
 const route = useRoute();
+
+const props = defineProps({ 
+  manager: {
+    type: String,
+    default: null
+  }
+});
+
 const ecode = ref(route.params.id);
 
 // authenticated user object
 const authStore = useAuthStore();
 const settingStore = useSettingStore();
-const sbOptions = ref({});
-
-const filter = ref({
-  data: {
-    employee: "",
-    employee_type: "",
-  },
-});
-
+const industryStore = useIndustryStore();
+const sbOptions = ref({}); 
+const managerName = authStore.authProfile.display_name;
 // selected employee
 // const teamList = ref(authStore.authProfile ? authStore.authProfile.teams : []);
 const teamList = computed(() => authStore.authProfile.teams);
@@ -80,11 +89,17 @@ const selEmployeeObj = ref({});
  
 const employeePassData = () => {
   let filteredEmp = teamList.value.filter((o) => { return o.username == ecode.value })
-  selEmployeeObj.value = Object.assign({},filteredEmp[0]);  
+  selEmployeeObj.value = Object.assign({},filteredEmp[0]);
 };
 
 const changeEmployee = () => {
   selEmployeeObj.value = selectedEmployeeArr.value; 
+  router
+    .push({
+      name: 'SingleTeamMember',
+      params: { id: selectedEmployeeArr.value.ecode },
+    })
+    .catch((err) => {});
 }
  
  
@@ -100,13 +115,15 @@ const ratingOrWeightage = (user) => {
   return sum;
 };
 
-const industryList = ref([]);
-const Industries = async () => {
-  await clientApi(authStore.authToken)
-    .get("/api/fetch/industries/non-paginate")
-    .then((res) => {
-      industryList.value = res.data;
-    });
+ 
+const industryList = ref([]); 
+const selectIndustry = async () => {
+  if (industryStore.industries.length == 0) {
+    industryStore.getIndustries(authStore.authToken).then(()=>{
+      industryList.value = industryStore.industries; 
+    })
+  }
+
 };
 
 const industryWithKPI = ref([]);
@@ -115,8 +132,8 @@ const ecdList = ref([]);
 const kpiMaster = async () => {
   await clientApi(authStore.authToken)
     .get("/api/fetch/master-kpi/non-paginate")
-    .then((res) => {
-
+    .then((res) => { 
+      console.log(industryList.value);
       if (industryList.value && industryList.value.length > 0 && res.data && res.data.length > 0) {
         industryList.value.map((o, i) => {
           industryWithKPI.value[i] = o;
@@ -134,7 +151,6 @@ const kpiMaster = async () => {
           });
 
         });
-
       }
     });
 };
@@ -166,6 +182,36 @@ const submitForReview = () => {
   console.log("submit review");
 };
 
+const hasError = ref(false);
+
+const errorCheck = (v) => {
+  hasError.value = v.hasError;
+}
+
+const removeKPIMethod = (v) => {
+    
+    let formData = {
+      id: v.id, 
+      user_ecode: authStore.authProfile.ecode
+    }
+    clientApi(authStore.authToken)
+    .post("/api/delete/employee-kpi-year", formData)
+    .then((res) => { 
+      authStore.setProfile(res.data.profile).then(() => { 
+          employeePassData();  
+        sbOptions.value = {
+          status: true,
+          type: "success",
+          text: res.data.message, 
+        };
+
+      }); 
+    })
+    .catch((err) => {
+
+    });
+}
+
 const savedResponseMethod = (v) => {
   let formData = {
     action: v.action,
@@ -176,18 +222,15 @@ const savedResponseMethod = (v) => {
   }
   clientApi(authStore.authToken)
     .post("/api/create/employee-kpi-year", formData)
-    .then((res) => {
+    .then((res) => { 
 
-      authStore.setProfile(res.data.profile).then(() => {
-
-        employeePassData();
-
-        sbOptions.value = {
+      sbOptions.value = {
           status: true,
           type: "success",
-          text: res.data.message,
-        };
-
+          text: res.data.message, 
+      };
+      authStore.setProfile(res.data.profile).then(() => {  
+          employeePassData();  
       }); 
     })
     .catch((err) => {
@@ -197,7 +240,7 @@ const savedResponseMethod = (v) => {
 const selectedYearResponse = (v) => {
   getKPI(v)
 }
-const getKPI = async (year) => {
+const getKPI = async (year) => { 
   await clientApi(authStore.authToken)
     .get("/api/dashboard/my-kpi/" + selEmployeeObj.value.id + '/' + year)
     .then((res) => {
@@ -221,12 +264,30 @@ const getKPI = async (year) => {
     });
 };
 
+const measuresList = ref([]);
+const fetchMeasures = async () => { 
+  clientApi(authStore.authToken)
+    .get("/api/fetch/measures/non-paginated")
+    .then((res) => { 
+      measuresList.value = res.data;
+       
+      
+    })
+    .catch((err) => {
+
+    });
+  
+};
+
 onMounted(() => {
   employeePassData();
-    Industries().then(() => {
-      kpiMaster().then(() => {
-        customKpiMaster();
-      });
-    }); 
+  selectIndustry().then(() => {
+  kpiMaster().then(() => {
+    customKpiMaster().then(() => {
+      fetchMeasures();
+    })
+  })
+  });
+   
 }); 
 </script>

@@ -3,9 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route; 
 use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\KeyPerformanceIndicatorMasterController;
-use App\Http\Controllers\IndustryController;
+use App\Http\Controllers\MeasureController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\IndustryController;
+use App\Http\Controllers\KeyPerformanceReviewController;
+use App\Http\Controllers\KeyPerformanceIndicatorMasterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,10 +35,14 @@ Route::middleware('authkey')->group(function () {
 
     // Create Employee KPI by manager
     Route::post('/create/employee-kpi-year', [ReviewController::class, 'createEmployeeKPI'])->name('create.employee.kpi.year');
-    
-    Route::get('/fetch/industries/non-paginate', [IndustryController::class, 'getNonPaginatedIndustries'])->name('fetch.industries.non-paginate');
+
+    // delete KPI by manager 
+    Route::post('/delete/employee-kpi-year', [KeyPerformanceReviewController::class, 'deleteEmployeeKPI'])->name('delete.employee.kpi.year');
+
+    // Non Paginate Fetch
+
+      // measures
+    Route::get('/fetch/measures/non-paginated', [MeasureController::class, 'getNonPaginatedMeasures'])->name('dialog.measure.non-paginated');
     Route::get('/fetch/master-kpi/non-paginate', [KeyPerformanceIndicatorMasterController::class, 'getNoNPaginatedKpis'])->name('fetch.master-kpi.non-paginate');
     Route::get('/fetch/master-custom-kpi/non-paginate/{ecode}', [KeyPerformanceIndicatorMasterController::class, 'getNoNPaginatedCustomKpis'])->name('fetch.master-custom-kpi.non-paginate');
-    
-     
 });
