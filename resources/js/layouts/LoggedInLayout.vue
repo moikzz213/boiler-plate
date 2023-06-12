@@ -277,6 +277,7 @@ const profileHeaderList = ref([
   "ManagerCustomKPI",
   "PaginatedManagerCustomKPI",
   "Employees",
+  "PaginatedEmployees",
   "SingleEmployee",
 ]);
 

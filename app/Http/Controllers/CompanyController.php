@@ -10,7 +10,7 @@ class CompanyController extends Controller
 {
     public function getCompanyList()
     {
-        $companies = Company::orderBy('title', 'ASC')->all();
+        $companies = Company::orderBy('title', 'ASC')->get();
         return response()->json($companies, 200);
     }
 
