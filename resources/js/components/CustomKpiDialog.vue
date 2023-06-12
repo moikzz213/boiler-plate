@@ -99,7 +99,7 @@
                 v-if="kpiData.action == 'view'"
                 color="primary"
                 @click="kpiData.dialog = false"
-                >Okay</v-btn
+                >Close</v-btn
               >
               <v-btn
                 v-if="['edit', 'add', 'approve'].includes(kpiData.action) == true"

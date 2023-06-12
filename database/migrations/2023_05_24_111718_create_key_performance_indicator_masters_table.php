@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('status')->default('pending'); // approved/pending
 
             $table->string('definition');
-            $table->string('formula'); 
+            $table->string('formula');
             $table->string('calculation_example');
             $table->string('subordinate_measures');
             $table->string('evaluation_pattern');
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('ecd_type')->nullable(); // tech/soft/soft-tech
 
             $table->foreignId('industry_id')->constrained();
-            $table->string('profile_ecode')->nullable(); // auther
+            $table->string('profile_ecode')->nullable(); // author
             $table->timestamps();
         });
     }

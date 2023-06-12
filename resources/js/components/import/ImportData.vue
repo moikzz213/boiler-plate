@@ -16,13 +16,39 @@
             accept="text/csv"
             variant="outlined"
             density="compact"
-            :prepend-icon="mdiPaperclip"
+            :prepend-icon="null"
+            :append-inner-icon="mdiPaperclip"
             label="Upload .csv file"
           ></v-file-input>
-          <div class="text-body-2 text-primary">
-            Note: This import function will ignore the data that already exist.
-          </div>
+          <v-autocomplete
+            v-if="importData.conditionArray.includes('industry') == true"
+            v-model="conditionData.industry_id"
+            :items="industryStore.industries"
+            item-title="title"
+            item-value="id"
+            variant="outlined"
+            density="compact"
+            class="bg-white"
+            hide-details
+            :label="loadingIndustry ? 'Loading...' : 'Select Industry'"
+            :loading="loadingIndustry"
+            @focus="selectIndustry"
+          >
+            <template v-slot:selection="{ props, item }">
+              <span v-bind="props">
+                {{
+                  item.raw.title && item.raw.title.length > 30
+                    ? item.raw.title.substring(0, 30) + "..."
+                    : item.raw.title
+                }}
+              </span>
+            </template>
+          </v-autocomplete>
         </v-card-text>
+        <div class="px-3 py-1 text-caption text-primary">
+          Note: This import function will ignore the data that already exist.
+        </div>
+        <v-divider></v-divider>
         <div class="pa-3 d-flex justify-space-between">
           <v-btn
             v-if="importData.templateFile && importData.templateFile != ''"
@@ -57,6 +83,7 @@ import { mdiPaperclip, mdiTrayArrowUp, mdiDownload } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
 import { clientApi } from "@/services/clientApi";
 import * as papa from "papaparse";
+import { useIndustryStore } from "@/stores/industry";
 
 const appURL = ref(import.meta.env.VITE_APP_URL);
 const authStore = useAuthStore();
@@ -67,6 +94,23 @@ const props = defineProps({
     default: null,
   },
 });
+
+// industries
+const industryStore = useIndustryStore();
+const loadingIndustry = ref(false);
+const selectIndustry = () => {
+  if (industryStore.industries.length == 0) {
+    loadingIndustry.value = true;
+    industryStore.getIndustries(authStore.authToken).then(() => {
+      loadingIndustry.value = false;
+    });
+  }
+};
+
+// import
+const conditionData = ref({
+  industry_id: null,
+});
 const importData = ref({
   dialog: false,
   btnTitle: "Import",
@@ -75,9 +119,9 @@ const importData = ref({
   cardTitle: "Import",
   endpoint: "",
   templateFile: "",
+  conditionArray: [],
 });
 importData.value = { ...importData.value, ...props.options };
-
 const inputFile = ref(null);
 const rules = ref([
   (value) => {
@@ -114,7 +158,15 @@ const parseComplete = async (results, file) => {
     import_data: JSON.stringify(resultsArray),
   };
 
-  console.log("importData.value", importData.value);
+  // set industry_id if condition exists
+  if (importData.value.conditionArray.includes("industry") == true) {
+    data.industry_id = conditionData.value.industry_id;
+  }
+
+  console.log("data", data);
+
+  return;
+
   // save result to database
   await clientApi(authStore.authToken)
     .post(importData.value.endpoint, data)
@@ -126,10 +178,16 @@ const parseComplete = async (results, file) => {
     })
     .catch((err) => {
       console.log("import error", err);
+      let errorMsg = "";
+      if (err.response.status == 500) {
+        errorMsg = "Import error kindly double check the csv file";
+      } else {
+        errorMsg = "Error while importing data";
+      }
       importData.value.loading = false;
       emit("imported", {
         status: false,
-        message: "Error while importing data",
+        message: errorMsg,
       });
     });
 };
