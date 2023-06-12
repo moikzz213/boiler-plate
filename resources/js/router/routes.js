@@ -222,16 +222,6 @@ export const routes = [
             title: "Departments",
         },
     },
-    {
-        path: "/admin/companies",
-        component: () => import("../pages/admin/Companies.vue"),
-        name: "Companies",
-        meta: {
-            requiresAuth: true,
-            role: ["app_admin"],
-            title: "Companies",
-        },
-    },
 
     // unauthorized
     {

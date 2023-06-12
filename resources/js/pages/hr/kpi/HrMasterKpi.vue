@@ -3,6 +3,7 @@
     <PageHeader title="KPI Master List" />
     <v-row class="my-5">
       <div class="v-col-12">
+        <ImportData :options="importOptions" @imported="importResponse" class="mb-3" />
         <v-card class="rounded-lg">
           <v-card-title class="d-flex align-center">
             <div class="text-primary text-capitalize">KPI Master List</div>
@@ -70,11 +71,45 @@ import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import SnackBar from "@/components/SnackBar.vue";
 import CustomKpiDialog from "@/components/CustomKpiDialog.vue";
+import ImportData from "@/components/import/ImportData.vue";
 
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 const sbOptions = ref({});
+
+// import
+const importOptions = ref({
+  cardTitle: "Import KPI",
+  endpoint: "/api/import/kpi",
+  templateFile: "import-template-kpi.csv",
+  conditionArray: ['industry']
+});
+const importResponse = (v) => {
+    console.log("importResponse", v);
+  if (v.status == true) {
+    getData(1).then(() => {
+      sbOptions.value = {
+        status: true,
+        type: "success",
+        text: v.message,
+      };
+      importOptions.value = {
+        ...importOptions.value,
+        ...{
+          loading: false,
+          dialog: false,
+        },
+      };
+    });
+  } else {
+    sbOptions.value = {
+      status: true,
+      type: "error",
+      text: v.message,
+    };
+  }
+};
 
 // kpis
 const kpis = ref([]);
@@ -89,14 +124,12 @@ const totalPageCount = ref(0);
 const currentPage = ref(1);
 currentPage.value = route.params && route.params.page ? route.params.page : 1;
 const getData = async (page) => {
-  console.log("getData", page);
   await clientApi(authStore.authToken)
     .get("/api/hr/kpis?page=" + page)
     .then((res) => {
       totalPageCount.value = res.data.last_page;
       currentPage.value = res.data.current_page;
       kpis.value = res.data.data;
-      console.log("kpis.value", kpis.value);
     })
     .catch((err) => {
       console.log("kpis", err);
