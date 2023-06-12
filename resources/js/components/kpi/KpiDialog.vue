@@ -70,7 +70,7 @@
             </div>
             <div v-if="!kpiAction.is_review" class="v-col-12 d-flex justify-end">
               <v-btn color="primary" variant="text" @click="cancelKPI">Cancel</v-btn>
-              <v-btn v-if="isValid" color="primary" class="ml-2 px-8" @click="saveKpi">save</v-btn>
+              <v-btn :loading="saveLoading" v-if="isValid" color="primary" class="ml-2 px-8" @click="saveKpi">save</v-btn>
             </div>
           </v-row>
         </div>
@@ -166,14 +166,20 @@ const isValid = ref(false);
 const selectedKPI = ref('');
 
 const industryTitle = ref('');
-
+const saveLoading = ref(false);
 const isDisabled = ref(true);
 
 const saveKpi = () => {
-    kpiAction.value.data = kpiData.value;
-    kpiAction.value.dialog = false;
+    saveLoading.value = true;
+
+    kpiAction.value.data = kpiData.value; 
     kpiAction.value.industryTitle = industryTitle.value;
-    kpiEmit('savedResponse', kpiAction.value);
+
+    setTimeout(() => {
+      saveLoading.value = false;
+      kpiAction.value.dialog = false;
+      kpiEmit('savedResponse', kpiAction.value);
+    }, 1200);
 
     industry.value = props.kpiOptions.data.industry;
 };
@@ -190,7 +196,7 @@ const submitReview = () => {
 watch(
   () => props.kpiOptions,
   (newVal) => {   
-   
+    saveLoading.value = false;
       listIndustries.value = props.industryList; 
       kpiData.value = Object.assign({}, newVal.data);  
       kpiAction.value = Object.assign({}, newVal);   

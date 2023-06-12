@@ -46,7 +46,7 @@
                     <v-row>
                       <div class="v-col-12"> 
                         <v-icon size="large" color="red" class="mr-1"
-                              :icon="mdiFileAlertOutline "></v-icon>
+                              :icon="mdiAlert "></v-icon>
                         {{errorMessage}}
                         </div>
                     </v-row>
@@ -234,7 +234,7 @@ import EcdDialog from "@/components/kpi/EcdDialog.vue";
 import { useRouter, useRoute} from "vue-router";
 import { useSettingStore } from "@/stores/settings";
 import SnackBar from "@/components/SnackBar.vue";
-import { mdiFileAlertOutline  } from '@mdi/js';
+import { mdiAlert  } from '@mdi/js';
 
 const router = useRouter();
 const route = useRoute();
@@ -305,7 +305,6 @@ watch(
 
 const emitResponseWeightageValidation = () => {
   weightageValidation().then(() => {
-    console.log('hasError.value',hasError.value);
     kpiEmit('errorcheck', {hasError: hasError.value});
   }) 
 }
@@ -339,7 +338,7 @@ const weightageValidation = async () => {
     }
   }
   hasError.value = isError;
-  console.log(hasError.value);
+  
   if(isError){  
     errorMessage.value = message; 
   } 
