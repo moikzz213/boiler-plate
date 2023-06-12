@@ -246,7 +246,7 @@ import {
   mdiHomeOutline,
   mdiBellOutline,
   mdiAccount,
-  mdiChartTimelineVariant,
+  mdiPlaylistEdit,
   mdiCog,
   mdiAccountGroup,
   mdiAccountSupervisor,
@@ -300,7 +300,7 @@ const sideNavigation = ref([
   },
   {
     title: "My Custom KPI",
-    icon: mdiChartTimelineVariant,
+    icon: mdiPlaylistEdit,
     roles: ["app_admin", "manager"],
     path: "/manager/custom-kpi",
   },
@@ -323,7 +323,7 @@ const sideNavigation = ref([
       },
       {
         title: "Custom KPIs",
-        icon: mdiChartTimelineVariant,
+        icon: mdiPlaylistEdit,
         path: "/hr/kpi/custom",
       },
       {

@@ -50,6 +50,7 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
     // custom kpi
     Route::get('/kpi/list/{status}', [KeyPerformanceIndicatorMasterController::class, 'getKpiByStatus'])->name('manager.custom.kpi.paginated');
     Route::post('/custom-kpi/approve', [KeyPerformanceIndicatorMasterController::class, 'approveCustomKpi'])->name('manager.custom.kpi.approve');
+    Route::post('/master-kpi/save', [KeyPerformanceIndicatorMasterController::class, 'saveMasterKpi'])->name('hr.master.kpi.save');
 });
 
 // manager

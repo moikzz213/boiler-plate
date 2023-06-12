@@ -163,10 +163,6 @@ const parseComplete = async (results, file) => {
     data.industry_id = conditionData.value.industry_id;
   }
 
-  console.log("data", data);
-
-  return;
-
   // save result to database
   await clientApi(authStore.authToken)
     .post(importData.value.endpoint, data)

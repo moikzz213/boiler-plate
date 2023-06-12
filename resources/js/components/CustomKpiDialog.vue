@@ -11,7 +11,6 @@
                 variant="outlined"
                 density="compact"
                 label="Title*"
-                :readonly="props.isHr"
               >
                 <template v-slot:selection="{ props, item }">
                   <span v-bind="props">
@@ -29,7 +28,6 @@
                 variant="outlined"
                 density="compact"
                 class="bg-white"
-                :readonly="props.isHr"
                 hide-details
                 :label="loadingIndustry ? 'Loading...' : 'Select Industry'"
                 :loading="loadingIndustry"
@@ -52,8 +50,8 @@
                 label="KPI Definition*"
                 variant="outlined"
                 rows="2"
-                :readonly="props.isHr"
               ></v-textarea>
+              <!-- :readonly="props.isHr" -->
             </div>
             <div class="v-col-12 py-0">
               <v-textarea
@@ -61,16 +59,14 @@
                 label="Calculation Formula*"
                 variant="outlined"
                 rows="2"
-                :readonly="props.isHr"
               ></v-textarea>
             </div>
             <div class="v-col-12 py-0">
               <v-textarea
-                v-model="kpiData.data.measures"
+                v-model="kpiData.data.subordinate_measures"
                 label="Subordinate Measures*"
                 variant="outlined"
                 rows="2"
-                :readonly="props.isHr"
               ></v-textarea>
             </div>
             <div class="v-col-12 py-0">
@@ -79,7 +75,6 @@
                 label="KPI Calculation Example*"
                 variant="outlined"
                 rows="2"
-                :readonly="props.isHr"
               ></v-textarea>
             </div>
             <div class="v-col-12 py-0">
@@ -88,7 +83,6 @@
                 label="KPI Evaluation Method*"
                 variant="outlined"
                 rows="2"
-                :readonly="props.isHr"
               ></v-textarea>
             </div>
             <div class="v-col-12 py-0">

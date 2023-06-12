@@ -6,6 +6,13 @@
         <ImportData :options="importOptions" @imported="importResponse" class="mb-3" />
         <v-card class="rounded-lg">
           <v-card-title class="d-flex align-center">
+            <v-btn
+              @click="add"
+              density="compact"
+              size="35"
+              class="rounded-xl elevation-2 mr-2"
+              ><v-icon size="small" :icon="mdiPlus"></v-icon
+            ></v-btn>
             <div class="text-primary text-capitalize">KPI Master List</div>
           </v-card-title>
           <v-table>
@@ -25,7 +32,7 @@
                     <v-icon
                       size="small"
                       @click="() => edit(item)"
-                      :icon="mdiEye"
+                      :icon="mdiPencil"
                       class="mx-1"
                     />
                     <v-icon
@@ -55,7 +62,7 @@
         ></v-pagination>
       </div>
     </v-row>
-    <CustomKpiDialog :kpi-options="kpiForm" :is-hr="true" />
+    <CustomKpiDialog :kpi-options="kpiForm" :is-hr="true" @save="saveKpiMaster" />
     <ConfirmDialog :options="confOptions" @confirm="confirmResponse" />
     <SnackBar :options="sbOptions" />
   </v-container>
@@ -64,7 +71,7 @@
 <script setup>
 import { ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { mdiEye, mdiTrashCan } from "@mdi/js";
+import { mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
 import { clientApi } from "@/services/clientApi";
 import { useAuthStore } from "@/stores/auth";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
@@ -83,10 +90,10 @@ const importOptions = ref({
   cardTitle: "Import KPI",
   endpoint: "/api/import/kpi",
   templateFile: "import-template-kpi.csv",
-  conditionArray: ['industry']
+  conditionArray: ["industry"],
 });
 const importResponse = (v) => {
-    console.log("importResponse", v);
+  console.log("importResponse", v);
   if (v.status == true) {
     getData(1).then(() => {
       sbOptions.value = {
@@ -136,6 +143,17 @@ const getData = async (page) => {
     });
 };
 getData(currentPage.value);
+const add = () => {
+  kpiForm.value = {
+    ...kpiForm.value,
+    ...{
+      title: "Add KPI",
+      data: {},
+      dialog: true,
+      action: "add",
+    },
+  };
+};
 const edit = (item) => {
   kpiForm.value = {
     ...kpiForm.value,
@@ -143,7 +161,7 @@ const edit = (item) => {
       title: item.title,
       data: Object.assign({}, item),
       dialog: true,
-      action: "view",
+      action: "edit",
     },
   };
 };
@@ -160,6 +178,42 @@ watch(currentPage, (newValue, oldValue) => {
     getData(currentPage.value);
   }
 });
+
+// save kpi
+const saveKpiMaster = async () => {
+  await clientApi(authStore.authToken)
+    .post("/api/hr/master-kpi/save", kpiForm.value.data)
+    .then((res) => {
+      getData(currentPage.value).then(() => {
+        sbOptions.value = {
+          status: true,
+          type: "success",
+          text: res.data.message,
+        };
+        kpiForm.value = {
+          ...kpiForm.value,
+          ...{
+            dialog: false,
+            loading: false,
+          },
+        };
+      });
+    })
+    .catch((err) => {
+      sbOptions.value = {
+        status: true,
+        type: "error",
+        text: "Error while trying to save KPI",
+      };
+      kpiForm.value = {
+        ...kpiForm.value,
+        ...{
+          dialog: false,
+          loading: false,
+        },
+      };
+    });
+};
 
 // remove industry
 const confOptions = ref({});
