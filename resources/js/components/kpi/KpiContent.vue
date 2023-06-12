@@ -39,7 +39,20 @@
           <div v-if="canManage" class="ml-auto text-body-1">Remaining weightage: {{ ratingOrWeightage(selectedTab) }}%</div>
         </v-card-title>
         <v-card-text class="px-5 pb-10">
-          <v-row v-show="selectedTab == 'kpi'" class="mt-n3">
+          <v-row v-if="hasError" >
+          <div class="v-col-12 pb-0"  >
+                <v-card class="rounded-lg" style="border:2px solid red">
+                  <v-card-text>
+                    <v-row>
+                      <div class="v-col-12  ">
+                        {{errorMessage}}
+                        </div>
+                    </v-row>
+                  </v-card-text>
+                </v-card>
+              </div>
+            </v-row>
+          <v-row v-show="selectedTab == 'kpi'" class="mt-3">
             <template v-if="kpiArray && kpiArray.length > 0">
               <div class="v-col-12 pb-0" v-for="kpi in kpiArray" :key="kpi.id">
                 <v-card class="rounded-lg">
@@ -156,16 +169,16 @@
 <script setup>
 import { ref, computed, watch } from "vue";
 import { useAuthStore } from "@/stores/auth";
-import { useRoute } from "vue-router";
 import { mdiPrinter, mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import KpiDialog from "@/components/kpi/KpiDialog.vue";
 import EcdDialog from "@/components/kpi/EcdDialog.vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute} from "vue-router";
 import { useSettingStore } from "@/stores/settings";
 import SnackBar from "@/components/SnackBar.vue";
 
 const router = useRouter();
+const route = useRoute();
 const kpiEmit = defineEmits(['yearchange', 'savedResponse']); 
  
 const authStore = useAuthStore();
@@ -204,32 +217,82 @@ const ecdArray = computed(() => {
 
 watch(
   () => props.selectedEmployee,
-  (newVal) => {
+  (newVal) => { 
     if(newVal.length > 0){
       viewingEmployee.value = Object.assign({}, newVal[0]);
     }else{
       viewingEmployee.value = Object.assign({}, newVal);
     }
-    console.log('viewingEmployee.value',viewingEmployee.value);
+  
+    if(  route.name == "SingleTeamMember"){
+      emitResponseWeightageValidation();
+    }
   }
-); 
+);
+
+
+const emitResponseWeightageValidation = () => {
+  
+  weightageValidation().then(() => {
+    kpiEmit('errorcheck', {hasError: hasError.value});
+  }) 
+}
+
+
+const hasError = ref(false);
+const errorMessage = ref('');
+const weightageValidation = async () => { 
+  let message = '';
+  let isError = false;
+   
+  if(selectedTab.value == 'kpi' && kpiArray.value.length < 4 && ratingOrWeightage('kpi') == 0){
+    
+    message = "Invalid: Minimum 4 KPI's needed, kindly update the weightage.";
+    isError = true;
+  }else {
+    
+    message = "Invalid: Should have 1 each, technical and soft skill, kindly update the weightage.";
+  
+    if(ratingOrWeightage('ecd') == 0 && ecdArray.value && ecdArray.value.length > 0 && ecdArray.value.length < 2){
+      isError = true;
+    }else if( ecdArray.value.length > 1 ){
+      let ecdValidation = [];
+      ecdArray.value.map((o,i) =>{
+        ecdValidation.push(o.ecd_type);
+      });
+
+      ecdValidation  = [...new Set(ecdValidation)]; 
+      if(ecdValidation.length < 2){
+        isError = true;
+      } 
+    }
+  }
+  hasError.value = isError;
+  if(isError){  
+    errorMessage.value = message; 
+  } 
+}
 
 // tabs
 const selectedTab = ref("kpi");
 const selectTab = (tab) => {
   selectedTab.value = tab;
+
+  if( route.name == "SingleTeamMember"){ 
+    weightageValidation();
+  }
 };
 
 const currentDate = ref(new Date());
 const canManage = computed(() => {  
-    if(useRoute().name == "SingleTeamMember" && settingStore.pmsSettings && settingStore.pmsSettings.state == 'setting' && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
+    if(route.name == "SingleTeamMember" && settingStore.pmsSettings && settingStore.pmsSettings.state == 'setting' && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
       return true;
     }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
-          return authStore.authRole.includes("manager") && useRoute().name == "SingleTeamMember" && viewingEmployee.value.reviews[0].state == 'setting'
+          return authStore.authRole.includes("manager") && route.name == "SingleTeamMember" && viewingEmployee.value.reviews[0].state == 'setting'
           &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')
             ? true
             : false;
-    } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && useRoute().name == "SingleTeamMember"){ 
+    } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){ 
           let date = new Date(viewingEmployee.value.doj);  
           date.setDate(date.getDate() +  parseInt(settingStore.pmsSettings.probation_kpi_setting));  
           if(date >= currentDate.value ){
@@ -239,16 +302,15 @@ const canManage = computed(() => {
 });
 
 const isReviewStage = computed(() => {
-    if(useRoute().name == "SingleTeamMember" && settingStore.pmsSettings && (settingStore.pmsSettings.state == 'midyear' || settingStore.pmsSettings.state == 'yearend' ) && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
-      console.log("fuck");
+    if(route.name == "SingleTeamMember" && settingStore.pmsSettings && (settingStore.pmsSettings.state == 'midyear' || settingStore.pmsSettings.state == 'yearend' ) && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
       return true;
     }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
-          return authStore.authRole.includes("manager") && useRoute().name == "SingleTeamMember" && 
+          return authStore.authRole.includes("manager") && route.name == "SingleTeamMember" && 
           (viewingEmployee.value.reviews[0].state == 'midyear' || viewingEmployee.value.reviews[0].state == 'yearend')
           &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')
             ? true
             : false;
-    } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && useRoute().name == "SingleTeamMember"){  
+    } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){  
           let midStart = new Date(viewingEmployee.value.doj);  
           let midEnd = new Date(viewingEmployee.value.doj);  
           midStart.setDate(midStart.getDate() +  parseInt(settingStore.pmsSettings.probation_first_review_start));  
@@ -280,7 +342,7 @@ window.open(routeData.href, '_blank');
  
 };
 
-watch(year, async (newVal, oldVal) => { 
+watch(year, async (newVal, oldVal) => {  
   kpiEmit('yearchange', newVal);
 });
 
@@ -302,13 +364,17 @@ const ecdOptions = ref({
   is_review: false,
 });
 const addKPI = async (type) => {
+ 
   if (type == "kpi") {
+  
     if(ratingOrWeightage(selectedTab.value) <= 0){
       sbOptions.value = {
         status: true,
         type: "error",
         text: "Denied: You've reached the weightage limit.",
+      
       };
+      
     }else if(kpiArray.value.length > 5){
       sbOptions.value = {
         status: true,
@@ -323,8 +389,7 @@ const addKPI = async (type) => {
                   dialog: true,
                   type: type,
                   action: "add",
-                  is_review: false,
-              
+                  is_review: false, 
               };
     }
   }
@@ -349,7 +414,7 @@ const addKPI = async (type) => {
       },
     };
   }
-  }
+  } 
 };
 const editKPI = async (item, type = "kpi") => {
   if (type == "kpi") {
@@ -410,15 +475,14 @@ const reviewKPI = async (item, type = "kpi") => {
  
 };
 
-const savedResponseMethod = (v) => { 
-  let reviewID = {
-    reviewID : viewingEmployee.value.reviews[0].id,
-    data: v,
-    industryTitle: v.industryTitle
-  }
-
-  kpiEmit('savedResponse', reviewID); 
- 
+const savedResponseMethod = (v) => {  
+    let reviewID = {
+      reviewID : viewingEmployee.value.reviews[0].id,
+      data: v,
+      industryTitle: v.industryTitle,
+    }
+     
+    kpiEmit('savedResponse', reviewID); 
 }
 
 // remove kpi
@@ -436,8 +500,10 @@ const removeKPI = async (item) => {
     },
   };
 };
-const confirmRemoveKpi = async () => {
-  console.log("axios request to client");
+const confirmRemoveKpi = async () => { 
+  let kpiRemove = toRemoveKpi.value.data;
+  toRemoveKpi.value.dialog = false;
+  kpiEmit('removeKPI', kpiRemove); 
 };
 
 const ratingOrWeightage = (type) => {

@@ -10,6 +10,7 @@
               <v-autocomplete v-model="industry" :items="industryList" 
               item-title="title" item-value="title"  
               return-object
+              :disabled="kpiAction.action == 'edit'"
                 variant="outlined" density="compact" label="Select Industry*">
               </v-autocomplete>
             </div>
@@ -17,6 +18,7 @@
               <v-autocomplete v-model="selectedKPI"  :items="kpiList" 
                 item-title="title" item-value="id" 
                 variant="outlined"
+                :disabled="kpiAction.action == 'edit'"
                 density="compact" label="Select KPI*">
                 <!-- <template v-slot:selection="{ props, item }">
                   <span v-bind="props">
@@ -26,41 +28,41 @@
               </v-autocomplete>
             </div>
             <div class="v-col-12 v-col-md-3 py-0">
-              <v-select v-model="kpiData.target_type" :items="targetTypeList" label="Target Type*" variant="outlined"
+              <v-select    v-model="kpiData.target_type" :items="targetTypeList" label="Target Type*" variant="outlined"
                 density="compact"></v-select>
             </div>
             <div class="v-col-12 v-col-md-3 py-0">
-              <v-text-field v-model="kpiData.target" label="Target*" variant="outlined" density="compact"
+              <v-text-field   v-model="kpiData.target" label="Target*" variant="outlined" density="compact"
                 persistent-hint></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-3 py-0">
-              <v-select v-model="kpiData.measures" :items="measuresList" label="Measures*" variant="outlined"
+              <v-select    v-model="kpiData.measures" :items="measuresList" label="Measures*" variant="outlined"
                 density="compact"></v-select>
             </div>
             <div class="v-col-12 v-col-md-3 py-0">
-              <v-select v-model="kpiData.weightage" :items="kpiWeightageList" label="KPI's Weightage (%)*"
+              <v-select  v-model="kpiData.weightage" :items="kpiWeightageList" label="KPI's Weightage (%)*"
                 variant="outlined" density="compact"></v-select>
             </div>
             <div class="v-col-12 pt-0">
               <v-divider class="mx-auto"></v-divider>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.definition" label="KPI Definition*" variant="outlined" rows="2"></v-textarea>
+              <v-textarea v-model="kpiData.definition" :disabled="kpiAction.action == 'edit'" label="KPI Definition*" variant="outlined" rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.formula" label="Calulation Formula*" variant="outlined"
+              <v-textarea v-model="kpiData.formula" :disabled="kpiAction.action == 'edit'" label="Calulation Formula*" variant="outlined"
                 rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.subordinate_measures" label="Subordinate Measures*" variant="outlined"
+              <v-textarea v-model="kpiData.subordinate_measures" :disabled="kpiAction.action == 'edit'" label="Subordinate Measures*" variant="outlined"
                 rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.calculation_example" label="KPI Calulation Example*" variant="outlined"
+              <v-textarea v-model="kpiData.calculation_example" :disabled="kpiAction.action == 'edit'" label="KPI Calulation Example*" variant="outlined"
                 rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.evaluation_pattern" label="KPI Evaluation Method*" variant="outlined"
+              <v-textarea v-model="kpiData.evaluation_pattern" :disabled="kpiAction.action == 'edit'" label="KPI Evaluation Method*" variant="outlined"
                 rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0">
@@ -148,16 +150,19 @@ const kpiEmit = defineEmits(['savedResponse'])
 const targetTypeList = ref(["min", "max"]);
 const measuresList = ref(["Percentage", "Units"]);
 const kpiWeightageList = ref(["5%", "10%", "15%", "20%", "25%",'30%']);
+const oldWeightage = ref(null);
 const kpiAction = ref({});
 
-const kpiData = ref({});
+const kpiData = ref({measures: null});
 const kpiList = ref([]); 
 const listIndustries = ref([]);
 const industry = ref(props.kpiOptions.data.industry); 
 const isValid = ref(false);
 
+ 
 const selectedKPI = ref(props.kpiOptions.data.title);
 const industryTitle = ref('');
+
 const saveKpi = () => {
     kpiAction.value.data = kpiData.value;
     kpiAction.value.dialog = false;
@@ -167,6 +172,7 @@ const saveKpi = () => {
     industry.value = props.kpiOptions.data.industry;
 };
 
+ 
 const cancelKPI = () => {
   kpiAction.value.dialog = false;
   industry.value = props.kpiOptions.data.industry;
@@ -178,39 +184,47 @@ const submitReview = () => {
 watch(
   () => props.kpiOptions,
   (newVal) => {   
+    console.log('newVal', newVal);
       listIndustries.value = props.industryList; 
       kpiData.value = Object.assign({}, newVal.data);  
       kpiAction.value = Object.assign({}, newVal);   
 
-      console.log('remainWeightage',kpiAction.value);
+      if(kpiAction.value.action == 'edit'){
+        industry.value = newVal.data.industry;
+        selectedKPI.value = newVal.data.title;
+        oldWeightage.value = newVal.data.weightage;
+      } 
   }
 );
 watch(
   () => industry.value,
   (newVal) => { 
-  
-    kpiData.value = {};
-    selectedKPI.value = null;
-    if(newVal){
-      industryTitle.value = newVal.title;
-      listIndustries.value.map((el) => {
-        if(el.id == newVal.id){
-          kpiList.value = el.kpis; 
-        }
-      }); 
+    if(kpiAction.value.action == 'add'){
+      kpiData.value = {};
+      selectedKPI.value = null;
+      if(newVal){
+        industryTitle.value = newVal.title;
+        listIndustries.value.map((el) => {
+          if(el.id == newVal.id){
+            kpiList.value = el.kpis; 
+          }
+        }); 
+      }
     }
   }, 
 ); 
 watch(
   () => selectedKPI.value,
   (newVal) => { 
-    kpiData.value = {};
-    let newData = kpiList.value.filter((el) => {
-      return el.id == newVal;
-    });
-    if(newData && newData.length > 0){
-      kpiData.value = newData[0];
-    } 
+    if(kpiAction.value.action == 'add'){
+      kpiData.value = {};
+      let newData = kpiList.value.filter((el) => {
+        return el.id == newVal;
+      });
+      if(newData && newData.length > 0){
+        kpiData.value = newData[0];
+      } 
+    }
   }
 );
 
@@ -229,9 +243,32 @@ watch(
             text: "Weightage is over the limit!",
           };
         }else{
-          isValid.value = true;  
+          isValid.value = true;
         } 
-     } 
+     } else{
+        let deduceWeightage = parseInt(props.remainWeightage) + parseInt(oldWeightage.value) - parseInt(newVal); 
+         
+        if( parseInt(deduceWeightage) < 0){ 
+          isValid.value = false;
+          sbOptions.value = {
+            status: true,
+            type: "error",
+            text: "Weightage is over the limit!",
+          };
+        }else{
+          if( oldWeightage.value > parseInt(newVal)){
+            isValid.value = true;
+          }else{ 
+            if( parseInt(deduceWeightage) >= 0){ 
+              isValid.value = true;  
+            }else{
+              console.log("ssssssss");
+              isValid.value = false;
+            }
+          }
+        } 
+        
+     }
     } 
   }
 );

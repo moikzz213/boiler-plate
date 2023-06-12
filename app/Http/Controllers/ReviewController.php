@@ -6,6 +6,7 @@ use App\Models\Review;
 use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Models\KeyPerformanceReview;
 
 class ReviewController extends Controller
 {
@@ -24,8 +25,9 @@ class ReviewController extends Controller
 
     public function createEmployeeKPI(Request $request){ 
         $msg = 'KPI has been updated';
+       
+        $weightage = explode('%', $request->data['data']['weightage']);
         if($request->data['action'] == 'add'){
-            $weightage = explode('%', $request->data['data']['weightage']);
             $query = Review::where('id', $request->reviewID)->first(); 
             $query->update(['status' => 'inprogress']);
             $query->keyReview()->create([
@@ -40,11 +42,20 @@ class ReviewController extends Controller
                 'ecd_type'              => $request->data['data']['ecd_type'],
                 'target_type'           => $request->data['data']['target_type'],
                 'target'                => $request->data['data']['target'],
-                'subordinate_measures'               => $request->data['data']['subordinate_measures'], 
+                'subordinate_measures'  => $request->data['data']['subordinate_measures'], 
                 'weightage'             => @$weightage[0] ? $weightage[0] : 0
             ]);
 
             $msg = 'KPI has been created';
+        }else{
+            $query = KeyPerformanceReview::where('id', $request->data['data']['id'])->first(); 
+            $query->update([ 
+                'measures'              => $request->data['data']['measures'], 
+                'target_type'           => $request->data['data']['target_type'],
+                'target'                => $request->data['data']['target'], 
+                'weightage'             => @$weightage[0] ? $weightage[0] : 0
+            ]);
+            $msg = 'KPI has been updated';
         }
 
 
@@ -62,5 +73,5 @@ class ReviewController extends Controller
             'message' => $msg,
             'profile' => $profile
         ], 200);
-    }
+    } 
 }
