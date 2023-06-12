@@ -14,6 +14,12 @@ class KeyPerformanceIndicatorMasterController extends Controller
         return response()->json($kpis, 200);
     }
 
+    public function getPaginatedKpiByType($type)
+    {
+        $kpis = KeyPerformanceIndicatorMaster::where('type', $type)->with('industry')->paginate(10);
+        return response()->json($kpis, 200);
+    }
+
     public function getNoNPaginatedKpis()
     {
         $kpis = KeyPerformanceIndicatorMaster::where('status','active')->orderBy('title','ASC')->get();
@@ -68,7 +74,7 @@ class KeyPerformanceIndicatorMasterController extends Controller
             'title' => $request['title'],
             'definition' => $request['definition'],
             'formula' => $request['formula'],
-            'measures' => $request['measures'],
+            'subordinate_measures' => $request['subordinate_measures'],
             'calculation_example' => $request['calculation_example'],
             'evaluation_pattern' => $request['evaluation_pattern'],
             'profile_ecode' => $request['profile_ecode'],
@@ -114,7 +120,7 @@ class KeyPerformanceIndicatorMasterController extends Controller
         ], 200);
     }
 
-    function importKpi(Request $request){
+    public function importKpi(Request $request){
         $resMsg = "";
         $resCode = 200;
         $dataArray = array();
@@ -156,5 +162,26 @@ class KeyPerformanceIndicatorMasterController extends Controller
         return response()->json([
             'message' => $resMsg
         ], $resCode);
+    }
+
+    public function saveMasterKpi(Request $request){
+        $kpiArray = array(
+            'title' => $request['title'],
+            'status' => 'approved',
+            'definition' => $request['definition'],
+            'formula' => $request['formula'],
+            'subordinate_measures' => $request['subordinate_measures'],
+            'calculation_example' => $request['calculation_example'],
+            'evaluation_pattern' => $request['evaluation_pattern'],
+            'industry_id' => $request['industry_id'],
+        );
+        if($request['id']){
+            $kpis = KeyPerformanceIndicatorMaster::where('id', $request['id'])->update($kpiArray);
+        }else{
+            $kpis = KeyPerformanceIndicatorMaster::create($kpiArray);
+        }
+        return response()->json([
+            'message' => 'KPI saved successfully'
+        ], 200);
     }
 }
