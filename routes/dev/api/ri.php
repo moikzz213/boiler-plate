@@ -42,6 +42,7 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
     Route::post('/weightage/remove/{id}', [WeightageController::class, 'removeWeightage'])->name('hr.weightage.remove');
     // kpi master
     Route::get('/kpis', [KeyPerformanceIndicatorMasterController::class, 'getPaginatedKpis'])->name('hr.kpi.paginated');
+    Route::get('/kpi/type/{type}', [KeyPerformanceIndicatorMasterController::class, 'getPaginatedKpiByType'])->name('hr.kpi.paginated.type');
     Route::post('/kpi/save', [KeyPerformanceIndicatorMasterController::class, 'saveKpi'])->name('hr.kpi.save');
     Route::post('/kpi/remove/{id}', [KeyPerformanceIndicatorMasterController::class, 'removeKpi'])->name('hr.kpi.remove');
     // pms settings

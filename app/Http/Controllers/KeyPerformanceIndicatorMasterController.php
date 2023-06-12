@@ -14,6 +14,12 @@ class KeyPerformanceIndicatorMasterController extends Controller
         return response()->json($kpis, 200);
     }
 
+    public function getPaginatedKpiByType($type)
+    {
+        $kpis = KeyPerformanceIndicatorMaster::where('type', $type)->with('industry')->paginate(10);
+        return response()->json($kpis, 200);
+    }
+
     public function getNoNPaginatedKpis()
     {
         $kpis = KeyPerformanceIndicatorMaster::where('status','active')->orderBy('title','ASC')->get();
