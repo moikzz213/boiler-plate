@@ -29,6 +29,7 @@ class EmployeeController extends Controller
                 }
             }),
         ])
+        ->with('company')
         ->paginate(10)
         ->appends(request()->query());
 

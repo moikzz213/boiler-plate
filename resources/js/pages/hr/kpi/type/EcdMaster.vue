@@ -16,16 +16,12 @@
         <thead>
           <tr>
             <th class="text-left text-capitalize">Title</th>
-            <th class="text-left text-capitalize">Industry</th>
-            <th class="text-left text-capitalize">Type</th>
             <th class="text-right text-capitalize">Actions</th>
           </tr>
         </thead>
         <tbody v-if="kpis && kpis.length > 0">
           <tr v-for="item in kpis" :key="item.id">
             <td>{{ item.title }}</td>
-            <td>{{ item.industry && item.industry.title }}</td>
-            <td>{{ item.type }}</td>
             <td>
               <div class="d-flex align-center justify-end">
                 <v-icon

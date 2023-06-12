@@ -120,7 +120,7 @@ export const routes = [
         },
     },
     {
-        path: "/hr/kpi/master",
+        path: "/hr/:type/master",
         component: () => import("../pages/hr/kpi/HrMasterKpi.vue"),
         name: "HrMasterKpi",
         meta: {
@@ -130,7 +130,7 @@ export const routes = [
         },
     },
     {
-        path: "/hr/kpi/master/page/:page",
+        path: "/hr/:type/master/page/:page",
         component: () => import("../pages/hr/kpi/HrMasterKpi.vue"),
         name: "PaginatedHrMasterKpi",
         meta: {
