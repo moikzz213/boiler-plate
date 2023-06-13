@@ -37,7 +37,7 @@
             >
               <v-select
                 v-model="kpiData.data.ecd_type"
-                :items="['technical', 'soft', 'both']"
+                :items="['tech', 'soft', 'both']"
                 variant="outlined"
                 density="compact"
                 class="bg-white"
@@ -100,14 +100,6 @@
               <v-textarea
                 v-model="kpiData.data.calculation_example"
                 label="KPI Calculation Example*"
-                variant="outlined"
-                rows="2"
-              ></v-textarea>
-            </div>
-            <div v-if="enableOn(['kpi'])" class="v-col-12 py-0">
-              <v-textarea
-                v-model="kpiData.data.evaluation_pattern"
-                label="KPI Evaluation Method*"
                 variant="outlined"
                 rows="2"
               ></v-textarea>

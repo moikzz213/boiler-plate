@@ -74,6 +74,7 @@ Route::middleware('authkey')->group(function () {
     Route::post('/import/industries', [IndustryController::class, 'importIndustries'])->name('import.industries');
     Route::post('/import/companies', [CompanyController::class, 'importCompanies'])->name('import.companies');
     Route::post('/import/kpi', [KeyPerformanceIndicatorMasterController::class, 'importKpi'])->name('import.kpi');
+    Route::post('/import/ecd', [KeyPerformanceIndicatorMasterController::class, 'importEcd'])->name('import.ecd');
 
     // companies
     Route::get('/companies', [CompanyController::class, 'getCompanyList'])->name('companies.get.list');

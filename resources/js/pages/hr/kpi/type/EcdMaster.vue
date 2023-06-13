@@ -16,12 +16,14 @@
         <thead>
           <tr>
             <th class="text-left text-capitalize">Title</th>
+            <th class="text-left text-capitalize">ECD Type</th>
             <th class="text-right text-capitalize">Actions</th>
           </tr>
         </thead>
         <tbody v-if="kpis && kpis.length > 0">
           <tr v-for="item in kpis" :key="item.id">
             <td>{{ item.title }}</td>
+            <td>{{ item.ecd_type }}</td>
             <td>
               <div class="d-flex align-center justify-end">
                 <v-icon
@@ -175,7 +177,6 @@ watch(currentPage, (newValue, oldValue) => {
 // save kpi
 const saveKpiMaster = async () => {
   kpiForm.value.data.type = route.params.type;
-  console.log("kpiForm.value.data", kpiForm.value.data);
   await clientApi(authStore.authToken)
     .post("/api/hr/master-kpi/save", kpiForm.value.data)
     .then((res) => {

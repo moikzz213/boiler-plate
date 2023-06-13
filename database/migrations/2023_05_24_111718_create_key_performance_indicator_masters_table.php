@@ -16,13 +16,13 @@ return new class extends Migration
             $table->string('title');
             $table->string('status')->default('pending'); // approved/pending/trashed
 
-            $table->string('definition')->nullable();
-            $table->string('formula')->nullable();
-            $table->string('calculation_example')->nullable();
-            $table->string('subordinate_measures')->nullable();
+            $table->text('definition', 500)->nullable();
+            $table->text('formula', 500)->nullable();
+            $table->text('calculation_example', 500)->nullable();
+            $table->text('subordinate_measures', 500)->nullable();
 
             $table->string('type')->default('kpi'); // kpi/ecd
-            $table->string('ecd_type')->nullable(); // tech/soft/soft-tech
+            $table->string('ecd_type')->nullable(); // tech/soft/both
 
             $table->foreignId('industry_id')->nullable()->constrained();
             $table->string('profile_ecode')->nullable(); // author

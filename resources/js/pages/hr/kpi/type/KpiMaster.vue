@@ -119,7 +119,7 @@ const kpiForm = ref({
   data: {},
   loading: false,
   dialog: false,
-  type: 'kpi',
+  type: "kpi",
   action: "view",
 });
 const totalPageCount = ref(0);
@@ -176,6 +176,7 @@ watch(currentPage, (newValue, oldValue) => {
 
 // save kpi
 const saveKpiMaster = async () => {
+  kpiForm.value.data.type = route.params.type;
   await clientApi(authStore.authToken)
     .post("/api/hr/master-kpi/save", kpiForm.value.data)
     .then((res) => {
