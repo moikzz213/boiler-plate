@@ -65,9 +65,10 @@ class KeyPerformanceIndicatorMasterController extends Controller
         ], 200);
     }
 
-    public function getCustomKpiByEcode($ecode)
+    public function getCustomKpiByEcode($type, $ecode)
     {
         $kpis = KeyPerformanceIndicatorMaster::where('profile_ecode', $ecode)
+        ->where('type', $type)
         ->with('profile', 'industry')
         ->paginate(10);
         return response()->json($kpis, 200);

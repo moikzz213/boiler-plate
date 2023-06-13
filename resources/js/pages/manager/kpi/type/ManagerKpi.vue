@@ -1,33 +1,68 @@
 <template>
-  <v-container class="pb-16">
-    <v-row class="my-5">
-      <div class="v-col-12 pb-0">
-        <div class="text-h6">My Custom KPI</div>
-      </div>
-      <div class="v-col-12 pb-0">
+  <div class="v-col-12">
+    <v-card class="mb-3 rounded-lg" :loading="loadingKpiList">
+      <v-card-title class="d-flex align-center">
         <v-btn
-          size="x-large"
-          :color="`${currentType == 'kpi' ? 'primary' : ''}`"
-          :readonly="`${currentType == 'kpi' ? true : false}`"
-          class="px-12 mr-3"
-          @click="() => selectType('kpi')"
+          size="small"
+          icon
+          @click="addKPI"
+          color="white"
+          :loading="kpiForm.loading"
+          class="text-capitalize mr-3"
         >
-          KPI
+          <v-icon :icon="mdiPlus"></v-icon>
         </v-btn>
-        <v-btn
-          size="x-large"
-          :color="`${currentType == 'ecd' ? 'primary' : ''}`"
-          :readonly="`${currentType == 'ecd' ? true : false}`"
-          class="px-12"
-          @click="() => selectType('ecd')"
-        >
-          ECD
-        </v-btn>
-      </div>
-      <ManagerKpi v-if="currentType == 'kpi'" />
-      <ManagerEcd v-if="currentType == 'ecd'" />
-    </v-row>
-  </v-container>
+        <div class="text-primary text-capitalize">KPI List</div>
+      </v-card-title>
+      <v-table>
+        <thead>
+          <tr>
+            <th class="text-left text-capitalize">Title</th>
+            <th class="text-left text-capitalize">Industry</th>
+            <th class="text-right text-capitalize">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in kpiList" :key="item.id">
+            <td>{{ item.title }}</td>
+            <td>{{ item.industry && item.industry.title }}</td>
+            <td>
+              <div class="d-flex align-center justify-end">
+                <v-icon
+                  size="small"
+                  @click="() => openKPI(item)"
+                  :icon="mdiPencil"
+                  class="mx-1"
+                />
+                <v-icon
+                  size="small"
+                  @click="() => removeKPI(item)"
+                  :icon="mdiTrashCan"
+                  class="mx-1"
+                />
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </v-table>
+      <v-card v-if="kpiList && kpiList.length == 0">
+        <v-card-text class="text-center"> No records found </v-card-text>
+      </v-card>
+    </v-card>
+    <v-pagination
+      v-if="totalPageCount > 1"
+      v-model="currentPage"
+      class="my-4"
+      :length="totalPageCount"
+      :total-visible="8"
+      variant="elevated"
+      active-color="primary"
+      density="comfortable"
+    ></v-pagination>
+    <CustomKpiDialog :kpi-options="kpiOptions" @save="saveCustomKpi" />
+    <ConfirmDialog :options="confOptions" @confirm="confirmResponse" />
+    <SnackBar :options="sbOptions" />
+  </div>
 </template>
 
 <script setup>
@@ -39,29 +74,11 @@ import { mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
 import CustomKpiDialog from "@/components/CustomKpiDialog.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import SnackBar from "@/components/SnackBar.vue";
-import ManagerKpi from "./type/ManagerKpi.vue";
-import ManagerEcd from "./type/ManagerEcd.vue";
 
 const authStore = useAuthStore();
 const sbOptions = ref({});
 const router = useRouter();
 const route = useRoute();
-
-// table tab
-const currentType = ref(route.params.type);
-const selectType = (type) => {
-  if (currentType.value !== type) {
-    currentType.value = type;
-    router
-      .push({
-        name: "ManagerCustomKPI",
-        params: {
-          type: currentType.value,
-        },
-      })
-      .catch((err) => {});
-  }
-};
 
 // kpi
 const kpiOptions = ref({
@@ -80,13 +97,13 @@ const kpiForm = ref({
 const kpiList = ref([]);
 const loadingKpiList = ref(false);
 const totalPageCount = ref(0);
-const currentPage = ref(route.params ? route.params.page : 1);
+const currentPage = ref(route.params && route.params.page ? route.params.page : 1);
 const getCustomKpi = async (page) => {
   loadingKpiList.value = true;
   await clientApi(authStore.authToken)
     .get(
       "/api/manager/custom/" +
-        -currentType.value +
+        route.params.type +
         "/list/" +
         authStore.authProfile.ecode +
         "/?page=" +
