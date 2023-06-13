@@ -16,16 +16,12 @@
         <thead>
           <tr>
             <th class="text-left text-capitalize">Title</th>
-            <th class="text-left text-capitalize">Industry</th>
-            <th class="text-left text-capitalize">Type</th>
             <th class="text-right text-capitalize">Actions</th>
           </tr>
         </thead>
         <tbody v-if="kpis && kpis.length > 0">
           <tr v-for="item in kpis" :key="item.id">
             <td>{{ item.title }}</td>
-            <td>{{ item.industry && item.industry.title }}</td>
-            <td>{{ item.type }}</td>
             <td>
               <div class="d-flex align-center justify-end">
                 <v-icon
@@ -85,9 +81,8 @@ const sbOptions = ref({});
 const importOptions = ref({
   btnTitle: "Import ECD",
   cardTitle: "Import ECD",
-  endpoint: "/api/import/kpi",
-  templateFile: "import-template-kpi.csv",
-  conditionArray: ["industry"],
+  endpoint: "/api/import/ecd",
+  templateFile: "import-template-ecd.csv",
 });
 const importResponse = (v) => {
   console.log("importResponse", v);
@@ -122,6 +117,7 @@ const kpiForm = ref({
   data: {},
   loading: false,
   dialog: false,
+  type: "ecd",
   action: "view",
 });
 const totalPageCount = ref(0);
@@ -129,7 +125,7 @@ const currentPage = ref(1);
 currentPage.value = route.params && route.params.page ? route.params.page : 1;
 const getData = async (page) => {
   await clientApi(authStore.authToken)
-    .get("/api/hr/kpi/type/kpi?page=" + page)
+    .get("/api/hr/kpi/type/ecd?page=" + page)
     .then((res) => {
       totalPageCount.value = res.data.last_page;
       currentPage.value = res.data.current_page;
@@ -144,7 +140,7 @@ const add = () => {
   kpiForm.value = {
     ...kpiForm.value,
     ...{
-      title: "Add KPI",
+      title: "Add ECD",
       data: {},
       dialog: true,
       action: "add",
@@ -178,6 +174,8 @@ watch(currentPage, (newValue, oldValue) => {
 
 // save kpi
 const saveKpiMaster = async () => {
+  kpiForm.value.data.type = route.params.type;
+  console.log("kpiForm.value.data", kpiForm.value.data);
   await clientApi(authStore.authToken)
     .post("/api/hr/master-kpi/save", kpiForm.value.data)
     .then((res) => {

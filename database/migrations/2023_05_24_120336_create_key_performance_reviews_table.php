@@ -18,15 +18,16 @@ return new class extends Migration
             $table->string('industry')->nullable();
             $table->string('definition')->nullable();
             $table->string('formula')->nullable();
-            $table->string('subordinate_measures')->nullable(); 
+            $table->string('subordinate_measures')->nullable();
             $table->string('calculation_example')->nullable();
-            $table->string('evaluation_pattern')->nullable();
-            
-            $table->string('type'); // kpi/ecd
-            $table->string('ecd_type')->nullable(); // technical/soft/soft-tech
-            
-            $table->string('measures')->nullable(); // units/percentage/ratio
+
             $table->string('target_type')->nullable(); // min/max
+            $table->string('evaluation_pattern')->nullable();
+
+            $table->string('type'); // kpi/ecd
+            $table->string('ecd_type')->nullable(); // technical/soft/both
+
+            $table->string('measures')->nullable(); // units/percentage/ratio
             $table->float('target', 10, 0)->nullable();
             $table->float('achievement_midyear', 10, 0)->nullable();
             $table->float('achievement_yearend', 10, 0)->nullable();
