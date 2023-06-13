@@ -36,10 +36,10 @@
           <div v-else class="text-uppercase text-center">
             {{ selectedTab == 'ecd' ? 'Employee Capability Development' : selectedTab }} List
           </div>
-          <div v-if="canManage" class="ml-auto text-body-1">Remaining weightage: {{ ratingOrWeightage(selectedTab) }}%</div>
+          <div v-if="canManage" class="ml-auto text-body-1">Remaining {{ selectedTab.toUpperCase() }} weightage: {{ ratingOrWeightage(selectedTab) }}%</div>
         </v-card-title>
         <v-card-text class="px-5 pb-10">
-          <v-row v-if="hasError">
+          <v-row v-if="hasError" class="mb-2">
           <div class="v-col-12 pb-0"  >
                 <v-card class="rounded-lg" style="border:2px solid red">
                   <v-card-text>
@@ -123,7 +123,7 @@
                       <div>
                         <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
                           @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
-                        <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd')" density="compact" size="30"
+                        <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'technical')" density="compact" size="30"
                           color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
                             :icon="mdiPencil"></v-icon></v-btn>
                             <v-btn v-if="canManage" @click="() => removeKPI(ecd)" density="compact" size="30"
@@ -167,7 +167,7 @@
                         <div>
                           <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
                             @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
-                          <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd')" density="compact" size="30"
+                          <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'softskill')" density="compact" size="30"
                             color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
                               :icon="mdiPencil"></v-icon></v-btn>
                               <v-btn v-if="canManage" @click="() => removeKPI(ecd)" density="compact" size="30"
@@ -218,8 +218,8 @@
       </v-card>
     </v-dialog>
     
-    <KpiDialog :measures-list="measuresList" :kpi-options="kpiOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :industry-list="industryList"  :submit-button="props.submitButton"  @savedResponse="savedResponseMethod"/>
-    <EcdDialog :ecd-options="ecdOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :ecd-list="ecdList" :submit-button="props.submitButton" @savedResponse="savedResponseMethod"/>
+    <KpiDialog :final-review="isFinalReview" :measures-list="measuresList" :kpi-options="kpiOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :industry-list="industryList"  :submit-button="props.submitButton"  @savedResponse="savedResponseMethod"/>
+    <EcdDialog :final-review="isFinalReview" :ecd-options="ecdOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :ecd-list="ecdList" :submit-button="props.submitButton" @savedResponse="savedResponseMethod"/>
     <SnackBar :options="sbOptions" />
   </v-row>
 </template>
@@ -303,13 +303,14 @@ watch(
   }
 );
 
+const hasError = ref(false);
+const singlePageHasError = ref(false);
 const emitResponseWeightageValidation = () => {
   weightageValidation().then(() => {
-    kpiEmit('errorcheck', {hasError: hasError.value});
+    kpiEmit('errorcheck', {hasError: singlePageHasError.value});
   }) 
-}
+} 
 
-const hasError = ref(false);
 const errorMessage = ref('');
 const weightageValidation = async () => { 
   let message = '';
@@ -323,25 +324,45 @@ const weightageValidation = async () => {
     
     message = "Invalid: Should have 1 each, technical and soft skill, kindly update the weightage.";
   
-    if(ratingOrWeightage('ecd') == 0 && ecdArray.value && ecdArray.value.length > 0 && ecdArray.value.length < 2){
-      isError = true;
-    }else if( ecdArray.value.length > 1 ){
-      let ecdValidation = [];
-      ecdArray.value.map((o,i) =>{
-        ecdValidation.push(o.ecd_type);
-      });
-
-      ecdValidation  = [...new Set(ecdValidation)]; 
-      if(ecdValidation.length < 2){
-        isError = true;
-      } 
-    }
+    isError = ecdValidationError(isError);
   }
   hasError.value = isError;
   
   if(isError){  
     errorMessage.value = message; 
   } 
+  errorValidation();
+}
+
+const ecdValidationError = (isError) => {
+
+  if(ratingOrWeightage('ecd') == 0 && ecdArray.value && ecdArray.value.length > 0 && ecdArray.value.length < 2){
+    isError = true; 
+  }else if( ecdArray.value.length > 1 ){ 
+    let ecdValidation = [];
+    ecdArray.value.map((o,i) =>{
+      ecdValidation.push(o.ecd_type);
+    });
+
+    ecdValidation  = [...new Set(ecdValidation)]; 
+    if(ratingOrWeightage('ecd') == 0 && ecdValidation.length < 2){
+      isError = true;
+    } 
+  } 
+  return isError;
+}
+
+const errorValidation = async () => {
+  
+  let isError = false;
+   
+  if(kpiArray.value.length < 4 && ratingOrWeightage('kpi') == 0){
+    isError = true;
+  } 
+  
+  isError = ecdValidationError(isError);
+   
+  singlePageHasError.value = isError;
 }
 
 // tabs
@@ -350,19 +371,20 @@ const selectTab = (tab) => {
   selectedTab.value = tab;
 
   if( route.name == "SingleTeamMember"){ 
-    emitResponseWeightageValidation();
+    weightageValidation(); 
   }
 };
 
+
 const currentDate = ref(new Date());
-const canManage = computed(() => {  
-    if(route.name == "SingleTeamMember" && settingStore.pmsSettings && settingStore.pmsSettings.state == 'setting' && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
-      return true;
-    }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
-          return authStore.authRole.includes("manager") && route.name == "SingleTeamMember" && viewingEmployee.value.reviews[0].state == 'setting'
-          &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')
+const canManage = computed(() => {   
+    if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
+        return authStore.authRole.includes("manager") && route.name == "SingleTeamMember" && viewingEmployee.value.reviews[0].state == 'setting'
+          &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress' || viewingEmployee.value.reviews[0].status == 'inreview')
             ? true
             : false;
+    }else if(route.name == "SingleTeamMember" && settingStore.pmsSettings && settingStore.pmsSettings.state == 'setting' && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
+      return true;
     } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){ 
           let date = new Date(viewingEmployee.value.doj);  
           date.setDate(date.getDate() +  parseInt(settingStore.pmsSettings.probation_kpi_setting));  
@@ -370,31 +392,49 @@ const canManage = computed(() => {
             return true;
           } 
     } 
+    return false;
 });
-
+const isFinalReview = ref({saveBtn: false, isFinal: false});
 const isReviewStage = computed(() => {
+  isFinalReview.value = {saveBtn: false, isFinal: false};
+    if(route.name == "SingleTeamMember" && settingStore.pmsSettings && settingStore.pmsSettings.state == 'yearend'){ 
+      isFinalReview.value = {saveBtn: false, isFinal: true};
+    }
     if(route.name == "SingleTeamMember" && settingStore.pmsSettings && (settingStore.pmsSettings.state == 'midyear' || settingStore.pmsSettings.state == 'yearend' ) && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
+      isFinalReview.value = {saveBtn: true, isFinal: true};
       return true;
     }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
+      if(viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress'){
+        isFinalReview.value.saveBtn = true; 
+      }else if(viewingEmployee.value.reviews[0].state == 'yearend'){
+        isFinalReview.value.isFinal = true;
+      }
           return authStore.authRole.includes("manager") && route.name == "SingleTeamMember" && 
-          (viewingEmployee.value.reviews[0].state == 'midyear' || viewingEmployee.value.reviews[0].state == 'yearend')
-          &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')
+          (viewingEmployee.value.reviews[0].state == 'midyear' || viewingEmployee.value.reviews[0].state == 'yearend') 
             ? true
             : false;
     } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){  
+          isFinalReview.value = {saveBtn: false, isFinal: false};
+
           let midStart = new Date(viewingEmployee.value.doj);  
           let midEnd = new Date(viewingEmployee.value.doj);  
           midStart.setDate(midStart.getDate() +  parseInt(settingStore.pmsSettings.probation_first_review_start));  
           midEnd.setDate(midEnd.getDate() +  parseInt(settingStore.pmsSettings.probation_first_review_end));  
+          if(midStart >= currentDate.value  && midEnd <= currentDate.value){
+            isFinalReview.value = {saveBtn: true, isFinal: false};
+            return true;
+          } 
 
           let yearEndStart = new Date(viewingEmployee.value.doj);  
           let yearEnd = new Date(viewingEmployee.value.doj);  
           yearEndStart.setDate(yearEndStart.getDate() +  parseInt(settingStore.pmsSettings.probation_final_review_start));  
           yearEnd.setDate(yearEnd.getDate() +  parseInt(settingStore.pmsSettings.probation_final_review_end));  
           if(yearEndStart >= currentDate.value  && yearEnd <= currentDate.value){
+            isFinalReview.value = {saveBtn: true, isFinal: true};
             return true;
           } 
     }
+  
     return false;
 })
 // kpi
@@ -435,18 +475,16 @@ const ecdOptions = ref({
   is_review: false,
 });
 const addKPI = async (type,ecdType) => {
- 
-  if (type == "kpi") {
-  
-    if(ratingOrWeightage(selectedTab.value) <= 0){
+  if(ratingOrWeightage(selectedTab.value) <= 0){
       sbOptions.value = {
         status: true,
         type: "error",
         text: "Denied: You've reached the weightage limit.",
       
-      };
-      
-    }else if(kpiArray.value.length > 5){
+      }; 
+  } else if (type == "kpi") {
+  
+    if(kpiArray.value.length > 5){
       sbOptions.value = {
         status: true,
         type: "error",
@@ -464,14 +502,7 @@ const addKPI = async (type,ecdType) => {
               };
     }
   }else {
-    if(ecdArray.value.length > 2){
-      sbOptions.value = {
-        status: true,
-        type: "error",
-        text: "Denied: You've reached the weightage limit.",
-      };
-   
-    }else{
+     
     ecdOptions.value = {
       ...ecdOptions.value,
       ...{
@@ -479,14 +510,15 @@ const addKPI = async (type,ecdType) => {
         data: {},
         dialog: true,
         type: type,
+        ecdType: ecdType,
         action: "add",
         is_review: false,
       },
     };
-  }
+ 
   } 
 };
-const editKPI = async (item, type = "kpi") => {
+const editKPI = async (item, type = "kpi",ecdType) => {
   if (type == "kpi") {
     kpiOptions.value = {
       ...kpiOptions.value,
@@ -499,8 +531,7 @@ const editKPI = async (item, type = "kpi") => {
         is_review: false,
       },
     };
-  }
-  if (type == "ecd") {
+  }else {
     ecdOptions.value = {
       ...ecdOptions.value,
       ...{
@@ -509,6 +540,7 @@ const editKPI = async (item, type = "kpi") => {
         dialog: true,
         type: type,
         action: "edit",
+        ecdType: ecdType,
         is_review: false,
       },
     };
@@ -571,7 +603,6 @@ const removeKPI = async (item) => {
     },
   };
 
-  console.log(toRemoveKpi.value);
 };
 const confirmRemoveKpi = async () => { 
   let kpiRemove = toRemoveKpi.value.data;

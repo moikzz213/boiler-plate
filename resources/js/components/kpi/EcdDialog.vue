@@ -9,7 +9,7 @@
       <v-row class="ma-0 pa-0">
         <div :class="`v-col-12 ${ecdOptions.is_review == true ? 'v-col-md-8' : ''} px-4`">
           <v-row>
-            <div class="v-col-12">{{ kpiAction.title }} {{}}</div>
+            <div class="v-col-12">{{ kpiAction.title }}</div>
 
             <div class="v-col-12 py-0">
               <v-autocomplete
@@ -22,16 +22,12 @@
                 density="compact"
                 label="Select KPI*"
               >
-                <template v-slot:selection="{ props, item }">
-                  <span v-bind="props">
-                    {{ item?.raw?.title.substring(0, 35) + "..." }}
-                  </span>
-                </template>
+               
               </v-autocomplete>
             </div>
             <div class="v-col-12 py-0">
               <v-select
-                v-model="ecdData.weightage"
+                v-model="ecdDataWeightage"
                 :items="kpiWeightageList"
                 label="KPI's Weightage (%)*"
                 variant="outlined"
@@ -165,25 +161,35 @@ const ecdData = ref({});
 const kpiList = ref([]);
 const kpiAction = ref({});
 const selectedKPI = ref(null);
+const ecdDataWeightage = ref(null);
 
-const kpiWeightageList = ref(["5%", "10%", "15%"]);
+const kpiWeightageList = ref(["5%", "10%", "15%", "20%"]);
 const saveKpi = () => { 
+  ecdData.value.weightage = ecdDataWeightage.value;
+  ecdData.value.ecd_type = props.ecdOptions.ecdType;
   kpiAction.value.data = ecdData.value;
-  kpiAction.value.dialog = false;  
+  kpiAction.value.dialog = false;
   kpiEmit('savedResponse', kpiAction.value);
 };
 
 watch(
   () => props.ecdOptions,
   (newVal) => {
-    kpiList.value = props.ecdList;
-    ecdData.value = Object.assign({}, newVal.data);
-    kpiAction.value = Object.assign({}, newVal);  
+    ecdData.value = Object.assign({}, newVal.data); 
+    kpiList.value = props.ecdList.filter((el) => {
+      return el.ecd_type == newVal.ecdType || el.ecd_type == 'both'
+    }); 
+   
+    kpiAction.value = Object.assign({}, newVal);
     
     if(kpiAction.value.action == 'edit'){
       oldWeightage.value = newVal.data.weightage;
+      selectedKPI.value = newVal.data.title;
+      ecdDataWeightage.value = newVal.data.weightage;
     }else{
       oldWeightage.value = null;
+      selectedKPI.value = null;
+      ecdDataWeightage.value = null;
     }
   }
 ); 
@@ -199,7 +205,7 @@ watch(
 const sbOptions = ref({});
 const isValid = ref(false);
 watch(
-  () => ecdData.value.weightage,
+  () => ecdDataWeightage.value,
   (newVal) => { 
     if(!isNaN(newVal) || newVal == undefined || newVal == null){ 
       isValid.value = false;

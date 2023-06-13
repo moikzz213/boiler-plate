@@ -31,9 +31,9 @@
                 <div class="text-body-2">{{ ratingOrWeightage(selEmployeeObj) }}/100</div>
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
-                <v-btn v-if="!hasError && totalWeightage == 100 && selEmployeeObj.reviews[0].status == 'inprogress'"
-                  @click="submitForReview" block color="secondary" disabled class="text-capitalize rounded-lg">{{
-                    selEmployeeObj.reviews[0].state == 'setting' ? 'Submit for Review' : 'Submit' }} </v-btn>
+                <v-btn v-if="!hasError && totalWeightage == 100 && (selEmployeeObj.reviews[0].status == 'inprogress' || selEmployeeObj.reviews[0].status == 'inreview')"
+                  @click="submitForReview" block color="secondary" class="text-capitalize rounded-lg">{{
+                    selEmployeeObj.reviews[0].state == 'setting' && selEmployeeObj.reviews[0].status == 'inprogress' ? 'Submit for Review' : 'Submit' }} </v-btn>
               </div>
             </v-row>
           </v-card-text>
@@ -122,8 +122,10 @@ const selectIndustry = async () => {
     industryStore.getIndustries(authStore.authToken).then(()=>{
       industryList.value = industryStore.industries; 
     })
-  }
-
+  }else{
+    industryList.value = industryStore.industries; 
+  } 
+ 
 };
 
 const industryWithKPI = ref([]);
@@ -133,7 +135,7 @@ const kpiMaster = async () => {
   await clientApi(authStore.authToken)
     .get("/api/fetch/master-kpi/non-paginate")
     .then((res) => { 
-      console.log(industryList.value);
+     
       if (industryList.value && industryList.value.length > 0 && res.data && res.data.length > 0) {
         industryList.value.map((o, i) => {
           industryWithKPI.value[i] = o;
