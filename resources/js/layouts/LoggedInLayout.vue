@@ -324,12 +324,12 @@ const sideNavigation = ref([
       {
         title: "Custom KPIs",
         icon: mdiPlaylistEdit,
-        path: "/hr/kpi/custom",
+        path: "/hr/custom/kpi",
       },
       {
         title: "KPIs",
         icon: mdiFormatListBulleted,
-        path: "/hr/kpi/master",
+        path: "/hr/master/kpi",
       },
       {
         title: "Industries",

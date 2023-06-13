@@ -1,11 +1,21 @@
 <template>
-  <v-dialog v-model="kpiData.dialog" width="100%" :max-width="900" persistent>
+  <v-dialog
+    v-model="kpiData.dialog"
+    width="100%"
+    :max-width="kpiData.type == 'ecd' ? 600 : 900"
+    persistent
+  >
     <v-card class="rounded-lg">
       <v-row class="ma-0 pa-0">
         <div :class="`v-col-12 ${kpiData.is_review == true ? 'v-col-md-8' : ''} px-4`">
           <v-row>
             <div class="v-col-12">{{ kpiData.title }} {{}}</div>
-            <div class="v-col-12 v-col-md-6 py-0">
+            <div
+              v-if="enableOn(['ecd', 'kpi'])"
+              :class="`v-col-12 ${
+                kpiData.type == 'ecd' ? 'v-col-md-12' : 'v-col-md-6'
+              }  py-0`"
+            >
               <v-text-field
                 v-model="kpiData.data.title"
                 variant="outlined"
@@ -19,7 +29,24 @@
                 </template>
               </v-text-field>
             </div>
-            <div class="v-col-12 v-col-md-6 py-0">
+            <div
+              v-if="enableOn(['ecd'])"
+              :class="`v-col-12 ${
+                kpiData.type == 'ecd' ? 'v-col-md-12' : 'v-col-md-6'
+              }  py-0`"
+            >
+              <v-select
+                v-model="kpiData.data.ecd_type"
+                :items="['technical', 'soft', 'both']"
+                variant="outlined"
+                density="compact"
+                class="bg-white"
+                hide-details
+                label="Select Type"
+              >
+              </v-select>
+            </div>
+            <div v-if="enableOn(['kpi'])" class="v-col-12 v-col-md-6 py-0">
               <v-autocomplete
                 v-model="kpiData.data.industry_id"
                 :items="industryStore.industries"
@@ -44,7 +71,7 @@
                 </template>
               </v-autocomplete>
             </div>
-            <div class="v-col-12 py-0">
+            <div v-if="enableOn(['kpi'])" class="v-col-12 py-0">
               <v-textarea
                 v-model="kpiData.data.definition"
                 label="KPI Definition*"
@@ -53,7 +80,7 @@
               ></v-textarea>
               <!-- :readonly="props.isHr" -->
             </div>
-            <div class="v-col-12 py-0">
+            <div v-if="enableOn(['kpi'])" class="v-col-12 py-0">
               <v-textarea
                 v-model="kpiData.data.formula"
                 label="Calculation Formula*"
@@ -61,7 +88,7 @@
                 rows="2"
               ></v-textarea>
             </div>
-            <div class="v-col-12 py-0">
+            <div v-if="enableOn(['kpi'])" class="v-col-12 py-0">
               <v-textarea
                 v-model="kpiData.data.subordinate_measures"
                 label="Subordinate Measures*"
@@ -69,7 +96,7 @@
                 rows="2"
               ></v-textarea>
             </div>
-            <div class="v-col-12 py-0">
+            <div v-if="enableOn(['kpi'])" class="v-col-12 py-0">
               <v-textarea
                 v-model="kpiData.data.calculation_example"
                 label="KPI Calculation Example*"
@@ -77,7 +104,7 @@
                 rows="2"
               ></v-textarea>
             </div>
-            <div class="v-col-12 py-0">
+            <div v-if="enableOn(['kpi'])" class="v-col-12 py-0">
               <v-textarea
                 v-model="kpiData.data.evaluation_pattern"
                 label="KPI Evaluation Method*"
@@ -181,6 +208,12 @@ watch(
   (newVal) => {
     selectIndustry();
     kpiData.value = Object.assign({}, newVal);
+    console.log("kpiData.value", kpiData.value);
   }
 );
+
+// check type
+const enableOn = (typeArray) => {
+  return typeArray.includes(kpiData.value.type) == true ? true : false;
+};
 </script>

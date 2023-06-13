@@ -119,6 +119,7 @@ const kpiForm = ref({
   data: {},
   loading: false,
   dialog: false,
+  type: 'kpi',
   action: "view",
 });
 const totalPageCount = ref(0);

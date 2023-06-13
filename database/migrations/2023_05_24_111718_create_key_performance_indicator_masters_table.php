@@ -14,13 +14,12 @@ return new class extends Migration
         Schema::create('key_performance_indicator_masters', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('status')->default('pending'); // approved/pending
+            $table->string('status')->default('pending'); // approved/pending/trashed
 
-            $table->string('definition');
-            $table->string('formula');
-            $table->string('calculation_example');
-            $table->string('subordinate_measures');
-            $table->string('evaluation_pattern');
+            $table->string('definition')->nullable();
+            $table->string('formula')->nullable();
+            $table->string('calculation_example')->nullable();
+            $table->string('subordinate_measures')->nullable();
 
             $table->string('type')->default('kpi'); // kpi/ecd
             $table->string('ecd_type')->nullable(); // tech/soft/soft-tech

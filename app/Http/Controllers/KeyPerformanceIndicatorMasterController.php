@@ -16,7 +16,9 @@ class KeyPerformanceIndicatorMasterController extends Controller
 
     public function getPaginatedKpiByType($type)
     {
-        $kpis = KeyPerformanceIndicatorMaster::where('type', $type)->with('industry')->paginate(10);
+        $kpis = KeyPerformanceIndicatorMaster::where('type', $type)
+        ->whereIn('status', array('pending', 'approved'))
+        ->with('industry')->paginate(10);
         return response()->json($kpis, 200);
     }
 
@@ -53,7 +55,10 @@ class KeyPerformanceIndicatorMasterController extends Controller
     {
         $kpi = KeyPerformanceIndicatorMaster::where('id', $id)->first();
         if($kpi){
-            $kpi->delete();
+            $kpi = KeyPerformanceIndicatorMaster::where('id', $id)->update([
+                'status' => 'trashed'
+            ]);
+            // $kpi->delete();
         }
         return response()->json([
             'message' => 'KPI removed successfully'
@@ -132,7 +137,10 @@ class KeyPerformanceIndicatorMasterController extends Controller
             $import = new KeyPerformanceIndicatorMaster;
             foreach (array_chunk($itemsToImport, 1000) as $itemsToImport_chunked){
                 foreach ($itemsToImport_chunked as $item) {
-                    $check = KeyPerformanceIndicatorMaster::where('title', $item->title)->first();
+                    $check = KeyPerformanceIndicatorMaster::where('title', $item->title)
+                    ->where('industry_id', $request['industry_id'])
+                    ->first();
+
                     if(!$check){
                         array_push($dataArray, array(
                             'title' => $item->title,
@@ -167,6 +175,8 @@ class KeyPerformanceIndicatorMasterController extends Controller
     public function saveMasterKpi(Request $request){
         $kpiArray = array(
             'title' => $request['title'],
+            'type' => $request['type'],
+            'ecd_type' => isset($request['ecd_type']) ? $request['ecd_type'] : null,
             'status' => 'approved',
             'definition' => $request['definition'],
             'formula' => $request['formula'],

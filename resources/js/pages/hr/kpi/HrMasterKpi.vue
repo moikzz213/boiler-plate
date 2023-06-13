@@ -30,15 +30,24 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import PageHeader from "@/components/PageHeader.vue";
 import KpiMaster from "./type/KpiMaster.vue";
 import EcdMaster from "./type/EcdMaster.vue";
-
 // table tab
+const router = useRouter();
 const currentType = ref("kpi");
 const selectType = (type) => {
   if (currentType.value !== type) {
     currentType.value = type;
+    router
+      .push({
+        name: "HrMasterKpi",
+        params: {
+          type: currentType.value,
+        },
+      })
+      .catch((err) => {});
   }
 };
 </script>

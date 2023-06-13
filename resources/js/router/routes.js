@@ -100,7 +100,7 @@ export const routes = [
         },
     },
     {
-        path: "/hr/kpi/custom",
+        path: "/hr/custom/kpi",
         component: () => import("../pages/hr/kpi/HrCustomKpi.vue"),
         name: "HrCustomKpi",
         meta: {
@@ -110,7 +110,7 @@ export const routes = [
         },
     },
     {
-        path: "/hr/kpi/custom/page/:page",
+        path: "/hr/custom/kpi/page/:page",
         component: () => import("../pages/hr/kpi/HrCustomKpi.vue"),
         name: "PaginatedHrCustomKpi",
         meta: {
@@ -120,7 +120,7 @@ export const routes = [
         },
     },
     {
-        path: "/hr/:type/master",
+        path: "/hr/master/:type",
         component: () => import("../pages/hr/kpi/HrMasterKpi.vue"),
         name: "HrMasterKpi",
         meta: {
@@ -130,7 +130,7 @@ export const routes = [
         },
     },
     {
-        path: "/hr/:type/master/page/:page",
+        path: "/hr/master/:type/page/:page",
         component: () => import("../pages/hr/kpi/HrMasterKpi.vue"),
         name: "PaginatedHrMasterKpi",
         meta: {
