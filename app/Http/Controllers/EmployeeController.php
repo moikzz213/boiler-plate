@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Review;
 use App\Models\Profile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 
@@ -59,5 +61,26 @@ class EmployeeController extends Controller
         ])
         ->with('company', 'reviews.keyReview', 'managed_by')->get();
         return response()->json($employees, 200);
+    }
+
+    function updateEmployeeStatus(Request $request)
+    {
+        $employee = Profile::class::where('ecode', $request['ecode'])
+        ->update(['status' => $request['status']]);
+        return response()->json([
+            'message' => 'Employee status updated successfully'
+        ], 200);
+    }
+
+    function reopenEmployeeReview(Request $request)
+    {
+        $profile = Profile::class::where('ecode', $request['ecode'])->first();
+        $updateReview = $profile->reviews()
+        ->where('year', Carbon::now()->format('Y'))
+        ->update(['status' => 'open']);
+
+        return response()->json([
+            'message' => 'KPI Status updated successfully'
+        ], 200);
     }
 }

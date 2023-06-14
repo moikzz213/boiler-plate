@@ -17,8 +17,7 @@ export const useSettingStore = defineStore("setting", {
     actions: {
         filteredSetting(company_id) {
            
-            let filteredArray = this.pms_settings.filter(ps  => ps.company_id == company_id); 
-            console.log("sssssssssssssss",company_id);
+            let filteredArray = this.pms_settings.filter(ps  => ps.company_id == company_id);  
             if (filteredArray && filteredArray.length > 0) {
                 return filteredArray[0];
             } 

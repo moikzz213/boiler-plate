@@ -75,7 +75,9 @@
                 ></v-text-field>
               </div>
               <div class="v-col-12 d-flex justify-end">
-                <v-btn color="primary" variant="text">Cancel</v-btn>
+                <v-btn color="primary" variant="text" @click="companyForm.dialog = false"
+                  >Cancel</v-btn
+                >
                 <v-btn
                   color="primary"
                   :loading="companyForm.loading"
