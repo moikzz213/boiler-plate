@@ -7,7 +7,7 @@ export const useSettingStore = defineStore("setting", {
             msg: "",
         },
         is_from_login: false,
-        pms_settings: null,
+        pms_settings: [],
     }),
     getters: {
         isFromLogin: (state) => state.is_from_login,
@@ -15,8 +15,18 @@ export const useSettingStore = defineStore("setting", {
         pmsSettings: (state) => state.pms_settings,
     },
     actions: {
+        filteredSetting(company_id) {
+           
+            let filteredArray = this.pms_settings.filter(ps  => ps.company_id == company_id); 
+            console.log("sssssssssssssss",company_id);
+            if (filteredArray && filteredArray.length > 0) {
+                return filteredArray[0];
+            } 
+            return false;
+
+        },
         async setPmsSettings(res) {
-            this.pms_settings = Object.assign({}, res);
+            this.pms_settings = Object.assign([], res);
         },
         async setPageLoading(status, msg = null) {
             let text = msg ? msg : "checking account";

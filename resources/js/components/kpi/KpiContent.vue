@@ -310,6 +310,8 @@ watch(
   }
 );
 
+const globalSetting = computed(() => settingStore.filteredSetting(viewingEmployee.value.company_id));
+
 const hasError = ref(false);
 const singlePageHasError = ref(false);
 const emitResponseWeightageValidation = () => {
@@ -386,11 +388,11 @@ const canManage = computed(() => {
           &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress' || viewingEmployee.value.reviews[0].status == 'inreview')
             ? true
             : false;
-    }else if(route.name == "SingleTeamMember" && settingStore.pmsSettings && settingStore.pmsSettings.state == 'setting' && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
+    }else if(route.name == "SingleTeamMember" && globalSetting && globalSetting.state == 'setting' && ( globalSetting.status == 'open' || globalSetting.status == 'inprogress')){
       return true;
     } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){ 
           let date = new Date(viewingEmployee.value.doj);  
-          date.setDate(date.getDate() +  parseInt(settingStore.pmsSettings.probation_kpi_setting));  
+          date.setDate(date.getDate() +  parseInt(globalSetting.probation_kpi_setting));  
           if(date >= currentDate.value ){
             return true;
           } 
@@ -401,20 +403,20 @@ const isFinalReview = ref({saveBtn: false, isFinal: false});
 const isReviewStage = computed(() => {
    
   isFinalReview.value = {saveBtn: false, isFinal: false};
-    if(route.name == "SingleTeamMember" && settingStore.pmsSettings && settingStore.pmsSettings.state == 'yearend'){ 
+    if(route.name == "SingleTeamMember" && globalSetting && globalSetting.state == 'yearend'){ 
       isFinalReview.value = {saveBtn: false, isFinal: true};
     }
-    if(route.name == "SingleTeamMember" && settingStore.pmsSettings && (settingStore.pmsSettings.state == 'midyear' || settingStore.pmsSettings.state == 'yearend' ) && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
+    if(route.name == "SingleTeamMember" && globalSetting && (globalSetting.state == 'midyear' || globalSetting.state == 'yearend' ) && ( globalSetting.status == 'open' || globalSetting.status == 'inprogress')){
       isFinalReview.value = {saveBtn: true, isFinal: true};
       return true;
     }else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){  
           isFinalReview.value = {saveBtn: false, isFinal: false};
-        if(settingStore.pmsSettings){
+        if(globalSetting){
         
           let midStart = new Date(viewingEmployee.value.doj);  
           let midEnd = new Date(viewingEmployee.value.doj);   
-          midStart.setDate(midStart.getDate() +  parseInt(settingStore.pmsSettings.probation_first_review_start));  
-          midEnd.setDate(midEnd.getDate() +  parseInt(settingStore.pmsSettings.probation_first_review_end));  
+          midStart.setDate(midStart.getDate() +  parseInt(globalSetting.probation_first_review_start));  
+          midEnd.setDate(midEnd.getDate() +  parseInt(globalSetting.probation_first_review_end));  
           
           if(viewingEmployee.value.reviews[0].state == 'first_review' && (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')){
             isFinalReview.value = {saveBtn: true, isFinal: false};
@@ -426,8 +428,8 @@ const isReviewStage = computed(() => {
 
           let yearEndStart = new Date(viewingEmployee.value.doj);  
           let yearEnd = new Date(viewingEmployee.value.doj);  
-          yearEndStart.setDate(yearEndStart.getDate() +  parseInt(settingStore.pmsSettings.probation_final_review_start));  
-          yearEnd.setDate(yearEnd.getDate() +  parseInt(settingStore.pmsSettings.probation_final_review_end));  
+          yearEndStart.setDate(yearEndStart.getDate() +  parseInt(globalSetting.probation_final_review_start));  
+          yearEnd.setDate(yearEnd.getDate() +  parseInt(globalSetting.probation_final_review_end));  
 
           if(viewingEmployee.value.reviews[0].state == 'final_review' && (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')){
             isFinalReview.value = {saveBtn: true, isFinal: true}; 

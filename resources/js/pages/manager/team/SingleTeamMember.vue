@@ -24,7 +24,7 @@
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">KPI's Target Year</div>
-                <div class="text-body-2">{{ settingStore.pmsSettings && settingStore.pmsSettings.year }}</div>
+                <div class="text-body-2">{{ globalSettingYear }}</div>
               </div>
               <div class="v-col-12 v-col-md-1 d-flex flex-column">
                 <div class="text-caption text-grey">Total KPI</div>
@@ -172,11 +172,7 @@ const customKpiMaster = async () => {
         });
       }
     });
-};
-
-const getEmployeeToView = () => {
-  console.log("getEmployeeToView", selectedEmployeeArr.value);
-};
+}; 
 
 const loadingBtn = ref(false);
 const submitForReview = () => {
@@ -309,7 +305,7 @@ const getKPI = async (year) => {
     });
 };
 
-const measuresList = ref([]);
+const measuresList = ref([]); 
 const fetchMeasures = async () => { 
   clientApi(authStore.authToken)
     .get("/api/fetch/measures/non-paginated")
@@ -324,12 +320,15 @@ const fetchMeasures = async () => {
   
 };
 
+const globalSettingYear = computed(() => settingStore.filteredSetting(selEmployeeObj.value.company_id).year);
+
 onMounted(() => {
   employeePassData();
-  selectIndustry().then(() => {
+  selectIndustry().then(() => { 
   kpiMaster().then(() => {
     customKpiMaster().then(() => {
       fetchMeasures();
+    
     })
   })
   });

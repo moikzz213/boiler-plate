@@ -14,7 +14,9 @@
         {{ profileKPI.designation }}
       </div>
       <div class="d-flex align-center">
-        <v-icon size="16" :color="`${ employeeKPIStatus ==  'locked' || employeeKPIStatus == 'closed' ? 'error' : 'success'}`" :icon="mdiCircleMedium"></v-icon>
+        <v-icon size="16"
+          :color="`${employeeKPIStatus == 'locked' || employeeKPIStatus == 'closed' ? 'error' : 'success'}`"
+          :icon="mdiCircleMedium"></v-icon>
         <div style="font-size: 10px; line-height: 12px">
           {{ employeeKPIStatus }}
         </div>
@@ -45,38 +47,41 @@ const profileKPI = ref({
 });
 
 const currentDate = ref(new Date());
-const employeeKPIStatus = computed(() => {
-  console.log('props.profile',props.profile);
-  if(props.profile && props.profile.length > 0){
-      profileKPI.value = props.profile[0];
-    }else{
-      profileKPI.value = props.profile;
-    } 
+ 
+const employeeKPIStatus = computed(() => { 
+  if (props.profile && props.profile.length > 0) {
+    profileKPI.value = props.profile[0];
+  } else {
+    profileKPI.value = props.profile;
+  }
+
+  if (profileKPI.value && profileKPI.value.reviews && profileKPI.value.reviews.length > 0) {
+    return profileKPI.value.reviews[0].status;
+  } else {
+    let isKPISetByCompany = settingStore.filteredSetting(profileKPI.value.company_id);
     
-   if(profileKPI.value && profileKPI.value.reviews && profileKPI.value.reviews.length > 0){ 
-      return profileKPI.value.reviews[0].status;
-    }else if(settingStore.pmsSettings ){ 
-      if(profileKPI.value.is_regular == 0){
-        let date = new Date(profileKPI.value.doj);  
-          date.setDate(date.getDate() +  parseInt(settingStore.pmsSettings.probation_kpi_setting));  
-          if(date >= currentDate.value ){
-            return 'open';
-          } 
-      }else{
-        return settingStore.pmsSettings.status;
-      }
-    } 
- 
+    if (isKPISetByCompany && isKPISetByCompany.id) {
+      if (profileKPI.value.is_regular == 0) {
+        let date = new Date(profileKPI.value.doj);
+        date.setDate(date.getDate() + parseInt(res.probation_kpi_setting));
+        if (date >= currentDate.value) {
+          return 'open' ;
+        }
+      }  
+      return isKPISetByCompany.status; 
+    }  
+    return 'locked';
+  }
 });
- 
+
 watch(
   () => props.profile,
   (newVal) => {
-    if(newVal && newVal.length > 0){
+    if (newVal && newVal.length > 0) {
       profileKPI.value = newVal[0];
-    }else{
+    } else {
       profileKPI.value = newVal;
-    }  
+    }
   }
 );
 </script>
