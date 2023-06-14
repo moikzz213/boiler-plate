@@ -30,7 +30,7 @@ class EmployeeController extends Controller
                 }
             }),
         ])
-        ->with('company')
+        ->with('company', 'reviews.keyReview', 'managed_by')
         ->paginate(10)
         ->appends(request()->query());
 

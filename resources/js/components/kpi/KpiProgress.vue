@@ -28,6 +28,7 @@ const props = defineProps({
     default: "",
   },
 });
+console.log("props kpi progres", props.selectedEmployee);
 const settingStore = useSettingStore();
 
 const states = computed(() => {
