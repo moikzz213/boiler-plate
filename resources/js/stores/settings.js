@@ -15,6 +15,10 @@ export const useSettingStore = defineStore("setting", {
         pmsSettings: (state) => state.pms_settings,
     },
     actions: {
+        async filteredSetting(company_id) {
+            let filteredArray = this.pms_settings.filter(ps => ps.company_id === company_id)
+            return filteredArray[0];
+        },
         async setPmsSettings(res) {
             this.pms_settings = Object.assign({}, res);
         },

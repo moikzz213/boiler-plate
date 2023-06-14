@@ -56,6 +56,8 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
     // employee
     Route::get('/employee/ecode/{ecode}', [EmployeeController::class, 'getEmployeeByEcode'])->name('hr.employee.ecode');
     Route::get('/search/employee', [EmployeeController::class, 'searchEmployee'])->name('hr.employee.search');
+    Route::post('/employee/status/update', [EmployeeController::class, 'updateEmployeeStatus'])->name('hr.employee.update.status');
+    Route::post('/employee/reopen', [EmployeeController::class, 'reopenEmployeeReview'])->name('hr.employee.reopen.employee.review');
 });
 
 // manager

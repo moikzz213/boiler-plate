@@ -16,7 +16,7 @@ class Review extends Model
     {
         return $this->hasMany(KeyPerformanceReview::class);
     }
-    
+
     public function profile()
     {
         return $this->belongsTo(Profile::class);

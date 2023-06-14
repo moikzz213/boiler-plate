@@ -37,28 +37,32 @@
         </div>
       </div>
       <div class="v-col-12 v-col-md-3 text-right pb-0">
-        <v-menu>
-          <template v-slot:activator="{ props }">
-            <v-btn
-              v-bind="props"
-              :color="`${switchStatus == 'Active' ? 'success' : 'error'}`"
-            >
-              {{ switchStatus }}
-            </v-btn>
-          </template>
-          <v-list density="compact">
-            <v-list-item
-              v-for="(item, index) in statusArray"
-              :key="index"
-              @click="() => selectStatus(item)"
-            >
-              <v-list-item-title>
-                <v-icon size="16" :color="item.color" :icon="mdiCircleMedium"></v-icon>
-                {{ item.title }}</v-list-item-title
+        <div>
+          <v-menu>
+            <template v-slot:activator="{ props }">
+              <v-btn
+                v-bind="props"
+                :color="`${switchStatus == 'Active' ? 'success' : 'error'}`"
+                width="120"
               >
-            </v-list-item>
-          </v-list>
-        </v-menu>
+                {{ switchStatus }}
+              </v-btn>
+            </template>
+            <v-list density="compact">
+              <v-list-item
+                v-for="(item, index) in statusArray"
+                :key="index"
+                @click="() => selectStatus(item)"
+              >
+                <v-list-item-title>
+                  <v-icon size="16" :color="item.color" :icon="mdiCircleMedium"></v-icon>
+                  {{ item.title }}</v-list-item-title
+                >
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
+        <div class="text-caption px-3 text-grey-darken-1 pt-1">Employee Status</div>
       </div>
     </v-row>
     <v-row>
@@ -74,9 +78,7 @@
                 <div class="text-body-2">
                   {{
                     employee.managed_by && employee.managed_by.display_name
-                      ? employee.managed_by.display_name +
-                        " - " +
-                        employee.managed_by.ecode
+                      ? employee.managed_by.display_name
                       : ""
                   }}
                 </div>
@@ -103,8 +105,10 @@
               </div>
               <div class="v-col-12 v-col-md-2 d-flex align-center">
                 <v-btn
+                  :loading="reopen.loading"
                   @click="reopenReview"
                   block
+                  size="large"
                   color="secondary"
                   class="text-capitalize rounded-lg"
                   >Reopen</v-btn
@@ -117,6 +121,7 @@
     </v-row>
     <KpiContent :selected-employee="employee" />
     <ConfirmDialog :options="confOptions" @confirm="confirmResponse" />
+    <SnackBar :options="sbOptions" />
   </v-container>
 </template>
 
@@ -130,11 +135,105 @@ import { mdiMagnify, mdiCircleMedium } from "@mdi/js";
 import KpiContent from "@/components/kpi/KpiContent.vue";
 import EmployeeCard from "@/components/EmployeeCard.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
+import SnackBar from "@/components/SnackBar.vue";
 
 const authStore = useAuthStore();
 const settingStore = useSettingStore();
 const router = useRouter();
 const route = useRoute();
+const sbOptions = ref({});
+
+// status
+const switchStatus = ref("Active");
+const toUpdateStatus = ref("");
+const statusArray = ref([
+  {
+    title: "Active",
+    color: "success",
+  },
+  {
+    title: "Inactive",
+    color: "error",
+  },
+]);
+
+// get employee
+const employee = ref({});
+const getEmployee = async () => {
+  await clientApi(authStore.authToken)
+    .get("/api/hr/employee/ecode/" + route.params.ecode)
+    .then((res) => {
+      employee.value = res.data;
+      switchStatus.value = res.data.status;
+    })
+    .catch((err) => {
+      console.log("getEmployee", err);
+    });
+};
+getEmployee();
+
+// select employee
+const selectStatus = (status) => {
+  toUpdateStatus.value = status.title;
+  confOptions.value = {
+    dialog: true,
+    title: "Confirm Status Update",
+    text:
+      "Please confirm that you want to update the status of " +
+      employee.value.display_name +
+      " into " +
+      status.title +
+      ".",
+    btnColor: status.title == "Active" ? "success" : "error",
+    btnTitle: "Confirm",
+  };
+};
+
+// update status
+const updateEmployeeStatus = async () => {
+  let data = {
+    ecode: employee.value.ecode,
+    status: toUpdateStatus.value,
+  };
+  confOptions.value = {
+    ...confOptions.value,
+    ...{
+      loading: true,
+    },
+  };
+  await clientApi(authStore.authToken)
+    .post("/api/hr/employee/status/update", data)
+    .then((res) => {
+      getEmployee().then(() => {
+        confOptions.value = {
+          ...confOptions.value,
+          ...{
+            loading: false,
+            dialog: false,
+          },
+        };
+        sbOptions.value = {
+          status: true,
+          type: "success",
+          text: res.data.message,
+        };
+      });
+    })
+    .catch((err) => {
+      console.log("getEmployee", err);
+      confOptions.value = {
+        ...confOptions.value,
+        ...{
+          loading: false,
+        },
+      };
+      sbOptions.value = {
+        status: true,
+        type: "error",
+        text: "Error while updating employee",
+      };
+    });
+};
 
 // search employee
 const search = ref("");
@@ -154,12 +253,6 @@ const searchEmployee = async (keywords) => {
       console.log("getEmployee", err);
     });
 };
-watch(search, (newValue, oldValue) => {
-  console.log("search", search.value);
-  if (newValue != oldValue && newValue.length > 3) {
-    searchEmployee(search.value);
-  }
-});
 const selectEmployee = (emp) => {
   employee.value = emp;
   switchStatus.value = emp.status;
@@ -172,48 +265,16 @@ const selectEmployee = (emp) => {
     })
     .catch((err) => {});
 };
-
-// select employee
-const employee = ref({});
-const getEmployee = async () => {
-  await clientApi(authStore.authToken)
-    .get("/api/hr/employee/ecode/" + route.params.ecode)
-    .then((res) => {
-      employee.value = res.data;
-      switchStatus.value = res.data.status;
-      console.log("employee.value", employee.value);
-    })
-    .catch((err) => {
-      console.log("getEmployee", err);
-    });
-};
-getEmployee();
-
-// status
-const switchStatus = ref("Active");
-const statusArray = ref([
-  {
-    title: "Active",
-    color: "success",
-  },
-  {
-    title: "Inactive",
-    color: "error",
-  },
-]);
-const selectStatus = (status) => {
-  switchStatus.value = status.title;
-};
-
-// confirm dialog
-const confOptions = ref();
-const confirmResponse = (v) => {
-  getEmployee();
-};
+watch(search, (newValue, oldValue) => {
+  if (newValue != oldValue && newValue.length > 3) {
+    searchEmployee(search.value);
+  }
+});
 
 // reopen review
 const reopen = ref({
   data: {},
+  loading: false,
 });
 const reopenReview = () => {
   confOptions.value = {
@@ -226,5 +287,61 @@ const reopenReview = () => {
     btnColor: "primary",
     btnTitle: "Confirm",
   };
+};
+const updateEmployeeReview = async () => {
+  reopen.value.data = {
+    ecode: employee.value.ecode,
+  };
+  confOptions.value = {
+    ...confOptions.value,
+    ...{
+      loading: true,
+    },
+  };
+
+  await clientApi(authStore.authToken)
+    .post("/api/hr/employee/reopen", reopen.value.data)
+    .then((res) => {
+      confOptions.value = {
+        ...confOptions.value,
+        ...{
+          loading: false,
+          dialog: false,
+        },
+      };
+      reopen.value.loading = true;
+      getEmployee().then(() => {
+        reopen.value.loading = false;
+        sbOptions.value = {
+          status: true,
+          type: "success",
+          text: res.data.message,
+        };
+      });
+    })
+    .catch((err) => {
+      confOptions.value = {
+        ...confOptions.value,
+        ...{
+          loading: false,
+        },
+      };
+      sbOptions.value = {
+        status: true,
+        type: "error",
+        text: "Error while updating employee",
+      };
+      console.log("getEmployee", err);
+    });
+};
+
+// confirm dialog
+const confOptions = ref();
+const confirmResponse = (v) => {
+  if (confOptions.value.title == "Confirm Status Update") {
+    updateEmployeeStatus();
+  } else if (confOptions.value.title == "Confirm Reopen") {
+    updateEmployeeReview();
+  }
 };
 </script>

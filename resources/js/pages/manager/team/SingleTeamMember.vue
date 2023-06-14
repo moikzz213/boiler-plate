@@ -2,9 +2,19 @@
   <v-container class="pb-16">
     <v-row class="my-5">
       <div class="v-col-12 v-col-md-3">
-        <v-autocomplete v-model="selectedEmployeeArr" @update:modelValue="changeEmployee" :items="teamList"
-          item-title="username" item-value="id" variant="outlined" density="compact" class="bg-white" return-object
-          hide-details label="Select Employee">
+        <v-autocomplete
+          v-model="selectedEmployeeArr"
+          @update:modelValue="changeEmployee"
+          :items="teamList"
+          item-title="username"
+          item-value="id"
+          variant="outlined"
+          density="compact"
+          class="bg-white"
+          return-object
+          hide-details
+          label="Select Employee"
+        >
         </v-autocomplete>
       </div>
       <div class="v-col-12">
@@ -16,38 +26,62 @@
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">Reporting To</div>
-                <div class="text-body-2">{{managerName}}</div>
+                <div class="text-body-2">{{ managerName }}</div>
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">Business Unit</div>
-                <div class="text-body-2">{{ selEmployeeObj.company && selEmployeeObj.company.title }}</div>
+                <div class="text-body-2">
+                  {{ selEmployeeObj.company && selEmployeeObj.company.title }}
+                </div>
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">KPI's Target Year</div>
-                <div class="text-body-2">{{ settingStore.pmsSettings && settingStore.pmsSettings.year }}</div>
+                <div class="text-body-2">
+                  {{ settingStore.pmsSettings && settingStore.pmsSettings.year }}
+                </div>
               </div>
               <div class="v-col-12 v-col-md-1 d-flex flex-column">
                 <div class="text-caption text-grey">Total KPI</div>
                 <div class="text-body-2">{{ ratingOrWeightage(selEmployeeObj) }}/100</div>
               </div>
-              <div class="v-col-12 v-col-md-2 d-flex flex-column">
-                <v-btn v-if="!hasError && totalWeightage == 100 && (selEmployeeObj.reviews[0].status == 'inprogress' || selEmployeeObj.reviews[0].status == 'inreview')"
-                  @click="submitForReview" :loading="loadingBtn" block color="secondary" class="text-capitalize rounded-lg">{{
-                    selEmployeeObj.reviews[0].state == 'setting' && selEmployeeObj.reviews[0].status == 'inprogress' ? 'Submit for Review' : 'Submit' }} </v-btn>
+              <div class="v-col-12 v-col-md-2 d-flex align-center">
+                <v-btn
+                  size="large"
+                  v-if="
+                    !hasError &&
+                    totalWeightage == 100 &&
+                    (selEmployeeObj.reviews[0].status == 'inprogress' ||
+                      selEmployeeObj.reviews[0].status == 'inreview')
+                  "
+                  @click="submitForReview"
+                  :loading="loadingBtn"
+                  block
+                  color="secondary"
+                  class="text-capitalize rounded-lg"
+                  >{{
+                    selEmployeeObj.reviews[0].state == "setting" &&
+                    selEmployeeObj.reviews[0].status == "inprogress"
+                      ? "Submit for Review"
+                      : "Submit"
+                  }}
+                </v-btn>
               </div>
             </v-row>
           </v-card-text>
         </v-card>
       </div>
     </v-row>
-    <KpiContent 
+    <KpiContent
       :measures-list="measuresList"
-      :selected-employee="selEmployeeObj" :industry-list="industryWithKPI" :ecd-list="ecdList"
+      :selected-employee="selEmployeeObj"
+      :industry-list="industryWithKPI"
+      :ecd-list="ecdList"
       @savedResponse="savedResponseMethod"
-       @errorcheck="errorCheck" 
-       @yearchange="selectedYearResponse"
-       @removeKPI="removeKPIMethod"
-       :is-manager="true" />
+      @errorcheck="errorCheck"
+      @yearchange="selectedYearResponse"
+      @removeKPI="removeKPIMethod"
+      :is-manager="true"
+    />
 
     <SnackBar :options="sbOptions" />
   </v-container>
@@ -66,11 +100,11 @@ import SnackBar from "@/components/SnackBar.vue";
 const router = useRouter();
 const route = useRoute();
 
-const props = defineProps({ 
+const props = defineProps({
   manager: {
     type: String,
-    default: null
-  }
+    default: null,
+  },
 });
 
 const ecode = ref(route.params.id);
@@ -79,28 +113,30 @@ const ecode = ref(route.params.id);
 const authStore = useAuthStore();
 const settingStore = useSettingStore();
 const industryStore = useIndustryStore();
-const sbOptions = ref({}); 
+const sbOptions = ref({});
 const managerName = authStore.authProfile.display_name;
 // selected employee
 // const teamList = ref(authStore.authProfile ? authStore.authProfile.teams : []);
 const teamList = computed(() => authStore.authProfile.teams);
 const selectedEmployeeArr = ref(ecode.value);
 const selEmployeeObj = ref({});
- 
+
 const employeePassData = () => {
-  let filteredEmp = teamList.value.filter((o) => { return o.username == ecode.value })
-  selEmployeeObj.value = Object.assign({},filteredEmp[0]);
+  let filteredEmp = teamList.value.filter((o) => {
+    return o.username == ecode.value;
+  });
+  selEmployeeObj.value = Object.assign({}, filteredEmp[0]);
 };
 
 const changeEmployee = () => {
-  selEmployeeObj.value = selectedEmployeeArr.value; 
+  selEmployeeObj.value = selectedEmployeeArr.value;
   router
     .push({
-      name: 'SingleTeamMember',
+      name: "SingleTeamMember",
       params: { id: selectedEmployeeArr.value.ecode },
     })
     .catch((err) => {});
-} 
+};
 
 const totalWeightage = ref(0);
 const ratingOrWeightage = (user) => {
@@ -112,18 +148,17 @@ const ratingOrWeightage = (user) => {
   }
   totalWeightage.value = sum;
   return sum;
-}; 
+};
 
-const industryList = ref([]); 
+const industryList = ref([]);
 const selectIndustry = async () => {
   if (industryStore.industries.length == 0) {
-    industryStore.getIndustries(authStore.authToken).then(()=>{
-      industryList.value = industryStore.industries; 
-    })
-  }else{
-    industryList.value = industryStore.industries; 
-  } 
- 
+    industryStore.getIndustries(authStore.authToken).then(() => {
+      industryList.value = industryStore.industries;
+    });
+  } else {
+    industryList.value = industryStore.industries;
+  }
 };
 
 const industryWithKPI = ref([]);
@@ -132,9 +167,13 @@ const ecdList = ref([]);
 const kpiMaster = async () => {
   await clientApi(authStore.authToken)
     .get("/api/fetch/master-kpi/non-paginate")
-    .then((res) => { 
-     
-      if (industryList.value && industryList.value.length > 0 && res.data && res.data.length > 0) {
+    .then((res) => {
+      if (
+        industryList.value &&
+        industryList.value.length > 0 &&
+        res.data &&
+        res.data.length > 0
+      ) {
         industryList.value.map((o, i) => {
           industryWithKPI.value[i] = o;
           industryWithKPI.value[i].kpis = [];
@@ -144,12 +183,11 @@ const kpiMaster = async () => {
             if (o.id == oo.industry_id) {
               industryWithKPI.value[i].kpis[count] = oo;
               count++;
-            } else if (oo.type == 'ecd') {
+            } else if (oo.type == "ecd") {
               ecdList.value[ecdCount] = oo;
               ecdCount++;
             }
           });
-
         });
       }
     });
@@ -159,16 +197,18 @@ const customKpiMaster = async () => {
   await clientApi(authStore.authToken)
     .get("/api/fetch/master-custom-kpi/non-paginate/" + authStore.authProfile.ecode)
     .then((res) => {
-
-      if (industryList.value && industryList.value.length > 0 && res.data && res.data.length > 0) {
+      if (
+        industryList.value &&
+        industryList.value.length > 0 &&
+        res.data &&
+        res.data.length > 0
+      ) {
         industryList.value.map((o, i) => {
-
           res.data.map((oo) => {
             if (o.id == oo.industry_id) {
               industryWithKPI.value[i].kpis[industryWithKPI.value[i].kpis.length] = oo;
             }
           });
-
         });
       }
     });
@@ -181,81 +221,83 @@ const getEmployeeToView = () => {
 const loadingBtn = ref(false);
 const submitForReview = () => {
   loadingBtn.value = true;
-  let status = 'inprogress';
+  let status = "inprogress";
   let reviewID = selEmployeeObj.value.reviews[0].id;
-  if(!reviewID){
+  if (!reviewID) {
     sbOptions.value = {
-          status: true,
-          type: "error",
-          text: 'Error: kindly refresh page and submit again.', 
-        };
+      status: true,
+      type: "error",
+      text: "Error: kindly refresh page and submit again.",
+    };
     return false;
   }
 
-  if(selEmployeeObj.value.reviews[0].state == 'setting'){
-    if(selEmployeeObj.value.reviews[0].status == 'open' || selEmployeeObj.value.reviews[0].status == 'inprogress'){
-        status = 'inreview';
-    }else{
-        status = 'submitted';
+  if (selEmployeeObj.value.reviews[0].state == "setting") {
+    if (
+      selEmployeeObj.value.reviews[0].status == "open" ||
+      selEmployeeObj.value.reviews[0].status == "inprogress"
+    ) {
+      status = "inreview";
+    } else {
+      status = "submitted";
     }
-  }else{
-    if(selEmployeeObj.value.reviews[0].status == 'open' || selEmployeeObj.value.reviews[0].status == 'inprogress'){
-        status = 'submitted';
+  } else {
+    if (
+      selEmployeeObj.value.reviews[0].status == "open" ||
+      selEmployeeObj.value.reviews[0].status == "inprogress"
+    ) {
+      status = "submitted";
     }
   }
-  let formData = { reviewID: reviewID, newStatus: status, user_ecode: authStore.authProfile.ecode};
+  let formData = {
+    reviewID: reviewID,
+    newStatus: status,
+    user_ecode: authStore.authProfile.ecode,
+  };
   clientApi(authStore.authToken)
-    .post("/api/manager/employee-kpi/submit",formData)
+    .post("/api/manager/employee-kpi/submit", formData)
     .then((res) => {
-        
-        sbOptions.value = {
-            status: true,
-            type: "success",
-            text: res.data.message, 
-        };
-        authStore.setProfile(res.data.profile).then(() => {  
-            employeePassData();  
+      sbOptions.value = {
+        status: true,
+        type: "success",
+        text: res.data.message,
+      };
+      authStore.setProfile(res.data.profile).then(() => {
+        employeePassData();
 
-            setTimeout(() => {
-              loadingBtn.value = false;
-            }, 1000);
-        }); 
+        setTimeout(() => {
+          loadingBtn.value = false;
+        }, 1000);
+      });
     })
-    .catch((err) => {
-
-    });
-  
+    .catch((err) => {});
 };
 
 const hasError = ref(false);
 
 const errorCheck = (v) => {
   hasError.value = v.hasError;
-}
+};
 
 const removeKPIMethod = (v) => {
-    
-    let formData = {
-      id: v.id, 
-      user_ecode: authStore.authProfile.ecode
-    }
-    clientApi(authStore.authToken)
+  let formData = {
+    id: v.id,
+    user_ecode: authStore.authProfile.ecode,
+  };
+  clientApi(authStore.authToken)
     .post("/api/delete/employee-kpi-year", formData)
-    .then((res) => { 
-      authStore.setProfile(res.data.profile).then(() => { 
-          employeePassData();  
+    .then((res) => {
+      authStore.setProfile(res.data.profile).then(() => {
+        employeePassData();
         sbOptions.value = {
           status: true,
           type: "success",
-          text: res.data.message, 
+          text: res.data.message,
         };
-
-      }); 
+      });
     })
-    .catch((err) => {
-
-    });
-}
+    .catch((err) => {});
+};
 
 const savedResponseMethod = (v) => {
   let formData = {
@@ -263,76 +305,66 @@ const savedResponseMethod = (v) => {
     reviewID: v.reviewID,
     data: v.data,
     type: v.type,
-    user_ecode: authStore.authProfile.ecode
-  }
+    user_ecode: authStore.authProfile.ecode,
+  };
   clientApi(authStore.authToken)
     .post("/api/create/employee-kpi-year", formData)
-    .then((res) => { 
-
-      sbOptions.value = {
-          status: true,
-          type: "success",
-          text: res.data.message, 
-      };
-      authStore.setProfile(res.data.profile).then(() => {  
-          employeePassData();  
-      }); 
-    })
-    .catch((err) => {
-
-    });
-}
-const selectedYearResponse = (v) => {
-  getKPI(v)
-}
-const getKPI = async (year) => { 
-  await clientApi(authStore.authToken)
-    .get("/api/dashboard/my-kpi/" + selEmployeeObj.value.id + '/' + year)
     .then((res) => {
-
+      sbOptions.value = {
+        status: true,
+        type: "success",
+        text: res.data.message,
+      };
+      authStore.setProfile(res.data.profile).then(() => {
+        employeePassData();
+      });
+    })
+    .catch((err) => {});
+};
+const selectedYearResponse = (v) => {
+  getKPI(v);
+};
+const getKPI = async (year) => {
+  await clientApi(authStore.authToken)
+    .get("/api/dashboard/my-kpi/" + selEmployeeObj.value.id + "/" + year)
+    .then((res) => {
       if (res.data.result == null) {
         selEmployeeObj.value = {
-          ...selEmployeeObj.value, ...{
-            reviews: []
-          }
-        }
+          ...selEmployeeObj.value,
+          ...{
+            reviews: [],
+          },
+        };
       } else {
         selEmployeeObj.value = {
-          ...selEmployeeObj.value, ...{
-            reviews: [res.data.result]
-          }
-        }
+          ...selEmployeeObj.value,
+          ...{
+            reviews: [res.data.result],
+          },
+        };
       }
     })
-    .catch((err) => {
-
-    });
+    .catch((err) => {});
 };
 
 const measuresList = ref([]);
-const fetchMeasures = async () => { 
+const fetchMeasures = async () => {
   clientApi(authStore.authToken)
     .get("/api/fetch/measures/non-paginated")
-    .then((res) => { 
+    .then((res) => {
       measuresList.value = res.data;
-       
-      
     })
-    .catch((err) => {
-
-    });
-  
+    .catch((err) => {});
 };
 
 onMounted(() => {
   employeePassData();
   selectIndustry().then(() => {
-  kpiMaster().then(() => {
-    customKpiMaster().then(() => {
-      fetchMeasures();
-    })
-  })
+    kpiMaster().then(() => {
+      customKpiMaster().then(() => {
+        fetchMeasures();
+      });
+    });
   });
-   
-}); 
+});
 </script>
