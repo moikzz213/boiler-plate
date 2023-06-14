@@ -80,7 +80,7 @@ export const ri = [
         },
     },
     {
-        path: "/manager/custom-kpi",
+        path: "/manager/custom/:type",
         component: () => import("../../pages/manager/kpi/CustomKpi.vue"),
         name: "ManagerCustomKPI",
         meta: {
@@ -90,7 +90,7 @@ export const ri = [
         },
     },
     {
-        path: "/manager/custom-kpi/page/:page",
+        path: "/manager/custom/:type/page/:page",
         component: () => import("../../pages/manager/kpi/CustomKpi.vue"),
         name: "PaginatedManagerCustomKPI",
         meta: {

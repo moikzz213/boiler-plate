@@ -302,7 +302,7 @@ const sideNavigation = ref([
     title: "My Custom KPI",
     icon: mdiPlaylistEdit,
     roles: ["app_admin", "manager"],
-    path: "/manager/custom-kpi",
+    path: "/manager/custom/kpi",
   },
   {
     title: "Employees",

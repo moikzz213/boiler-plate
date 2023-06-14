@@ -56,7 +56,7 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
 
 // manager
 Route::middleware('authkey')->prefix('manager')->group(function () {
-    Route::get('/my-custom-kpi/list/{ecode}', [KeyPerformanceIndicatorMasterController::class, 'getCustomKpiByEcode'])->name('manager.custom.kpi.paginated');
+    Route::get('/custom/{type}/list/{ecode}', [KeyPerformanceIndicatorMasterController::class, 'getCustomKpiByEcode'])->name('manager.custom.kpi.paginated');
     Route::post('/my-custom-kpi/save', [KeyPerformanceIndicatorMasterController::class, 'saveCustomKpiWithProfileEcode'])->name('manager.custom.kpi.paginated');
     Route::post('/my-custom-kpi/remove/{id}', [KeyPerformanceIndicatorMasterController::class, 'removeCustomKpi'])->name('hr.measure.remove');
 });
@@ -74,6 +74,7 @@ Route::middleware('authkey')->group(function () {
     Route::post('/import/industries', [IndustryController::class, 'importIndustries'])->name('import.industries');
     Route::post('/import/companies', [CompanyController::class, 'importCompanies'])->name('import.companies');
     Route::post('/import/kpi', [KeyPerformanceIndicatorMasterController::class, 'importKpi'])->name('import.kpi');
+    Route::post('/import/ecd', [KeyPerformanceIndicatorMasterController::class, 'importEcd'])->name('import.ecd');
 
     // companies
     Route::get('/companies', [CompanyController::class, 'getCompanyList'])->name('companies.get.list');

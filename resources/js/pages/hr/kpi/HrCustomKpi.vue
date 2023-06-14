@@ -1,9 +1,9 @@
 <template>
   <v-container class="pb-16">
-    <PageHeader title="Submitted Custom KPI" />
+    <PageHeader title="Custom KPI" />
     <v-row class="my-5">
       <div class="v-col-12">
-        <div class="text-h6">Submitted Custom KPI</div>
+        <div class="text-h6">Custom KPI</div>
       </div>
       <div class="v-col-12">
         <v-card class="mb-3 rounded-lg" :loading="loadingKpiList">
@@ -14,6 +14,7 @@
             <thead>
               <tr>
                 <th class="text-left text-capitalize">Title</th>
+                <th class="text-left text-capitalize">Type</th>
                 <th class="text-left text-capitalize">Industry</th>
                 <th class="text-left text-capitalize">Author</th>
                 <th class="text-right text-capitalize">Actions</th>
@@ -22,6 +23,7 @@
             <tbody>
               <tr v-for="item in kpiList" :key="item.id">
                 <td>{{ item.title }}</td>
+                <td>{{ item.type }}</td>
                 <td>{{ item.industry && item.industry.title }}</td>
                 <td>{{ item.profile && item.profile.display_name }}</td>
                 <td>
