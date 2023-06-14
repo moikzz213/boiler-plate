@@ -97,18 +97,12 @@ const kpiForm = ref({
 const kpiList = ref([]);
 const loadingKpiList = ref(false);
 const totalPageCount = ref(0);
-const currentPage = ref(route.params && route.params.page ? route.params.page : 1);
+const currentPage = ref(1);
+currentPage.value = route.params && route.params.page ? route.params.page : 1;
 const getCustomKpi = async (page) => {
   loadingKpiList.value = true;
   await clientApi(authStore.authToken)
-    .get(
-      "/api/manager/custom/" +
-        route.params.type +
-        "/list/" +
-        authStore.authProfile.ecode +
-        "/?page=" +
-        page
-    )
+    .get("/api/manager/custom/kpi/list/" + authStore.authProfile.ecode + "/?page=" + page)
     .then((res) => {
       totalPageCount.value = res.data.last_page;
       currentPage.value = res.data.current_page;
@@ -154,6 +148,7 @@ const saveCustomKpi = async (kpi) => {
   if (kpiOptions.value.action == "add") {
     data.profile_ecode = authStore.authProfile.ecode;
   }
+  data.type = route.params.type;
   await clientApi(authStore.authToken)
     .post("/api/manager/my-custom-kpi/save", data)
     .then((res) => {

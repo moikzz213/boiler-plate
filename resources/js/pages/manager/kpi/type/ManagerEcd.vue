@@ -97,13 +97,12 @@ const kpiForm = ref({
 const kpiList = ref([]);
 const loadingKpiList = ref(false);
 const totalPageCount = ref(0);
-const currentPage = ref(route.params ? route.params.page : 1);
+const currentPage = ref(1);
+currentPage.value = route.params && route.params.page ? route.params.page : 1;
 const getCustomKpi = async (page) => {
   loadingKpiList.value = true;
   await clientApi(authStore.authToken)
-    .get(
-      "/api/manager/my-custom-kpi/list/" + authStore.authProfile.ecode + "/?page=" + page
-    )
+    .get("/api/manager/custom/ecd/list/" + authStore.authProfile.ecode + "/?page=" + page)
     .then((res) => {
       totalPageCount.value = res.data.last_page;
       currentPage.value = res.data.current_page;
@@ -111,7 +110,7 @@ const getCustomKpi = async (page) => {
       loadingKpiList.value = false;
     })
     .catch((err) => {
-      console.log("getCustomKpi", err.response);
+      console.log("getCustomKpi", err);
       loadingKpiList.value = false;
     });
 };
@@ -124,7 +123,7 @@ const addKPI = () => {
       data: {},
       dialog: true,
       loading: false,
-      type: "kpi",
+      type: "ecd",
       action: "add",
       is_review: false,
     },
@@ -138,7 +137,7 @@ const openKPI = (item) => {
       data: Object.assign({}, item),
       loading: false,
       dialog: true,
-      type: "kpi",
+      type: "ecd",
       action: "edit",
       is_review: false,
     },
@@ -149,6 +148,7 @@ const saveCustomKpi = async (kpi) => {
   if (kpiOptions.value.action == "add") {
     data.profile_ecode = authStore.authProfile.ecode;
   }
+  data.type = route.params.type;
   await clientApi(authStore.authToken)
     .post("/api/manager/my-custom-kpi/save", data)
     .then((res) => {

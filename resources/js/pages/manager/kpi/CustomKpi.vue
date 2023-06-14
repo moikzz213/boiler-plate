@@ -31,26 +31,19 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { useAuthStore } from "@/stores/auth";
-import { clientApi } from "@/services/clientApi";
-import { mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
-import CustomKpiDialog from "@/components/CustomKpiDialog.vue";
-import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import SnackBar from "@/components/SnackBar.vue";
 import ManagerKpi from "./type/ManagerKpi.vue";
 import ManagerEcd from "./type/ManagerEcd.vue";
-
-const authStore = useAuthStore();
-const sbOptions = ref({});
 const router = useRouter();
 const route = useRoute();
 
 // table tab
 const currentType = ref(route.params.type);
 const selectType = (type) => {
+  console.log("selectType", type);
   if (currentType.value !== type) {
+    console.log("selectType not equal", type);
     currentType.value = type;
     router
       .push({
@@ -61,185 +54,5 @@ const selectType = (type) => {
       })
       .catch((err) => {});
   }
-};
-
-// kpi
-const kpiOptions = ref({
-  title: "",
-  dialog: false,
-  data: {},
-  type: "",
-  action: "",
-  is_review: false,
-});
-const kpiForm = ref({
-  data: {},
-  loading: false,
-  dialog: false,
-});
-const kpiList = ref([]);
-const loadingKpiList = ref(false);
-const totalPageCount = ref(0);
-const currentPage = ref(route.params ? route.params.page : 1);
-const getCustomKpi = async (page) => {
-  loadingKpiList.value = true;
-  await clientApi(authStore.authToken)
-    .get(
-      "/api/manager/custom/" +
-        -currentType.value +
-        "/list/" +
-        authStore.authProfile.ecode +
-        "/?page=" +
-        page
-    )
-    .then((res) => {
-      totalPageCount.value = res.data.last_page;
-      currentPage.value = res.data.current_page;
-      kpiList.value = res.data.data;
-      loadingKpiList.value = false;
-    })
-    .catch((err) => {
-      console.log("getCustomKpi", err.response);
-      loadingKpiList.value = false;
-    });
-};
-getCustomKpi(currentPage.value);
-const addKPI = () => {
-  kpiOptions.value = {
-    ...kpiOptions.value,
-    ...{
-      title: "Add New KPI ",
-      data: {},
-      dialog: true,
-      loading: false,
-      type: "kpi",
-      action: "add",
-      is_review: false,
-    },
-  };
-};
-const openKPI = (item) => {
-  kpiOptions.value = {
-    ...kpiOptions.value,
-    ...{
-      title: "Edit KPI ",
-      data: Object.assign({}, item),
-      loading: false,
-      dialog: true,
-      type: "kpi",
-      action: "edit",
-      is_review: false,
-    },
-  };
-};
-const saveCustomKpi = async (kpi) => {
-  let data = Object.assign({}, kpi);
-  if (kpiOptions.value.action == "add") {
-    data.profile_ecode = authStore.authProfile.ecode;
-  }
-  await clientApi(authStore.authToken)
-    .post("/api/manager/my-custom-kpi/save", data)
-    .then((res) => {
-      getCustomKpi(currentPage.value).then(() => {
-        sbOptions.value = {
-          status: true,
-          type: "success",
-          text: res.data.message,
-        };
-        kpiOptions.value = {
-          ...kpiOptions.value,
-          ...{
-            dialog: false,
-            loading: false,
-          },
-        };
-      });
-    })
-    .catch((err) => {
-      sbOptions.value = {
-        status: true,
-        type: "error",
-        text: "Error while saving Custom KPI",
-      };
-      kpiOptions.value = {
-        ...kpiOptions.value,
-        ...{
-          loading: false,
-        },
-      };
-    });
-};
-watch(currentPage, (newValue, oldValue) => {
-  if (newValue != oldValue) {
-    router
-      .push({
-        name: "PaginatedManagerCustomKPI",
-        params: {
-          page: currentPage.value,
-        },
-      })
-      .catch((err) => {});
-    getCustomKpi(currentPage.value);
-  }
-});
-
-// remove custom KPI
-const confOptions = ref({});
-const toRemove = ref({});
-const removeKPI = (item) => {
-  toRemove.value = Object.assign({}, item);
-  confOptions.value = {
-    dialog: true,
-    title: "Confirm Remove",
-    text: "Please confirm that you want to remove " + item.title + ".",
-    btnColor: "error",
-    btnTitle: "Confirm",
-  };
-};
-const confirmRemove = async () => {
-  await clientApi(authStore.authToken)
-    .post("/api/manager/my-custom-kpi/remove/" + toRemove.value.id)
-    .then((res) => {
-      getCustomKpi(currentPage.value).then(() => {
-        sbOptions.value = {
-          status: true,
-          type: "success",
-          text: res.data.message,
-        };
-      });
-    })
-    .catch((err) => {
-      sbOptions.value = {
-        status: true,
-        type: "error",
-        text: "Error while removing data",
-      };
-    });
-};
-const confirmResponse = (v) => {
-  confOptions.value = {
-    ...confOptions.value,
-    ...{
-      loading: true,
-    },
-  };
-  confirmRemove()
-    .then((res) => {
-      confOptions.value = {
-        ...confOptions.value,
-        ...{
-          dialog: false,
-          loading: false,
-        },
-      };
-    })
-    .catch((err) => {
-      confOptions.value = {
-        ...confOptions.value,
-        ...{
-          loading: false,
-        },
-      };
-    });
 };
 </script>

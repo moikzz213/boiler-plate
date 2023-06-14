@@ -17,8 +17,8 @@ class KeyPerformanceIndicatorMasterController extends Controller
     public function getPaginatedKpiByType($type)
     {
         $kpis = KeyPerformanceIndicatorMaster::where('type', $type)
-        ->whereIn('status', array('pending', 'approved'))
-        ->with('industry')->paginate(10);
+        ->whereIn('status', array('approved'))
+        ->with('industry', 'profile')->paginate(10);
         return response()->json($kpis, 200);
     }
 
@@ -53,12 +53,10 @@ class KeyPerformanceIndicatorMasterController extends Controller
 
     public function removeKpi($id)
     {
-        $kpi = KeyPerformanceIndicatorMaster::where('id', $id)->first();
-        if($kpi){
-            $kpi = KeyPerformanceIndicatorMaster::where('id', $id)->update([
-                'status' => 'trashed'
-            ]);
-            // $kpi->delete();
+        $kpi = KeyPerformanceIndicatorMaster::where('id', $id);
+        $check = $kpi->first();
+        if($check){
+            $kpi->update(['status' => 'trashed']);
         }
         return response()->json([
             'message' => 'KPI removed successfully'
@@ -69,6 +67,7 @@ class KeyPerformanceIndicatorMasterController extends Controller
     {
         $kpis = KeyPerformanceIndicatorMaster::where('profile_ecode', $ecode)
         ->where('type', $type)
+        ->whereIn('status', array('pending', 'approved'))
         ->with('profile', 'industry')
         ->paginate(10);
         return response()->json($kpis, 200);
@@ -78,12 +77,14 @@ class KeyPerformanceIndicatorMasterController extends Controller
     {
         $kpiArray = array(
             'title' => $request['title'],
+            'type' => $request['type'],
+            'ecd_type' => isset($request['ecd_type']) ? $request['ecd_type'] : null,
+            'industry_id' => isset($request['industry_id']) ? $request['industry_id'] : null,
             'definition' => $request['definition'],
             'formula' => $request['formula'],
             'subordinate_measures' => $request['subordinate_measures'],
             'calculation_example' => $request['calculation_example'],
             'profile_ecode' => $request['profile_ecode'],
-            'industry_id' => $request['industry_id'],
         );
         if($request['id']){
             $kpis = KeyPerformanceIndicatorMaster::where('id', $request['id'])->update($kpiArray);
@@ -97,9 +98,10 @@ class KeyPerformanceIndicatorMasterController extends Controller
 
     public function removeCustomKpi($id)
     {
-        $kpi = KeyPerformanceIndicatorMaster::where('id', $id)->first();
-        if($kpi){
-            $kpi->delete();
+        $kpi = KeyPerformanceIndicatorMaster::where('id', $id);
+        $check = $kpi->first();
+        if($check){
+            $kpi->update(['status' => 'trashed']);
         }
         return response()->json([
             'message' => 'Custom KPI removed successfully'
