@@ -55,13 +55,13 @@
               </tr>
               <tr>
                 <td class="px-1  text-center" width="30">#</td>
-                <td class="px-1 text-center" width="30%">KPI's</td>
-                <td class="px-1 py-2 text-center">Measures (Units, Volumes, Values in AED, Index, %ile, any suitable measures)</td>
-                <td class="px-1 py-2 text-center">Assigned Weightage (%)</td>
-                <td class="px-1 py-2 text-center">Target for the Year - Planned {{ year }}</td>
-                <td class="px-1 py-2 text-center">{{ kpiDataEncrypted.reviews[0].type == 'regular' ? 'Mid Year Performance Review' : 'First Review'}} {{ year }}</td>
-                <td class="px-1 py-2 text-center">{{ kpiDataEncrypted.reviews[0].type == 'regular' ? 'Final Target Achievement - Actuals' : 'Final Review'}} {{ year }}</td>
-                <td class="px-1 py-2 text-center">Overall Performance Score (Month 1-12) Refer the KPI's Target Description below</td>
+                <td   class="px-1 text-center" width="30%">KPI's</td>
+                <td valign="top" class="px-1 py-2 text-center">Measures (Units, Volumes, Values in AED, Index, %ile, any suitable measures)</td>
+                <td valign="top" class="px-1 py-2 text-center">Assigned Weightage (%)</td>
+                <td valign="top" class="px-1 py-2 text-center">Target for the Year - Planned {{ year }}</td>
+                <td valign="top" class="px-1 py-2 text-center">{{ kpiDataEncrypted.reviews[0].type == 'regular' ? 'Mid Year Performance Review' : 'First Review Achievement'}} {{ year }}</td>
+                <td valign="top" class="px-1 py-2 text-center">{{ kpiDataEncrypted.reviews[0].type == 'regular' ? 'Final Target Achievement - Actuals' : 'Final Review Achievement'}} {{ year }}</td>
+                <td valign="top" class="px-1 py-2 text-center">Overall Performance Score (Month 1-12) Refer the KPI's Target Description below</td>
               </tr>
             </thead>
             <tbody v-for="item, index in kpiArray" :key="item.id">

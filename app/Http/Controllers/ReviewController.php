@@ -21,7 +21,32 @@ class ReviewController extends Controller
             'result' => $query
         ], 200);
     }
-    
+
+    public function kpiSubmitted(Request $request){
+       
+        $query = Review::where('id', $request->reviewID)->first(); 
+        $query->update(['status' => $request->newStatus]);
+        if($request->newStatus !== 'submitted'){
+            $msg = 'KPI status changed to '.$request->newStatus;
+        }else{
+            $msg = 'KPI for this employee is now complete.';
+        }
+
+        $profile = Profile::where('ecode', $request['user_ecode'])
+        ->with(
+            'teams.reviews.keyReview',
+            'teams.company',
+            'reviews.keyReview',
+            'company')
+        ->with('reviews',function ($q) {
+            $q->where('year', Carbon::now()->format('Y'));
+        })->first(); 
+
+        return response()->json([
+            'message' => $msg,
+            'profile' => $profile
+        ], 200);
+    } 
 
     public function createEmployeeKPI(Request $request){ 
         $msg = 'KPI has been updated';

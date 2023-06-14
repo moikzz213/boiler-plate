@@ -10,7 +10,7 @@
               <v-autocomplete v-model="industry" :items="industryList" 
               item-title="title" item-value="title"  
               return-object
-              :disabled="kpiAction.action == 'edit' || kpiAction.is_review"
+              :readonly="kpiAction.action == 'edit' || kpiAction.is_review"
                 variant="outlined" density="compact" label="Select Industry*">
               </v-autocomplete>
             </div>
@@ -18,47 +18,47 @@
               <v-autocomplete v-model="selectedKPI"  :items="kpiList" 
                 item-title="title" item-value="id" 
                 variant="outlined"
-                :disabled="kpiAction.action == 'edit' || kpiAction.is_review"
+                :readonly="kpiAction.action == 'edit' || kpiAction.is_review"
                 density="compact" label="Select KPI*"> 
               </v-autocomplete>
             </div>
           
             <div class="v-col-12 v-col-md-3 py-0">
-              <v-select  :disabled="isDisabled || kpiAction.is_review" v-model="kpiData.target_type" :items="targetTypeList" label="Target Type*" variant="outlined"
+              <v-select  :readonly="isDisabled || kpiAction.is_review" v-model="kpiData.target_type" :items="targetTypeList" label="Target Type*" variant="outlined"
                 density="compact"></v-select>
             </div>
             <div class="v-col-12 v-col-md-3 py-0">
-              <v-text-field  :disabled="isDisabled || kpiAction.is_review"  v-model="kpiData.target" label="Target*" variant="outlined" density="compact"
+              <v-text-field  :readonly="isDisabled || kpiAction.is_review"  v-model="kpiData.target" label="Target*" variant="outlined" density="compact"
                 persistent-hint></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-3 py-0">
-              <v-select  :disabled="isDisabled || kpiAction.is_review"   v-model="kpiData.measures" :items="measuresList" label="Measures*" variant="outlined"
+              <v-select  :readonly="isDisabled || kpiAction.is_review"   v-model="kpiData.measures" :items="measuresList" label="Measures*" variant="outlined"
                 density="compact"></v-select>
             </div>
             <div class="v-col-12 v-col-md-3 py-0">
-              <v-select :disabled="isDisabled || kpiAction.is_review"  v-model="kpiData.weightage" :items="kpiWeightageList" label="KPI's Weightage (%)*"
+              <v-select :readonly="isDisabled || kpiAction.is_review"  v-model="kpiData.weightage" :items="kpiWeightageList" label="KPI's Weightage (%)*"
                 variant="outlined" density="compact"></v-select>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.evaluation_pattern" disabled label="KPI Evaluation Pattern*" variant="outlined"
+              <v-textarea v-model="kpiData.evaluation_pattern" readonly label="KPI Evaluation Pattern*" variant="outlined"
                 rows="2"></v-textarea>
             </div>
             <div class="v-col-12 pt-0">
               <v-divider class="mx-auto"></v-divider>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.definition" :disabled="isDisabled || kpiAction.action == 'edit' || kpiAction.is_review" label="KPI Definition*" variant="outlined" rows="2"></v-textarea>
+              <v-textarea v-model="kpiData.definition" :readonly="isDisabled || kpiAction.action == 'edit' || kpiAction.is_review" label="KPI Definition*" variant="outlined" rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.formula" disabled label="Calulation Formula*" variant="outlined"
+              <v-textarea v-model="kpiData.formula" readonly label="Calulation Formula*" variant="outlined"
                 rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.subordinate_measures" disabled label="Subordinate Measures*" variant="outlined"
+              <v-textarea v-model="kpiData.subordinate_measures" readonly label="Subordinate Measures*" variant="outlined"
                 rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.calculation_example" disabled label="KPI Calulation Example*" variant="outlined"
+              <v-textarea v-model="kpiData.calculation_example" readonly label="KPI Calulation Example*" variant="outlined"
                 rows="2"></v-textarea>
             </div> 
             <div class="v-col-12 py-0">
