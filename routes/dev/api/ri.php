@@ -52,6 +52,10 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
     Route::get('/kpi/list/{status}', [KeyPerformanceIndicatorMasterController::class, 'getKpiByStatus'])->name('manager.custom.kpi.paginated');
     Route::post('/custom-kpi/approve', [KeyPerformanceIndicatorMasterController::class, 'approveCustomKpi'])->name('manager.custom.kpi.approve');
     Route::post('/master-kpi/save', [KeyPerformanceIndicatorMasterController::class, 'saveMasterKpi'])->name('hr.master.kpi.save');
+
+    // employee
+    Route::get('/employee/ecode/{ecode}', [EmployeeController::class, 'getEmployeeByEcode'])->name('hr.employee.ecode');
+    Route::get('/search/employee', [EmployeeController::class, 'searchEmployee'])->name('hr.employee.search');
 });
 
 // manager

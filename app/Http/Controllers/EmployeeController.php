@@ -19,6 +19,7 @@ class EmployeeController extends Controller
                 $query->where('first_name', 'like', '%' . $value . '%')
                 ->orWhere('last_name', 'like', '%' . $value . '%')
                 ->orWhere('display_name', 'like', '%' . $value . '%')
+                ->orWhere('email', 'like', '%' . $value . '%')
                 ->orWhere('ecode', 'like', '%' . $value . '%');
             }),
             // AllowedFilter::exact('hrbp_email'),
@@ -33,6 +34,30 @@ class EmployeeController extends Controller
         ->paginate(10)
         ->appends(request()->query());
 
+        return response()->json($employees, 200);
+    }
+
+    function getEmployeeByEcode($ecode)
+    {
+        $employee = Profile::class::where('ecode', $ecode)
+        ->with('company', 'reviews.keyReview', 'managed_by')
+        ->first();
+        return response()->json($employee, 200);
+    }
+
+    function searchEmployee()
+    {
+        $employees = QueryBuilder::for(Profile::class)
+        ->allowedFilters([
+            AllowedFilter::callback('search', function ($query, $value) {
+                $query->where('first_name', 'like', '%' . $value . '%')
+                ->orWhere('last_name', 'like', '%' . $value . '%')
+                ->orWhere('display_name', 'like', '%' . $value . '%')
+                ->orWhere('email', 'like', '%' . $value . '%')
+                ->orWhere('ecode', 'like', '%' . $value . '%');
+            }),
+        ])
+        ->with('company', 'reviews.keyReview', 'managed_by')->get();
         return response()->json($employees, 200);
     }
 }
