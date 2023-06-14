@@ -31,9 +31,9 @@
                 <div class="text-body-2">{{ ratingOrWeightage(selEmployeeObj) }}/100</div>
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
-                <v-btn v-if="!hasError && totalWeightage == 100 && selEmployeeObj.reviews[0].status == 'inprogress'"
-                  @click="submitForReview" block color="secondary" disabled class="text-capitalize rounded-lg">{{
-                    selEmployeeObj.reviews[0].state == 'setting' ? 'Submit for Review' : 'Submit' }} </v-btn>
+                <v-btn v-if="!hasError && totalWeightage == 100 && (selEmployeeObj.reviews[0].status == 'inprogress' || selEmployeeObj.reviews[0].status == 'inreview')"
+                  @click="submitForReview" :loading="loadingBtn" block color="secondary" class="text-capitalize rounded-lg">{{
+                    selEmployeeObj.reviews[0].state == 'setting' && selEmployeeObj.reviews[0].status == 'inprogress' ? 'Submit for Review' : 'Submit' }} </v-btn>
               </div>
             </v-row>
           </v-card-text>
@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch, computed } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import KpiContent from "@/components/kpi/KpiContent.vue";
 import EmployeeCard from "@/components/EmployeeCard.vue";
@@ -100,9 +100,8 @@ const changeEmployee = () => {
       params: { id: selectedEmployeeArr.value.ecode },
     })
     .catch((err) => {});
-}
- 
- 
+} 
+
 const totalWeightage = ref(0);
 const ratingOrWeightage = (user) => {
   let sum = 0;
@@ -113,17 +112,18 @@ const ratingOrWeightage = (user) => {
   }
   totalWeightage.value = sum;
   return sum;
-};
+}; 
 
- 
 const industryList = ref([]); 
 const selectIndustry = async () => {
   if (industryStore.industries.length == 0) {
     industryStore.getIndustries(authStore.authToken).then(()=>{
       industryList.value = industryStore.industries; 
     })
-  }
-
+  }else{
+    industryList.value = industryStore.industries; 
+  } 
+ 
 };
 
 const industryWithKPI = ref([]);
@@ -133,7 +133,7 @@ const kpiMaster = async () => {
   await clientApi(authStore.authToken)
     .get("/api/fetch/master-kpi/non-paginate")
     .then((res) => { 
-      console.log(industryList.value);
+     
       if (industryList.value && industryList.value.length > 0 && res.data && res.data.length > 0) {
         industryList.value.map((o, i) => {
           industryWithKPI.value[i] = o;
@@ -178,8 +178,53 @@ const getEmployeeToView = () => {
   console.log("getEmployeeToView", selectedEmployeeArr.value);
 };
 
+const loadingBtn = ref(false);
 const submitForReview = () => {
-  console.log("submit review");
+  loadingBtn.value = true;
+  let status = 'inprogress';
+  let reviewID = selEmployeeObj.value.reviews[0].id;
+  if(!reviewID){
+    sbOptions.value = {
+          status: true,
+          type: "error",
+          text: 'Error: kindly refresh page and submit again.', 
+        };
+    return false;
+  }
+
+  if(selEmployeeObj.value.reviews[0].state == 'setting'){
+    if(selEmployeeObj.value.reviews[0].status == 'open' || selEmployeeObj.value.reviews[0].status == 'inprogress'){
+        status = 'inreview';
+    }else{
+        status = 'submitted';
+    }
+  }else{
+    if(selEmployeeObj.value.reviews[0].status == 'open' || selEmployeeObj.value.reviews[0].status == 'inprogress'){
+        status = 'submitted';
+    }
+  }
+  let formData = { reviewID: reviewID, newStatus: status, user_ecode: authStore.authProfile.ecode};
+  clientApi(authStore.authToken)
+    .post("/api/manager/employee-kpi/submit",formData)
+    .then((res) => {
+        
+        sbOptions.value = {
+            status: true,
+            type: "success",
+            text: res.data.message, 
+        };
+        authStore.setProfile(res.data.profile).then(() => {  
+            employeePassData();  
+
+            setTimeout(() => {
+              loadingBtn.value = false;
+            }, 1000);
+        }); 
+    })
+    .catch((err) => {
+
+    });
+  
 };
 
 const hasError = ref(false);

@@ -14,7 +14,7 @@
           d-flex align-center justify-center px-3 text-center pms-tab`">
           KPI {{ kpiArray ? "(" + kpiArray.length + ")" : "(" + 0 + ")" }}
         </v-card>
-        <v-card @click="() => selectTab('ecd')" flat :class="`${selectedTab == 'ecd' ? '' : 'bg-grey-darken-3 text-white'
+        <v-card v-if="viewingEmployee && viewingEmployee.is_regular" @click="() => selectTab('ecd')" flat :class="`${selectedTab == 'ecd' ? '' : 'bg-grey-darken-3 text-white'
           } d-flex align-center justify-center px-3 text-caption text-center pms-tab`">
           Employee Capability Development {{ "(" + ecdArray.length + ")" }}
         </v-card>
@@ -36,17 +36,17 @@
           <div v-else class="text-uppercase text-center">
             {{ selectedTab == 'ecd' ? 'Employee Capability Development' : selectedTab }} List
           </div>
-          <div v-if="canManage" class="ml-auto text-body-1">Remaining weightage: {{ ratingOrWeightage(selectedTab) }}%</div>
+          <div v-if="canManage" class="ml-auto text-body-1">Remaining {{ selectedTab.toUpperCase() }} weightage: {{ ratingOrWeightage(selectedTab) }}%</div>
         </v-card-title>
         <v-card-text class="px-5 pb-10">
-          <v-row v-if="hasError">
+          <v-row v-if="hasError" class="mb-2">
           <div class="v-col-12 pb-0"  >
                 <v-card class="rounded-lg" style="border:2px solid red">
                   <v-card-text>
                     <v-row>
                       <div class="v-col-12"> 
                         <v-icon size="large" color="red" class="mr-1"
-                              :icon="mdiFileAlertOutline "></v-icon>
+                              :icon="mdiAlert "></v-icon>
                         {{errorMessage}}
                         </div>
                     </v-row>
@@ -54,6 +54,7 @@
                 </v-card>
               </div>
           </v-row>
+          
           <v-row v-show="selectedTab == 'kpi'" class="mt-3">
             <template v-if="kpiArray && kpiArray.length > 0">
               <div class="v-col-12 pb-0" v-for="kpi in kpiArray" :key="kpi.id">
@@ -123,7 +124,7 @@
                       <div>
                         <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
                           @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
-                        <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd')" density="compact" size="30"
+                        <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'technical')" density="compact" size="30"
                           color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
                             :icon="mdiPencil"></v-icon></v-btn>
                             <v-btn v-if="canManage" @click="() => removeKPI(ecd)" density="compact" size="30"
@@ -167,7 +168,7 @@
                         <div>
                           <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
                             @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
-                          <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd')" density="compact" size="30"
+                          <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'softskill')" density="compact" size="30"
                             color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
                               :icon="mdiPencil"></v-icon></v-btn>
                               <v-btn v-if="canManage" @click="() => removeKPI(ecd)" density="compact" size="30"
@@ -218,8 +219,8 @@
       </v-card>
     </v-dialog>
     
-    <KpiDialog :measures-list="measuresList" :kpi-options="kpiOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :industry-list="industryList"  :submit-button="props.submitButton"  @savedResponse="savedResponseMethod"/>
-    <EcdDialog :ecd-options="ecdOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :ecd-list="ecdList" :submit-button="props.submitButton" @savedResponse="savedResponseMethod"/>
+    <KpiDialog :final-review="isFinalReview" :measures-list="measuresList" :kpi-options="kpiOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :industry-list="industryList"  :submit-button="props.submitButton"  @savedResponse="savedResponseMethod"/>
+    <EcdDialog :final-review="isFinalReview" :ecd-options="ecdOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :ecd-list="ecdList" :submit-button="props.submitButton" @savedResponse="savedResponseMethod"/>
     <SnackBar :options="sbOptions" />
   </v-row>
 </template>
@@ -234,7 +235,7 @@ import EcdDialog from "@/components/kpi/EcdDialog.vue";
 import { useRouter, useRoute} from "vue-router";
 import { useSettingStore } from "@/stores/settings";
 import SnackBar from "@/components/SnackBar.vue";
-import { mdiFileAlertOutline  } from '@mdi/js';
+import { mdiAlert  } from '@mdi/js';
 
 const router = useRouter();
 const route = useRoute();
@@ -267,7 +268,7 @@ const props = defineProps({
 const sbOptions = ref({});
 const settingStore = useSettingStore();
 const viewingEmployee = ref(props.selectedEmployee);
-
+ 
 const kpiArray = computed(() => { 
   if (!viewingEmployee.value || (viewingEmployee.value && (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0))) return [];
   return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'kpi'); 
@@ -288,29 +289,35 @@ const ecdSoftSkillArray = computed(() => {
     return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'ecd' && kpi.ecd_type == 'softskill');  
 });
 
+//const isSubmitted = ref(false);
 watch(
   () => props.selectedEmployee,
   (newVal) => { 
+    //isSubmitted.value = false;
     if(newVal.length > 0){
       viewingEmployee.value = Object.assign({}, newVal[0]);
     }else{
       viewingEmployee.value = Object.assign({}, newVal);
     }
   
-    if(  route.name == "SingleTeamMember"){
+    if( route.name == "SingleTeamMember" ){
       emitResponseWeightageValidation();
+
+      // if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && viewingEmployee.value.reviews[0].status == 'submitted'){
+      //   isSubmitted.value = true;
+      // }
     }
   }
 );
 
+const hasError = ref(false);
+const singlePageHasError = ref(false);
 const emitResponseWeightageValidation = () => {
   weightageValidation().then(() => {
-    console.log('hasError.value',hasError.value);
-    kpiEmit('errorcheck', {hasError: hasError.value});
+    kpiEmit('errorcheck', {hasError: singlePageHasError.value});
   }) 
-}
+} 
 
-const hasError = ref(false);
 const errorMessage = ref('');
 const weightageValidation = async () => { 
   let message = '';
@@ -324,25 +331,41 @@ const weightageValidation = async () => {
     
     message = "Invalid: Should have 1 each, technical and soft skill, kindly update the weightage.";
   
-    if(ratingOrWeightage('ecd') == 0 && ecdArray.value && ecdArray.value.length > 0 && ecdArray.value.length < 2){
-      isError = true;
-    }else if( ecdArray.value.length > 1 ){
-      let ecdValidation = [];
-      ecdArray.value.map((o,i) =>{
-        ecdValidation.push(o.ecd_type);
-      });
-
-      ecdValidation  = [...new Set(ecdValidation)]; 
-      if(ecdValidation.length < 2){
-        isError = true;
-      } 
-    }
+    isError = ecdValidationError(isError);
   }
   hasError.value = isError;
-  console.log(hasError.value);
+  
   if(isError){  
     errorMessage.value = message; 
   } 
+  errorValidation();
+}
+
+const ecdValidationError = (isError) => {
+
+  if(ratingOrWeightage('ecd') == 0 && ecdArray.value && ecdArray.value.length > 0 && ecdArray.value.length < 2){
+    isError = true; 
+  }else if( ecdArray.value.length > 1 ){ 
+    let ecdValidation = [];
+    ecdArray.value.map((o,i) =>{
+      ecdValidation.push(o.ecd_type);
+    });
+
+    ecdValidation  = [...new Set(ecdValidation)]; 
+    if(ratingOrWeightage('ecd') == 0 && ecdValidation.length < 2){
+      isError = true;
+    } 
+  } 
+  return isError;
+}
+
+const errorValidation = async () => { 
+  let isError = false; 
+  if(kpiArray.value.length < 4 && ratingOrWeightage('kpi') == 0){
+    isError = true;
+  }  
+  isError = ecdValidationError(isError); 
+  singlePageHasError.value = isError;
 }
 
 // tabs
@@ -351,19 +374,20 @@ const selectTab = (tab) => {
   selectedTab.value = tab;
 
   if( route.name == "SingleTeamMember"){ 
-    emitResponseWeightageValidation();
+    weightageValidation(); 
   }
 };
 
+
 const currentDate = ref(new Date());
-const canManage = computed(() => {  
-    if(route.name == "SingleTeamMember" && settingStore.pmsSettings && settingStore.pmsSettings.state == 'setting' && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
-      return true;
-    }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
-          return authStore.authRole.includes("manager") && route.name == "SingleTeamMember" && viewingEmployee.value.reviews[0].state == 'setting'
-          &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')
+const canManage = computed(() => {   
+    if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
+        return authStore.authRole.includes("manager") && route.name == "SingleTeamMember" && viewingEmployee.value.reviews[0].state == 'setting'
+          &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress' || viewingEmployee.value.reviews[0].status == 'inreview')
             ? true
             : false;
+    }else if(route.name == "SingleTeamMember" && settingStore.pmsSettings && settingStore.pmsSettings.state == 'setting' && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
+      return true;
     } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){ 
           let date = new Date(viewingEmployee.value.doj);  
           date.setDate(date.getDate() +  parseInt(settingStore.pmsSettings.probation_kpi_setting));  
@@ -371,31 +395,60 @@ const canManage = computed(() => {
             return true;
           } 
     } 
+    return false;
 });
-
+const isFinalReview = ref({saveBtn: false, isFinal: false});
 const isReviewStage = computed(() => {
+   
+  isFinalReview.value = {saveBtn: false, isFinal: false};
+    if(route.name == "SingleTeamMember" && settingStore.pmsSettings && settingStore.pmsSettings.state == 'yearend'){ 
+      isFinalReview.value = {saveBtn: false, isFinal: true};
+    }
     if(route.name == "SingleTeamMember" && settingStore.pmsSettings && (settingStore.pmsSettings.state == 'midyear' || settingStore.pmsSettings.state == 'yearend' ) && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
+      isFinalReview.value = {saveBtn: true, isFinal: true};
       return true;
-    }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
-          return authStore.authRole.includes("manager") && route.name == "SingleTeamMember" && 
-          (viewingEmployee.value.reviews[0].state == 'midyear' || viewingEmployee.value.reviews[0].state == 'yearend')
-          &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')
-            ? true
-            : false;
-    } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){  
+    }else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){  
+          isFinalReview.value = {saveBtn: false, isFinal: false};
+        if(settingStore.pmsSettings){
+        
           let midStart = new Date(viewingEmployee.value.doj);  
-          let midEnd = new Date(viewingEmployee.value.doj);  
+          let midEnd = new Date(viewingEmployee.value.doj);   
           midStart.setDate(midStart.getDate() +  parseInt(settingStore.pmsSettings.probation_first_review_start));  
           midEnd.setDate(midEnd.getDate() +  parseInt(settingStore.pmsSettings.probation_first_review_end));  
+          
+          if(viewingEmployee.value.reviews[0].state == 'first_review' && (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')){
+            isFinalReview.value = {saveBtn: true, isFinal: false};
+            return true;
+          }else if(midStart <= currentDate.value && midEnd >= currentDate.value){
+            isFinalReview.value = {saveBtn: true, isFinal: false};
+            return true;
+          }
 
           let yearEndStart = new Date(viewingEmployee.value.doj);  
           let yearEnd = new Date(viewingEmployee.value.doj);  
           yearEndStart.setDate(yearEndStart.getDate() +  parseInt(settingStore.pmsSettings.probation_final_review_start));  
           yearEnd.setDate(yearEnd.getDate() +  parseInt(settingStore.pmsSettings.probation_final_review_end));  
-          if(yearEndStart >= currentDate.value  && yearEnd <= currentDate.value){
+
+          if(viewingEmployee.value.reviews[0].state == 'final_review' && (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')){
+            isFinalReview.value = {saveBtn: true, isFinal: true}; 
+            return true;
+          }else if(yearEndStart <= currentDate.value  && yearEnd >= currentDate.value){
+            isFinalReview.value = {saveBtn: true, isFinal: true}; 
             return true;
           } 
-    }
+        }
+    }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
+      if(viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress'){
+        isFinalReview.value.saveBtn = true; 
+      }else if(viewingEmployee.value.reviews[0].state == 'yearend' ){
+        isFinalReview.value.isFinal = true;
+      }
+          return authStore.authRole.includes("manager") && route.name == "SingleTeamMember" && 
+          (viewingEmployee.value.reviews[0].state == 'midyear' || viewingEmployee.value.reviews[0].state == 'yearend') 
+            ? true
+            : false;
+    } 
+  
     return false;
 })
 // kpi
@@ -410,8 +463,7 @@ const printKPI = () => {
     },
     query: {print:1}
   });
-window.open(routeData.href, '_blank');
- 
+  window.open(routeData.href, '_blank'); 
 };
 
 watch(year, async (newVal, oldVal) => {  
@@ -436,18 +488,16 @@ const ecdOptions = ref({
   is_review: false,
 });
 const addKPI = async (type,ecdType) => {
- 
-  if (type == "kpi") {
-  
-    if(ratingOrWeightage(selectedTab.value) <= 0){
+  if(ratingOrWeightage(selectedTab.value) <= 0){
       sbOptions.value = {
         status: true,
         type: "error",
         text: "Denied: You've reached the weightage limit.",
       
-      };
-      
-    }else if(kpiArray.value.length > 5){
+      }; 
+  } else if (type == "kpi") {
+  
+    if(kpiArray.value.length > 5){
       sbOptions.value = {
         status: true,
         type: "error",
@@ -465,14 +515,7 @@ const addKPI = async (type,ecdType) => {
               };
     }
   }else {
-    if(ecdArray.value.length > 2){
-      sbOptions.value = {
-        status: true,
-        type: "error",
-        text: "Denied: You've reached the weightage limit.",
-      };
-   
-    }else{
+     
     ecdOptions.value = {
       ...ecdOptions.value,
       ...{
@@ -480,14 +523,15 @@ const addKPI = async (type,ecdType) => {
         data: {},
         dialog: true,
         type: type,
+        ecdType: ecdType,
         action: "add",
         is_review: false,
       },
     };
-  }
+ 
   } 
 };
-const editKPI = async (item, type = "kpi") => {
+const editKPI = async (item, type = "kpi",ecdType) => {
   if (type == "kpi") {
     kpiOptions.value = {
       ...kpiOptions.value,
@@ -500,8 +544,7 @@ const editKPI = async (item, type = "kpi") => {
         is_review: false,
       },
     };
-  }
-  if (type == "ecd") {
+  }else {
     ecdOptions.value = {
       ...ecdOptions.value,
       ...{
@@ -510,6 +553,7 @@ const editKPI = async (item, type = "kpi") => {
         dialog: true,
         type: type,
         action: "edit",
+        ecdType: ecdType,
         is_review: false,
       },
     };
@@ -572,7 +616,6 @@ const removeKPI = async (item) => {
     },
   };
 
-  console.log(toRemoveKpi.value);
 };
 const confirmRemoveKpi = async () => { 
   let kpiRemove = toRemoveKpi.value.data;
@@ -583,6 +626,9 @@ const confirmRemoveKpi = async () => {
 
 const ratingOrWeightage = (type) => {
  let remainingWeightage = 70;
+  if(viewingEmployee.value.is_regular == 0){
+    remainingWeightage = 100;
+  }
   
   if(type == 'ecd'){
     remainingWeightage = 30;

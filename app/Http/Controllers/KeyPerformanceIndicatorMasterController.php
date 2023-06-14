@@ -24,7 +24,7 @@ class KeyPerformanceIndicatorMasterController extends Controller
 
     public function getNoNPaginatedKpis()
     {
-        $kpis = KeyPerformanceIndicatorMaster::where('status','active')->orderBy('title','ASC')->get();
+        $kpis = KeyPerformanceIndicatorMaster::where('status','approved')->orderBy('title','ASC')->get();
         return response()->json($kpis, 200);
     }
 

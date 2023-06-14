@@ -39,6 +39,9 @@ Route::middleware('authkey')->group(function () {
     // delete KPI by manager 
     Route::post('/delete/employee-kpi-year', [KeyPerformanceReviewController::class, 'deleteEmployeeKPI'])->name('delete.employee.kpi.year');
 
+    // Manager KPI Submit
+    Route::post('/manager/employee-kpi/submit', [ReviewController::class, 'kpiSubmitted'])->name('manager.employee.kpi.save');
+
     // Non Paginate Fetch
 
       // measures
