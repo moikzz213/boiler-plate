@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\MeasureController;
 use App\Http\Controllers\ProfileController;
@@ -58,6 +59,9 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
     Route::get('/search/employee', [EmployeeController::class, 'searchEmployee'])->name('hr.employee.search');
     Route::post('/employee/status/update', [EmployeeController::class, 'updateEmployeeStatus'])->name('hr.employee.update.status');
     Route::post('/employee/reopen', [EmployeeController::class, 'reopenEmployeeReview'])->name('hr.employee.reopen.employee.review');
+
+    // graph
+    Route::get('/graph/pms', [ReviewController::class, 'getReviewForGraph'])->name('hr.employee.ecode');
 });
 
 // manager
