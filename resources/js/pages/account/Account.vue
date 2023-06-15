@@ -12,6 +12,7 @@
             >profile</v-btn
           >
           <v-btn
+            v-if="['app_admin'].includes(authStore.authProfile.role)"
             :color="`${currentForm == 'account' ? 'primary' : 'white'} `"
             size="large"
             class="mr-3"
@@ -49,7 +50,6 @@
 
 <script setup>
 import { ref } from "vue";
-import PageHeader from "@/components/PageHeader.vue";
 import AccountForm from "./AccountForm.vue";
 import ProfileForm from "./ProfileForm.vue";
 import ChangePassword from "./ChangePassword.vue";
