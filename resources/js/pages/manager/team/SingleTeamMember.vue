@@ -43,13 +43,13 @@
                 <div class="text-body-2">{{ ratingOrWeightage(selEmployeeObj) }}/100</div>
               </div>
               <div class="v-col-12 v-col-md-2 d-flex align-center">
+               
                 <v-btn
                   size="large"
-                  v-if="
-                    !hasError &&
-                    totalWeightage == 100 &&
+                  v-if="!hasError &&
+                    totalWeightage == 100 && selEmployeeObj.reviews && selEmployeeObj.reviews.length > 0 && (
                     (selEmployeeObj.reviews[0].status == 'inprogress' ||
-                      selEmployeeObj.reviews[0].status == 'inreview')
+                      selEmployeeObj.reviews[0].status == 'inreview') || selEmployeeObj.reviews[0].status == 'open')
                   "
                   @click="submitForReview"
                   :loading="loadingBtn"
@@ -57,7 +57,7 @@
                   color="secondary"
                   class="text-capitalize rounded-lg"
                   >{{
-                    selEmployeeObj.reviews[0].state == "setting" &&
+                    selEmployeeObj.is_regular && selEmployeeObj.reviews[0].state == "setting" &&
                     selEmployeeObj.reviews[0].status == "inprogress"
                       ? "Submit for Review"
                       : "Submit"
@@ -228,8 +228,9 @@ const submitForReview = () => {
 
   if (selEmployeeObj.value.reviews[0].state == "setting") {
     if (
+      selEmployeeObj.value.is_regular && (
       selEmployeeObj.value.reviews[0].status == "open" ||
-      selEmployeeObj.value.reviews[0].status == "inprogress"
+      selEmployeeObj.value.reviews[0].status == "inprogress" )
     ) {
       status = "inreview";
     } else {
@@ -247,6 +248,8 @@ const submitForReview = () => {
     reviewID: reviewID,
     newStatus: status,
     user_ecode: authStore.authProfile.ecode,
+    managerEmail: authStore.authProfile.email,
+    managerName: authStore.authProfile.display_name
   };
   clientApi(authStore.authToken)
     .post("/api/manager/employee-kpi/submit", formData)
@@ -358,8 +361,7 @@ onMounted(() => {
   selectIndustry().then(() => { 
   kpiMaster().then(() => {
     customKpiMaster().then(() => {
-      fetchMeasures();
-    
+      fetchMeasures(); 
     })
   })
   });

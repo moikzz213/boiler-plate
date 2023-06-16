@@ -28,7 +28,7 @@ const props = defineProps({
     default: "",
   },
 });
-console.log("props kpi progres", props.selectedEmployee);
+ 
 const settingStore = useSettingStore();
 
 const states = computed(() => {
@@ -53,7 +53,7 @@ const states = computed(() => {
     {
       state: 'setting',
       title: 'KPI & Probation Target Setting',
-      status: [{ status: 'open', title: 'Open' }, { status: 'inprogress', title: 'In Progress' }, { status: 'inreview', title: 'In Review' }, { status: 'submitted', title: 'Submitted' }]
+      status: [{ status: 'open', title: 'Open' }, { status: 'inprogress', title: 'In Progress' },  { status: 'submitted', title: 'Submitted' }]
     },
     {
       state: 'first_review',
