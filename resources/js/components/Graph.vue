@@ -4,21 +4,21 @@
       <v-btn
         @click="() => selectState('setting')"
         :color="currentState == 'setting' ? 'primary' : ''"
-        class="mx-1"
+        class="mr-2"
         size="large"
         >Setting</v-btn
       >
       <v-btn
         @click="() => selectState('midyear')"
         :color="currentState == 'midyear' ? 'primary' : ''"
-        class="mx-1"
+        class="mr-2"
         size="large"
         >Mid-year</v-btn
       >
       <v-btn
         @click="() => selectState('yearend')"
         :color="currentState == 'yearend' ? 'primary' : ''"
-        class="mx-1"
+        class="mr-2"
         size="large"
         >Year-end</v-btn
       >
