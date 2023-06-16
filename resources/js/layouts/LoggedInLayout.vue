@@ -108,61 +108,11 @@
         </div>
         <v-spacer></v-spacer>
         <div class="d-flex">
-          <v-btn size="36" class="mx-2" color="grey-darken-3" icon variant="flat">
+          <!-- <v-btn size="36" class="mx-2" color="grey-darken-3" icon variant="flat">
             <v-icon color="white" size="small" :icon="mdiBellOutline"></v-icon>
-          </v-btn>
-          <v-menu v-model="menu" :close-on-content-click="false" location="bottom">
-            <template v-slot:activator="{ props }">
-              <v-btn size="36" color="grey-darken-3" icon variant="flat">
-                <v-avatar
-                  color="grey-darken-3"
-                  :size="36"
-                  class="d-flex align-center justify-center"
-                  v-bind="props"
-                  style="cursor: pointer"
-                >
-                  <div class="text-white text-body-2">
-                    {{ printInitials(authStore.authProfile.display_name) }}
-                  </div>
-                </v-avatar>
-              </v-btn>
-            </template>
-            <v-card min-width="300" class="rounded-lg mt-1">
-              <div class="d-flex align-center pa-3">
-                <v-avatar
-                  color="grey-lighten-3"
-                  :size="36"
-                  class="d-flex align-center justify-center mr-3 text-body-2"
-                  style="cursor: pointer"
-                >
-                  <div>{{ printInitials(authStore.authProfile.display_name) }}</div>
-                </v-avatar>
-                <div>
-                  <div class="text-body-1">{{ authStore.authProfile.display_name }}</div>
-                  <div class="text-caption">{{ authStore.authProfile.email }}</div>
-                </div>
-              </div>
-              <v-divider></v-divider>
-              <v-list nav density="compact" class="d-flex flex-column">
-                <v-list-item
-                  :prepend-icon="mdiAccount"
-                  title="Account Settings"
-                  @click="() => openPage('/account')"
-                ></v-list-item>
-              </v-list>
-              <v-divider></v-divider>
-              <div class="pa-3">
-                <v-btn
-                  :loading="loadingLogout"
-                  @click="logout"
-                  width="100%"
-                  color="primary"
-                >
-                  Logout
-                </v-btn>
-              </div>
-            </v-card>
-          </v-menu>
+          </v-btn> -->
+          <IconMenuNotification />
+          <IconMenuAccount />
         </div>
       </div>
     </v-app-bar>
@@ -180,56 +130,8 @@
         </div>
       </template>
       <v-spacer></v-spacer>
-      <v-btn size="36" class="mx-2" icon variant="flat">
-        <v-icon color="grey-darken-1" :icon="mdiBellOutline"></v-icon>
-      </v-btn>
-      <v-menu v-model="menu" :close-on-content-click="false" location="bottom">
-        <template v-slot:activator="{ props }">
-          <v-avatar
-            color="grey-lighten-3"
-            :size="36"
-            class="d-flex align-center justify-center mr-3"
-            v-bind="props"
-            style="cursor: pointer"
-          >
-            <div class="text-body-2">
-              {{ printInitials(authStore.authProfile.display_name) }}
-            </div>
-          </v-avatar>
-        </template>
-        <v-card min-width="300" class="rounded-lg mt-1">
-          <div class="d-flex align-center pa-3">
-            <v-avatar
-              color="grey-lighten-3"
-              :size="36"
-              class="d-flex align-center justify-center mr-3"
-              style="cursor: pointer"
-            >
-              <div class="text-body-2">
-                {{ printInitials(authStore.authProfile.display_name) }}
-              </div>
-            </v-avatar>
-            <div>
-              <div class="text-body-1">{{ authStore.authProfile.display_name }}</div>
-              <div class="text-caption">{{ authStore.authProfile.email }}</div>
-            </div>
-          </div>
-          <v-divider></v-divider>
-          <v-list nav density="compact" class="d-flex flex-column">
-            <v-list-item
-              :prepend-icon="mdiAccount"
-              title="Account Settings"
-              @click="() => openPage('/account')"
-            ></v-list-item>
-          </v-list>
-          <v-divider></v-divider>
-          <div class="pa-3">
-            <v-btn :loading="loadingLogout" @click="logout" width="100%" color="primary">
-              Logout
-            </v-btn>
-          </div>
-        </v-card>
-      </v-menu>
+      <IconMenuNotification :color="'light'" />
+      <IconMenuAccount :color="'grey-lighten-3'" />
     </v-app-bar>
     <v-main>
       <slot />
@@ -245,7 +147,6 @@ import {
   mdiChevronRight,
   mdiHomeOutline,
   mdiBellOutline,
-  mdiAccount,
   mdiPlaylistEdit,
   mdiCog,
   mdiAccountGroup,
@@ -256,15 +157,14 @@ import {
   mdiPercent,
   mdiAccountCog,
   mdiOfficeBuilding,
-  mdiClipboardEditOutline
+  mdiClipboardEditOutline,
 } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
 import { printInitials } from "@/composables/printInitials";
 import { useRouter, useRoute } from "vue-router";
-import { authApi } from "@/services/sacntumApi";
-import { useSettingStore } from "@/stores/settings";
+import IconMenuNotification from "@/components/nav/IconMenuNotification.vue";
+import IconMenuAccount from "@/components/nav/IconMenuAccount.vue";
 
-const settingStore = useSettingStore();
 const appName = ref(import.meta.env.VITE_APP_NAME);
 // const appName = "Ghassan Aboud Group";
 const logo = ref(import.meta.env.VITE_APP_URL + "/assets/images/fav.png");
@@ -398,47 +298,6 @@ onMounted(() => {
     temporary.value = false;
   }
 });
-
-// logout
-const loadingLogout = ref(false);
-const logout = async () => {
-  loadingLogout.value = true;
-  authlogout()
-    .then(() => {
-      settingStore.setPageLoading(true, "logging out");
-      removeClientKey().then(() => {
-        settingStore.setPageLoading(false, "logging out");
-      });
-    })
-    .catch((err) => {
-      loadingLogout.value = false;
-      settingStore.setPageLoading(false, "logging out");
-      console.log("error while trying to logout to server", err);
-    });
-};
-
-// auth logout to sanctum
-const authlogout = async () => {
-  let data = {
-    username: authStore.profile.ecode,
-  };
-  const response = await authApi.post("/api/sanctumlogout", data);
-  return response;
-};
-
-// remove client key
-const removeClientKey = async () => {
-  let data = {
-    key: authStore.token,
-  };
-  await axios.post("/client/removekey", data).then(() => {
-    authStore.logout().then(() => {
-      loadingLogout.value = false;
-      router.push({ path: "/login" });
-      localStorage.removeItem("authClient");
-    });
-  });
-};
 </script>
 
 <style scoped>
