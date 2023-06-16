@@ -1,9 +1,34 @@
 <template>
-  <v-card>
-    <v-card-text v-if="pmsData != null">
-      <BarGraphStacked :data="pmsData" />
-    </v-card-text>
-  </v-card>
+  <div>
+    <div class="w-100 d-flex mb-3">
+      <v-btn
+        @click="() => selectState('setting')"
+        :color="currentState == 'setting' ? 'primary' : ''"
+        class="mx-1"
+        size="large"
+        >Setting</v-btn
+      >
+      <v-btn
+        @click="() => selectState('midyear')"
+        :color="currentState == 'midyear' ? 'primary' : ''"
+        class="mx-1"
+        size="large"
+        >Mid-year</v-btn
+      >
+      <v-btn
+        @click="() => selectState('yearend')"
+        :color="currentState == 'yearend' ? 'primary' : ''"
+        class="mx-1"
+        size="large"
+        >Year-end</v-btn
+      >
+    </div>
+    <v-card>
+      <v-card-text v-if="pmsData != null">
+        <BarGraphStacked :data="pmsData" />
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 
 <script setup>
@@ -19,13 +44,31 @@ const props = defineProps({
 });
 const authStore = useAuthStore();
 const pmsData = ref(null);
+
+// current state
+const currentState = ref(
+  authStore.authProfile && authStore.authProfile.reviews.length > 0
+    ? authStore.authProfile.reviews[0].state
+    : "setting"
+);
+const selectState = (state) => {
+  currentState.value = state;
+};
+watch(
+  () => currentState.value,
+  () => {
+    getData();
+  }
+);
+
+// get data
 const year = ref(2023);
-const state = ref("setting");
 const getData = async () => {
   await clientApi(authStore.authToken)
-    .get("/api/hr/graph/pms")
+    .get("/api/hr/graph/pms/state/" + currentState.value)
     .then((res) => {
       pmsData.value = res.data.data;
+      console.log("pmsData.value", pmsData.value);
     })
     .catch((err) => {
       console.log("getData error", err.response);

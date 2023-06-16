@@ -102,19 +102,16 @@ class ReviewController extends Controller
         ], 200);
     }
 
-    function getReviewForGraph(){
-        $review = new PerformanceSetting;
-        $reviews = $review->where('year', Carbon::now()->format('Y'))
-        ->get();
+    function getReviewForGraph($state){
+        // $stateArray = array('setting', 'midyear', 'yearend');
 
         // graph array
         $company = new Company;
-        $stateArray = array('setting', 'midyear', 'yearend');
         $data = $company
         ->whereHas('profiles')
-        ->whereHas('settings', function ($q) use($stateArray) {
+        ->whereHas('settings', function ($q) use($state) {
             $q->where('year', Carbon::now()->format('Y'))
-            ->whereIn('state', $stateArray);
+            ->where('state', $state);
         })
         ->withCount([
             'profiles as open' => function ($query) {
@@ -140,28 +137,27 @@ class ReviewController extends Controller
             },
         ])
         ->get();
-
         return response()->json([
-            'formatted_data' => $this->formatCollectionForGraph($data),
+            // 'formatted_data' => $this->formatCollectionForGraph($data),
             'data' => $data
         ], 200);
     }
 
-    function formatCollectionForGraph($collection)
-    {
-        $results = [];
-        foreach ($collection as $item) {
-            $results[] = [
-                'company' => $item->title,
-                'data' => array(
-                    $item->open,
-                    $item->in_progress,
-                    $item->in_review,
-                    $item->submitted,
-                )
-            ];
-        }
+    // function formatCollectionForGraph($collection)
+    // {
+    //     $results = [];
+    //     foreach ($collection as $item) {
+    //         $results[] = [
+    //             'company' => $item->title,
+    //             'data' => array(
+    //                 $item->open,
+    //                 $item->in_progress,
+    //                 $item->in_review,
+    //                 $item->submitted,
+    //             )
+    //         ];
+    //     }
 
-        return collect($results);
-    }
+    //     return collect($results);
+    // }
 }

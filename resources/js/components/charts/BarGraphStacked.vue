@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%; height: 600px">
+  <div style="width: 100%; height: 480px">
     <canvas ref="chart_container" width="100%"></canvas>
   </div>
 </template>
@@ -8,15 +8,11 @@
 import { ref, computed, onMounted, watch } from "vue";
 import Chart from "chart.js/auto";
 
-const chart_container = ref(null);
 const props = defineProps(["data"]);
+const chart_container = ref(null);
 const fetchedData = ref(props.data);
-const filterData = (property) => {
-  return fetchedData.value.map((d) => d[property]);
-};
-const theDataTitle = computed(() => {
-  return fetchedData.value.map((d) => d.title);
-});
+const filterData = (property) => fetchedData.value.map((d) => d[property]);
+const theDataTitle = computed(() => fetchedData.value.map((d) => d.title));
 const theDataSet = computed(() => {
   let set = [
     {
@@ -43,21 +39,15 @@ const theDataSet = computed(() => {
 
   return set;
 });
-const data = ref({
-  labels: theDataTitle.value,
-  datasets: theDataSet.value,
+const chartData = computed(() => {
+  return { labels: theDataTitle.value, datasets: theDataSet.value };
 });
+let chart = null;
 const loadChart = (container) => {
-  new Chart(container, {
+  chart = new Chart(container, {
     type: "bar",
-    data: data.value,
+    data: chartData.value,
     options: {
-      //   plugins: {
-      //     title: {
-      //       display: true,
-      //       text: "Chart.js Bar Chart - Stacked",
-      //     },
-      //   },
       responsive: true,
       scales: {
         x: {
@@ -70,10 +60,22 @@ const loadChart = (container) => {
     },
   });
 };
+const updateChart = async () => {
+  chart.data = Object.assign({}, chartData.value);
+};
 onMounted(() => {
   loadChart(chart_container.value);
 });
-watch(props.data, (newData, oldData) => {
-  loadChart(chart_container.value);
-});
+watch(
+  () => props.data,
+  () => {
+    fetchedData.value = props.data;
+    updateChart().then(() => {
+      chart.update();
+    });
+  },
+  {
+    deep: true,
+  }
+);
 </script>

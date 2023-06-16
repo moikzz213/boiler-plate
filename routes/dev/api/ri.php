@@ -61,7 +61,7 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
     Route::post('/employee/reopen', [EmployeeController::class, 'reopenEmployeeReview'])->name('hr.employee.reopen.employee.review');
 
     // graph
-    Route::get('/graph/pms', [ReviewController::class, 'getReviewForGraph'])->name('hr.employee.ecode');
+    Route::get('/graph/pms/state/{state}', [ReviewController::class, 'getReviewForGraph'])->name('hr.employee.ecode');
 });
 
 // manager
