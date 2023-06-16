@@ -108,7 +108,9 @@ class ReviewController extends Controller
         // graph array
         $company = new Company;
         $data = $company
-        ->whereHas('profiles')
+        ->whereHas('profiles', function ($q) {
+            $q->where('is_regular', true);
+        })
         ->whereHas('settings', function ($q) use($state) {
             $q->where('year', Carbon::now()->format('Y'))
             ->where('state', $state);
