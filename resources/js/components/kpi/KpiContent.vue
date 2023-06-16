@@ -4,7 +4,7 @@
       <VueDatePicker v-model="year" year-picker class="pms-date-picker" />
     </div>
     <div class="v-col-12 v-col-md-2"> 
-      <v-btn v-if="viewingEmployee && viewingEmployee.reviews && viewingEmployee.reviews.length > 0" @click="printKPI" color="white" class="text-capitalize">Print KPI <v-icon
+      <v-btn v-if="viewingEmployee && viewingEmployee.reviews && viewingEmployee.reviews.length > 0" @click="printKPI" color="white" class="text-capitalize">View / Print KPI <v-icon
           :icon="mdiPrinter" class="ml-3"> </v-icon></v-btn>
     </div>
     <div class="v-col-12">
@@ -25,7 +25,7 @@
       <v-card flat>
         <v-card-title class="px-5 py-5 d-flex align-center">
           <v-btn v-if="canManage && selectedTab == 'kpi'" @click="() => addKPI(selectedTab)" density="compact" size="35"
-            class="rounded-xl elevation-2 mr-2" color="primary"><v-icon size="small" :icon="mdiPlus"></v-icon></v-btn>
+            class="rounded-xl elevation-2 mr-2"><v-icon size="small" :icon="mdiPlus"></v-icon></v-btn>
           <div class="text-uppercase text-primary"
             v-if="(selectedTab == 'kpi' && kpiArray && kpiArray.length > 0) || selectedTab == 'ecd' && ecdArray && ecdArray.length > 0">
             {{ selectedTab == 'ecd' ? 'Employee Capability Development' : selectedTab }} List
@@ -104,10 +104,10 @@
           <v-row v-show="selectedTab == 'ecd'" class="mt-n3">
 
             <!-- Start Technical Skill -->
-            <div class="v-col-6 pb-0"><v-btn color="primary" v-if="canManage" @click="() => addKPI(selectedTab,'technical')" density="compact" size="35"
-            class="rounded-xl elevation-2 mr-2"><v-icon size="small" :icon="mdiPlus"></v-icon></v-btn>Technical Skill</div>
-            <div class="v-col-6 pb-0"><v-btn color="primary" v-if="canManage" @click="() => addKPI(selectedTab, 'softskill')" density="compact" size="35"
-            class="rounded-xl elevation-2 mr-2"><v-icon size="small" :icon="mdiPlus"></v-icon></v-btn>Soft Skill</div>
+            <div class="v-col-6 pb-0"><v-btn v-if="canManage" @click="() => addKPI(selectedTab,'technical')" density="compact" size="35"
+            class="rounded-xl elevation-2 mr-2"><v-icon size="small" :icon="mdiPlus"></v-icon></v-btn><span v-if="canManage">Technical Skill</span></div>
+            <div class="v-col-6 pb-0"><v-btn v-if="canManage" @click="() => addKPI(selectedTab, 'softskill')" density="compact" size="35"
+            class="rounded-xl elevation-2 mr-2"><v-icon size="small" :icon="mdiPlus"></v-icon></v-btn> <span v-if="canManage">Soft Skill</span></div>
             <div class="v-col-6 pb-0">
               <v-row>
             <div class="v-col-12 pb-0" v-for="ecd in ecdTechnicalSkillArray" :key="ecd.id">
@@ -293,6 +293,7 @@ const ecdSoftSkillArray = computed(() => {
 watch(
   () => props.selectedEmployee,
   (newVal) => { 
+   
     //isSubmitted.value = false;
     if(newVal.length > 0){
       viewingEmployee.value = Object.assign({}, newVal[0]);
@@ -310,12 +311,33 @@ watch(
   }
 );
 
+const globalSetting = computed(() => settingStore.filteredSetting(viewingEmployee.value.company_id));
+
 const hasError = ref(false);
 const singlePageHasError = ref(false);
 const emitResponseWeightageValidation = () => {
-  weightageValidation().then(() => {
-    kpiEmit('errorcheck', {hasError: singlePageHasError.value});
-  }) 
+ 
+  if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && viewingEmployee.value.reviews[0].state == 'midyear' || viewingEmployee.value.reviews[0].state == 'first_review'){
+    let nVal = viewingEmployee.value.reviews[0].key_review.filter(el => el.achievement_midyear == null);
+    let errorCheck = false;
+    if(nVal && nVal.length > 0 ){
+      errorCheck = true;
+    }
+    kpiEmit('errorcheck', {hasError: errorCheck});
+  }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && viewingEmployee.value.reviews[0].state == 'yearend' || viewingEmployee.value.reviews[0].state == 'final_review'){
+    console.log('viewingEmployee.value.reviews[0].state',viewingEmployee.value.reviews[0].state );
+    let nVal = viewingEmployee.value.reviews[0].key_review.filter(el => el.achievement_yearend == null);
+    let errorCheck = false;
+    if(nVal && nVal.length > 0 ){
+      errorCheck = true;
+    }
+    kpiEmit('errorcheck', {hasError: errorCheck});
+  } else{
+    weightageValidation().then(() => {
+      kpiEmit('errorcheck', {hasError: singlePageHasError.value});
+    }) 
+  }
+ 
 } 
 
 const errorMessage = ref('');
@@ -378,7 +400,6 @@ const selectTab = (tab) => {
   }
 };
 
-
 const currentDate = ref(new Date());
 const canManage = computed(() => {   
     if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0){
@@ -386,11 +407,11 @@ const canManage = computed(() => {
           &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress' || viewingEmployee.value.reviews[0].status == 'inreview')
             ? true
             : false;
-    }else if(route.name == "SingleTeamMember" && settingStore.pmsSettings && settingStore.pmsSettings.state == 'setting' && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
+    }else if(route.name == "SingleTeamMember" && globalSetting && globalSetting.state == 'setting' && ( globalSetting.status == 'open' || globalSetting.status == 'inprogress')){
       return true;
     } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){ 
           let date = new Date(viewingEmployee.value.doj);  
-          date.setDate(date.getDate() +  parseInt(settingStore.pmsSettings.probation_kpi_setting));  
+          date.setDate(date.getDate() +  parseInt(globalSetting.probation_kpi_setting));  
           if(date >= currentDate.value ){
             return true;
           } 
@@ -401,20 +422,20 @@ const isFinalReview = ref({saveBtn: false, isFinal: false});
 const isReviewStage = computed(() => {
    
   isFinalReview.value = {saveBtn: false, isFinal: false};
-    if(route.name == "SingleTeamMember" && settingStore.pmsSettings && settingStore.pmsSettings.state == 'yearend'){ 
+    if(route.name == "SingleTeamMember" && globalSetting && globalSetting.state == 'yearend'){ 
       isFinalReview.value = {saveBtn: false, isFinal: true};
     }
-    if(route.name == "SingleTeamMember" && settingStore.pmsSettings && (settingStore.pmsSettings.state == 'midyear' || settingStore.pmsSettings.state == 'yearend' ) && ( settingStore.pmsSettings.status == 'open' || settingStore.pmsSettings.status == 'inprogress')){
+    if(route.name == "SingleTeamMember" && globalSetting && (globalSetting.state == 'midyear' || globalSetting.state == 'yearend' ) && ( globalSetting.status == 'open' || globalSetting.status == 'inprogress')){
       isFinalReview.value = {saveBtn: true, isFinal: true};
       return true;
     }else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){  
           isFinalReview.value = {saveBtn: false, isFinal: false};
-        if(settingStore.pmsSettings){
+        if(globalSetting){
         
           let midStart = new Date(viewingEmployee.value.doj);  
           let midEnd = new Date(viewingEmployee.value.doj);   
-          midStart.setDate(midStart.getDate() +  parseInt(settingStore.pmsSettings.probation_first_review_start));  
-          midEnd.setDate(midEnd.getDate() +  parseInt(settingStore.pmsSettings.probation_first_review_end));  
+          midStart.setDate(midStart.getDate() +  parseInt(globalSetting.probation_first_review_start));  
+          midEnd.setDate(midEnd.getDate() +  parseInt(globalSetting.probation_first_review_end));  
           
           if(viewingEmployee.value.reviews[0].state == 'first_review' && (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')){
             isFinalReview.value = {saveBtn: true, isFinal: false};
@@ -426,8 +447,8 @@ const isReviewStage = computed(() => {
 
           let yearEndStart = new Date(viewingEmployee.value.doj);  
           let yearEnd = new Date(viewingEmployee.value.doj);  
-          yearEndStart.setDate(yearEndStart.getDate() +  parseInt(settingStore.pmsSettings.probation_final_review_start));  
-          yearEnd.setDate(yearEnd.getDate() +  parseInt(settingStore.pmsSettings.probation_final_review_end));  
+          yearEndStart.setDate(yearEndStart.getDate() +  parseInt(globalSetting.probation_final_review_start));  
+          yearEnd.setDate(yearEnd.getDate() +  parseInt(globalSetting.probation_final_review_end));  
 
           if(viewingEmployee.value.reviews[0].state == 'final_review' && (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')){
             isFinalReview.value = {saveBtn: true, isFinal: true}; 
@@ -570,6 +591,8 @@ const reviewKPI = async (item, type = "kpi") => {
         type: type,
         action: "review",
         is_review: true,
+        state:viewingEmployee.value.reviews[0].state,
+        is_regular: viewingEmployee.value.is_regular
       },
     };
   }
@@ -595,8 +618,9 @@ const savedResponseMethod = (v) => {
       reviewID : viewingEmployee.value.reviews[0].id,
       data: v,
       industryTitle: v.industryTitle,
+      state: v.state
     }
-     
+    emitResponseWeightageValidation();
     kpiEmit('savedResponse', reviewID); 
 }
 
@@ -626,7 +650,7 @@ const confirmRemoveKpi = async () => {
 
 const ratingOrWeightage = (type) => {
  let remainingWeightage = 70;
-  if(viewingEmployee.value.is_regular == 0){
+  if(viewingEmployee.value && viewingEmployee.value.is_regular == 0){
     remainingWeightage = 100;
   }
   

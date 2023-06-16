@@ -36,22 +36,20 @@
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">KPI's Target Year</div>
-                <div class="text-body-2">
-                  {{ settingStore.pmsSettings && settingStore.pmsSettings.year }}
-                </div>
+                <div class="text-body-2">{{ globalSettingYear }}</div>
               </div>
               <div class="v-col-12 v-col-md-1 d-flex flex-column">
                 <div class="text-caption text-grey">Total KPI</div>
                 <div class="text-body-2">{{ ratingOrWeightage(selEmployeeObj) }}/100</div>
               </div>
               <div class="v-col-12 v-col-md-2 d-flex align-center">
+               
                 <v-btn
                   size="large"
-                  v-if="
-                    !hasError &&
-                    totalWeightage == 100 &&
+                  v-if="!hasError &&
+                    totalWeightage == 100 && selEmployeeObj.reviews && selEmployeeObj.reviews.length > 0 && (
                     (selEmployeeObj.reviews[0].status == 'inprogress' ||
-                      selEmployeeObj.reviews[0].status == 'inreview')
+                      selEmployeeObj.reviews[0].status == 'inreview') || selEmployeeObj.reviews[0].status == 'open')
                   "
                   @click="submitForReview"
                   :loading="loadingBtn"
@@ -59,7 +57,7 @@
                   color="secondary"
                   class="text-capitalize rounded-lg"
                   >{{
-                    selEmployeeObj.reviews[0].state == "setting" &&
+                    selEmployeeObj.is_regular && selEmployeeObj.reviews[0].state == "setting" &&
                     selEmployeeObj.reviews[0].status == "inprogress"
                       ? "Submit for Review"
                       : "Submit"
@@ -212,11 +210,7 @@ const customKpiMaster = async () => {
         });
       }
     });
-};
-
-const getEmployeeToView = () => {
-  console.log("getEmployeeToView", selectedEmployeeArr.value);
-};
+}; 
 
 const loadingBtn = ref(false);
 const submitForReview = () => {
@@ -234,8 +228,9 @@ const submitForReview = () => {
 
   if (selEmployeeObj.value.reviews[0].state == "setting") {
     if (
+      selEmployeeObj.value.is_regular && (
       selEmployeeObj.value.reviews[0].status == "open" ||
-      selEmployeeObj.value.reviews[0].status == "inprogress"
+      selEmployeeObj.value.reviews[0].status == "inprogress" )
     ) {
       status = "inreview";
     } else {
@@ -253,6 +248,8 @@ const submitForReview = () => {
     reviewID: reviewID,
     newStatus: status,
     user_ecode: authStore.authProfile.ecode,
+    managerEmail: authStore.authProfile.email,
+    managerName: authStore.authProfile.display_name
   };
   clientApi(authStore.authToken)
     .post("/api/manager/employee-kpi/submit", formData)
@@ -347,8 +344,8 @@ const getKPI = async (year) => {
     .catch((err) => {});
 };
 
-const measuresList = ref([]);
-const fetchMeasures = async () => {
+const measuresList = ref([]); 
+const fetchMeasures = async () => { 
   clientApi(authStore.authToken)
     .get("/api/fetch/measures/non-paginated")
     .then((res) => {
@@ -357,14 +354,16 @@ const fetchMeasures = async () => {
     .catch((err) => {});
 };
 
+const globalSettingYear = computed(() => settingStore.filteredSetting(selEmployeeObj.value.company_id).year);
+
 onMounted(() => {
   employeePassData();
-  selectIndustry().then(() => {
-    kpiMaster().then(() => {
-      customKpiMaster().then(() => {
-        fetchMeasures();
-      });
-    });
+  selectIndustry().then(() => { 
+  kpiMaster().then(() => {
+    customKpiMaster().then(() => {
+      fetchMeasures(); 
+    })
+  })
   });
 });
 </script>

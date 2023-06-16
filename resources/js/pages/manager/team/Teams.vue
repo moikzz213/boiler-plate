@@ -172,7 +172,7 @@ const confirmOpenMember = () => {
     .post('/api/create/employee-review/year', 
     { ecode: selectedUser.value.ecode, 
       is_regular: selectedUser.value.is_regular, 
-      setting: settingStore.pmsSettings, 
+      setting: settingStore.filteredSetting(selectedUser.value.company_id), 
       year: year.value,
       author: authStore.authProfile.display_name + " " + authStore.authProfile.ecode
     })
@@ -201,7 +201,7 @@ const confirmOpenMember = () => {
 };
 const openMember = (user) => {
   let msgError = 'KPI review is currently closed';
-
+  let statusGlobalSettings = settingStore.filteredSetting(user.company_id);
   selectedUser.value = Object.assign({}, user);
   if(user.reviews && user.reviews.length > 0){
     if(user.is_regular == 1 && user.reviews[0].status =='locked' && user.reviews[0].state == 'closed'){
@@ -211,12 +211,12 @@ const openMember = (user) => {
       openPage("SingleTeamMember", { id: user.ecode }); 
     }
   }else{
-    if(settingStore.pmsSettings.status == 'open' && settingStore.pmsSettings.state == 'setting'){
+    if(statusGlobalSettings.status == 'open' && statusGlobalSettings.state == 'setting'){
       dialogOpenMember.value = true;
     }else{
       if(user.is_regular == 0){
           let date = new Date(user.doj);
-          date.setDate(date.getDate() + parseInt(settingStore.pmsSettings.probation_kpi_setting));
+          date.setDate(date.getDate() + parseInt(statusGlobalSettings.probation_kpi_setting));
            
           if(date >= currentDate.value){
             dialogOpenMember.value = true;
@@ -224,7 +224,7 @@ const openMember = (user) => {
             noKPIEmployee.value = true;
           }
       }else{ 
-        if(settingStore.pmsSettings.status =='locked' && settingStore.pmsSettings.state == 'closed'){
+        if(statusGlobalSettings.status =='locked' && statusGlobalSettings.state == 'closed'){
           errorMessage.value = msgError;
         }
         noKPIEmployee.value = true;

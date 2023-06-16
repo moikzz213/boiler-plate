@@ -31,10 +31,9 @@ class ClientKeyController extends Controller
             $q->where('year', Carbon::now()->format('Y'));
         })->first();
 
-        $currentPmsSettings = PerformanceSetting::where([
-            'company_id' => $profile->company_id,
+        $currentPmsSettings = PerformanceSetting::where([ 
             'year'      => Carbon::now()->format('Y')
-        ])->first();
+        ])->get();
 
         return response()->json([
             "message" => 'Key saved successfully',

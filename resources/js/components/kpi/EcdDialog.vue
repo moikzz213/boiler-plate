@@ -42,7 +42,7 @@
               <v-btn color="primary" variant="text" @click="kpiAction.dialog = false"
                 >Cancel</v-btn
               >
-              <v-btn v-if="isValid" color="primary" class="ml-2 px-8" @click="saveKpi">save</v-btn>
+              <v-btn :disabled="!isValid" color="primary" class="ml-2 px-8" @click="saveKpi">save</v-btn>
             </div>
           </v-row>
         </div>
