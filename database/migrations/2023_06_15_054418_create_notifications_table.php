@@ -9,9 +9,9 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    /** 
+    /**
      * *** meta type ***
-     *  
+     *
      * kpi_setting_open
      * kpi_setting_review
      * kpi_setting_submit
@@ -19,13 +19,15 @@ return new class extends Migration
      * kpi_mid_submit
      * kpi_final_open
      * kpi_final_submit
-
+     *
      * probation_setting_open
      * probation_setting_submitted
      * probation_mid_open
      * probation_mid_submit
      * probation_final_open
      * probation_final_submit
+     *
+     * app_notification
      */
 
     public function up(): void

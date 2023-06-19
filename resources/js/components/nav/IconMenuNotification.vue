@@ -16,19 +16,30 @@
         ></v-icon>
       </v-btn>
     </template>
-    <v-card min-width="300" class="rounded-lg mt-1">
+    <v-card class="rounded-lg mt-1">
       <div class="pa-3">Notifications</div>
       <v-divider></v-divider>
-      <v-list nav density="compact" class="d-flex flex-column">
-        <v-list-item
-          v-for="item in notifications"
-          :key="item.id"
-          @click="() => openPage(item.path)"
-        >
-          <div>{{ item.title }}</div>
-          <div class="text-caption text-grey-darken-1">{{ item.content }}</div>
-        </v-list-item>
-      </v-list>
+      <v-card
+        width="100%"
+        min-width="280"
+        max-width="480"
+        height="480px"
+        class="rounded-0 elevation-0 overflow-y-auto"
+      >
+        <div class="d-flex flex-column">
+          <v-card
+            v-for="item in notifications"
+            :key="item.id"
+            @click="() => openPage(item.path)"
+            class="pa-3 rounded-0"
+          >
+            <div class="text-body-2">{{ item.title }}</div>
+            <div class="text-caption text-grey-darken-1">
+              {{ item.content }}
+            </div>
+          </v-card>
+        </div>
+      </v-card>
     </v-card>
   </v-menu>
 </template>
@@ -76,6 +87,60 @@ const notifications = ref([
   },
   {
     id: 3,
+    title: "KPI has been submitted",
+    content: "KPI setting is now open. Please ensure to fill your team's KPI.",
+    path: "/dashboard",
+  },
+  {
+    id: 11,
+    title: "PMS Notification",
+    content: "KPI setting is now open. Please ensure to fill your team's KPI.",
+    path: "/dashboard",
+  },
+  {
+    id: 21,
+    title: "PMS Notification",
+    content: "KPI setting is now open. Please ensure to fill your team's KPI.",
+    path: "/dashboard",
+  },
+  {
+    id: 31,
+    title: "KPI has been submitted",
+    content: "KPI setting is now open. Please ensure to fill your team's KPI.",
+    path: "/dashboard",
+  },
+  {
+    id: 12,
+    title: "PMS Notification",
+    content: "KPI setting is now open. Please ensure to fill your team's KPI.",
+    path: "/dashboard",
+  },
+  {
+    id: 22,
+    title: "PMS Notification",
+    content: "KPI setting is now open. Please ensure to fill your team's KPI.",
+    path: "/dashboard",
+  },
+  {
+    id: 32,
+    title: "KPI has been submitted",
+    content: "KPI setting is now open. Please ensure to fill your team's KPI.",
+    path: "/dashboard",
+  },
+  {
+    id: 122,
+    title: "PMS Notification",
+    content: "KPI setting is now open. Please ensure to fill your team's KPI.",
+    path: "/dashboard",
+  },
+  {
+    id: 222,
+    title: "PMS Notification",
+    content: "KPI setting is now open. Please ensure to fill your team's KPI.",
+    path: "/dashboard",
+  },
+  {
+    id: 232,
     title: "KPI has been submitted",
     content: "KPI setting is now open. Please ensure to fill your team's KPI.",
     path: "/dashboard",
