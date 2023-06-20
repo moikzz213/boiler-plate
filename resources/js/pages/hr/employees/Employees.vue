@@ -97,7 +97,7 @@
               </div>
               <div class="v-col-12 v-col-md-1 d-flex justify-end align-center">
                 <div>
-                  <div>50/100</div>
+                  <div>{{ ratingOrWeightage(profile) }} /100</div>
                   <div class="text-caption text-grey">Total KPI</div>
                 </div>
               </div>
@@ -149,6 +149,15 @@ const openPage = (pathName, openParams = null) => {
     .catch((err) => {});
 };
 
+const ratingOrWeightage = (user) => {
+  let sum = 0 ;
+  if(user.reviews && user.reviews.length > 0 && user.reviews[0].key_review){   
+    user.reviews[0].key_review.map((o,i) =>{
+      sum += o.weightage;
+    });
+  }
+  return sum;
+};
 // companies
 const companyStore = useCompanyStore();
 const loadingCompany = ref(false);

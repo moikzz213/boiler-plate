@@ -104,9 +104,9 @@
           <v-row v-show="selectedTab == 'ecd'" class="mt-n3">
 
             <!-- Start Technical Skill -->
-            <div class="v-col-6 pb-0"><v-btn v-if="canManage" @click="() => addKPI(selectedTab,'technical')" density="compact" size="35"
+            <div class="v-col-6 pb-0"><v-btn v-if="canManage" @click="() => addKPI(selectedTab,'tech')" density="compact" size="35"
             class="rounded-xl elevation-2 mr-2"><v-icon size="small" :icon="mdiPlus"></v-icon></v-btn><span v-if="canManage">Technical Skill</span></div>
-            <div class="v-col-6 pb-0"><v-btn v-if="canManage" @click="() => addKPI(selectedTab, 'softskill')" density="compact" size="35"
+            <div class="v-col-6 pb-0"><v-btn v-if="canManage" @click="() => addKPI(selectedTab, 'soft')" density="compact" size="35"
             class="rounded-xl elevation-2 mr-2"><v-icon size="small" :icon="mdiPlus"></v-icon></v-btn> <span v-if="canManage">Soft Skill</span></div>
             <div class="v-col-6 pb-0">
               <v-row>
@@ -124,7 +124,7 @@
                       <div>
                         <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
                           @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
-                        <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'technical')" density="compact" size="30"
+                        <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'tech')" density="compact" size="30"
                           color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
                             :icon="mdiPencil"></v-icon></v-btn>
                             <v-btn v-if="canManage" @click="() => removeKPI(ecd)" density="compact" size="30"
@@ -168,7 +168,7 @@
                         <div>
                           <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
                             @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
-                          <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'softskill')" density="compact" size="30"
+                          <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'soft')" density="compact" size="30"
                             color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
                               :icon="mdiPencil"></v-icon></v-btn>
                               <v-btn v-if="canManage" @click="() => removeKPI(ecd)" density="compact" size="30"
@@ -281,12 +281,12 @@ const ecdArray = computed(() => {
 
 const ecdTechnicalSkillArray = computed(() => {
   if (!viewingEmployee.value || (viewingEmployee.value && (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0))) return [];
-    return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'ecd' && kpi.ecd_type == 'technical');  
+    return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'ecd' && kpi.ecd_type == 'tech');  
 });
 
 const ecdSoftSkillArray = computed(() => {
   if (!viewingEmployee.value || (viewingEmployee.value && (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0))) return [];
-    return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'ecd' && kpi.ecd_type == 'softskill');  
+    return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'ecd' && kpi.ecd_type == 'soft');  
 });
 
 //const isSubmitted = ref(false);
@@ -614,6 +614,7 @@ const reviewKPI = async (item, type = "kpi") => {
 };
 
 const savedResponseMethod = (v) => {  
+
     let reviewID = {
       reviewID : viewingEmployee.value.reviews[0].id,
       data: v,

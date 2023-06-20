@@ -92,16 +92,13 @@
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">KPI's Target Year</div>
                 <div class="text-body-2">
-                  {{
-                    settingStore && settingStore.pms_settings
-                      ? settingStore.pms_settings.year
-                      : ""
-                  }}
+                 
+                  {{ globalSetting.year }}
                 </div>
               </div>
               <div class="v-col-12 v-col-md-1 d-flex flex-column">
                 <div class="text-caption text-grey">Total KPI</div>
-                <div class="text-body-2">0/100</div>
+                <div class="text-body-2">{{ ratingOrWeightage(employee) }}/100</div>
               </div>
               <div class="v-col-12 v-col-md-2 d-flex align-center">
                 <v-btn
@@ -126,7 +123,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useSettingStore } from "@/stores/settings";
@@ -157,6 +154,15 @@ const statusArray = ref([
   },
 ]);
 
+const ratingOrWeightage = (user) => {
+  let sum = 0;
+  if (user.reviews && user.reviews.length > 0 && user.reviews[0].key_review) {
+    user.reviews[0].key_review.map((o, i) => {
+      sum += o.weightage;
+    });
+  } 
+  return sum;
+};
 // get employee
 const employee = ref({});
 const getEmployee = async () => {
@@ -170,6 +176,9 @@ const getEmployee = async () => {
       console.log("getEmployee", err);
     });
 };
+
+const globalSetting = computed(() => settingStore.filteredSetting(employee.value.company_id));
+
 getEmployee();
 
 // select employee

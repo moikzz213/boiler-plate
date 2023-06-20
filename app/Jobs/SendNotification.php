@@ -42,9 +42,10 @@ class SendNotification implements ShouldQueue
         $HRBPEmail = $employee->hrbp_email;
         $managerEmail = $publisherData['managerEmail'];
         $managerName = ucwords($publisherData['managerName']);
-
+        $allowedDays = $query->closing_date;
         $current_state = $query->state;
         $current_status = $query->status;
+        $closingSetting = $publisherData['closingSetting'];
         $employee_type = $query->type; // Probation or Regular
         $year = $query->year;
         $metaKey = '';
@@ -141,6 +142,105 @@ class SendNotification implements ShouldQueue
              * 
              ***/
 
+             if($current_state == 'setting'){
+
+                // All Open status should automatic from CRON JOB
+
+                if($current_status == 'open'){
+                    $metaKey = 'kpi_setting_open';
+                    $toEmail = $managerEmail; // To All Employees
+                    $ccEmail = array($HRBPEmail);
+                    $message = 'Hi '.$managerName.",<br/><br/>";
+                    $subject = 'KPI and Annual Target Setting : Open'; 
+                    $innerMessage = '<br/><br/>Employee: '.$employee->ecode. " | ". $employee->display_name; // Multiple records
+                }elseif($current_status == 'inreview'){
+
+                    /**
+                     * Notify Manager, Employee & HRBP
+                     */
+
+                    $metaKey = 'kpi_setting_review';
+                    $toEmail = $employeeEmail;
+                    $ccEmail = array($HRBPEmail,$managerEmail);
+                    $message = 'Hi '.$employee->display_name.",<br/><br/>";
+                    $subject = 'KPI and Annual Target Setting : In-Review';
+
+                    if( date('Y-m-d', strtotime($allowedDays)) > date('Y-m-d', strtotime($closingSetting))){
+                        $date_allowed = $closingSetting;
+                    }else{
+                        $date_allowed = $allowedDays;
+                    }
+
+                    $innerMessage = ' '. date('d/m/Y', strtotime($date_allowed));
+                }elseif($current_status == 'submitted'){
+
+                    /**
+                     * Notify Manager, Employee & HRBP
+                     */
+
+                    $metaKey = 'kpi_setting_submit';
+                    $toEmail = $employeeEmail;
+                    $ccEmail = array($HRBPEmail,$managerEmail);
+                    $message = 'Hi '.$employee->display_name.",<br/><br/>";
+                    $subject = 'KPI and Annual Target Setting : Submitted'; 
+                }
+
+            }elseif($current_state == 'midyear'){
+                
+                // All Open status should automatic from CRON JOB
+
+                if($current_status == 'open'){
+                     /**
+                     * Notify Manager, Employee & HRBP
+                     */
+                    $metaKey = 'kpi_mid_open';
+                    $toEmail = $managerEmail;
+                    $ccEmail = array($HRBPEmail,$employeeEmail);
+                    $message = 'Hi '.$managerName.",<br/><br/>";
+                    $subject = 'Mid-Year KPI review: Open';
+                    $innerMessage = '<br/><br/>Employee: '.$employee->ecode. " | ". $employee->display_name;
+                }elseif($current_status == 'submitted'){
+                    /**
+                     * Notify Manager & HRBP Only
+                     */
+                    $metaKey = 'kpi_mid_submit';
+                    $toEmail = $employeeEmail;
+                    $ccEmail = array($HRBPEmail, $managerEmail);
+                    $message = 'Hi '.$employee->display_name.",<br/><br/>";
+                    $subject = 'Mid-Year KPI review: Completed';
+                    
+                } 
+            }elseif($current_state == 'yearend'){
+
+                 // All Open status should automatic from CRON JOB
+
+                if($current_status == 'open'){
+
+                    /**
+                     * Notify Manager, Employee & HRBP
+                     */
+
+                    $metaKey = 'kpi_final_open'; 
+                    $toEmail = $managerEmail;
+                    $ccEmail = array($HRBPEmail,$employeeEmail);
+                    $message = 'Hi '.$managerName.",<br/><br/>";
+                    $subject = 'Year-End KPI : Open';
+                    $innerMessage = '<br/><br/>Employee: '.$employee->ecode. " | ". $employee->display_name; // multiple data
+
+                }elseif($current_status == 'submitted'){
+
+                    /**
+                     * Notify Manager & HRBP Only
+                     */
+
+                    $metaKey = 'kpi_final_submit'; 
+                    $toEmail = $managerEmail;
+                    $ccEmail = array($HRBPEmail);
+                    $message = 'Hi '.$managerName.",<br/><br/>";
+                    $subject = 'Year-End KPI : Submitted';
+                    $innerMessage = '<br/><br/>Employee: '.$employee->ecode. " | ". $employee->display_name;
+                } 
+            }
 
         }
 

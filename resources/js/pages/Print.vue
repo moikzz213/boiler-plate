@@ -291,12 +291,12 @@ const kpiArray = computed(() => {
 });
 const technicalArr = computed(() => {
   if (!kpiDataEncrypted.value.reviews || kpiDataEncrypted.value.reviews.length == 0) return [];
-  return kpiDataEncrypted.value.reviews[0].key_review.filter((kpi) => kpi.ecd_type == 'technical' || kpi.ecd_type == 'technical,softskill');
+  return kpiDataEncrypted.value.reviews[0].key_review.filter((kpi) => kpi.ecd_type == 'tech');
 });
 
 const softskillArr = computed(() => {
   if (!kpiDataEncrypted.value.reviews || kpiDataEncrypted.value.reviews.length == 0) return [];
-  return kpiDataEncrypted.value.reviews[0].key_review.filter((kpi) => kpi.ecd_type == 'softskill');
+  return kpiDataEncrypted.value.reviews[0].key_review.filter((kpi) => kpi.ecd_type == 'soft');
 }); 
 </script>
 <style>.download-print {

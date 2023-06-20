@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('state')->default('setting'); // setting/mid/year-end/first_review/final_review
             $table->string('status')->default('open'); // Open/Closed/Completed/Inprogress/Locked
             $table->date('closing_date')->nullable();
+            $table->date('reminder_date')->nullable();
             $table->string('year');
             $table->string('type'); // probation/regular
             $table->string('author')->constrained(); // <display_name - ecode>

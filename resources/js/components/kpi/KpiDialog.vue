@@ -220,7 +220,7 @@ const submitReview = () => {
 watch(
   () => props.kpiOptions,
   (newVal) => {
-    console.log('newValnewVal',newVal);
+    console.log('newValnewVal',props.industryList);
     saveLoading.value = false;
       listIndustries.value = props.industryList;
       kpiData.value = Object.assign({}, newVal.data);

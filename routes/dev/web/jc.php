@@ -1,15 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PageController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\ClientKeyController;
-use App\Http\Controllers\CustomAuthController;
-use App\Http\Controllers\PublicPageController;
-use App\Http\Controllers\PerformanceSettingController;
-
+use Illuminate\Support\Facades\Route; 
+  
+use App\Http\Controllers\PublicPageController; 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,3 +15,4 @@ use App\Http\Controllers\PerformanceSettingController;
 */
 
 Route::get('/print/kpi/{year}/{ecode}', [PublicPageController::class, 'access'])->name('hr.settings.pms.new');
+ 

@@ -15,7 +15,7 @@
       </div>
       <div class="d-flex align-center">
         <v-icon size="16"
-          :color="`${employeeKPIStatus == 'locked' || employeeKPIStatus == 'closed' ? 'error' : 'success'}`"
+          :color="`${employeeKPIStatus == 'locked' || employeeKPIStatus == 'closed' || employeeKPIStatus == 'Inactive' ? 'error' : 'success'}`"
           :icon="mdiCircleMedium"></v-icon>
         <div style="font-size: 10px; line-height: 12px">
           {{ employeeKPIStatus }}
@@ -54,8 +54,9 @@ const employeeKPIStatus = computed(() => {
   } else {
     profileKPI.value = props.profile;
   }
-
-  if (profileKPI.value && profileKPI.value.reviews && profileKPI.value.reviews.length > 0) {
+  if (profileKPI.value && (profileKPI.value.status == 'Inactive' || profileKPI.value.status == 'InActive')) {
+    return profileKPI.value.status;
+  }else if (profileKPI.value && profileKPI.value.reviews && profileKPI.value.reviews.length > 0) {
     return profileKPI.value.reviews[0].status;
   } else {
     let isKPISetByCompany = settingStore.filteredSetting(profileKPI.value.company_id);
@@ -63,7 +64,7 @@ const employeeKPIStatus = computed(() => {
     if (isKPISetByCompany && isKPISetByCompany.id) {
       if (profileKPI.value.is_regular == 0) {
         let date = new Date(profileKPI.value.doj);
-        date.setDate(date.getDate() + parseInt(res.probation_kpi_setting));
+        date.setDate(date.getDate() + parseInt(isKPISetByCompany.probation_kpi_setting));
         if (date >= currentDate.value) {
           return 'open' ;
         }

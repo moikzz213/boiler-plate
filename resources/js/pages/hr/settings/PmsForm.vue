@@ -284,8 +284,8 @@ const saveSetting = async () => {
       };
 
       settingStore.setPmsSettings(res.data.result);
-      console.log(res.data.profile);
-      if(res.data.profile){
+       
+      if(res.data.profile && res.data.profile.length > 0){
         authStore.setProfile(res.data.profile);
       }
       // check if NewPms then redirect

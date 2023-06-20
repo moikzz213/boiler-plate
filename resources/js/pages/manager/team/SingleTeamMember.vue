@@ -36,7 +36,7 @@
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">KPI's Target Year</div>
-                <div class="text-body-2">{{ globalSettingYear }}</div>
+                <div class="text-body-2">{{ globalSetting.year }}</div>
               </div>
               <div class="v-col-12 v-col-md-1 d-flex flex-column">
                 <div class="text-caption text-grey">Total KPI</div>
@@ -150,6 +150,7 @@ const ratingOrWeightage = (user) => {
 
 const industryList = ref([]);
 const selectIndustry = async () => {
+  
   if (industryStore.industries.length == 0) {
     industryStore.getIndustries(authStore.authToken).then(() => {
       industryList.value = industryStore.industries;
@@ -157,6 +158,7 @@ const selectIndustry = async () => {
   } else {
     industryList.value = industryStore.industries;
   }
+  
 };
 
 const industryWithKPI = ref([]);
@@ -166,6 +168,7 @@ const kpiMaster = async () => {
   await clientApi(authStore.authToken)
     .get("/api/fetch/master-kpi/non-paginate")
     .then((res) => {
+    
       if (
         industryList.value &&
         industryList.value.length > 0 &&
@@ -187,7 +190,7 @@ const kpiMaster = async () => {
             }
           });
         });
-      }
+      } 
     });
 };
 
@@ -214,6 +217,7 @@ const customKpiMaster = async () => {
 
 const loadingBtn = ref(false);
 const submitForReview = () => {
+ 
   loadingBtn.value = true;
   let status = "inprogress";
   let reviewID = selEmployeeObj.value.reviews[0].id;
@@ -249,7 +253,11 @@ const submitForReview = () => {
     newStatus: status,
     user_ecode: authStore.authProfile.ecode,
     managerEmail: authStore.authProfile.email,
-    managerName: authStore.authProfile.display_name
+    managerName: authStore.authProfile.display_name,
+    allowedDays: selEmployeeObj.value.is_regular ? globalSetting.value.employee_review_allowed_days : probation_kpi_setting,
+    closingDateSetting: selEmployeeObj.value.is_regular ? globalSetting.value.annual_kpi_setting_end : probation_kpi_setting,
+    closingDateMid: selEmployeeObj.value.is_regular ? globalSetting.value.mid_year_review_end : probation_first_review_end,
+    closingDateFinal: selEmployeeObj.value.is_regular ? globalSetting.value.end_year_review_end : probation_final_review_end,
   };
   clientApi(authStore.authToken)
     .post("/api/manager/employee-kpi/submit", formData)
@@ -354,7 +362,7 @@ const fetchMeasures = async () => {
     .catch((err) => {});
 };
 
-const globalSettingYear = computed(() => settingStore.filteredSetting(selEmployeeObj.value.company_id).year);
+const globalSetting = computed(() => settingStore.filteredSetting(selEmployeeObj.value.company_id));
 
 onMounted(() => {
   employeePassData();

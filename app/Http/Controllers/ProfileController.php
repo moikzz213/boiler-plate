@@ -76,8 +76,9 @@ class ProfileController extends Controller
             'performance_settings_id' => $request->setting['id'],
             'state'         => 'setting',
             'status'        => 'inprogress',
-            'company_id'        =>  $request->setting['company_id'],
+            'company_id'    => $request->setting['company_id'],
             'year'          => $request->year,
+            'reminder_date' => Carbon::now()->addDays(3), // add reminder date, current date + 3 days
             'type'          => $request->is_regular ? "regular" : "probation",
             'author'        => $request->author
         ]);

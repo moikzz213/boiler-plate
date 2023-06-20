@@ -3,7 +3,7 @@
     <v-row class="mt-5">
       <div class="v-col-12 pb-0">
         <div class="text-h6">
-          My Team {{ "(" + authStore.authProfile.teams.length + ")" }}
+          My Team {{ "(" + authStore.authProfile && authStore.authProfile.teams ? authStore.authProfile.teams.length : 0 + ")" }}
         </div>
       </div>
       <div class="v-col-12 v-col-md-3">
@@ -42,7 +42,7 @@
       </div>
     </v-row>
     <v-row>
-      <div v-if="managerTeam.length > 0" class="v-col-12">
+      <div v-if="managerTeam && managerTeam.length > 0" class="v-col-12">
         <v-card
           v-for="user in managerTeam"
           :key="user.id"
@@ -200,10 +200,14 @@ const confirmOpenMember = () => {
   
 };
 const openMember = (user) => {
+ 
   let msgError = 'KPI review is currently closed';
   let statusGlobalSettings = settingStore.filteredSetting(user.company_id);
   selectedUser.value = Object.assign({}, user);
-  if(user.reviews && user.reviews.length > 0){
+  if(user.status == 'Inactive'){
+      errorMessage.value = "Employee is currently Inactive, kindly contact your HRBP if this is a mistake.";
+      noKPIEmployee.value = true;
+  }else if(user.reviews && user.reviews.length > 0){
     if(user.is_regular == 1 && user.reviews[0].status =='locked' && user.reviews[0].state == 'closed'){
       errorMessage.value = msgError;
       noKPIEmployee.value = true;

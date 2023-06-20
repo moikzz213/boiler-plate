@@ -26,8 +26,14 @@ class ReviewController extends Controller
     public function kpiSubmitted(Request $request){
        
         $query = Review::where('id', $request->reviewID)->first(); 
-       
-        $query->update(['status' => $request->newStatus]);
+        if($request->newStatus == 'inreview'){ 
+            
+            $closingDate = Carbon::now()->addDays($request->allowedDays);
+            
+            $query->update(['status' => $request->newStatus, 'closing_date' => $closingDate]); 
+        }else{
+            $query->update(['status' => $request->newStatus]); 
+        }
 
         if($request->newStatus !== 'submitted'){ 
             $msg = 'KPI status changed to '.$request->newStatus; 
@@ -45,7 +51,7 @@ class ReviewController extends Controller
             $q->where('year', Carbon::now()->format('Y'));
         })->first(); 
 
-        SendNotification::dispatchAfterResponse(['data' => $query, 'managerEmail' => $request['managerEmail'], 'managerName' => $request['managerName']])->onQueue('processing');
+        SendNotification::dispatchAfterResponse(['data' => $query, 'closingSetting' => $request['closingDateSetting'],'allowedDays' => $request['allowedDays'], 'managerEmail' => $request['managerEmail'], 'managerName' => $request['managerName']])->onQueue('processing');
 
         return response()->json([
             'message' => $msg,
@@ -57,13 +63,13 @@ class ReviewController extends Controller
         $msg = 'KPI has been updated';
        
         $weightage = explode('%', $request->data['data']['weightage']);
-        if($request->data['state'] == 'final'){
+        if(@$request->data['state'] == 'final'){
             $query = KeyPerformanceReview::where('id', $request->data['data']['id'])->first(); 
             $query->update([ 
                 'achievement_yearend'      => @$request->data['data']['achievement_yearend']
             ]);
             $msg = 'Final Review for this KPI has been updated';
-        }elseif($request->data['state'] == 'mid'){
+        }elseif(@$request->data['state'] == 'mid'){
           
             $query = KeyPerformanceReview::where('id', $request->data['data']['id'])->first(); 
             $query->update([ 
@@ -91,7 +97,7 @@ class ReviewController extends Controller
                     'weightage'             => @$weightage[0] ? $weightage[0] : 0
                 ]);
 
-                $msg = 'KPI has been created';
+                $msg = 'KPI has been created';                
             }else{
                 $query = KeyPerformanceReview::where('id', $request->data['data']['id'])->first(); 
                 $query->update([ 
