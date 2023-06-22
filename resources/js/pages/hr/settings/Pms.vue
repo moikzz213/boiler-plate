@@ -91,12 +91,12 @@
 <script setup>
 import { ref } from "vue";
 import { mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
-import VueDatePicker from "@vuepic/vue-datepicker";
-import PageHeader from "@/components/PageHeader.vue";
 import { clientApi } from "@/services/clientApi";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useCompanyStore } from "@/stores/company";
+import VueDatePicker from "@vuepic/vue-datepicker";
+import PageHeader from "@/components/PageHeader.vue";
 
 const authStore = useAuthStore();
 const router = useRouter();
