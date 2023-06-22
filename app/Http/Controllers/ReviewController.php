@@ -129,7 +129,7 @@ class ReviewController extends Controller
         $company = new Company;
         $data = $company
         ->whereHas('profiles', function ($q) {
-            $q->where('is_regular', true);
+            $q->where('is_regular', true)->where('status', 'Active');
         })
         ->whereHas('settings', function ($q) use($state) {
             $q->where('year', Carbon::now()->format('Y'))
@@ -160,26 +160,7 @@ class ReviewController extends Controller
         ])
         ->get();
         return response()->json([
-            // 'formatted_data' => $this->formatCollectionForGraph($data),
             'data' => $data
         ], 200);
     }
-
-    // function formatCollectionForGraph($collection)
-    // {
-    //     $results = [];
-    //     foreach ($collection as $item) {
-    //         $results[] = [
-    //             'company' => $item->title,
-    //             'data' => array(
-    //                 $item->open,
-    //                 $item->in_progress,
-    //                 $item->in_review,
-    //                 $item->submitted,
-    //             )
-    //         ];
-    //     }
-
-    //     return collect($results);
-    // }
 }

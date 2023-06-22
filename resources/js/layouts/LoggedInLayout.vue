@@ -55,7 +55,7 @@
           </div>
         </v-list>
         <v-divider></v-divider>
-        <v-list nav class="mt-auto">
+        <v-list v-if="!mobile" nav class="mt-auto">
           <v-list-item
             :prepend-icon="rail == false ? mdiChevronLeft : mdiChevronRight"
             title="Collapse"
