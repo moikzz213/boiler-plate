@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%; height: 480px">
+  <div style="width: 100%; height: 380px">
     <canvas ref="chart_container" width="100%"></canvas>
   </div>
 </template>

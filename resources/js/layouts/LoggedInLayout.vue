@@ -55,7 +55,7 @@
           </div>
         </v-list>
         <v-divider></v-divider>
-        <v-list nav class="mt-auto">
+        <v-list v-if="!mobile" nav class="mt-auto">
           <v-list-item
             :prepend-icon="rail == false ? mdiChevronLeft : mdiChevronRight"
             title="Collapse"
@@ -171,6 +171,7 @@ const logo = ref(import.meta.env.VITE_APP_URL + "/assets/images/fav.png");
 
 // profile header
 const profileHeaderList = ref([
+  "Home",
   "Dashboard",
   "Account",
   "Teams",
