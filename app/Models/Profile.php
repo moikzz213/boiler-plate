@@ -37,5 +37,6 @@ class Profile extends Model
     public function custom_kpis()
     {
         return $this->hasMany(KeyPerformanceIndicatorMaster::class, 'profile_ecode', 'ecode');
-    }
+    } 
+   
 }

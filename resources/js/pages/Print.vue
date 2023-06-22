@@ -20,7 +20,7 @@
             <v-col style="max-width:100px" class="my-0 pb-0 pt-1">Employee ID :</v-col>
             <v-col style="max-width:38%" class="my-0 pb-0 pt-1">{{ kpiDataEncrypted.ecode }}</v-col>
             <v-col style="max-width:100px" class="my-0 pb-0 pt-1">Grade :</v-col>
-            <v-col style="max-width:38%" class="my-0 pb-0 pt-1">8</v-col>
+            <v-col style="max-width:38%" class="my-0 pb-0 pt-1">{{kpiDataEncrypted.grade_original ? kpiDataEncrypted.grade_original: kpiDataEncrypted.grade }}</v-col>
           </v-row>
           <v-row class="download-print my-0">
             <v-col style="max-width:100px" class="my-0 pb-0 pt-1">Emp Name :</v-col>
@@ -33,15 +33,16 @@
             <v-col style="max-width:38%" class="my-0 pb-0 pt-1">{{ kpiDataEncrypted.company ?
               kpiDataEncrypted.company.title : '' }}</v-col>
             <v-col style="max-width:100px" class="my-0 pb-0 pt-1">Department :</v-col>
-            <v-col style="max-width:38%" class="my-0 pb-0 pt-1"> </v-col>
+            <v-col style="max-width:38%" class="my-0 pb-0 pt-1">{{ kpiDataEncrypted.department ?
+              kpiDataEncrypted.department : '' }}</v-col>
           </v-row>
           <v-row class="download-print my-0">
             <v-col style="max-width:100px" class="my-0 pb-0 pt-1">Reporting To :</v-col>
-            <v-col style="max-width:86%" class="my-0 pb-0 pt-1">Steve Ayala / Sr. Software Developer / G - 7 </v-col>
+            <v-col style="max-width:86%" class="my-0 pb-0 pt-1">{{ kpiDataEncrypted.managed_by ? kpiDataEncrypted.managed_by.display_name + " / "+ kpiDataEncrypted.managed_by.designation : ''}} {{ kpiDataEncrypted.managed_by.grade_original ? ' / G - '+ kpiDataEncrypted.managed_by.grade_original : ' / G - '+kpiDataEncrypted.managed_by.grade }}  </v-col>
           </v-row>
           <v-row class="download-print my-0">
             <v-col style="max-width:200px" class="my-0 pb-0 pt-1">KPI's & Target Setting Year & Month :</v-col>
-            <v-col style="max-width:70%" class="my-0 pb-0 pt-1">Jan 1, {{ year }}</v-col>
+            <v-col style="max-width:70%" class="my-0 pb-0 pt-1">{{ kpiDataEncrypted.reviews ? useFormatDateString(kpiDataEncrypted.reviews[0].settings.annual_kpi_setting_start) : ''}}</v-col>
           </v-row>
 
           <table class="mt-1" v-if="kpiArray && kpiArray.length > 0" style="width:100%" border="1" cellpadding="0"
@@ -49,8 +50,8 @@
             <thead>
               <tr>
                 <td class="py-1 px-2" style="background:#e6e6e6;color:#000;" colspan="8">
-                  KPI's count: 4 to 6 KPI's, 70% weightage to KPI's & 30% weightage to competencies development. KPI's &
-                  Targets integrated with Annual Business Plan & Budget for FY {{ year }}
+                 {{kpiDataEncrypted.reviews[0].type == 'regular' ? 'KPI`s count: 4 to 6 KPI`s, 70% weightage to KPI`s & 30% weightage to competencies development.':
+                  'KPI`s count: 4 to 6 KPI`s, with 100% weightage.'}} KPIs & Targets integrated with Annual Business Plan & Budget for FY {{year}}  
                 </td>
               </tr>
               <tr>
@@ -221,7 +222,7 @@ import { useAuthStore } from "@/stores/auth";
 import html2pdf from "html2pdf.js";
 import { useRoute } from "vue-router";
 import { clientApi } from "@/services/clientApi";
-
+import { useFormatDateString } from "../composables/formatDate.js";
 const pdfcont = ref(null);
 
 const authStore = useAuthStore();

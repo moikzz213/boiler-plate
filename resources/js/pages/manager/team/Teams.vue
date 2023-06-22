@@ -131,7 +131,7 @@ const sbOptions = ref({});
 const authStore = useAuthStore();
 const settingStore = useSettingStore();
  
-const managerTeam = ref(authStore.authProfile.teams); 
+const managerTeam = ref([]); 
 
 const year = ref(new Date().getFullYear());
 const currentDate = ref(new Date());
@@ -144,10 +144,7 @@ const filter = ref({
     employee_type: "All",
   },
 });
-const runFilter = async () => { 
-  filterTeamMethod(); 
-};
-
+ 
 const ratingOrWeightage = (user) => {
   let sum = 0 ;
   if(user.reviews && user.reviews.length > 0 && user.reviews[0].key_review){   
@@ -164,7 +161,7 @@ const noKPIEmployee = ref(false);
 
 const clearField = () => { 
   filter.value.data.employee = '';
-  managerTeam.value = authStore.authProfile.teams;
+  managerTeam.value = originalTeamValue.value;
 };
 
 const confirmOpenMember = () => {
@@ -237,10 +234,15 @@ const openMember = (user) => {
   } 
 }; 
 
-const filterTeamMethod = () => { 
-  let result = authStore.authProfile.teams.filter(function(el) {
+const runFilter = () => { 
+   
+  let result = originalTeamValue.value.filter(function(el) {
       if(filter.value.data.employee){
-          return el.ecode == filter.value.data.employee;
+        let nameToLower = el.display_name.toLowerCase(); 
+        if(nameToLower.includes(filter.value.data.employee.toLowerCase())){ 
+          return el;
+        }
+        return el.ecode == filter.value.data.employee;
       }else if(filter.value.data.employee_type == 'Probation'){
           return el.is_regular == 0;
       }else if(filter.value.data.employee_type  == 'Regular'){
@@ -251,4 +253,19 @@ const filterTeamMethod = () => {
     }); 
     managerTeam.value = result; 
 };
+
+const originalTeamValue = ref([]);
+const fetchTeamMembers = () => {
+  clientApi(authStore.authToken)
+    .get('/api/fetch/team-members/'+authStore.authProfile.ecode 
+     )
+    .then((res) => { 
+      managerTeam.value = res.data;
+      originalTeamValue.value = res.data;
+    })
+    .catch((err) => {
+
+    });  
+}
+fetchTeamMembers();
 </script>

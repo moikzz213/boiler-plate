@@ -111,7 +111,7 @@
             readonly
             label="Reporting to"
             :model-value="`${
-              profileData.data.managed_by
+              profileData.data.managed_by && profileData.data.managed_by.display_name
                 ? profileData.data.managed_by.display_name +
                   ' (' +
                   profileData.data.managed_by.ecode +
@@ -140,25 +140,15 @@
 import { ref, watch } from "vue";
 const props = defineProps(["user"]);
 const emit = defineEmits(["saved"]);
-
-// profile
 const profileData = ref({
   loading: false,
-  data: {
-    company: {
-      title: "",
-    },
-    managed_by: {
-      display_name: "",
-    },
-    status: "Active",
-  },
+  data: Object.assign({}, props.user),
 });
 watch(
   () => props.user,
   (newVal, oldValue) => {
     if (newVal != oldValue) {
-      profileData.value.data = Object.assign({}, newVal);
+      profileData.value.data = Object.assign({}, newVal);  
     }
   }
 );

@@ -27,6 +27,9 @@ Route::middleware('authkey')->group(function () {
     // Fetch Employee KPI by Year & Ecode - check if there is reviews or not
     Route::get('/fetch/employee-kpi/year/{ecode}/{year}', [ProfileController::class, 'KPIEmployeeByYear'])->name('fetch.employee.kpi.year');
 
+    Route::get('/fetch/team-members/{ecode}', [ProfileController::class, 'teamMembers'])->name('fetch.team.members');
+    
+
     
     Route::get('/fetch/auth-profile/kpi/{ecode}', [ProfileController::class, 'fetchAuthProfile'])->name('fetch.employee.kpi.list');
 

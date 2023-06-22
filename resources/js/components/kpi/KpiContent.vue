@@ -303,10 +303,7 @@ watch(
   
     if( route.name == "SingleTeamMember" ){
       emitResponseWeightageValidation();
-
-      // if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && viewingEmployee.value.reviews[0].status == 'submitted'){
-      //   isSubmitted.value = true;
-      // }
+ 
     }
   }
 );
@@ -317,14 +314,14 @@ const hasError = ref(false);
 const singlePageHasError = ref(false);
 const emitResponseWeightageValidation = () => {
  
-  if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && viewingEmployee.value.reviews[0].state == 'midyear' || viewingEmployee.value.reviews[0].state == 'first_review'){
+  if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && (viewingEmployee.value.reviews[0].state == 'midyear' || viewingEmployee.value.reviews[0].state == 'first_review')){
     let nVal = viewingEmployee.value.reviews[0].key_review.filter(el => el.achievement_midyear == null);
     let errorCheck = false;
     if(nVal && nVal.length > 0 ){
       errorCheck = true;
     }
     kpiEmit('errorcheck', {hasError: errorCheck});
-  }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && viewingEmployee.value.reviews[0].state == 'yearend' || viewingEmployee.value.reviews[0].state == 'final_review'){
+  }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && (viewingEmployee.value.reviews[0].state == 'yearend' || viewingEmployee.value.reviews[0].state == 'final_review')){
     console.log('viewingEmployee.value.reviews[0].state',viewingEmployee.value.reviews[0].state );
     let nVal = viewingEmployee.value.reviews[0].key_review.filter(el => el.achievement_yearend == null);
     let errorCheck = false;

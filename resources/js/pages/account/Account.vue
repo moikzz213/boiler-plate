@@ -12,6 +12,7 @@
             >profile</v-btn
           >
           <v-btn
+            
             :color="`${currentForm == 'account' ? 'primary' : 'white'} `"
             size="large"
             class="mr-3"
@@ -40,7 +41,7 @@
           :user="user.data"
           @saved="savedResponse"
         />
-        <ChangePassword v-show="currentForm == 'change_password'" :user-id="1" />
+      <ChangePassword v-show="currentForm == 'change_password'" :user="user.data" />
       </div>
     </v-row>
     <Snackbar :options="sbOptions" />
@@ -49,7 +50,6 @@
 
 <script setup>
 import { ref } from "vue";
-import PageHeader from "@/components/PageHeader.vue";
 import AccountForm from "./AccountForm.vue";
 import ProfileForm from "./ProfileForm.vue";
 import ChangePassword from "./ChangePassword.vue";

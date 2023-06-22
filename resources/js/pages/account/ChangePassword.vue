@@ -36,35 +36,45 @@
               :error-messages="errors"
             ></v-text-field>
           </Field>
-          <div class="d-flex align-center">
-            <v-btn color="primary" size="large" @click="changePassword"> Save </v-btn>
+          <div class="d-flex align-center"> 
+            <v-btn :disabled="isDisabled" color="primary" size="large" @click="changePassword"> Save </v-btn>
           </div>
         </Form>
       </v-card-text>
     </v-card>
+    <Snackbar :options="snackbar" />
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { Form, Field } from "vee-validate";
+import { ref, computed, watch  } from "vue";
+import { Form, Field, useIsFormDirty, useIsFormValid } from "vee-validate";
 import * as yup from "yup";
-const props = defineProps(["ecode"]);
+import Snackbar from "@/components/SnackBar.vue";
+const key = ref(import.meta.env.VITE_APP_KEY);
+const sanctumBaseURL = ref(import.meta.env.VITE_SANCTUM_USER_URL);
+const props = defineProps(["user"]);
 const snackbar = ref({
   status: false,
   type: "",
   text: "",
-});
+}); 
+  
+const isDisabled = ref(true);
+const isDirty = useIsFormDirty();
+const isValid = useIsFormValid();
+
 const password = ref({
   status: false,
   loading: false,
   data: {
-    ecode: props.ecode,
+    username: props.user.ecode,
     password: "",
     password_confirmation: "",
+    url: key.value
   },
 });
-let validation = yup.object({
+const validation = yup.object({
   password: yup.string().min(5).required(),
   password_confirmation: yup
     .string()
@@ -74,21 +84,22 @@ let validation = yup.object({
 const changePassword = async () => {
   password.value.loading = true;
   await axios
-    .post("/account/change-password", password.value.data)
+    .post(sanctumBaseURL.value+"/api/application/reset-password", password.value.data)
     .then((response) => {
       password.value = {
         status: false,
         loading: false,
         data: {
-          user_id: props.ecode,
+          username: props.user.ecode,
           password: "",
           password_confirmation: "",
         },
       };
+      console.log('response',response.data);
       snackbar.value = {
         status: true,
         type: "success",
-        text: response.data.message,
+        text: response.data.msg,
       };
     })
     .catch((err) => {
@@ -100,5 +111,27 @@ const changePassword = async () => {
       };
       console.log(err.response.data);
     });
-};
+}; 
+
+watch(
+  () => password.value.data.password,
+  (newVal, oldValue) => {
+    console.log(isValid.value);
+    if (newVal && newVal == password.value.data.password_confirmation) {
+      isDisabled.value = false;
+    }else{
+      isDisabled.value = true;
+    }
+  } 
+);
+watch( 
+  () => password.value.data.password_confirmation,
+  (newVal, oldValue) => {
+    if (newVal && newVal == password.value.data.password) {
+      isDisabled.value = false;
+    }else{
+      isDisabled.value = true;
+    }
+  }
+);
 </script>

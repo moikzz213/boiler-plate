@@ -36,7 +36,10 @@
           Enter ecode, name, or email
         </div>
       </div>
-      <div class="v-col-12 v-col-md-3 text-right pb-0">
+      <div
+        v-if="['hr_admin', 'app_admin'].includes(authStore.authProfile.role)"
+        class="v-col-12 v-col-md-3 text-right pb-0"
+      >
         <div>
           <v-menu>
             <template v-slot:activator="{ props }">
@@ -100,7 +103,10 @@
                 <div class="text-caption text-grey">Total KPI</div>
                 <div class="text-body-2">{{ ratingOrWeightage(employee) }}/100</div>
               </div>
-              <div class="v-col-12 v-col-md-2 d-flex align-center">
+              <div
+                v-if="['hr_admin', 'app_admin'].includes(authStore.authProfile.role)"
+                class="v-col-12 v-col-md-2 d-flex align-center"
+              >
                 <v-btn
                   :loading="reopen.loading"
                   @click="reopenReview"

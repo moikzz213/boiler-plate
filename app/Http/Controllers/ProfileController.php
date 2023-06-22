@@ -33,11 +33,16 @@ class ProfileController extends Controller
         return response()->json($profile, 200);
     }
 
+    public function teamMembers($ecode){
+        $team = Profile::where(['superior_ecode' => $ecode, 'status' => 'Active'])->with('reviews.keyReview')->get();
+        return response()->json($team, 200);
+    }
+
     public function EmployeeKPI($ecode, $year){
 
         $query = Profile::where(
             'ecode', $ecode
-        )->with('reviews.keyReview','company')->with('reviews', function($q) use ($year){
+        )->with('reviews.keyReview','company','managed_by', 'reviews.settings')->with('reviews', function($q) use ($year){
             $q->where('year', $year);
         })->first();
 

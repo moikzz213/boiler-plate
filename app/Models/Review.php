@@ -21,4 +21,9 @@ class Review extends Model
     {
         return $this->belongsTo(Profile::class);
     }
+
+    public function settings()
+    {
+        return $this->belongsTo(PerformanceSetting::class, 'performance_settings_id');
+    }
 }
