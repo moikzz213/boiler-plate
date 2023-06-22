@@ -2,7 +2,7 @@
   <v-container class="pb-16">
     <PageHeader title="PMS Settings" />
     <v-row class="my-5">
-      <div class="v-col-12 v-col-md-3">
+      <div class="v-col-12 v-col-md-4">
         <v-autocomplete
           v-model="filter.company_id"
           :items="companyStore.companies"
@@ -11,6 +11,7 @@
           variant="outlined"
           density="compact"
           class="bg-white"
+          clearable
           hide-details
           :label="loadingCompany ? 'Loading...' : 'Select Company'"
           :loading="loadingCompany"
@@ -33,7 +34,8 @@
       <div class="v-col-12 v-col-md-2">
         <v-btn
           block
-          @click="filterPms"
+          :loading="filter.loading"
+          @click="runFilter"
           height="40px"
           color="primary"
           class="text-capitalize"
@@ -83,16 +85,26 @@
             <v-card-text class="text-center"> No records found </v-card-text>
           </v-card>
         </v-card>
+        <v-pagination
+          v-if="totalPageCount > 1"
+          v-model="currentPage"
+          class="my-4"
+          :length="totalPageCount"
+          :total-visible="8"
+          variant="elevated"
+          active-color="primary"
+          density="comfortable"
+        ></v-pagination>
       </div>
     </v-row>
   </v-container>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
 import { clientApi } from "@/services/clientApi";
-import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { useCompanyStore } from "@/stores/company";
 import VueDatePicker from "@vuepic/vue-datepicker";
@@ -100,15 +112,35 @@ import PageHeader from "@/components/PageHeader.vue";
 
 const authStore = useAuthStore();
 const router = useRouter();
+const route = useRoute();
+
+// filter
+const filter = ref({
+  loading: false,
+  company_id: null,
+  year: new Date().getFullYear(),
+});
 
 // PMS List
 const loadingPms = ref(false);
 const pmsList = ref([]);
-const getPmsSettings = async () => {
+const totalPageCount = ref(0);
+const totalResult = ref(0);
+const currentPage = ref(route.params && route.params.page ? route.params.page : 1);
+const getPmsSettings = async (page) => {
   loadingPms.value = true;
+  let endpoint =
+    "/api/hr/pms-settings/pms?filter[company]=" +
+    filter.value.company_id +
+    "&filter[year]=" +
+    filter.value.year;
+  endpoint += "&page=" + page;
   await clientApi(authStore.authToken)
-    .get("/api/hr/settings/pms/paginated")
+    .get(endpoint)
     .then((res) => {
+      totalPageCount.value = res.data.last_page;
+      currentPage.value = res.data.current_page;
+      totalResult.value = res.data.total;
       pmsList.value = res.data.data;
       loadingPms.value = false;
     })
@@ -117,7 +149,20 @@ const getPmsSettings = async () => {
       console.log("getEmployees", err);
     });
 };
-getPmsSettings();
+watch(currentPage, (newValue, oldValue) => {
+  if (newValue != oldValue) {
+    router
+      .push({
+        name: "PaginatedPms",
+        params: {
+          page: currentPage.value,
+        },
+      })
+      .catch((err) => {});
+    getPmsSettings(currentPage.value);
+  }
+});
+getPmsSettings(currentPage.value);
 
 const addPms = () => {
   router
@@ -139,6 +184,16 @@ const openSettings = (theID) => {
 const removePms = () => {
   console.log("open remove kpi in a dialog");
 };
+const runFilter = () => {
+  filter.value.loading = true;
+  getPmsSettings(1)
+    .then(() => {
+      filter.value.loading = false;
+    })
+    .catch((err) => {
+      filter.value.loading = false;
+    });
+};
 
 // companies
 const companyStore = useCompanyStore();
@@ -150,14 +205,5 @@ const selectCompany = () => {
       loadingCompany.value = false;
     });
   }
-};
-
-// filter
-const filter = ref({
-  company_id: null,
-  year: new Date().getFullYear(),
-});
-const filterPms = () => {
-  console.log("filter", filter.value);
 };
 </script>

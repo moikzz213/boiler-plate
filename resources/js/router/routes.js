@@ -151,6 +151,16 @@ export const routes = [
         },
     },
     {
+        path: "/hr/settings/pms/page/:page",
+        component: () => import("../pages/hr/settings/Pms.vue"),
+        name: "PaginatedPms",
+        meta: {
+            requiresAuth: true,
+            role: ["app_admin", "hr_admin", "hrbp"],
+            title: "Performance Settings",
+        },
+    },
+    {
         path: "/hr/settings/pms/:id",
         component: () => import("../pages/hr/settings/SinglePms.vue"),
         name: "SinglePms",

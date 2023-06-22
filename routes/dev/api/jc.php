@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route; 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\MeasureController;
 use App\Http\Controllers\ProfileController;
@@ -27,7 +27,7 @@ Route::middleware('authkey')->group(function () {
     // Fetch Employee KPI by Year & Ecode - check if there is reviews or not
     Route::get('/fetch/employee-kpi/year/{ecode}/{year}', [ProfileController::class, 'KPIEmployeeByYear'])->name('fetch.employee.kpi.year');
 
-    
+
     Route::get('/fetch/auth-profile/kpi/{ecode}', [ProfileController::class, 'fetchAuthProfile'])->name('fetch.employee.kpi.list');
 
     // Create Employee Review by Year
@@ -36,7 +36,7 @@ Route::middleware('authkey')->group(function () {
     // Create Employee KPI by manager
     Route::post('/create/employee-kpi-year', [ReviewController::class, 'createEmployeeKPI'])->name('create.employee.kpi.year');
 
-    // delete KPI by manager 
+    // delete KPI by manager
     Route::post('/delete/employee-kpi-year', [KeyPerformanceReviewController::class, 'deleteEmployeeKPI'])->name('delete.employee.kpi.year');
 
     // Manager KPI Submit

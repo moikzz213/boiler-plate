@@ -44,6 +44,7 @@ Route::get('/hr/employees/{ecode}', [PageController::class, 'home'])->name('hr.e
 Route::get('/hr/custom/{type}', [PageController::class, 'home'])->name('hr.kpi.custom');
 Route::get('/hr/master/{type}', [PageController::class, 'home'])->name('hr.kpi.master');
 Route::get('/hr/settings/pms', [PageController::class, 'home'])->name('hr.settings.pms');
+Route::get('/hr/settings/pms/page/:page', [PageController::class, 'home'])->name('hr.settings.pms.paginated');
 Route::get('/hr/settings/pms/{id}', [PageController::class, 'home'])->name('hr.settings.pms.single');
 Route::get('/hr/settings/pms/new', [PageController::class, 'home'])->name('hr.settings.pms.new');
 
