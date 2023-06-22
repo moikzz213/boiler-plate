@@ -70,12 +70,12 @@
                       :icon="mdiPencil"
                       class="mx-1"
                     />
-                    <v-icon
+                    <!-- <v-icon
                       size="small"
                       @click="() => removePms(item)"
                       :icon="mdiTrashCan"
                       class="mx-1"
-                    />
+                    /> -->
                   </div>
                 </td>
               </tr>
@@ -181,9 +181,9 @@ const openSettings = (theID) => {
     })
     .catch((err) => {});
 };
-const removePms = () => {
-  console.log("open remove kpi in a dialog");
-};
+// const removePms = () => {
+//   console.log("open remove kpi in a dialog");
+// };
 const runFilter = () => {
   filter.value.loading = true;
   getPmsSettings(1)
