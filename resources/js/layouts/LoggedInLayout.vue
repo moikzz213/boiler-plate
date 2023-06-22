@@ -171,6 +171,7 @@ const logo = ref(import.meta.env.VITE_APP_URL + "/assets/images/fav.png");
 
 // profile header
 const profileHeaderList = ref([
+  "Home",
   "Dashboard",
   "Account",
   "Teams",
