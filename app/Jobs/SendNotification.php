@@ -36,21 +36,31 @@ class SendNotification implements ShouldQueue
          // Publisher ID
         $publisherData = $this->data;
         $query = $publisherData['data'];
-        
-        $employee = Profile::where('id', $query->profile_id)->first();
-        $employeeEmail = $employee->email;
-        $HRBPEmail = $employee->hrbp_email;
-        $managerEmail = $publisherData['managerEmail'];
-        $managerName = ucwords($publisherData['managerName']);
-        $allowedDays = $query->closing_date;
-        $current_state = $query->state;
-        $current_status = $query->status;
-        $closingSetting = $publisherData['closingSetting'];
-        $employee_type = $query->type; // Probation or Regular
-        $year = $query->year;
+        $isOpening = $publisherData['isOpening'];
+        $managersObj = array();
+        if(!$isOpening){
+            $employee = Profile::where('id', $query->profile_id)->first();
+            $employeeEmail = $employee->email;
+            $HRBPEmail = $employee->hrbp_email;
+            $managerEmail = @$publisherData['managerEmail'];
+            $managerName = @$publisherData['managerName'] ? ucwords($publisherData['managerName']) : '';
+            $allowedDays = @$query->closing_date;
+            $current_state = $query->state;
+            $current_status = $query->status;
+            $closingSetting = @$publisherData['closingSetting'];
+            $employee_type = $query->type; // Probation or Regular
+            $year = $query->year;
+        }else{
+            $managerName = $query;
+            $current_state = $publisherData['closingSetting'];
+            $current_status = 'open';
+            $employee_type = 'all'; 
+            $year = $publisherData['year'];
+        }
         $metaKey = '';
         $baseURL = env('VITE_APP_URL');
         $innerMessage = '';
+       
         if($employee_type == 'probation'){
             /***
              *  Probation Employees
@@ -64,8 +74,9 @@ class SendNotification implements ShouldQueue
                     $metaKey = 'probation_setting_open';
                     $toEmail = $managerEmail;
                     $ccEmail = array($HRBPEmail,$employeeEmail);
-                    $message = 'Hi '.$managerName.",<br/><br/>";
+                    $message = 'Hi Managers,<br/><br/>';
                     $subject = 'Probation KPI & Target Setting: Open'; 
+                    $isBCC = true;
                 }elseif($current_status == 'submitted'){
 
                     /**
@@ -147,12 +158,21 @@ class SendNotification implements ShouldQueue
                 // All Open status should automatic from CRON JOB
 
                 if($current_status == 'open'){
-                    $metaKey = 'kpi_setting_open';
-                    $toEmail = $managerEmail; // To All Employees
-                    $ccEmail = array($HRBPEmail);
-                    $message = 'Hi '.$managerName.",<br/><br/>";
-                    $subject = 'KPI and Annual Target Setting : Open'; 
-                    $innerMessage = '<br/><br/>Employee: '.$employee->ecode. " | ". $employee->display_name; // Multiple records
+                    $metaKey = 'kpi_setting_open'; 
+                    $subject = 'KPI and Annual Target Setting is now Open'; 
+                    foreach($managerName AS $k => $v){ 
+                        $innerMessage = '<br/>';
+                        foreach($v->teams AS $kk => $vv){ 
+                            $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
+                        }
+
+                        $managersObj[$k] = array(
+                            'to' => $v->email,
+                            'cc' => $v->hrbp_email,
+                            'message' => 'Hi '.$v->display_name.',<br/><br/>', 
+                            'inner_message' => $innerMessage
+                        ); 
+                    }
                 }elseif($current_status == 'inreview'){
 
                     /**
@@ -241,19 +261,34 @@ class SendNotification implements ShouldQueue
                     $innerMessage = '<br/><br/>Employee: '.$employee->ecode. " | ". $employee->display_name;
                 } 
             }
-
         }
 
-        $footer = '<br/><br/>You can access the GAG PMS System by clicking on the link provided below.<br/><br/>
-        Link: <a href="'.$baseURL.'/print/kpi/'.$year.'/'.$employee->ecode.'">Click here</a> <br/>Thank you.<br/>HR Team';
+       
        
         $notification_message = Notification::where('meta_key', $metaKey)->first();
-        $message .= $notification_message->meta_value;
-        $message .= $innerMessage;
-        $message .= $footer; 
- 
-        $data = array("message" => $message,  "date" => Carbon::now(), 'subject' => $subject);  
         
-        Mail::to($toEmail)->cc($ccEmail)->queue( new MailNotification($data) ); 
+        if($managersObj && count($managersObj) > 0){  
+            $footer = '<br/><br/>You can access the GAG PMS System by clicking on the link provided below.<br/><br/>
+            Link: <a href="'.$baseURL.'/dashboard">Click here</a> <br/>Thank you.<br/>HR Team';
+            foreach($managersObj AS $k => $v){
+                $message =  $v['message'];
+                $message .= $notification_message->meta_value;
+                $message .= $v['inner_message'];
+                $message .= $footer; 
+                $data = array("message" => $message,  "date" => Carbon::now(), 'subject' => $subject);
+                Mail::to($v['to'])->cc($v['cc'])->queue( new MailNotification($data) ); 
+            }
+        }else{  
+           
+            $footer = '<br/><br/>You can access the GAG PMS System by clicking on the link provided below.<br/><br/>
+            Link: <a href="'.$baseURL.'/print/kpi/'.$year.'/'.$employee->ecode.'">Click here</a> <br/>Thank you.<br/>HR Team';
+            $message .= $innerMessage;
+            $message .= $footer; 
+    
+            $data = array("message" => $message,  "date" => Carbon::now(), 'subject' => $subject);
+            Mail::to($toEmail)->cc($ccEmail)->queue( new MailNotification($data) ); 
+        }
+        
+         
     }
 }

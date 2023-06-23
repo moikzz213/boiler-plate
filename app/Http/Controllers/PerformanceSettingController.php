@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Review;
 use App\Models\Profile;
 use Illuminate\Http\Request;
+use App\Jobs\SendNotification;
 use Illuminate\Support\Carbon;
 use App\Models\PerformanceSetting;
 
@@ -85,10 +86,16 @@ class PerformanceSettingController extends Controller
                 ], 422);
             } 
 
-            $setting = PerformanceSetting::create($pmsArray);
+            $setting = PerformanceSetting::create($pmsArray); 
+            
+            if($setting && $status == 'open'){
+                $query = Profile::whereHas('teams', function($q) {
+                    $q->where(['status' => 'Active', 'is_regular' => 1]);
+                })->with('teams')->get();
 
-            // Send Notification to all employees
-            // Code below
+                // Send Notification to all employees that have a team only. Manager without a team member will not receive the notification.
+                SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => true, 'closingSetting' => 'setting','allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $request['year']])->onQueue('processing');
+            }
         }
 
         return response()->json([

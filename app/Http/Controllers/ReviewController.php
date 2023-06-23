@@ -53,7 +53,7 @@ class ReviewController extends Controller
             $q->where('year', Carbon::now()->format('Y'));
         })->first();
 
-       // SendNotification::dispatchAfterResponse(['data' => $query, 'closingSetting' => $request['closingDateSetting'],'allowedDays' => $request['allowedDays'], 'managerEmail' => $request['managerEmail'], 'managerName' => $request['managerName']])->onQueue('processing');
+       // SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => false, 'closingSetting' => $request['closingDateSetting'],'allowedDays' => $request['allowedDays'], 'managerEmail' => $request['managerEmail'], 'managerName' => $request['managerName']])->onQueue('processing');
 
         return response()->json([
             'message' => $msg,

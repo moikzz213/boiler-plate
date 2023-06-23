@@ -30,6 +30,7 @@ const props = defineProps({
 });
  
 const settingStore = useSettingStore();
+const userProfile = ref(props.selectedEmployee);
 
 const states = computed(() => {
   let regularStates = [
@@ -127,23 +128,20 @@ const printColor = (userState, index, statusIndex) => {
       }
   }
   return '';
-}
+} 
+const globalSetting = computed(() => settingStore.filteredSetting(userProfile.value.company_id));
 
-
-
-const userProfile = ref(props.selectedEmployee);
-
-const reviewSettings = computed(() => {
+const reviewSettings = computed(() => { 
   if (userProfile.value == null || !userProfile.value.reviews || userProfile.value.reviews.length == 0) {
-
     return [{
-      state: settingStore.pms_settings ? settingStore.pms_settings.state : null,
-      status: settingStore.pms_settings ? settingStore.pms_settings.status : null,
-      probation_setting_allow_days: settingStore.pms_settings ? settingStore.pms_settings.probation_kpi_setting : null,
+      state: globalSetting.value ? globalSetting.value.state : null,
+      status: globalSetting.value ? globalSetting.value.status : null,
+      probation_setting_allow_days: globalSetting.value ? globalSetting.value.probation_kpi_setting : null,
       profile: userProfile.value
       }
     ];
   };
+
   return userProfile.value;
 });
 
@@ -151,6 +149,7 @@ watch(
   () => props.selectedEmployee,
   (newVal) => {
     userProfile.value = Object.assign({}, newVal);
+   
   }
 );
 </script>

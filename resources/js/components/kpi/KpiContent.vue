@@ -39,116 +39,119 @@
           <div v-if="canManage" class="ml-auto text-body-1">Remaining {{ selectedTab.toUpperCase() }} weightage: {{ ratingOrWeightage(selectedTab) }}%</div>
         </v-card-title>
         <v-card-text class="px-5 pb-10">
-          <v-row v-if="hasError" class="mb-2">
-          <div class="v-col-12 pb-0"  >
-                <v-card class="rounded-lg" style="border:2px solid red">
-                  <v-card-text>
-                    <v-row>
-                      <div class="v-col-12"> 
-                        <v-icon size="large" color="red" class="mr-1"
-                              :icon="mdiAlert "></v-icon>
-                        {{errorMessage}}
-                        </div>
-                    </v-row>
-                  </v-card-text>
-                </v-card>
-              </div>
-          </v-row>
+            <v-row v-if="hasError" class="mb-2">
+            <div class="v-col-12 pb-0"  >
+                  <v-card class="rounded-lg" style="border:2px solid red">
+                    <v-card-text>
+                      <v-row>
+                        <div class="v-col-12"> 
+                          <v-icon size="large" color="red" class="mr-1"
+                                :icon="mdiAlert "></v-icon>
+                          {{errorMessage}}
+                          </div>
+                      </v-row>
+                    </v-card-text>
+                  </v-card>
+                </div>
+            </v-row>
           
-          <v-row v-show="selectedTab == 'kpi'" class="mt-3">
-            <template v-if="kpiArray && kpiArray.length > 0">
-              <div class="v-col-12 pb-0" v-for="kpi in kpiArray" :key="kpi.id">
-                <v-card class="rounded-lg">
-                  <v-card-text>
-                    <v-row>
-                      <div class="v-col-12 pb-0 d-flex justify-space-between">
-                        <div>
-                          <div class="text-grey text-caption">KPI</div>
-                          <div class="text-primary text-body-1">
-                            {{ kpi.title }}
+            <v-row v-show="selectedTab == 'kpi'" class="mt-3">
+              <template v-if="kpiArray && kpiArray.length > 0">
+                <div class="v-col-12 pb-0" v-for="kpi in kpiArray" :key="kpi.id">
+                  <v-card class="rounded-lg">
+                    <v-card-text>
+                      <v-row>
+                        <div class="v-col-12 pb-0 d-flex justify-space-between">
+                          <div>
+                            <div class="text-grey text-caption">KPI</div>
+                            <div class="text-primary text-body-1">
+                              {{ kpi.title }}
+                            </div>
+                          </div>
+                          <div>
+                            <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
+                              @click="() => reviewKPI(kpi, 'kpi')">review</v-btn>
+                            <v-btn v-if="canManage" @click="() => editKPI(kpi, 'kpi')" density="compact" size="30"
+                              color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
+                                :icon="mdiPencil"></v-icon></v-btn>
+                            <v-btn v-if="canManage" @click="() => removeKPI(kpi)" density="compact" size="30"
+                              color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
+                                :icon="mdiTrashCan"></v-icon></v-btn>
                           </div>
                         </div>
-                        <div>
-                          <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
-                            @click="() => reviewKPI(kpi, 'kpi')">review</v-btn>
-                          <v-btn v-if="canManage" @click="() => editKPI(kpi, 'kpi')" density="compact" size="30"
-                            color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
-                              :icon="mdiPencil"></v-icon></v-btn>
-                          <v-btn v-if="canManage" @click="() => removeKPI(kpi)" density="compact" size="30"
-                            color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
-                              :icon="mdiTrashCan"></v-icon></v-btn>
+                        <div class="v-col-3">
+                          <div class="text-grey text-caption">Industry</div>
+                          <div class="text-primary text-body-1">{{ kpi.industry }}</div>
                         </div>
-                      </div>
-                      <div class="v-col-3">
-                        <div class="text-grey text-caption">Industry</div>
-                        <div class="text-primary text-body-1">{{ kpi.industry }}</div>
-                      </div>
-                      <div class="v-col-3">
-                        <div class="text-grey text-caption">Target ({{ kpi.target_type }})</div>
-                        <div class="text-primary text-body-1"> {{ kpi.target }}</div>
-                      </div>
-                      <div class="v-col-3">
-                        <div class="text-grey text-caption">Measure</div>
-                        <div class="text-primary text-body-1">{{ kpi.measures }}</div>
-                      </div>
-                      <div class="v-col-3">
-                        <div class="text-grey text-caption">{{ "KPI's Weightage(%)" }}</div>
-                        <div class="text-primary text-body-1">{{ kpi.weightage }}%</div>
-                      </div>
-                    </v-row>
-                  </v-card-text>
-                </v-card>
+                        <div class="v-col-3">
+                          <div class="text-grey text-caption">Target ({{ kpi.target_type }})</div>
+                          <div class="text-primary text-body-1"> {{ kpi.target }}</div>
+                        </div>
+                        <div class="v-col-3">
+                          <div class="text-grey text-caption">Measure</div>
+                          <div class="text-primary text-body-1">{{ kpi.measures }}</div>
+                        </div>
+                        <div class="v-col-3">
+                          <div class="text-grey text-caption">{{ "KPI's Weightage(%)" }}</div>
+                          <div class="text-primary text-body-1">{{ kpi.weightage }}%</div>
+                        </div>
+                      </v-row>
+                    </v-card-text>
+                  </v-card>
+                </div>
+              </template>
+              <div class="v-col-12 pb-0 text-center" v-else> 
+                        No records yet. 
               </div>
-            </template>
-          </v-row>
-          <v-row v-show="selectedTab == 'ecd'" class="mt-n3">
+            </v-row>
+            <v-row v-show="selectedTab == 'ecd'" class="mt-n3">
 
             <!-- Start Technical Skill -->
             <div class="v-col-6 pb-0"><v-btn v-if="canManage" @click="() => addKPI(selectedTab,'tech')" density="compact" size="35"
             class="rounded-xl elevation-2 mr-2"><v-icon size="small" :icon="mdiPlus"></v-icon></v-btn><span v-if="canManage">Technical Skill</span></div>
             <div class="v-col-6 pb-0"><v-btn v-if="canManage" @click="() => addKPI(selectedTab, 'soft')" density="compact" size="35"
             class="rounded-xl elevation-2 mr-2"><v-icon size="small" :icon="mdiPlus"></v-icon></v-btn> <span v-if="canManage">Soft Skill</span></div>
-            <div class="v-col-6 pb-0">
+            <div class="v-col-6 pb-0"> 
               <v-row>
-            <div class="v-col-12 pb-0" v-for="ecd in ecdTechnicalSkillArray" :key="ecd.id">
-              <v-card class="rounded-lg">
-                <v-card-text>
-                  <v-row>
-                    <div class="v-col-12 pb-0 d-flex justify-space-between">
-                      <div>
-                        <div class="text-grey text-caption">Training</div>
-                        <div class="text-primary text-body-1">
-                          {{ ecd.title }}
+                <div class="v-col-12 pb-0" v-for="ecd in ecdTechnicalSkillArray" :key="ecd.id">
+                  <v-card class="rounded-lg">
+                    <v-card-text>
+                      <v-row>
+                        <div class="v-col-12 pb-0 d-flex justify-space-between">
+                          <div>
+                            <div class="text-grey text-caption">Training</div>
+                            <div class="text-primary text-body-1">
+                              {{ ecd.title }}
+                            </div>
+                          </div>
+                          <div>
+                            <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
+                              @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
+                            <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'tech')" density="compact" size="30"
+                              color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
+                                :icon="mdiPencil"></v-icon></v-btn>
+                                <v-btn v-if="canManage" @click="() => removeKPI(ecd)" density="compact" size="30"
+                                color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
+                                  :icon="mdiTrashCan"></v-icon></v-btn>
+                          </div>
                         </div>
-                      </div>
-                      <div>
-                        <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
-                          @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
-                        <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'tech')" density="compact" size="30"
-                          color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
-                            :icon="mdiPencil"></v-icon></v-btn>
-                            <v-btn v-if="canManage" @click="() => removeKPI(ecd)" density="compact" size="30"
-                            color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
-                              :icon="mdiTrashCan"></v-icon></v-btn>
-                      </div>
-                    </div>
-                    <div class="v-col-3">
-                      <div class="text-grey text-caption">{{ "KPI's Weightage(%)" }}</div>
-                      <div class="text-primary text-body-1">
-                        {{ ecd.weightage }}
-                      </div>
-                    </div>
-                    <div class="v-col-3">
-                      <div class="text-grey text-caption">Type</div>
-                      <div class="text-primary text-body-1">
-                        {{ ecd.ecd_type }}
-                      </div>
-                    </div>
-                  </v-row>
-                </v-card-text>
-              </v-card>
-            </div>
-            </v-row>
+                        <div class="v-col-3">
+                          <div class="text-grey text-caption">{{ "KPI's Weightage(%)" }}</div>
+                          <div class="text-primary text-body-1">
+                            {{ ecd.weightage }}
+                          </div>
+                        </div>
+                        <div class="v-col-3">
+                          <div class="text-grey text-caption">Type</div>
+                          <div class="text-primary text-body-1">
+                            {{ ecd.ecd_type }}
+                          </div>
+                        </div>
+                      </v-row>
+                    </v-card-text>
+                  </v-card>
+                </div>
+              </v-row>
             </div>
             <!-- End Technical Skill -->
             <!-- Start Soft Skill -->
