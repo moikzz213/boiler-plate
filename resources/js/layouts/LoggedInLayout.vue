@@ -111,7 +111,7 @@
           <!-- <v-btn size="36" class="mx-2" color="grey-darken-3" icon variant="flat">
             <v-icon color="white" size="small" :icon="mdiBellOutline"></v-icon>
           </v-btn> -->
-          <IconMenuNotification />
+          <!-- <IconMenuNotification /> -->
           <IconMenuAccount />
         </div>
       </div>
@@ -130,7 +130,7 @@
         </div>
       </template>
       <v-spacer></v-spacer>
-      <IconMenuNotification :color="'light'" />
+      <!-- <IconMenuNotification :color="'light'" /> -->
       <IconMenuAccount :color="'grey-lighten-3'" />
     </v-app-bar>
     <v-main>

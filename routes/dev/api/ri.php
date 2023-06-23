@@ -25,10 +25,9 @@ use App\Http\Controllers\KeyPerformanceIndicatorMasterController;
 
 Route::middleware('authkey')->prefix('hr')->group(function () {
     // companies
-     Route::get('/companies', [CompanyController::class, 'getCompanies'])->name('hr.companies');
-     Route::post('/company/save', [CompanyController::class, 'saveCompany'])->name('hr.company.save');
-     Route::post('/company/remove/{id}', [CompanyController::class, 'removeCompany'])->name('hr.company.remove');
-
+    Route::get('/companies', [CompanyController::class, 'getCompanies'])->name('hr.companies');
+    Route::post('/company/save', [CompanyController::class, 'saveCompany'])->name('hr.company.save');
+    Route::post('/company/remove/{id}', [CompanyController::class, 'removeCompany'])->name('hr.company.remove');
     // industries
     Route::get('/industries', [IndustryController::class, 'getPaginatedIndustries'])->name('hr.industry.paginated');
     Route::post('/industry/save', [IndustryController::class, 'saveIndustry'])->name('hr.industry.save');
@@ -47,19 +46,19 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
     Route::post('/kpi/save', [KeyPerformanceIndicatorMasterController::class, 'saveKpi'])->name('hr.kpi.save');
     Route::post('/kpi/remove/{id}', [KeyPerformanceIndicatorMasterController::class, 'removeKpi'])->name('hr.kpi.remove');
     // pms settings
+    Route::get('/pms-settings/pms', [PerformanceSettingController::class, 'getPerformanceSettings'])->name('hr.settings.pms.paginated');
     Route::post('/pms-settings/save', [PerformanceSettingController::class, 'saveSetting'])->name('hr.pms.settings.save');
     Route::get('/pms-setting/{id}', [PerformanceSettingController::class, 'getSingleSetting'])->name('hr.pms.settings.single');
     // custom kpi
     Route::get('/kpi/list/{status}', [KeyPerformanceIndicatorMasterController::class, 'getKpiByStatus'])->name('manager.custom.kpi.paginated');
     Route::post('/custom-kpi/approve', [KeyPerformanceIndicatorMasterController::class, 'approveCustomKpi'])->name('manager.custom.kpi.approve');
     Route::post('/master-kpi/save', [KeyPerformanceIndicatorMasterController::class, 'saveMasterKpi'])->name('hr.master.kpi.save');
-
     // employee
+    Route::get('/employees', [EmployeeController::class, 'getEmployees'])->name('hr.employees.paginated');
     Route::get('/employee/ecode/{ecode}', [EmployeeController::class, 'getEmployeeByEcode'])->name('hr.employee.ecode');
     Route::get('/search/employee', [EmployeeController::class, 'searchEmployee'])->name('hr.employee.search');
     Route::post('/employee/status/update', [EmployeeController::class, 'updateEmployeeStatus'])->name('hr.employee.update.status');
     Route::post('/employee/reopen', [EmployeeController::class, 'reopenEmployeeReview'])->name('hr.employee.reopen.employee.review');
-
     // graph
     Route::get('/graph/pms/state/{state}', [ReviewController::class, 'getReviewForGraph'])->name('hr.employee.ecode');
 });
@@ -85,10 +84,8 @@ Route::middleware('authkey')->group(function () {
     Route::post('/import/companies', [CompanyController::class, 'importCompanies'])->name('import.companies');
     Route::post('/import/kpi', [KeyPerformanceIndicatorMasterController::class, 'importKpi'])->name('import.kpi');
     Route::post('/import/ecd', [KeyPerformanceIndicatorMasterController::class, 'importEcd'])->name('import.ecd');
-
     // companies
     Route::get('/companies', [CompanyController::class, 'getCompanyList'])->name('companies.get.list');
-
     // industries
     Route::get('/industries', [IndustryController::class, 'getIndustries'])->name('industries.get.list');
 });
