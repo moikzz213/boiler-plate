@@ -19,8 +19,11 @@ use App\Http\Controllers\KeyPerformanceIndicatorMasterController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
+Route::post('/system/api-post/employees', [UserApiController::class, 'addUpdateFromUMS'])->name('system.api.employees');
 Route::middleware('authkey')->group(function () {
+  
+  Route::get('/pms-settings/all', [KeyPerformanceReviewController::class, 'getPmsSettings'])->name('pms.settings');
+
     Route::get('/dashboard/my-kpi/{id}/{year}', [ReviewController::class, 'KeyPerformance'])->name('dashboard.kpi');
     Route::get('/print/employee-kpi/year/{ecode}/{year}', [ProfileController::class, 'EmployeeKPI'])->name('print.employee.kpi');
 

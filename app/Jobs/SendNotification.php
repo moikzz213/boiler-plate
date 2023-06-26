@@ -53,8 +53,9 @@ class SendNotification implements ShouldQueue
         }else{
             $managerName = $query;
             $current_state = $publisherData['closingSetting'];
+            $managerEmail = @$publisherData['managerEmail'];
             $current_status = 'open';
-            $employee_type = 'all'; 
+            $employee_type =  @$publisherData['employee_type'];
             $year = $publisherData['year'];
         }
         $metaKey = '';
@@ -72,11 +73,25 @@ class SendNotification implements ShouldQueue
 
                 if($current_status == 'open'){
                     $metaKey = 'probation_setting_open';
-                    $toEmail = $managerEmail;
-                    $ccEmail = array($HRBPEmail,$employeeEmail);
-                    $message = 'Hi Managers,<br/><br/>';
                     $subject = 'Probation KPI & Target Setting: Open'; 
-                    $isBCC = true;
+                    $cnt = 1;
+                    foreach($managerName AS $k => $v){ 
+                        $ccEmail = array($v->hrbp_email);
+                        $innerMessage = '<br/>';
+                        foreach($v->teams AS $kk => $vv){ 
+                            $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
+                            $ccEmail[$cnt] = $vv->email;
+                            $cnt++;
+                        }
+
+                        $managersObj[$k] = array(
+                            'to' => $v->email,
+                            'cc' => $ccEmail,
+                            'message' => 'Hi '.$v->display_name.',<br/><br/>', 
+                            'inner_message' => $innerMessage
+                        ); 
+                    }  
+             
                 }elseif($current_status == 'submitted'){
 
                     /**
@@ -99,11 +114,26 @@ class SendNotification implements ShouldQueue
                      * Notify Manager, Employee & HRBP
                      */
                     $metaKey = 'probation_mid_open';
-                    $toEmail = $managerEmail;
-                    $ccEmail = array($HRBPEmail,$employeeEmail);
-                    $message = 'Hi '.$managerName.",<br/><br/>";
                     $subject = 'Probation KPI First Review: Open';
-                    $innerMessage = '<br/><br/>Employee: '.$employee->ecode. " | ". $employee->display_name;
+
+                    $cnt = 1;
+                    foreach($managerName AS $k => $v){ 
+                        $ccEmail = array($v->hrbp_email);
+                        $innerMessage = '<br/>';
+                        foreach($v->teams AS $kk => $vv){ 
+                            $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
+                            $ccEmail[$cnt] = $vv->email;
+                            $cnt++;
+                        }
+
+                        $managersObj[$k] = array(
+                            'to' => $v->email,
+                            'cc' => $ccEmail,
+                            'message' => 'Hi '.$v->display_name.',<br/><br/>', 
+                            'inner_message' => $innerMessage
+                        ); 
+                    }
+                    
                 }elseif($current_status == 'submitted'){
                     /**
                      * Notify Manager & HRBP Only
@@ -126,11 +156,25 @@ class SendNotification implements ShouldQueue
                      */
 
                     $metaKey = 'probation_final_open'; 
-                    $toEmail = $managerEmail;
-                    $ccEmail = array($HRBPEmail,$employeeEmail);
-                    $message = 'Hi '.$managerName.",<br/><br/>";
                     $subject = 'Probation KPI Final Review: Open';
-                    $innerMessage = '<br/><br/>Employee: '.$employee->ecode. " | ". $employee->display_name;
+
+                    $cnt = 1;
+                    foreach($managerName AS $k => $v){ 
+                        $ccEmail = array($v->hrbp_email);
+                        $innerMessage = '<br/>';
+                        foreach($v->teams AS $kk => $vv){ 
+                            $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
+                            $ccEmail[$cnt] = $vv->email;
+                            $cnt++;
+                        }
+
+                        $managersObj[$k] = array(
+                            'to' => $v->email,
+                            'cc' => $ccEmail,
+                            'message' => 'Hi '.$v->display_name.',<br/><br/>', 
+                            'inner_message' => $innerMessage
+                        ); 
+                    } 
 
                 }elseif($current_status == 'submitted'){
 
@@ -153,15 +197,16 @@ class SendNotification implements ShouldQueue
              * 
              ***/
 
-             if($current_state == 'setting'){
+            if($current_state == 'setting'){
 
                 // All Open status should automatic from CRON JOB
 
                 if($current_status == 'open'){
                     $metaKey = 'kpi_setting_open'; 
-                    $subject = 'KPI and Annual Target Setting is now Open'; 
+                    $subject = 'KPI and Annual Target Setting is now Open';  
                     foreach($managerName AS $k => $v){ 
                         $innerMessage = '<br/>';
+                       
                         foreach($v->teams AS $kk => $vv){ 
                             $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
                         }
@@ -214,11 +259,20 @@ class SendNotification implements ShouldQueue
                      * Notify Manager, Employee & HRBP
                      */
                     $metaKey = 'kpi_mid_open';
-                    $toEmail = $managerEmail;
-                    $ccEmail = array($HRBPEmail,$employeeEmail);
-                    $message = 'Hi '.$managerName.",<br/><br/>";
                     $subject = 'Mid-Year KPI review: Open';
-                    $innerMessage = '<br/><br/>Employee: '.$employee->ecode. " | ". $employee->display_name;
+                    foreach($managerName AS $k => $v){ 
+                        $innerMessage = '<br/>';
+                        foreach($v->teams AS $kk => $vv){ 
+                            $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
+                        }
+
+                        $managersObj[$k] = array(
+                            'to' => $v->email,
+                            'cc' => $v->hrbp_email,
+                            'message' => 'Hi '.$v->display_name.',<br/><br/>', 
+                            'inner_message' => $innerMessage
+                        ); 
+                    }
                 }elseif($current_status == 'submitted'){
                     /**
                      * Notify Manager & HRBP Only
@@ -241,11 +295,20 @@ class SendNotification implements ShouldQueue
                      */
 
                     $metaKey = 'kpi_final_open'; 
-                    $toEmail = $managerEmail;
-                    $ccEmail = array($HRBPEmail,$employeeEmail);
-                    $message = 'Hi '.$managerName.",<br/><br/>";
                     $subject = 'Year-End KPI : Open';
-                    $innerMessage = '<br/><br/>Employee: '.$employee->ecode. " | ". $employee->display_name; // multiple data
+                    foreach($managerName AS $k => $v){ 
+                        $innerMessage = '<br/>';
+                        foreach($v->teams AS $kk => $vv){ 
+                            $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
+                        }
+
+                        $managersObj[$k] = array(
+                            'to' => $v->email,
+                            'cc' => $v->hrbp_email,
+                            'message' => 'Hi '.$v->display_name.',<br/><br/>', 
+                            'inner_message' => $innerMessage
+                        ); 
+                    }
 
                 }elseif($current_status == 'submitted'){
 
@@ -261,12 +324,10 @@ class SendNotification implements ShouldQueue
                     $innerMessage = '<br/><br/>Employee: '.$employee->ecode. " | ". $employee->display_name;
                 } 
             }
-        }
-
-       
+        } 
        
         $notification_message = Notification::where('meta_key', $metaKey)->first();
-        
+       
         if($managersObj && count($managersObj) > 0){  
             $footer = '<br/><br/>You can access the GAG PMS System by clicking on the link provided below.<br/><br/>
             Link: <a href="'.$baseURL.'/dashboard">Click here</a> <br/>Thank you.<br/>HR Team';
@@ -279,14 +340,15 @@ class SendNotification implements ShouldQueue
                 Mail::to($v['to'])->cc($v['cc'])->queue( new MailNotification($data) ); 
             }
         }else{  
-           
-            $footer = '<br/><br/>You can access the GAG PMS System by clicking on the link provided below.<br/><br/>
-            Link: <a href="'.$baseURL.'/print/kpi/'.$year.'/'.$employee->ecode.'">Click here</a> <br/>Thank you.<br/>HR Team';
-            $message .= $innerMessage;
-            $message .= $footer; 
-    
-            $data = array("message" => $message,  "date" => Carbon::now(), 'subject' => $subject);
-            Mail::to($toEmail)->cc($ccEmail)->queue( new MailNotification($data) ); 
+           if($employee->ecode){
+                $footer = '<br/><br/>You can access the GAG PMS System by clicking on the link provided below.<br/><br/>
+                Link: <a href="'.$baseURL.'/print/kpi/'.$year.'/'.$employee->ecode.'">Click here</a> <br/>Thank you.<br/>HR Team';
+                $message .= $innerMessage;
+                $message .= $footer; 
+        
+                $data = array("message" => $message,  "date" => Carbon::now(), 'subject' => $subject);
+                Mail::to($toEmail)->cc($ccEmail)->queue( new MailNotification($data) ); 
+           }
         }
         
          

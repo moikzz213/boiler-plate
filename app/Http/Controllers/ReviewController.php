@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Review;
 use App\Models\Company;
 use App\Models\Profile;
-use App\Jobs\SendNotification;
+use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Jobs\SendNotification;
 use Illuminate\Support\Carbon;
 use App\Models\PerformanceSetting;
 use App\Models\KeyPerformanceReview;
@@ -28,20 +29,22 @@ class ReviewController extends Controller
     public function kpiSubmitted(Request $request){
        
         $query = Review::where('id', $request->reviewID)->first(); 
+        $msg = 'KPI status changed to '.$request->newStatus;
+
+        $defaultDayReminder = Notification::where('meta_key', 'default_reminder_days')->first(); 
+        
+        $reminderDate = date('Y-m-d', strtotime("+". $defaultDayReminder->meta_value." days"));
         if($request->newStatus == 'inreview'){ 
             
             $closingDate = Carbon::now()->addDays($request->allowedDays);
-            
-            $query->update(['status' => $request->newStatus, 'closing_date' => $closingDate]); 
-        }else{
-            $query->update(['status' => $request->newStatus]); 
-        }
+            $query->update(['status' => $request->newStatus, 'closing_date' => $closingDate, 'reminder_date' => $reminderDate]);
 
-        if($request->newStatus !== 'submitted'){
-            $msg = 'KPI status changed to '.$request->newStatus;
-        }else{
+        }elseif($request->newStatus == 'submitted'){
             $msg = 'KPI for this employee is now complete.';
-        }
+            $query->update(['status' => $request->newStatus, 'closing_date' => null, 'reminder_date' => null]); 
+        }else{
+            $query->update(['status' => $request->newStatus, 'closing_date' => $closingDate, 'reminder_date' => $reminderDate]);
+        } 
 
         $profile = Profile::where('ecode', $request['user_ecode'])
         ->with(

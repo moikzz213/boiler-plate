@@ -107,7 +107,9 @@
                 v-if="['hr_admin', 'app_admin'].includes(authStore.authProfile.role)"
                 class="v-col-12 v-col-md-2 d-flex align-center"
               >
+              
                 <v-btn
+                v-if="employee.reviews && employee.reviews.length > 0 && (employee.reviews[0].status == 'closed' || employee.reviews[0].status == 'locked' || employee.reviews[0].status == 'submitted')"
                   :loading="reopen.loading"
                   @click="reopenReview"
                   block

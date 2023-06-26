@@ -6,6 +6,7 @@ use App\Models\Review;
 use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Models\PerformanceSetting;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 
@@ -75,10 +76,30 @@ class EmployeeController extends Controller
     function reopenEmployeeReview(Request $request)
     {
         $profile = Profile::class::where('ecode', $request['ecode'])->first();
-        $updateReview = $profile->reviews()
-        ->where('year', Carbon::now()->format('Y'))
-        ->update(['status' => 'open']);
+        
+        $reviewID = Review::where(['profile_id' => $profile->id, 'year' =>Carbon::now()->format('Y')])->first();
+      
+        if($reviewID && $reviewID->id){
+            $updateReview = $profile->reviews()
+            ->where('year', Carbon::now()->format('Y'))
+            ->update(['status' => 'open',
+            'closing_date'              => Carbon::now()->addDay(3),
+            'reminder_date'             => Carbon::now()->addDay(1)]);
+        }else{
 
+            $settings = PerformanceSetting::where(['company_id' => $profile->company_id, 'year' => Carbon::now()->format('Y')])->first();
+            $profile->reviews()->create([
+                'performance_settings_id'   => $settings->id,
+                'company_id'                => $profile->company_id,
+                'state'                     => 'setting',
+                'status'                    => 'open',
+                'year'                      => Carbon::now()->format('Y'),
+                'type'                      => $profile->is_regular ? 'regular' : 'probation',
+                'closing_date'              => Carbon::now()->addDay(3),
+                'reminder_date'             => Carbon::now()->addDay(1),
+                'author'                    => 'HR Admin - Opened'
+            ]);
+        }
         return response()->json([
             'message' => 'KPI Status updated successfully'
         ], 200);

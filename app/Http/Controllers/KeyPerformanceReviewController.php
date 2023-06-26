@@ -5,11 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Models\PerformanceSetting;
 use App\Models\KeyPerformanceReview;
 
 
 class KeyPerformanceReviewController extends Controller
 {
+
+    function getPmsSettings(){
+        $currentPmsSettings = PerformanceSetting::where([ 
+            'year' => Carbon::now()->format('Y')
+        ])->get();
+
+        return response()->json($currentPmsSettings, 200);
+    }
      
     public function deleteEmployeeKPI(Request $request){ 
         $msg = 'KPI has been deleted';

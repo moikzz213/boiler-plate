@@ -76,7 +76,7 @@ class PerformanceSettingController extends Controller
 
             $reviewResult = Review::where('company_id', $request['company_id'])->update(["state" => $state, 'status' => $status]);
 
-            $profile = Profile::where('ecode', $request['profile_ecode'])
+            $profile = Profile::where(['ecode' => $request['profile_ecode']])
             ->with(
                 'teams.reviews.keyReview',
                 'teams.company',
@@ -103,7 +103,7 @@ class PerformanceSettingController extends Controller
             
             if($setting && $status == 'open'){
                 $query = Profile::whereHas('teams', function($q) {
-                    $q->where(['status' => 'Active', 'is_regular' => 1]);
+                    $q->where(['status' => 'Active', 'is_regular' => 1, 'company_id' => $request['company_id']]);
                 })->with('teams')->get();
 
                 // Send Notification to all employees that have a team only. Manager without a team member will not receive the notification.

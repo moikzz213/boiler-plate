@@ -21,9 +21,7 @@
                 <v-card class="mb-3 elevation-0">
                     <v-card-text>
                         <v-row>
-                            <div
-                                class="v-col-12 v-col-md-3 d-flex align-center"
-                            >
+                            <div class="v-col-12 v-col-md-3 d-flex align-center">
                                 <EmployeeCard :profile="selEmployeeObj" />
                             </div>
                             <div class="v-col-12 v-col-md-2 d-flex flex-column">
@@ -36,7 +34,7 @@
                                 <div class="text-caption text-grey">
                                     Business Unit
                                 </div>
-                                <div class="text-body-2">
+                                <div class="text-body-2"> 
                                     {{
                                         selEmployeeObj.company &&
                                         selEmployeeObj.company.title
@@ -102,10 +100,10 @@
             :selected-employee="selEmployeeObj"
             :industry-list="industryWithKPI"
             :ecd-list="ecdList"
-            @savedResponse="() => savedResponseMethod()"
+            @savedResponse="savedResponseMethod"
             @errorcheck="errorCheck"
             @yearchange="selectedYearResponse"
-            @removeKPI="() => removeKPIMethod()"
+            @removeKPI="removeKPIMethod"
             :is-manager="true"
         />
 
@@ -322,6 +320,7 @@ const removeKPIMethod = (v) => {
     clientApi(authStore.authToken)
         .post("/api/delete/employee-kpi-year", formData)
         .then((res) => {
+            teamList.value = res.data.profile.teams;
             authStore.setProfile(res.data.profile).then(() => {
                 employeePassData();
                 sbOptions.value = {
@@ -335,6 +334,7 @@ const removeKPIMethod = (v) => {
 };
 
 const savedResponseMethod = (v) => {
+    
     let formData = {
         action: v.action,
         reviewID: v.reviewID,
@@ -350,6 +350,7 @@ const savedResponseMethod = (v) => {
                 type: "success",
                 text: res.data.message,
             };
+            teamList.value = res.data.profile.teams;
             authStore.setProfile(res.data.profile).then(() => {
                 employeePassData();
             });
@@ -393,12 +394,11 @@ const fetchMeasures = async () => {
 };
 
 const employeePassData = () => {
-    console.log("second", teamList.value);
+    selEmployeeObj.value = {};
     let filteredEmp = teamList.value.filter((o) => {
         return o.username == ecode.value;
     });
     selEmployeeObj.value = Object.assign({}, filteredEmp[0]);
-    console.log('selEmployeeObj.value',selEmployeeObj.value);
 };
 
 const globalSetting = computed(() =>
@@ -410,7 +410,6 @@ const fetchTeamMembers = async () => {
         .get("/api/fetch/team-members/" + authStore.authProfile.ecode)
         .then((res) => {
             teamList.value = res.data;
-            console.log("first", teamList.value);
         })
         .catch((err) => {});
 };

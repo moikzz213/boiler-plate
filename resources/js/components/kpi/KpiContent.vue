@@ -242,7 +242,7 @@ import { mdiAlert  } from '@mdi/js';
 
 const router = useRouter();
 const route = useRoute();
-const kpiEmit = defineEmits(['yearchange', 'savedResponse']); 
+const kpiEmit = defineEmits(['yearchange', 'savedResponse', 'errorcheck']); 
  
 const authStore = useAuthStore();
 const props = defineProps({
@@ -296,7 +296,7 @@ const ecdSoftSkillArray = computed(() => {
 watch(
   () => props.selectedEmployee,
   (newVal) => { 
-   
+   console.log("Employee", newVal);
     //isSubmitted.value = false;
     if(newVal.length > 0){
       viewingEmployee.value = Object.assign({}, newVal[0]);
@@ -325,15 +325,17 @@ const emitResponseWeightageValidation = () => {
     }
     kpiEmit('errorcheck', {hasError: errorCheck});
   }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && (viewingEmployee.value.reviews[0].state == 'yearend' || viewingEmployee.value.reviews[0].state == 'final_review')){
-    console.log('viewingEmployee.value.reviews[0].state',viewingEmployee.value.reviews[0].state );
+    
     let nVal = viewingEmployee.value.reviews[0].key_review.filter(el => el.achievement_yearend == null);
     let errorCheck = false;
     if(nVal && nVal.length > 0 ){
       errorCheck = true;
     }
+    
     kpiEmit('errorcheck', {hasError: errorCheck});
   } else{
     weightageValidation().then(() => {
+     
       kpiEmit('errorcheck', {hasError: singlePageHasError.value});
     }) 
   }
@@ -622,6 +624,7 @@ const savedResponseMethod = (v) => {
       state: v.state
     }
     emitResponseWeightageValidation();
+    
     kpiEmit('savedResponse', reviewID); 
 }
 

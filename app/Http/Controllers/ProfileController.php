@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Review;
 use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -34,7 +35,7 @@ class ProfileController extends Controller
     }
 
     public function teamMembers($ecode){
-        $team = Profile::where(['superior_ecode' => $ecode, 'status' => 'Active'])->with('reviews.keyReview')->get();
+        $team = Profile::where(['superior_ecode' => $ecode, 'status' => 'Active'])->with('reviews.keyReview', 'company')->get();
         return response()->json($team, 200);
     }
 
@@ -77,18 +78,29 @@ class ProfileController extends Controller
     public function createReviewByYear(Request $request){
 
         $query = Profile::where('ecode', $request->ecode )->first();
-        $query->reviews()->create([
-            'performance_settings_id' => $request->setting['id'],
-            'state'         => 'setting',
-            'status'        => 'inprogress',
-            'company_id'    => $request->setting['company_id'],
-            'year'          => $request->year,
-            'reminder_date' => Carbon::now()->addDays(3), // add reminder date, current date + 3 days
-            'type'          => $request->is_regular ? "regular" : "probation",
-            'author'        => $request->author
-        ]);
-
+        $haveReview = Review::where(['profile_id' => $query->id, 'year' => $request->year, 'performance_settings_id' => $request->setting['id']])->first();
+       
+        if($haveReview){
+            $query->reviews()->update([ 
+                'status'        => 'inprogress',
+                'author'        => $request->author,
+                'reminder_date' => Carbon::now()->addDays(3),
+            ]);
+        }else{
+            $query->reviews()->create([
+                'performance_settings_id' => $request->setting['id'],
+                'state'         => 'setting',
+                'status'        => 'inprogress',
+                'company_id'    => $request->setting['company_id'],
+                'year'          => $request->year,
+                'reminder_date' => Carbon::now()->addDays(3), // add reminder date, current date + 3 days
+                'type'          => $request->is_regular ? "regular" : "probation",
+                'author'        => $request->author
+            ]);
+        }
         return response()->json([
+            'query' => $query,
+            'data' => $haveReview,
             'message' => 'KPI has been created'
         ], 200);
     }
