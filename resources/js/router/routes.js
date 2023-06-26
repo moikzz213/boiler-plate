@@ -77,16 +77,6 @@ export const routes = [
             title: "Team Member",
         },
     },
-    // {
-    //     path: "/manager/kpi/",
-    //     component: () => import("../pages/manager/kpi/CustomKpi.vue"),
-    //     name: "ManagerCustomKPI",
-    //     meta: {
-    //         requiresAuth: true,
-    //         role: ["app_admin", "manager"],
-    //         title: "Custom KPIs",
-    //     },
-    // },
 
     // hr routes
     {
@@ -110,7 +100,7 @@ export const routes = [
         },
     },
     {
-        path: "/hr/kpi/custom",
+        path: "/hr/custom/kpi",
         component: () => import("../pages/hr/kpi/HrCustomKpi.vue"),
         name: "HrCustomKpi",
         meta: {
@@ -120,7 +110,17 @@ export const routes = [
         },
     },
     {
-        path: "/hr/kpi/master",
+        path: "/hr/custom/kpi/page/:page",
+        component: () => import("../pages/hr/kpi/HrCustomKpi.vue"),
+        name: "PaginatedHrCustomKpi",
+        meta: {
+            requiresAuth: true,
+            role: ["app_admin", "hr_admin", "hrbp"],
+            title: "KPI List",
+        },
+    },
+    {
+        path: "/hr/master/:type",
         component: () => import("../pages/hr/kpi/HrMasterKpi.vue"),
         name: "HrMasterKpi",
         meta: {
@@ -130,9 +130,30 @@ export const routes = [
         },
     },
     {
+        path: "/hr/master/:type/page/:page",
+        component: () => import("../pages/hr/kpi/HrMasterKpi.vue"),
+        name: "PaginatedHrMasterKpi",
+        meta: {
+            requiresAuth: true,
+            role: ["app_admin", "hr_admin", "hrbp"],
+            title: "KPI List",
+        },
+    },
+
+    {
         path: "/hr/settings/pms",
         component: () => import("../pages/hr/settings/Pms.vue"),
         name: "Pms",
+        meta: {
+            requiresAuth: true,
+            role: ["app_admin", "hr_admin", "hrbp"],
+            title: "Performance Settings",
+        },
+    },
+    {
+        path: "/hr/settings/pms/page/:page",
+        component: () => import("../pages/hr/settings/Pms.vue"),
+        name: "PaginatedPms",
         meta: {
             requiresAuth: true,
             role: ["app_admin", "hr_admin", "hrbp"],
@@ -162,16 +183,6 @@ export const routes = [
 
     // Admin routes
     {
-        path: "/admin",
-        component: () => import("../pages/admin/Dashboard.vue"),
-        name: "AdminRoot",
-        meta: {
-            requiresAuth: true,
-            role: ["app_admin"],
-            title: "Dashboard",
-        },
-    },
-    {
         path: "/admin/users",
         component: () => import("../pages/admin/users/Users.vue"),
         name: "Users",
@@ -182,7 +193,17 @@ export const routes = [
         },
     },
     {
-        path: "/admin/users/:id",
+        path: "/admin/users/page/:page",
+        component: () => import("../pages/admin/users/Users.vue"),
+        name: "PaginatedUsers",
+        meta: {
+            requiresAuth: true,
+            role: ["app_admin"],
+            title: "Users",
+        },
+    },
+    {
+        path: "/admin/users/:ecode",
         component: () => import("../pages/admin/users/EditUser.vue"),
         name: "EditUser",
         meta: {
@@ -209,16 +230,6 @@ export const routes = [
             requiresAuth: true,
             role: ["app_admin"],
             title: "Departments",
-        },
-    },
-    {
-        path: "/admin/companies",
-        component: () => import("../pages/admin/Companies.vue"),
-        name: "Companies",
-        meta: {
-            requiresAuth: true,
-            role: ["app_admin"],
-            title: "Companies",
         },
     },
 

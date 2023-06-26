@@ -2,21 +2,23 @@
   <div class="d-flex align-center">
     <v-avatar color="grey-lighten-1" size="55">
       <div class="text-primary" style="font-size: 20px; line-height: 20px">
-        {{ printInitials(profileTest.display_name) }}
+        {{ printInitials(profileKPI.display_name) }}
       </div>
     </v-avatar>
     <div class="pl-2">
       <div class="text-capitalize mb-1" style="font-size: 12px; line-height: 14px">
-        {{ profileTest.display_name }}
-        {{ profileTest.ecode ? " (" + profileTest.ecode + ")" : "" }}
+        {{ profileKPI.display_name }}
+        {{ profileKPI.ecode ? " (" + profileKPI.ecode + ")" : "" }}
       </div>
       <div style="font-size: 10px; line-height: 12px">
-        {{ profileTest.designation }}
+        {{ profileKPI.designation }}
       </div>
       <div class="d-flex align-center">
-        <v-icon size="16" color="success" :icon="mdiCircleMedium"></v-icon>
+        <v-icon size="16"
+          :color="`${employeeKPIStatus == 'locked' || employeeKPIStatus == 'closed' || employeeKPIStatus == 'Inactive' ? 'error' : 'success'}`"
+          :icon="mdiCircleMedium"></v-icon>
         <div style="font-size: 10px; line-height: 12px">
-          {{ "open" }}
+          {{ employeeKPIStatus }}
         </div>
       </div>
     </div>
@@ -24,9 +26,12 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { printInitials } from "@/composables/printInitials";
 import { mdiCircleMedium } from "@mdi/js";
+import { useSettingStore } from "@/stores/settings";
+const settingStore = useSettingStore();
+
 const props = defineProps({
   profile: {
     type: Object,
@@ -34,19 +39,50 @@ const props = defineProps({
   },
 });
 
-const profileTest = ref({
+const profileKPI = ref({
   display_name: "Steve Ayala",
   designation: "Sr. Full Stack Software Developer",
   ecode: "100194",
   status: "locked",
 });
-if (props.profile !== null) {
-  profileTest.value = props.profile;
-}
+
+const currentDate = ref(new Date());
+ 
+const employeeKPIStatus = computed(() => { 
+  if (props.profile && props.profile.length > 0) {
+    profileKPI.value = props.profile[0];
+  } else {
+    profileKPI.value = props.profile;
+  }
+  if (profileKPI.value && (profileKPI.value.status == 'Inactive' || profileKPI.value.status == 'InActive')) {
+    return profileKPI.value.status;
+  }else if (profileKPI.value && profileKPI.value.reviews && profileKPI.value.reviews.length > 0) {
+    return profileKPI.value.reviews[0].status;
+  } else {
+    let isKPISetByCompany = settingStore.filteredSetting(profileKPI.value.company_id);
+    
+    if (isKPISetByCompany && isKPISetByCompany.id) {
+      if (profileKPI.value.is_regular == 0) {
+        let date = new Date(profileKPI.value.doj);
+        date.setDate(date.getDate() + parseInt(isKPISetByCompany.probation_kpi_setting));
+        if (date >= currentDate.value) {
+          return 'open' ;
+        }
+      }  
+      return isKPISetByCompany.status; 
+    }  
+    return 'locked';
+  }
+});
+
 watch(
   () => props.profile,
-  (newVal) => { 
-    profileTest.value = newVal;
+  (newVal) => {
+    if (newVal && newVal.length > 0) {
+      profileKPI.value = newVal[0];
+    } else {
+      profileKPI.value = newVal;
+    }
   }
 );
 </script>

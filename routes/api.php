@@ -3,8 +3,6 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\PerformanceSettingController;
 // use App\Http\Controllers\UserApiController;
 
 /*
@@ -31,11 +29,6 @@ Route::middleware('authkey')->prefix('account')->group(function () {
     // profile
     Route::get('/profile/{id}', [ProfileController::class, 'getProfileById'])->name('profile.get.by.id');
     Route::post('/profile/save', [ProfileController::class, 'saveProfile'])->name('profile.save');
-});
-
-Route::middleware('authkey')->prefix('hr')->group(function () {
-    Route::get('/employees/paginated', [EmployeeController::class, 'getPaginatedEmployees'])->name('hr.employees.paginated');
-    Route::get('/settings/pms/paginated', [PerformanceSettingController::class, 'getPaginatedPerformanceSettings'])->name('hr.settings.pms.paginated');
 });
 
 require __DIR__.'/dev/api/jc.php';

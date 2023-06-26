@@ -13,6 +13,12 @@ class MeasureController extends Controller
         return response()->json($measures, 200);
     }
 
+    public function getNonPaginatedMeasures()
+    {
+        $measures = Measure::orderBy('title','asc')->get();
+        return response()->json($measures, 200);
+    }
+
     public function saveMeasure(Request $request)
     {
         if($request['id']){

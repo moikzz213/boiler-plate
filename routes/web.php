@@ -41,9 +41,10 @@ Route::get('/manager/kpi', [PageController::class, 'home'])->name('manager.teams
 
 Route::get('/hr/employees', [PageController::class, 'home'])->name('hr.employees');
 Route::get('/hr/employees/{ecode}', [PageController::class, 'home'])->name('hr.employees.single');
-Route::get('/hr/kpi/custom', [PageController::class, 'home'])->name('hr.kpi.custom');
-Route::get('/hr/kpi/master', [PageController::class, 'home'])->name('hr.kpi.master');
+Route::get('/hr/custom/{type}', [PageController::class, 'home'])->name('hr.kpi.custom');
+Route::get('/hr/master/{type}', [PageController::class, 'home'])->name('hr.kpi.master');
 Route::get('/hr/settings/pms', [PageController::class, 'home'])->name('hr.settings.pms');
+Route::get('/hr/settings/pms/page/:page', [PageController::class, 'home'])->name('hr.settings.pms.paginated');
 Route::get('/hr/settings/pms/{id}', [PageController::class, 'home'])->name('hr.settings.pms.single');
 Route::get('/hr/settings/pms/new', [PageController::class, 'home'])->name('hr.settings.pms.new');
 
@@ -72,11 +73,11 @@ Route::prefix('admin')->group(function () {
     Route::get('/', [PageController::class, 'home'])->name('admin');
     Route::get('/{slug}', [PageController::class, 'home'])->name('admin.slug');
 
+    Route::get('/users', [PageController::class, 'home'])->name('admin.users');
+    Route::get('/users/page/{page}', [PageController::class, 'home'])->name('admin.users.paginated');
+
     // users
-    Route::get('/users/{id}', [PageController::class, 'home'])->name('admin.get.users');
-    // users axios
-    Route::get('/user/all', [UserController::class, 'getUsers'])->name('admin.get.all.users');
-    Route::get('/user/single/{id}', [UserController::class, 'getSingleUser'])->name('admin.get.single.user');
+    Route::get('/users/{ecode}', [PageController::class, 'home'])->name('admin.get.users');
 });
 
 /**

@@ -1,5 +1,5 @@
 <template>
-  <v-snackbar v-model="snackbar.status" :color="snackbar.type">
+  <v-snackbar v-model="snackbar.status" :color="snackbar.type"  >
     {{ snackbar.text }}
 
     <template v-slot:actions>
@@ -19,7 +19,7 @@ const props = defineProps({
 const snackbar = ref({
   status: false,
   type: "primary",
-  text: "Default Message",
+  text: "Default Message",  
 });
 watch(
   () => props.options,

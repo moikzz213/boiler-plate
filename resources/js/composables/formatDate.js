@@ -15,4 +15,12 @@ function useFormatDate(date) {
         month: "2-digit",
     });
 }
-export { useFormatDateTime, useFormatDate };
+
+function useFormatDateString(date) {
+    return new Date(date).toLocaleString("en-US", {
+        day: "numeric",
+        year: "numeric",
+        month: "short",
+    });
+}
+export { useFormatDateTime, useFormatDate, useFormatDateString};

@@ -6,7 +6,7 @@ use App\Models\Profile;
 use App\Models\ClientKey;
 use App\Models\PerformanceSetting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon; 
+use Illuminate\Support\Carbon;
 
 class ClientKeyController extends Controller
 {
@@ -16,11 +16,12 @@ class ClientKeyController extends Controller
         $clientKey = ClientKey::firstOrCreate([
             'key' => $request['key'],
             'ecode' => $request['user_ecode'] ? $request['user_ecode'] : null,
-        ]); 
+        ]);
 
         // save employee profile
         // return profile with role for hrbp hr_admin
         $profile = Profile::where('ecode', $request['user_ecode'])
+        ->where('status', 'Active')
         ->with(
             'teams.reviews.keyReview',
             'teams.company',
@@ -28,12 +29,11 @@ class ClientKeyController extends Controller
             'company')
         ->with('reviews',function ($q) {
             $q->where('year', Carbon::now()->format('Y'));
-        })->first(); 
-        
-        $currentPmsSettings = PerformanceSetting::where([
-            'company_id' => $profile->company_id,
+        })->first();
+
+        $currentPmsSettings = PerformanceSetting::where([ 
             'year'      => Carbon::now()->format('Y')
-        ])->first();
+        ])->get();
 
         return response()->json([
             "message" => 'Key saved successfully',

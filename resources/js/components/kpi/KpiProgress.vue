@@ -13,7 +13,6 @@
             itemStatus.title }}</v-chip>
       </div>
     </div>
-
   </v-row>
 </template>
 <script setup>
@@ -24,16 +23,14 @@ const props = defineProps({
     type: Object,
     default: null,
   },
-  globalKeystatus:{
-    type: Object,
-    default: null,
-  },
   density: {
     type: String,
     default: "",
   },
 });
+ 
 const settingStore = useSettingStore();
+const userProfile = ref(props.selectedEmployee);
 
 const states = computed(() => {
   let regularStates = [
@@ -57,7 +54,7 @@ const states = computed(() => {
     {
       state: 'setting',
       title: 'KPI & Probation Target Setting',
-      status: [{ status: 'open', title: 'Open' }, { status: 'inprogress', title: 'In Progress' }, { status: 'inreview', title: 'In Review' }, { status: 'submitted', title: 'Submitted' }]
+      status: [{ status: 'open', title: 'Open' }, { status: 'inprogress', title: 'In Progress' },  { status: 'submitted', title: 'Submitted' }]
     },
     {
       state: 'first_review',
@@ -70,70 +67,89 @@ const states = computed(() => {
       status: [{ status: 'open', title: 'Open' }, { status: 'inprogress', title: 'In Progress' },   { status: 'submitted', title: 'Submitted' }]
     }
   ]
-  
+
   return userProfile.value && userProfile.value.is_regular ? regularStates : probationStates;
 })
 
- 
+
 const currentDate = ref(new Date());
 const printColor = (userState, index, statusIndex) => {
 
   let currentStatus = 0;
-  
-  if(userState && userState.reviews && userState.reviews.length > 0){ 
+
+  if(userState && userState.reviews && userState.reviews.length > 0){
     let state = userState.reviews[0].state;
-    let status = userState.reviews[0].status; 
+    let status = userState.reviews[0].status;
     let currentState = states.value.findIndex((el) => el.state == state);
 
-    if (index < currentState) {
-      return 'bg-grey-darken-1';
-    } else if (index == currentState) {
-    
-      currentStatus = states.value[index].status.findIndex((el) => el.status == status);
-      if (currentStatus == statusIndex) {
-        return 'bg-secondary text-white';
-      } else if (statusIndex < currentStatus) {
-        return 'bg-grey-darken-1';
-      }  
-    }
+          if (index < currentState) {
+            return 'bg-grey-darken-1';
+          } else if (index == currentState) {
+
+            currentStatus = states.value[index].status.findIndex((el) => el.status == status);
+            if (currentStatus == statusIndex) {
+              return 'bg-secondary text-white';
+            } else if (statusIndex < currentStatus) {
+              return 'bg-grey-darken-1';
+            }
+          }
+
   } else if(userState && userState.length > 0) {
+
     let user = userState[0].profile;
-    if(user.is_regular == 0){ 
+    if(user && user.is_regular == 0){
           let probationState = states.value.findIndex((el) => el.state == 'setting');
           let date = new Date(user.doj);
-          
+
           date.setDate(date.getDate() +  parseInt(userState[0].probation_setting_allow_days));
-        
+
           if(date >= currentDate.value  && index == probationState){
             currentStatus = states.value[index].status.findIndex((el) => el.status == 'open');
             if (currentStatus == statusIndex) {
               return 'bg-secondary text-white';
             }
-          } 
+          }
+      }else{
+        let state = userState[0].state;
+        let status = userState[0].status;
+        let currentState = states.value.findIndex((el) => el.state == state);
+
+          if (index < currentState) {
+            return 'bg-grey-darken-1';
+          } else if (index == currentState) {
+
+            currentStatus = states.value[index].status.findIndex((el) => el.status == status);
+            if (currentStatus == statusIndex) {
+              return 'bg-secondary text-white';
+            } else if (statusIndex < currentStatus) {
+              return 'bg-grey-darken-1';
+            }
+          }
       }
   }
-  return '';  
-}
+  return '';
+} 
+const globalSetting = computed(() => settingStore.filteredSetting(userProfile.value.company_id));
 
-const userProfile = ref(props.selectedEmployee);
-
-const reviewSettings = computed(() => {
+const reviewSettings = computed(() => { 
   if (userProfile.value == null || !userProfile.value.reviews || userProfile.value.reviews.length == 0) {
     return [{
-      state: settingStore.pms_settings ? settingStore.pms_settings.state : null,
-      status: settingStore.pms_settings ? settingStore.pms_settings.status : null,
-      probation_setting_allow_days: settingStore.pms_settings ? settingStore.pms_settings.probation_kpi_setting : null,
+      state: globalSetting.value ? globalSetting.value.state : null,
+      status: globalSetting.value ? globalSetting.value.status : null,
+      probation_setting_allow_days: globalSetting.value ? globalSetting.value.probation_kpi_setting : null,
       profile: userProfile.value
       }
     ];
   };
+
   return userProfile.value;
 });
- 
+
 watch(
   () => props.selectedEmployee,
   (newVal) => {
     userProfile.value = Object.assign({}, newVal);
+   
   }
 );
 </script>

@@ -2,14 +2,26 @@
 // import "vuetify/styles";
 import './vuetify-config.scss'
 import { createVuetify } from "vuetify";
-import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
+
+// All components
+import * as components from "vuetify/components";
+
+// manual import
+// import { VCard } from 'vuetify/components/VCard'
 
 // icon library - https://pictogrammers.com/library/mdi/
 import { aliases, mdi } from "vuetify/iconsets/mdi-svg";
 
 const vuetify = createVuetify({
+    // all components
     components,
+
+    // manual import
+    // components: {
+    //     VCard,
+    // },
+
     directives,
     theme: {
         defaultTheme: "mel",

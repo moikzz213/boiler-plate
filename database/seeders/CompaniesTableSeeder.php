@@ -13,15 +13,19 @@ class CompaniesTableSeeder extends Seeder
     public function run(): void
     {
         $companies = array(
-            'Ghassan Aboud Group FZE',
-            'GA Cars',
-            'GA Spareparts',
-            'Grandiose Supermarket',
-            'Grandiose Catering',
-            'Gallega',
-            'BuyGro',
-            'Olive Country',
-            'Livepoint',
+            'GHASSAN ABOUD GROUP FZE',
+            'GHASSAN ABOUD CAR TRADING LTD',
+            'GHASSAN ABOUD AUTO SP LLC',
+            'LIVE POINT ART PRODUCTION LLC',
+            'ORIENT CHANNEL FZE',
+            'GALLEGA GLOBAL LOGISTICS LLC',
+            'GRANDIOSE SUPERMARKET LLC',
+            'GRANDIOSE CATERING LLC',
+            'GAELAN MEDICAL CARE LLC',
+            'GAELAN MEDICAL TRADE LLC',
+            'OLIVE COUNTRY GENERAL TRADING',
+            'GA TRADE PLATFORMS BUYGRO',
+            'GA AUTO PLATFORMS BUYPARTS',
         );
         foreach ($companies as $key => $company) {
             $company = new \App\Models\Company([

@@ -16,9 +16,14 @@ class Review extends Model
     {
         return $this->hasMany(KeyPerformanceReview::class);
     }
-    
+
     public function profile()
     {
         return $this->belongsTo(Profile::class);
+    }
+
+    public function settings()
+    {
+        return $this->belongsTo(PerformanceSetting::class, 'performance_settings_id');
     }
 }

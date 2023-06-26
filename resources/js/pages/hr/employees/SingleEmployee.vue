@@ -1,53 +1,119 @@
 <template>
   <v-container class="pb-16">
-    <v-row class="my-5">
-      <div class="v-col-12 v-col-md-3">
-        <v-text-field
-          v-model="search.employee"
-          variant="outlined"
-          density="compact"
-          class="bg-white"
-          hide-details
-          label="Search Employee"
-          :append-inner-icon="mdiMagnify"
-        >
-        </v-text-field>
+    <v-row class="mt-5 justify-space-between">
+      <div class="v-col-12 v-col-md-3 pb-0">
+        <v-menu>
+          <template v-slot:activator="{ props }">
+            <v-text-field
+              v-bind="props"
+              v-model="search"
+              :loading="loadingSearch"
+              variant="outlined"
+              density="compact"
+              class="bg-white"
+              label="Search Employee"
+              hide-details
+              :append-inner-icon="mdiMagnify"
+            >
+            </v-text-field>
+          </template>
+          <v-list density="compact" v-if="results.length > 0" style="max-height: 300px">
+            <v-list-item
+              v-for="(item, index) in results"
+              :key="index"
+              @click="() => selectEmployee(item)"
+            >
+              <v-list-item-title>{{
+                item.display_name + " - " + item.ecode
+              }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+          <v-list density="compact" v-else>
+            <v-list-item> No results found </v-list-item>
+          </v-list>
+        </v-menu>
+        <div class="text-caption px-3 text-grey-darken-1 pt-1">
+          Enter ecode, name, or email
+        </div>
       </div>
+      <div
+        v-if="['hr_admin', 'app_admin'].includes(authStore.authProfile.role)"
+        class="v-col-12 v-col-md-3 text-right pb-0"
+      >
+        <div>
+          <v-menu>
+            <template v-slot:activator="{ props }">
+              <v-btn
+                v-bind="props"
+                :color="`${switchStatus == 'Active' ? 'success' : 'error'}`"
+                width="120"
+              >
+                {{ switchStatus }}
+              </v-btn>
+            </template>
+            <v-list density="compact">
+              <v-list-item
+                v-for="(item, index) in statusArray"
+                :key="index"
+                @click="() => selectStatus(item)"
+              >
+                <v-list-item-title>
+                  <v-icon size="16" :color="item.color" :icon="mdiCircleMedium"></v-icon>
+                  {{ item.title }}</v-list-item-title
+                >
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
+        <div class="text-caption px-3 text-grey-darken-1 pt-1">Employee Status</div>
+      </div>
+    </v-row>
+    <v-row>
       <div class="v-col-12">
-        <v-switch
-          v-model="switchStatus"
-          hide-details
-          inset
-          color="success"
-          class="d-inline-block"
-          :label="`${switchStatus ? 'Active' : 'Inactive'}`"
-        ></v-switch>
         <v-card class="elevation-0">
           <v-card-text>
             <v-row>
               <div class="v-col-12 v-col-md-3 d-flex align-center">
-                <EmployeeCard />
+                <EmployeeCard :profile="employee" />
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">Reporting To</div>
-                <div class="text-body-2">Employee Name</div>
+                <div class="text-body-2">
+                  {{
+                    employee.managed_by && employee.managed_by.display_name
+                      ? employee.managed_by.display_name
+                      : ""
+                  }}
+                </div>
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">Business Unit</div>
-                <div class="text-body-2">Ghassan Aboud Group FZE</div>
+                <div class="text-body-2">
+                  {{ employee && employee.company ? employee.company.title : "" }}
+                </div>
               </div>
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">KPI's Target Year</div>
-                <div class="text-body-2">2023</div>
+                <div class="text-body-2">
+                 
+                  {{ globalSetting.year }}
+                </div>
               </div>
               <div class="v-col-12 v-col-md-1 d-flex flex-column">
                 <div class="text-caption text-grey">Total KPI</div>
-                <div class="text-body-2">50/100</div>
+                <div class="text-body-2">{{ ratingOrWeightage(employee) }}/100</div>
               </div>
-              <div class="v-col-12 v-col-md-2 d-flex align-center">
+              <div
+                v-if="['hr_admin', 'app_admin'].includes(authStore.authProfile.role)"
+                class="v-col-12 v-col-md-2 d-flex align-center"
+              >
+              
                 <v-btn
+                v-if="employee.reviews && employee.reviews.length > 0 && (employee.reviews[0].status == 'closed' || employee.reviews[0].status == 'locked' || employee.reviews[0].status == 'submitted')"
+                  :loading="reopen.loading"
                   @click="reopenReview"
                   block
+                  size="large"
                   color="secondary"
                   class="text-capitalize rounded-lg"
                   >Reopen</v-btn
@@ -58,52 +124,241 @@
         </v-card>
       </div>
     </v-row>
-    <KpiContent :selected-employee="authStore.authProfile" />
+    <KpiContent :selected-employee="employee" />
     <ConfirmDialog :options="confOptions" @confirm="confirmResponse" />
+    <SnackBar :options="sbOptions" />
   </v-container>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, watch, computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import { useSettingStore } from "@/stores/settings";
+import { clientApi } from "@/services/clientApi";
+import { mdiMagnify, mdiCircleMedium } from "@mdi/js";
 import KpiContent from "@/components/kpi/KpiContent.vue";
-import { mdiMagnify } from "@mdi/js";
 import EmployeeCard from "@/components/EmployeeCard.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
+import SnackBar from "@/components/SnackBar.vue";
 
-// authenticated user object
 const authStore = useAuthStore();
-
-// select employee
-const search = ref({
-  employee: "",
-});
-const employee = ref({});
-const getEmployee = () => {
-  console.log("getEmployee", employee.value);
-};
+const settingStore = useSettingStore();
+const router = useRouter();
+const route = useRoute();
+const sbOptions = ref({});
 
 // status
-const switchStatus = ref(true);
+const switchStatus = ref("Active");
+const toUpdateStatus = ref("");
+const statusArray = ref([
+  {
+    title: "Active",
+    color: "success",
+  },
+  {
+    title: "Inactive",
+    color: "error",
+  },
+]);
+
+const ratingOrWeightage = (user) => {
+  let sum = 0;
+  if (user.reviews && user.reviews.length > 0 && user.reviews[0].key_review) {
+    user.reviews[0].key_review.map((o, i) => {
+      sum += o.weightage;
+    });
+  } 
+  return sum;
+};
+// get employee
+const employee = ref({});
+const getEmployee = async () => {
+  await clientApi(authStore.authToken)
+    .get("/api/hr/employee/ecode/" + route.params.ecode)
+    .then((res) => {
+      employee.value = res.data;
+      switchStatus.value = res.data.status;
+    })
+    .catch((err) => {
+      console.log("getEmployee", err);
+    });
+};
+
+const globalSetting = computed(() => settingStore.filteredSetting(employee.value.company_id));
+
+getEmployee();
+
+// select employee
+const selectStatus = (status) => {
+  toUpdateStatus.value = status.title;
+  confOptions.value = {
+    dialog: true,
+    title: "Confirm Status Update",
+    text:
+      "Please confirm that you want to update the status of " +
+      employee.value.display_name +
+      " into " +
+      status.title +
+      ".",
+    btnColor: status.title == "Active" ? "success" : "error",
+    btnTitle: "Confirm",
+  };
+};
+
+// update status
+const updateEmployeeStatus = async () => {
+  let data = {
+    ecode: employee.value.ecode,
+    status: toUpdateStatus.value,
+  };
+  confOptions.value = {
+    ...confOptions.value,
+    ...{
+      loading: true,
+    },
+  };
+  await clientApi(authStore.authToken)
+    .post("/api/hr/employee/status/update", data)
+    .then((res) => {
+      getEmployee().then(() => {
+        confOptions.value = {
+          ...confOptions.value,
+          ...{
+            loading: false,
+            dialog: false,
+          },
+        };
+        sbOptions.value = {
+          status: true,
+          type: "success",
+          text: res.data.message,
+        };
+      });
+    })
+    .catch((err) => {
+      console.log("getEmployee", err);
+      confOptions.value = {
+        ...confOptions.value,
+        ...{
+          loading: false,
+        },
+      };
+      sbOptions.value = {
+        status: true,
+        type: "error",
+        text: "Error while updating employee",
+      };
+    });
+};
+
+// search employee
+const search = ref("");
+const loadingSearch = ref(false);
+const results = ref([]);
+const searchEmployee = async (keywords) => {
+  loadingSearch.value = true;
+  await clientApi(authStore.authToken)
+    .get("/api/hr/search/employee?&filter[search]=" + keywords)
+    .then((res) => {
+      loadingSearch.value = false;
+      results.value = res.data;
+      console.log("results.value", results.value);
+    })
+    .catch((err) => {
+      loadingSearch.value = false;
+      console.log("getEmployee", err);
+    });
+};
+const selectEmployee = (emp) => {
+  employee.value = emp;
+  switchStatus.value = emp.status;
+  router
+    .push({
+      name: "SingleEmployee",
+      params: {
+        ecode: emp.ecode,
+      },
+    })
+    .catch((err) => {});
+};
+watch(search, (newValue, oldValue) => {
+  if (newValue != oldValue && newValue.length > 3) {
+    searchEmployee(search.value);
+  }
+});
 
 // reopen review
 const reopen = ref({
   data: {},
+  loading: false,
 });
 const reopenReview = () => {
   confOptions.value = {
     dialog: true,
     title: "Confirm Reopen",
     text:
-      "Please confirm that you want to reopen the KPI for " + authStore.authProfile.email + ".",
+      "Please confirm that you want to reopen the KPI for " +
+      authStore.authProfile.email +
+      ".",
     btnColor: "primary",
     btnTitle: "Confirm",
   };
+};
+const updateEmployeeReview = async () => {
+  reopen.value.data = {
+    ecode: employee.value.ecode,
+  };
+  confOptions.value = {
+    ...confOptions.value,
+    ...{
+      loading: true,
+    },
+  };
+
+  await clientApi(authStore.authToken)
+    .post("/api/hr/employee/reopen", reopen.value.data)
+    .then((res) => {
+      confOptions.value = {
+        ...confOptions.value,
+        ...{
+          loading: false,
+          dialog: false,
+        },
+      };
+      reopen.value.loading = true;
+      getEmployee().then(() => {
+        reopen.value.loading = false;
+        sbOptions.value = {
+          status: true,
+          type: "success",
+          text: res.data.message,
+        };
+      });
+    })
+    .catch((err) => {
+      confOptions.value = {
+        ...confOptions.value,
+        ...{
+          loading: false,
+        },
+      };
+      sbOptions.value = {
+        status: true,
+        type: "error",
+        text: "Error while updating employee",
+      };
+      console.log("getEmployee", err);
+    });
 };
 
 // confirm dialog
 const confOptions = ref();
 const confirmResponse = (v) => {
-  getEmployee();
+  if (confOptions.value.title == "Confirm Status Update") {
+    updateEmployeeStatus();
+  } else if (confOptions.value.title == "Confirm Reopen") {
+    updateEmployeeReview();
+  }
 };
 </script>

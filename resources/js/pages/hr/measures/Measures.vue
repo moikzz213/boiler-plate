@@ -52,6 +52,7 @@
           v-model="currentPage"
           class="my-4"
           :length="totalPageCount"
+          :total-visible="8"
           variant="elevated"
           active-color="primary"
           density="comfortable"
@@ -119,7 +120,7 @@ const measureForm = ref({
   action: "add",
 });
 const totalPageCount = ref(0);
-const currentPage = ref(route.params ? route.params.page : 1);
+const currentPage = ref(route.params && route.params.page ? route.params.page : 1);
 const getData = async (page) => {
   await clientApi(authStore.authToken)
     .get("/api/hr/measures?page=" + page)

@@ -1,15 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PageController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\ClientKeyController;
-use App\Http\Controllers\CustomAuthController;
-use App\Http\Controllers\PublicPageController;
-use App\Http\Controllers\PerformanceSettingController;
-
+use Illuminate\Support\Facades\Route; 
+  
+use App\Http\Controllers\CronJobController;
+use App\Http\Controllers\PublicPageController; 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,3 +16,16 @@ use App\Http\Controllers\PerformanceSettingController;
 */
 
 Route::get('/print/kpi/{year}/{ecode}', [PublicPageController::class, 'access'])->name('hr.settings.pms.new');
+
+/**
+ * 
+ *  Run by Cron Job  -  http://127.0.0.1:8083/opening-mid-year-end?key=Moikzz&c=Ghassan
+ *  without the key it will not run the function
+ * 
+ */
+ 
+Route::get('/setting-opening', [CronJobController::class, 'settingOpening'])->name('opening.setting');
+Route::get('/opening-mid-year-end', [CronJobController::class, 'midYearEndOpeningAndClosing'])->name('opening.mid.year');
+Route::get('/opening-probation-setting', [CronJobController::class, 'probationSettingOpening'])->name('opening.probation.setting');
+Route::get('/probation-first-final-review', [CronJobController::class, 'probationFirstFinalReview'])->name('probation.first.final.review');
+

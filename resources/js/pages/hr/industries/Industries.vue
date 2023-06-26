@@ -3,6 +3,7 @@
     <PageHeader title="Industries" />
     <v-row class="my-5">
       <div class="v-col-12">
+        <ImportData :options="importOptions" @imported="importResponse" class="mb-3" />
         <v-card class="rounded-lg">
           <v-card-title class="d-flex align-center">
             <v-btn
@@ -52,6 +53,7 @@
           v-model="currentPage"
           class="my-4"
           :length="totalPageCount"
+          :total-visible="8"
           variant="elevated"
           active-color="primary"
           density="comfortable"
@@ -73,7 +75,7 @@
                 ></v-text-field>
               </div>
               <div class="v-col-12 d-flex justify-end">
-                <v-btn color="primary" variant="text" @click="industryForm.dialog = false"
+                <v-btn @click="industryForm.dialog = false" color="primary" variant="text"
                   >Cancel</v-btn
                 >
                 <v-btn
@@ -98,16 +100,48 @@
 import { ref, onMounted, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
-import PageHeader from "@/components/PageHeader.vue";
 import { clientApi } from "@/services/clientApi";
+import { useAuthStore } from "@/stores/auth";
+import PageHeader from "@/components/PageHeader.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import SnackBar from "@/components/SnackBar.vue";
-import { useAuthStore } from "@/stores/auth";
+import ImportData from "@/components/import/ImportData.vue";
 
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 const sbOptions = ref({});
+
+// import
+const importOptions = ref({
+  cardTitle: "Import Industries",
+  endpoint: "/api/import/industries",
+  templateFile: "import-template-industries.csv",
+});
+const importResponse = (v) => {
+  if (v.status == true) {
+    getData(1).then(() => {
+      sbOptions.value = {
+        status: true,
+        type: "success",
+        text: v.message,
+      };
+      importOptions.value = {
+        ...importOptions.value,
+        ...{
+          loading: false,
+          dialog: false,
+        },
+      };
+    });
+  } else {
+    sbOptions.value = {
+      status: true,
+      type: "error",
+      text: v.message,
+    };
+  }
+};
 
 // Industries
 const industries = ref([]);
@@ -119,7 +153,7 @@ const industryForm = ref({
   action: "add",
 });
 const totalPageCount = ref(0);
-const currentPage = ref(route.params ? route.params.page : 1);
+const currentPage = ref(route.params && route.params.page ? route.params.page : 1);
 const getData = async (page) => {
   await clientApi(authStore.authToken)
     .get("/api/hr/industries?page=" + page)
@@ -157,7 +191,7 @@ const save = async () => {
       sbOptions.value = {
         status: true,
         type: "error",
-        text: "Error while saving weightage",
+        text: "Error while saving company",
       };
     });
 };
