@@ -144,7 +144,7 @@ class UserApiController extends Controller
                     'last_name' => trim(strtolower($v->Last_Name)),
                     'email' => @$v->E_Mail ? strtolower($v->E_Mail) : null,
                     'hrbp_email' => $v->HRBP_E_Mail,
-                    'department' => $v->DepartmentDes : null,
+                    'department' => $v->DepartmentDesc : null,
                     'designation' => $v->PositionDescrition,
                     'dob' => $v->Birth_Date
                     ? date('Y-m-d', strtotime($v->Birth_Date))
@@ -154,11 +154,31 @@ class UserApiController extends Controller
                         : null, 
                     'nationality' => $v->Nationality,
                     'role'          => 'normal',
-                    'is_regular'    => $diff < 180 ? 0 : 1,
+                    'is_regular'    => $diff < 200 ? 0 : 1,
                     'company_id' => $comp ? $comp->id : 0                    
                 ];
 
                 if ($userQuery) {
+
+                    $profileData = [
+                        'status' => $v->Status,
+                        'ecode' => $v->No, 
+                        'superior_ecode' => @$v->Superior_ID ? $v->Superior_ID : null,
+                        'display_name' => ucwords($fullname),
+                        'first_name' => trim(strtolower($v->First_Name)),
+                        'grade' => $v->Equivalent_Grade_Code,
+                        'grade_original' => $v->Grade_Code,
+                        'last_name' => trim(strtolower($v->Last_Name)),
+                        'email' => @$v->E_Mail ? strtolower($v->E_Mail) : null,
+                        'hrbp_email' => $v->HRBP_E_Mail,
+                        'department' => $v->DepartmentDesc : null,
+                        'designation' => $v->PositionDescrition, 
+                        'doj' => $v->Employment_Date
+                            ? date('Y-m-d', strtotime($v->Employment_Date))
+                            : null,
+                        'is_regular'    => $diff < 200 ? 0 : 1,
+                        'company_id' => $comp ? $comp->id : 0                    
+                    ];
                     $query = $userQuery->update($profileData);
                      
                 } else { 
