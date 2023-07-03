@@ -111,7 +111,7 @@ class UserApiController extends Controller
         $query = null;
 
         $q = Profile::where('ecode','100036')->first();
-        $q->update(['department' => 'IT']); 
+        $q->update(['department' => 'Tiborsho']); 
        
         return "Test";
        
