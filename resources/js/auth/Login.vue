@@ -70,8 +70,8 @@ if (authStore.authIsLoggedIn == true) {
 // login
 const loadingLogin = ref(false);
 const credentials = ref({
-  login: "101590",
-  password: "101590",
+  login: "",
+  password: "",
   url: key.value,
 });
 
