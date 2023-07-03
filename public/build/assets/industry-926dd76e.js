@@ -1,1 +1,0 @@
-import{a3 as i}from"./app-6bac03f7.js";import{c as e}from"./clientApi-7db5a976.js";const a=i("industry",{state:()=>({industry_list:[]}),getters:{industries:t=>t.industry_list},actions:{async getIndustries(t){await e(t).get("/api/industries").then(s=>{this.industry_list=s.data})}}});export{a as u};

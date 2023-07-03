@@ -146,7 +146,7 @@ class CronJobController extends Controller
                     $query = Profile::whereHas('teams', function($q) use ($v) {
                         $q->where(['status' => 'Active', 'is_regular' => 1, 'company_id' => $v['company_id']]);
                     })->with('teams', function($q){
-                        $q->where('is_regular', 1);
+                        $q->where(['is_regular' => 1, 'status' => 'Active']);
                     })->get();
                     
                     // Send Notification to all employees that have a team only. 
@@ -356,7 +356,7 @@ class CronJobController extends Controller
             $closingReviews = Profile::whereHas('reviews', function($q) use ($v){ 
                             $q->where(['doj' => Carbon::now()->subDays($v['probation_first_review_end'])->format('Y-m-d')])
                             ->orWhere(['doj' => Carbon::now()->subDays($v['probation_final_review_end'])->format('Y-m-d')]); 
-                        })->where(['is_regular' => 0, 'company_id' => $v['company_id']])
+                        })->where(['is_regular' => 0, 'company_id' => $v['company_id', 'status' => 'Active']])
                         ->get();
             
             if($closingReviews && count($closingReviews) > 0){
