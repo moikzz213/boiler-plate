@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Profile;
+use App\Models\Company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 
 class UserApiController extends Controller
@@ -107,10 +110,10 @@ class UserApiController extends Controller
         $postRequest = json_decode($body);
         $query = null;
 
-        $q = Profile::where('ecode',100194)->first();
+        $q = Profile::where('ecode','100036')->first();
         $q->update(['department' => 'IT']); 
-        
-        return echo json_encode($q);
+       
+        return "Test";
        
     }
 }
