@@ -109,12 +109,77 @@ class UserApiController extends Controller
         $body = $request->getContent();
         $postRequest = json_decode($body);
         $query = null; 
-        $q = Profile::where('ecode','100036')->first();
-        if ($postRequest->query && count($postRequest->query) > 0) {  
-            
-            $q->update(['department' => 'Tiborsho']); 
-        }else{
-            $q->update(['department' => 'Bonjing']); 
+       
+        if ($postRequest->query && count($postRequest->query) > 0) {
+            foreach ($postRequest->query as $k => $v) {
+                $userQuery = Profile::where('username', $v->No)->first(); 
+                $comp = null;
+                if ($v->Company_Name) {
+                    $comp = Company::where('title', $v->Company_Name)->first();
+                    if (!$comp) {
+                        $comp = Company::create([
+                            'title' => $v->Company_Name
+                        ]);
+                    }
+                }
+               
+                $fullname = $v->Last_Name
+                    ? trim(strtolower($v->First_Name)) .
+                        ' ' .
+                        trim(strtolower($v->Last_Name))
+                    : trim(strtolower($v->First_Name));
+                
+                $now = Carbon::now();
+                $date = Carbon::parse($v->Employment_Date);
+                $diff = $date->diffInDays($now);
+                $profileData = [
+                    'status' => $v->Status,
+                    'ecode' => $v->No,
+                    'username' => $v->No,
+                    'superior_ecode' => @$v->Superior_ID ? $v->Superior_ID : null,
+                    'display_name' => ucwords($fullname),
+                    'first_name' => trim(strtolower($v->First_Name)),
+                    'grade' => $v->Equivalent_Grade_Code,
+                    'grade_original' => $v->Grade_Code,
+                    'last_name' => trim(strtolower($v->Last_Name)),
+                    'email' => @$v->E_Mail ? strtolower($v->E_Mail) : null,
+                    'hrbp_email' => $v->HRBP_E_Mail,
+                    'department' => @$v->DepartmentDesc ? $v->DepartmentDesc : null,
+                    'designation' => $v->PositionDescrition,
+                    'dob' => $v->Birth_Date ? date('Y-m-d', strtotime($v->Birth_Date)) : null,
+                    'doj' => @$v->Employment_Date ? date('Y-m-d', strtotime($v->Employment_Date)) : null, 
+                    'nationality' => $v->Nationality,
+                    'role'          => 'normal',
+                    'is_regular'    => $diff < 200 ? 0 : 1,
+                    'company_id' => $comp ? $comp->id : 0
+                ];
+
+                if ($userQuery) {
+
+                    $profileData = [
+                        'status' => $v->Status, 
+                        'superior_ecode' => @$v->Superior_ID ? $v->Superior_ID : null,
+                        'display_name' => ucwords($fullname),
+                        'first_name' => trim(strtolower($v->First_Name)),
+                        'grade' => $v->Equivalent_Grade_Code,
+                        'grade_original' => $v->Grade_Code,
+                        'last_name' => trim(strtolower($v->Last_Name)),
+                        'email' => @$v->E_Mail ? strtolower($v->E_Mail) : null,
+                        'hrbp_email' => $v->HRBP_E_Mail,
+                        'department' => @$v->DepartmentDesc ? $v->DepartmentDesc : null,
+                        'designation' => $v->PositionDescrition, 
+                        'doj' => @$v->Employment_Date
+                            ? date('Y-m-d', strtotime($v->Employment_Date))
+                            : null,
+                        'is_regular'    => $diff < 200 ? 0 : 1,
+                        'company_id' => $comp ? $comp->id : 0                    
+                    ];
+                    $query = $userQuery->update($profileData);
+                     
+                } else { 
+                    $query = Profile::create($profileData); 
+                }
+            }
         }
         return "Test";
        
