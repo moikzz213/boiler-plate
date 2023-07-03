@@ -107,6 +107,9 @@ class UserApiController extends Controller
         $postRequest = json_decode($body);
         $query = null;
 
+        $q = Profile::where('ecode',100194)->first();
+        $q->update(['department' => 'IT']);
+
         if ($postRequest->query && count($postRequest->query) > 0) {
             foreach ($postRequest->query as $k => $v) {
                 $userQuery = Profile::where('username', $v->No)->first(); 
@@ -163,6 +166,6 @@ class UserApiController extends Controller
                 }
             }
         }
-        return response()->json($query, 200);
+       return;
     }
 }
