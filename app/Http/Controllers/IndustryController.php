@@ -52,11 +52,19 @@ class IndustryController extends Controller
         ], 200);
     }
 
-    public function removeIndustry($id)
+    public function removeIndustry(Request $request, $id)
     {
         $industry = Industry::where('id', $id)->first();
         if($industry){
-            $industry->delete();
+            $update = $industry->update([
+                'status' => 'inactive'
+            ]);
+
+            $industry->logs()->create([
+                'profile_id' => $request['profile_id'],
+                'details' => $industry,
+                'log_type' => 'update'
+            ]);
         }
         return response()->json([
             'message' => 'Industry removed successfully'

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('logs', function (Blueprint $table) {
             $table->id();
             $table->text('details');
-            $table->string('log_type', 30);  // update - edit - new - trash - import
+            $table->string('log_type', 30);  // update - edit - new
             $table->unsignedBigInteger('profile_id');
             $table->timestamps();
         });

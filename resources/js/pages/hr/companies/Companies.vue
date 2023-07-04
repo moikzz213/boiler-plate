@@ -168,6 +168,7 @@ const getData = async (page) => {
 };
 const save = async () => {
   let data = {
+    profile_id: authStore.authProfile.id,
     id: companyForm.value.action == "edit" ? companyForm.value.data.id : null,
     title: companyForm.value.data.title,
   };
@@ -248,8 +249,11 @@ const remove = (item) => {
   };
 };
 const confirmRemove = async () => {
+  let data = {
+    profile_id: authStore.authProfile.id,
+  };
   await clientApi(authStore.authToken)
-    .post("/api/hr/company/remove/" + toRemove.value.id)
+    .post("/api/hr/company/remove/" + toRemove.value.id, data)
     .then((res) => {
       getData(currentPage.value).then(() => {
         sbOptions.value = {

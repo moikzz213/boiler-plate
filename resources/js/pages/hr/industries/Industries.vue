@@ -257,8 +257,11 @@ const remove = (item) => {
   };
 };
 const confirmRemove = async () => {
+  let data = {
+    profile_id: authStore.authProfile.id,
+  };
   await clientApi(authStore.authToken)
-    .post("/api/hr/industry/remove/" + toRemove.value.id)
+    .post("/api/hr/industry/remove/" + toRemove.value.id, data)
     .then((res) => {
       getData(currentPage.value).then(() => {
         sbOptions.value = {
