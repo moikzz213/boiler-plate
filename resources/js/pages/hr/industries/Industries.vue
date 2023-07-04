@@ -168,6 +168,7 @@ const getData = async (page) => {
 };
 const save = async () => {
   let data = {
+    profile_id: authStore.authProfile.id,
     id: industryForm.value.action == "edit" ? industryForm.value.data.id : null,
     title: industryForm.value.data.title,
   };
@@ -188,11 +189,19 @@ const save = async () => {
     .catch((err) => {
       industryForm.value.loading = false;
       console.log("industries", err);
-      sbOptions.value = {
-        status: true,
-        type: "error",
-        text: "Error while saving company",
-      };
+      if (err.response.data.message.includes("Duplicate entry") == true) {
+        sbOptions.value = {
+          status: true,
+          type: "error",
+          text: data.title + " already exist",
+        };
+      } else {
+        sbOptions.value = {
+          status: true,
+          type: "error",
+          text: "Error while saving industry",
+        };
+      }
     });
 };
 const add = () => {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Log;
 use App\Models\Industry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -28,18 +29,26 @@ class IndustryController extends Controller
 
     public function saveIndustry(Request $request)
     {
+        $logType = '';
         if($request['id']){
-            $industry = Industry::where('id', $request['id'])->update([
+            $industry = Industry::where('id', $request['id'])->first();
+            $update = $industry->update([
                 'title' => $request['title']
             ]);
+            $logType = 'update';
         }else{
             $industry = Industry::create([
                 'title' => $request['title']
             ]);
+            $logType = 'new';
         }
-
+        $industry->logs()->create([
+            'profile_id' => $request['profile_id'],
+            'details' => $industry,
+            'log_type' => $logType
+        ]);
         return response()->json([
-            'message' => 'Industry saved successfully'
+            'message' => 'Industry saved successfully',
         ], 200);
     }
 

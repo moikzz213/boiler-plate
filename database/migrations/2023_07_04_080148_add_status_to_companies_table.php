@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('logs', function (Blueprint $table) {
-            $table->id();
-            $table->text('details');
-            $table->string('log_type', 30);  // update - edit - new - trash - import
-            $table->unsignedBigInteger('profile_id');
-            $table->timestamps();
+        Schema::table('companies', function (Blueprint $table) {
+            $table->string('status')->default('active'); // active, inactive
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('logs');
+        Schema::table('companies', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
     }
 };
