@@ -68,8 +68,8 @@
               <v-textarea v-model="kpiData.subordinate_measures" readonly label="Subordinate Measures*" variant="outlined"
                 rows="2"></v-textarea>
             </div>
-            <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.calculation_example" readonly label="KPI Calulation Example*" variant="outlined"
+            <div class="v-col-12 py-0 hidden hide" hidden>
+              <v-textarea v-model="kpiData.calculation_example" readonly label="KPI Calculation Example*" variant="outlined"
                 rows="2"></v-textarea>
             </div> 
             <div class="v-col-12 py-0">

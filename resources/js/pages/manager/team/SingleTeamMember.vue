@@ -77,6 +77,7 @@
                                     @click="submitForReview"
                                     :loading="loadingBtn"
                                     block
+                                    :disabled="disabledBtn"
                                     color="secondary"
                                     class="text-capitalize rounded-lg"
                                     >{{
@@ -237,6 +238,7 @@ const customKpiMaster = async () => {
 };
 
 const loadingBtn = ref(false);
+const disabledBtn = ref(false);
 const submitForReview = () => {
     loadingBtn.value = true;
     let status = "inprogress";
@@ -301,7 +303,8 @@ const submitForReview = () => {
 
               setTimeout(() => {
                   loadingBtn.value = false;
-              }, 1000);
+                  disabledBtn.value = true;
+              }, 2000);
           });
         })
         .catch((err) => {});
