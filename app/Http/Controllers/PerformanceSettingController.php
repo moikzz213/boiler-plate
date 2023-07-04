@@ -107,7 +107,7 @@ class PerformanceSettingController extends Controller
                 })->where('status', 'Active')->with('teams')->get();
 
                 // Send Notification to all employees that have a team only. Manager without a team member will not receive the notification.
-               // SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => true, 'closingSetting' => 'setting','allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $request['year']])->onQueue('processing');
+                SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => true, 'closingSetting' => 'setting','allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $request['year']])->onQueue('processing');
             }
         }
 

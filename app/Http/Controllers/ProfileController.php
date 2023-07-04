@@ -101,7 +101,7 @@ class ProfileController extends Controller
         return response()->json([
             'query' => $query,
             'data' => $haveReview,
-            'message' => 'KPI has been created'
+            'message' => 'KPI Setting / Review has been Initiated.'
         ], 200);
     }
 

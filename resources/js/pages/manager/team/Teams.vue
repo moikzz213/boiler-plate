@@ -105,9 +105,10 @@
         </v-row>
         <v-dialog v-model="dialogOpenMember" width="450">
             <v-card class="rounded-lg">
-                <v-card-title>
-                    Do you want to set KPI for {{ selectedUser.username }}?
-                </v-card-title>
+                <v-card-text>
+                  
+                   {{ message }} {{ selectedUser.first_name }}?
+                </v-card-text>
                 <div class="pa-3 mt-3 d-flex justify-end">
                     <v-btn
                         color="primary"
@@ -212,7 +213,7 @@ const confirmOpenMember = () => {
     sbOptions.value = {
         status: true,
         type: "info",
-        text: "Creating KPI. Please wait...",
+        text: "Initializing KPI. Please wait...",
     };
 
     clientApi(authStore.authToken)
@@ -235,7 +236,7 @@ const confirmOpenMember = () => {
                     type: "success",
                     text: res.data.message,
                 };
-            }, 1500);
+            }, 800);
         });
 
     clientApi(authStore.authToken)
@@ -247,16 +248,19 @@ const confirmOpenMember = () => {
                     openPage("SingleTeamMember", {
                         id: selectedUser.value.ecode,
                     });
-                }, 1500);
+                }, 3000);
             });
         })
         .catch((err) => {});
 
     // redirect to SingleTeamMember
 };
+
+const message = ref('');
 const openMember = (user) => {
     let msgError = "KPI review is currently closed";
     let statusGlobalSettings = settingStore.filteredSetting(user.company_id);
+    message.value = 'Do you want to set KPI for ';
     selectedUser.value = Object.assign({}, user);
     if (user.status == "Inactive") {
         errorMessage.value =
@@ -272,6 +276,9 @@ const openMember = (user) => {
             noKPIEmployee.value = true;
         } else if (user.reviews[0].status == "open") {
             dialogOpenMember.value = true;
+            if(statusGlobalSettings.state != "setting"){
+                message.value = 'Do you want to initialize the review for ';
+            }
         } else {
             openPage("SingleTeamMember", { id: user.ecode });
         }

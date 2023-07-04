@@ -38,25 +38,32 @@ class SendNotification implements ShouldQueue
         $query = $publisherData['data'];
         $isOpening = $publisherData['isOpening'];
         $managersObj = array();
-        if(!$isOpening){
-            $employee = Profile::where('id', $query->profile_id)->first();
-            $employeeEmail = $employee->email;
-            $HRBPEmail = $employee->hrbp_email;
+        if(!$isOpening){ 
+                $employee = Profile::where('id', $query->profile_id)->first();
+                $employeeEmail = $employee->email;
+                $HRBPEmail = $employee->hrbp_email;
+                $allowedDays = @$query->closing_date;
+                $current_state = $query->state;
+                $current_status = $query->status;
+                $closingSetting = @$publisherData['closingSetting'];
+            
             $managerEmail = @$publisherData['managerEmail'];
             $managerName = @$publisherData['managerName'] ? ucwords($publisherData['managerName']) : '';
-            $allowedDays = @$query->closing_date;
-            $current_state = $query->state;
-            $current_status = $query->status;
-            $closingSetting = @$publisherData['closingSetting'];
+           
             $employee_type = $query->type; // Probation or Regular
             $year = $query->year;
         }else{
-            $managerName = $query;
+            $managerName = $query;  
             $current_state = $publisherData['closingSetting'];
-            $managerEmail = @$publisherData['managerEmail'];
-            $current_status = 'open';
             $employee_type =  @$publisherData['employee_type'];
-            $year = $publisherData['year'];
+
+            if(@$publisherData['daily_run']){ // daily reminder
+                $current_status = @$publisherData['status'];
+                $year = @$publisherData['year'];
+            }else{ 
+                $current_status = 'open';  
+                $year = @$publisherData['year'];
+            }
         }
         $metaKey = '';
         $baseURL = env('VITE_APP_URL');
@@ -71,7 +78,7 @@ class SendNotification implements ShouldQueue
 
                 // All Open status should automatic from CRON JOB
 
-                if($current_status == 'open'){
+                if($current_status == 'open' || $current_status == 'inprogress'){
                     $metaKey = 'probation_setting_open';
                     $subject = 'Probation KPI & Target Setting: Open'; 
                     $cnt = 1;
@@ -109,7 +116,7 @@ class SendNotification implements ShouldQueue
                 
                 // All Open status should automatic from CRON JOB
 
-                if($current_status == 'open'){
+                if($current_status == 'open' || $current_status == 'inprogress'){
                      /**
                      * Notify Manager, Employee & HRBP
                      */
@@ -149,7 +156,7 @@ class SendNotification implements ShouldQueue
 
                  // All Open status should automatic from CRON JOB
 
-                if($current_status == 'open'){
+                if($current_status == 'open' || $current_status == 'inprogress'){
 
                     /**
                      * Notify Manager, Employee & HRBP
@@ -201,7 +208,7 @@ class SendNotification implements ShouldQueue
 
                 // All Open status should automatic from CRON JOB
 
-                if($current_status == 'open'){
+                if($current_status == 'open' || $current_status == 'inprogress'){
                     $metaKey = 'kpi_setting_open'; 
                     $subject = 'KPI and Annual Target Setting is now Open';  
                     foreach($managerName AS $k => $v){ 
@@ -254,21 +261,25 @@ class SendNotification implements ShouldQueue
                 
                 // All Open status should automatic from CRON JOB
 
-                if($current_status == 'open'){
+                if($current_status == 'open' || $current_status == 'inprogress'){
                      /**
                      * Notify Manager, Employee & HRBP
                      */
                     $metaKey = 'kpi_mid_open';
                     $subject = 'Mid-Year KPI review: Open';
+                    $cnt = 1;
                     foreach($managerName AS $k => $v){ 
+                        $ccEmail = array($v->hrbp_email);  
                         $innerMessage = '<br/>';
                         foreach($v->teams AS $kk => $vv){ 
                             $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
+                            $ccEmail[$cnt] = $vv->email;
+                            $cnt++;
                         }
 
                         $managersObj[$k] = array(
                             'to' => $v->email,
-                            'cc' => $v->hrbp_email,
+                            'cc' => $ccEmail,
                             'message' => 'Hi '.$v->display_name.',<br/><br/>', 
                             'inner_message' => $innerMessage
                         ); 
@@ -288,7 +299,7 @@ class SendNotification implements ShouldQueue
 
                  // All Open status should automatic from CRON JOB
 
-                if($current_status == 'open'){
+                if($current_status == 'open' || $current_status == 'inprogress'){
 
                     /**
                      * Notify Manager, Employee & HRBP
@@ -305,7 +316,7 @@ class SendNotification implements ShouldQueue
                         $managersObj[$k] = array(
                             'to' => $v->email,
                             'cc' => $v->hrbp_email,
-                            'message' => 'Hi '.$v->display_name.',<br/><br/>', 
+                            'message' => 'Hi '.$v->display_name.',<br/><br/>',
                             'inner_message' => $innerMessage
                         ); 
                     }
@@ -349,8 +360,6 @@ class SendNotification implements ShouldQueue
                 $data = array("message" => $message,  "date" => Carbon::now(), 'subject' => $subject);
                 Mail::to($toEmail)->cc($ccEmail)->queue( new MailNotification($data) ); 
            }
-        }
-        
-         
+        } 
     }
 }
