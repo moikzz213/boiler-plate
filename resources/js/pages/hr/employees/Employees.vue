@@ -18,7 +18,7 @@
       <div class="v-col-12 v-col-md-4">
         <v-autocomplete
           v-model="filter.data.company_id"
-          :items="companyStore.companies"
+          :items="companyStore.active_companies"
           item-title="title"
           item-value="id"
           variant="outlined"
@@ -151,7 +151,7 @@ const openPage = (pathName, openParams = null) => {
 
 const ratingOrWeightage = (user) => {
   let sum = 0 ;
-  if(user.reviews && user.reviews.length > 0 && user.reviews[0].key_review){   
+  if(user.reviews && user.reviews.length > 0 && user.reviews[0].key_review){
     user.reviews[0].key_review.map((o,i) =>{
       sum += o.weightage;
     });

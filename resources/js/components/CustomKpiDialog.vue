@@ -49,7 +49,7 @@
             <div v-if="enableOn(['kpi'])" class="v-col-12 v-col-md-6 py-0">
               <v-autocomplete
                 v-model="kpiData.data.industry_id"
-                :items="industryStore.industries"
+                :items="industryStore.active_industries"
                 item-title="title"
                 item-value="id"
                 variant="outlined"

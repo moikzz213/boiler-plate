@@ -7,6 +7,7 @@ export const useIndustryStore = defineStore("industry", {
     }),
     getters: {
         industries: (state) => state.industry_list,
+        active_industries: (state) => state.industry_list.filter(i => i.status === 'active'),
     },
     actions: {
         async getIndustries(token) {

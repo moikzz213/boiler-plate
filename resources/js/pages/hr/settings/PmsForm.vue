@@ -4,7 +4,7 @@
       <div class="v-col-12 v-col-md-6">
         <v-autocomplete
           v-model="pms.data.company_id"
-          :items="companyStore.companies"
+          :items="companyStore.active_companies"
           item-title="title"
           item-value="id"
           variant="outlined"
@@ -284,7 +284,7 @@ const saveSetting = async () => {
       };
 
       settingStore.setPmsSettings(res.data.result);
-       
+
       if(res.data.profile && res.data.profile.length > 0){
         authStore.setProfile(res.data.profile);
       }

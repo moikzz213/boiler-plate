@@ -7,6 +7,7 @@ export const useCompanyStore = defineStore("company", {
     }),
     getters: {
         companies: (state) => state.company_list,
+        active_companies: (state) => state.company_list.filter(c => c.status === 'active'),
     },
     actions: {
         async getCompanies(token) {
