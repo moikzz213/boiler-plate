@@ -339,27 +339,28 @@ class SendNotification implements ShouldQueue
        
         $notification_message = Notification::where('meta_key', $metaKey)->first();
        
-        if($managersObj && count($managersObj) > 0){  
+        if($managersObj && count($managersObj) > 0){
             $footer = '<br/><br/>You can access the GAG PMS System by clicking on the link provided below.<br/><br/>
             Link: <a href="'.$baseURL.'/dashboard">Click here</a> <br/>Thank you.<br/>HR Team';
             foreach($managersObj AS $k => $v){
                 $message =  $v['message'];
                 $message .= $notification_message->meta_value;
                 $message .= $v['inner_message'];
-                $message .= $footer; 
+                $message .= $footer;
                 $data = array("message" => $message,  "date" => Carbon::now(), 'subject' => $subject);
-                Mail::to($v['to'])->cc($v['cc'])->queue( new MailNotification($data) ); 
+                Mail::to($v['to'])->cc($v['cc'])->queue( new MailNotification($data) );
             }
-        }else{  
-           if($employee->ecode){
+        }else{
+            if($employee->ecode){
                 $footer = '<br/><br/>You can access the GAG PMS System by clicking on the link provided below.<br/><br/>
                 Link: <a href="'.$baseURL.'/print/kpi/'.$year.'/'.$employee->ecode.'">Click here</a> <br/>Thank you.<br/>HR Team';
+                $message .= $notification_message->meta_value;
                 $message .= $innerMessage;
                 $message .= $footer; 
         
                 $data = array("message" => $message,  "date" => Carbon::now(), 'subject' => $subject);
-                Mail::to($toEmail)->cc($ccEmail)->queue( new MailNotification($data) ); 
-           }
-        } 
+                Mail::to($toEmail)->cc($ccEmail)->queue( new MailNotification( $data) ); 
+            }
+        }
     }
 }

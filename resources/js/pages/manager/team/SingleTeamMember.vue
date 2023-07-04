@@ -278,16 +278,16 @@ const submitForReview = () => {
         managerName: authStore.authProfile.display_name,
         allowedDays: selEmployeeObj.value.is_regular
             ? globalSetting.value.employee_review_allowed_days
-            : probation_kpi_setting,
+            : globalSetting.value.probation_kpi_setting,
         closingDateSetting: selEmployeeObj.value.is_regular
             ? globalSetting.value.annual_kpi_setting_end
-            : probation_kpi_setting,
+            : globalSetting.value.probation_kpi_setting,
         closingDateMid: selEmployeeObj.value.is_regular
             ? globalSetting.value.mid_year_review_end
-            : probation_first_review_end,
+            : globalSetting.value.probation_first_review_end,
         closingDateFinal: selEmployeeObj.value.is_regular
             ? globalSetting.value.end_year_review_end
-            : probation_final_review_end,
+            : globalSetting.value.probation_final_review_end,
     };
     clientApi(authStore.authToken)
         .post("/api/manager/employee-kpi/submit", formData)

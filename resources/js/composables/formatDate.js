@@ -17,8 +17,7 @@ function useFormatDate(date) {
 }
 
 function useFormatDateString(date) {
-    return new Date(date).toLocaleString("en-US", {
-        day: "numeric",
+    return new Date(date).toLocaleString("en-US", { 
         year: "numeric",
         month: "short",
     });

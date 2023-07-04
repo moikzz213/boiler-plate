@@ -109,7 +109,6 @@
               >
               
                 <v-btn
-                v-if="employee.reviews && employee.reviews.length > 0 && (employee.reviews[0].status == 'closed' || employee.reviews[0].status == 'locked' || employee.reviews[0].status == 'submitted')"
                   :loading="reopen.loading"
                   @click="reopenReview"
                   block

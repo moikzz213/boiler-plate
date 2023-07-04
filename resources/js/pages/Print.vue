@@ -38,11 +38,16 @@
           </v-row>
           <v-row class="download-print my-0">
             <v-col style="max-width:100px" class="my-0 pb-0 pt-1">Reporting To :</v-col>
-            <v-col style="max-width:86%" class="my-0 pb-0 pt-1">{{ kpiDataEncrypted.managed_by ? kpiDataEncrypted.managed_by.display_name + " / "+ kpiDataEncrypted.managed_by.designation : ''}} {{ kpiDataEncrypted.managed_by.grade_original ? ' / G - '+ kpiDataEncrypted.managed_by.grade_original : ' / G - '+kpiDataEncrypted.managed_by.grade }}  </v-col>
+            <v-col style="max-width:86%" class="my-0 pb-0 pt-1">
+              {{ kpiDataEncrypted.managed_by ? kpiDataEncrypted.managed_by.display_name + " / "+ kpiDataEncrypted.managed_by.designation : ''}} {{ kpiDataEncrypted.managed_by && kpiDataEncrypted.managed_by.grade_original ? ' / G - '+ kpiDataEncrypted.managed_by.grade_original : ( kpiDataEncrypted.managed_by ? ' / G - '+kpiDataEncrypted.managed_by.grade : '-' )}}  
+            </v-col>
           </v-row>
           <v-row class="download-print my-0">
             <v-col style="max-width:200px" class="my-0 pb-0 pt-1">KPI's & Target Setting Year & Month :</v-col>
-            <v-col style="max-width:70%" class="my-0 pb-0 pt-1">{{ kpiDataEncrypted.reviews ? useFormatDateString(kpiDataEncrypted.reviews[0].settings.annual_kpi_setting_start) : ''}}</v-col>
+            <v-col style="max-width:70%" class="my-0 pb-0 pt-1">
+          
+              {{ kpiDataEncrypted.reviews && kpiDataEncrypted.reviews.length > 0 && kpiDataEncrypted.reviews[0].type == 'regular' ? useFormatDateString(kpiDataEncrypted.reviews[0].settings.annual_kpi_setting_start) : useFormatDateString(kpiDataEncrypted.doj)}}
+            </v-col>
           </v-row>
 
           <table class="mt-1" v-if="kpiArray && kpiArray.length > 0" style="width:100%" border="1" cellpadding="0"
