@@ -27,7 +27,7 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
     // companies
     Route::get('/companies', [CompanyController::class, 'getCompanies'])->name('hr.companies');
     Route::post('/company/save', [CompanyController::class, 'saveCompany'])->name('hr.company.save');
-    Route::post('/company/remove/{id}', [CompanyController::class, 'removeCompany'])->name('hr.company.remove');
+    Route::post('/company/update-status/{id}', [CompanyController::class, 'updateStatusCompany'])->name('hr.company.remove');
     // industries
     Route::get('/industries', [IndustryController::class, 'getPaginatedIndustries'])->name('hr.industry.paginated');
     Route::post('/industry/save', [IndustryController::class, 'saveIndustry'])->name('hr.industry.save');

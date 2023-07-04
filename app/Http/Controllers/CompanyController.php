@@ -45,12 +45,12 @@ class CompanyController extends Controller
         ], 200);
     }
 
-    public function removeCompany(Request $request, $id)
+    public function updateStatusCompany(Request $request, $id)
     {
         $company = Company::where('id', $id)->first();
         if($company){
             $update = $company->update([
-                'status' => 'inactive'
+                'status' => $request['status']
             ]);
 
             $company->logs()->create([
