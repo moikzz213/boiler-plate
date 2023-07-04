@@ -35,7 +35,7 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
     // measures
     Route::get('/measures', [MeasureController::class, 'getPaginatedMeasures'])->name('hr.measure.paginated');
     Route::post('/measure/save', [MeasureController::class, 'saveMeasure'])->name('hr.measure.save');
-    Route::post('/measure/remove/{id}', [MeasureController::class, 'removeMeasure'])->name('hr.measure.remove');
+    Route::post('/measure/update-status/{id}', [MeasureController::class, 'updateStatusMeasure'])->name('hr.measure.remove');
     // weightages
     Route::get('/weightages', [WeightageController::class, 'getPaginatedWeightages'])->name('hr.weightage.paginated');
     Route::post('/weightage/save', [WeightageController::class, 'saveWeightage'])->name('hr.weightage.save');
