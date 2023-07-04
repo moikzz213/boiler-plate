@@ -52,12 +52,12 @@ class IndustryController extends Controller
         ], 200);
     }
 
-    public function removeIndustry(Request $request, $id)
+    public function updateStatusIndustry(Request $request, $id)
     {
         $industry = Industry::where('id', $id)->first();
         if($industry){
             $update = $industry->update([
-                'status' => 'inactive'
+                'status' => $request['status']
             ]);
 
             $industry->logs()->create([
@@ -67,7 +67,7 @@ class IndustryController extends Controller
             ]);
         }
         return response()->json([
-            'message' => 'Industry removed successfully'
+            'message' => 'Industry status updated successfully'
         ], 200);
     }
 

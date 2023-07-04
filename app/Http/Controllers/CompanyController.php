@@ -60,7 +60,7 @@ class CompanyController extends Controller
             ]);
         }
         return response()->json([
-            'message' => 'Company removed successfully'
+            'message' => 'Company status updated successfully'
         ], 200);
     }
 

@@ -31,7 +31,7 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
     // industries
     Route::get('/industries', [IndustryController::class, 'getPaginatedIndustries'])->name('hr.industry.paginated');
     Route::post('/industry/save', [IndustryController::class, 'saveIndustry'])->name('hr.industry.save');
-    Route::post('/industry/remove/{id}', [IndustryController::class, 'removeIndustry'])->name('hr.industry.remove');
+    Route::post('/industry/update-status/{id}', [IndustryController::class, 'updateStatusIndustry'])->name('hr.industry.remove');
     // measures
     Route::get('/measures', [MeasureController::class, 'getPaginatedMeasures'])->name('hr.measure.paginated');
     Route::post('/measure/save', [MeasureController::class, 'saveMeasure'])->name('hr.measure.save');
