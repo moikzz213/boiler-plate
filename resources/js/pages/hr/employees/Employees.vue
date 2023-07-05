@@ -12,6 +12,7 @@
           class="bg-white"
           hide-details
           label="Input Employee"
+          @keydown.enter="runFilter"
         >
         </v-text-field>
       </div>
@@ -150,9 +151,9 @@ const openPage = (pathName, openParams = null) => {
 };
 
 const ratingOrWeightage = (user) => {
-  let sum = 0 ;
-  if(user.reviews && user.reviews.length > 0 && user.reviews[0].key_review){
-    user.reviews[0].key_review.map((o,i) =>{
+  let sum = 0;
+  if (user.reviews && user.reviews.length > 0 && user.reviews[0].key_review) {
+    user.reviews[0].key_review.map((o, i) => {
       sum += o.weightage;
     });
   }
@@ -230,9 +231,9 @@ const getEmployees = async (page) => {
   if (filter.value.data.company_id !== null) {
     endpoint += "&filter[company_id]=" + filter.value.data.company_id;
   }
-  if (filter.value.data.employee !== null) {
-    endpoint += "&filter[employee]=" + filter.value.data.employee;
-  }
+  //   if (filter.value.data.employee !== null) {
+  endpoint += "&filter[employee]=" + filter.value.data.employee;
+  //   }
   endpoint += "&page=" + page;
 
   await clientApi(authStore.authToken)
