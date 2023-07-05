@@ -87,8 +87,9 @@
             <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
              {{  kpiAction.is_regular ? "Mid-year Achievement" : 'First Review Achievement'}} 
             </div> 
+          
             <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field :disabled="finalReview.isFinal" v-model="kpiData.achievement_midyear" label="Achievement*" variant="outlined"
+              <v-text-field :disabled="finalReview.isFinal || kpiAction.action =='readonly'" v-model="kpiData.achievement_midyear" label="Achievement*" variant="outlined"
                 density="compact" persistent-hint></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-6 py-0 px-1">
@@ -96,11 +97,11 @@
                 density="compact" persistent-hint></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field v-if="kpiAction.is_regular" :disabled="finalReview.isFinal" v-model="kpiData.revised_annual_target" label="Revised Annual Target*" variant="outlined"
+              <v-text-field v-if="kpiAction.is_regular" :disabled="finalReview.isFinal || kpiAction.action =='readonly'" v-model="kpiData.revised_annual_target" label="Revised Annual Target*" variant="outlined"
                 density="compact" persistent-hint></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field v-if="kpiAction.is_regular" :disabled="finalReview.isFinal" v-model="kpiData.mid_year_remainder_target" label="Remainder Annual Target*"
+              <v-text-field v-if="kpiAction.is_regular" readonly v-model="kpiData.mid_year_remainder_target" label="Remainder Annual Target*"
                 variant="outlined" density="compact" persistent-hint></v-text-field>
             </div>
             </v-row>
@@ -124,7 +125,7 @@
             <v-row> 
             <div class="v-col-12 d-flex justify-end">
               <v-btn class="bg-grey-lighten-2 text-primary" variant="text" @click="kpiAction.dialog = false">Cancel</v-btn>
-              <v-btn :loading="saveLoading" v-if="props.submitButton && finalReview.saveBtn" color="primary" class="ml-2" @click="submitReview">Save</v-btn>
+              <v-btn :loading="saveLoading" v-if="kpiAction.action !='readonly' && props.submitButton && finalReview.saveBtn" color="primary" class="ml-2" @click="submitReview">Save</v-btn>
             </div>
           </v-row>
         </div>
@@ -220,13 +221,14 @@ const submitReview = () => {
 watch(
   () => props.kpiOptions,
   (newVal) => {
-    console.log('newValnewVal',props.industryList);
+     
     saveLoading.value = false;
       listIndustries.value = props.industryList;
+      console.log('listIndustries.value',listIndustries.value);
       kpiData.value = Object.assign({}, newVal.data);
       kpiAction.value = Object.assign({}, newVal);
       
-      if(kpiAction.value.action == 'edit' ||  kpiAction.value.action == 'review'){
+      if(kpiAction.value.action == 'edit' ||  kpiAction.value.action == 'review' ||  kpiAction.value.action == 'readonly'){
         industry.value = newVal.data.industry;
         selectedKPI.value = newVal.data.title;
         oldWeightage.value = newVal.data.weightage;
