@@ -273,6 +273,7 @@ const getPmsSettings = async () => {
 const saveSetting = async () => {
   pms.value.loading = true;
   pms.value.data.profile_ecode = authStore.authProfile.ecode;
+  pms.value.data.profile_id = authStore.authProfile.id;
   await clientApi(authStore.authToken)
     .post("/api/hr/pms-settings/save", pms.value.data)
     .then((res) => {

@@ -167,7 +167,7 @@ watch(currentPage, (newValue, oldValue) => {
   if (newValue != oldValue) {
     router
       .push({
-        name: "PaginatedHrMasterKpi",
+        name: "PaginatedHrCustomKpi",
         params: {
           page: currentPage.value,
         },

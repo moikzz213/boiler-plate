@@ -72,7 +72,8 @@ class PerformanceSettingController extends Controller
         $profile = array();
         if($request['id']){
             $setting = PerformanceSetting::where('id', $request['id'])->first();
-            $setting->update($pmsArray);
+
+            $update = $setting->update($pmsArray);
 
             $reviewResult = Review::where('company_id', $request['company_id'])->update(["state" => $state, 'status' => $status]);
 
@@ -110,6 +111,12 @@ class PerformanceSettingController extends Controller
                 // SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => true, 'closingSetting' => 'setting','allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $request['year']])->onQueue('processing');
             }
         }
+
+        $setting->logs()->create([
+            'profile_id' => $request['profile_id'],
+            'details' => $setting,
+            'log_type' => 'new'
+        ]);
 
         return response()->json([
             'message' => 'PMS settings saved successfully',
