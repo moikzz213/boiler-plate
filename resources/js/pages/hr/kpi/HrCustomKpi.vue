@@ -34,12 +34,12 @@
                       :icon="mdiPencil"
                       class="mx-1"
                     />
-                    <v-icon
+                    <!-- <v-icon
                       size="small"
                       @click="() => removeKPI(item)"
                       :icon="mdiTrashCan"
                       class="mx-1"
-                    />
+                    /> -->
                   </div>
                 </td>
               </tr>
@@ -116,11 +116,11 @@ const openKPI = (item) => {
   kpiOptions.value = {
     ...kpiOptions.value,
     ...{
-      title: "Edit KPI ",
+      title: "Approve KPI ",
       data: Object.assign({}, item),
       loading: false,
       dialog: true,
-      type: "kpi",
+      type: item.type,
       action: "approve",
       is_review: false,
     },
@@ -128,6 +128,7 @@ const openKPI = (item) => {
 };
 const approveCustomKpi = async (kpi) => {
   let data = {
+    profile_id: authStore.authProfile.id,
     id: kpi.id,
   };
   await clientApi(authStore.authToken)

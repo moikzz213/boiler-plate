@@ -53,7 +53,7 @@
       <div class="v-col-12 v-col-md-6 py-0">
         <v-text-field
           type="date"
-          label="Start Date (mm/dd/yyyy)"
+          label="Start Date"
           v-model="pms.data.annual_kpi_setting_start"
           variant="outlined"
           density="compact"
@@ -63,7 +63,7 @@
       <div class="v-col-12 v-col-md-6 py-0">
         <v-text-field
           type="date"
-          label="End Date (mm/dd/yyyy)"
+          label="End Date"
           v-model="pms.data.annual_kpi_setting_end"
           variant="outlined"
           density="compact"
@@ -76,7 +76,7 @@
       <div class="v-col-12 v-col-md-6 py-0">
         <v-text-field
           type="date"
-          label="Start Date (mm/dd/yyyy)"
+          label="Start Date"
           v-model="pms.data.mid_year_review_start"
           variant="outlined"
           density="compact"
@@ -86,7 +86,7 @@
       <div class="v-col-12 v-col-md-6 py-0">
         <v-text-field
           type="date"
-          label="End Date (mm/dd/yyyy)"
+          label="End Date"
           v-model="pms.data.mid_year_review_end"
           variant="outlined"
           density="compact"
@@ -100,7 +100,7 @@
       <div class="v-col-12 v-col-md-6 py-0">
         <v-text-field
           type="date"
-          label="Start Date (mm/dd/yyyy)"
+          label="Start Date"
           v-model="pms.data.end_year_review_start"
           variant="outlined"
           density="compact"
@@ -110,7 +110,7 @@
       <div class="v-col-12 v-col-md-6 py-0">
         <v-text-field
           type="date"
-          label="End Date (mm/dd/yyyy)"
+          label="End Date"
           v-model="pms.data.end_year_review_end"
           variant="outlined"
           density="compact"

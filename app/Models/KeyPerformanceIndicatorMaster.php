@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Log;
 use App\Models\Profile;
 use App\Models\Industry;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,11 @@ class KeyPerformanceIndicatorMaster extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function logs()
+    {
+        return $this->morphToMany(Log::class, 'loggable');
+    }
 
     public function profile()
     {

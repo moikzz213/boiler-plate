@@ -200,7 +200,6 @@ watch(
   (newVal) => {
     selectIndustry();
     kpiData.value = Object.assign({}, newVal);
-    console.log("kpiData.value", kpiData.value);
   }
 );
 
