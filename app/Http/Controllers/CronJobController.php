@@ -23,7 +23,7 @@ class CronJobController extends Controller
    
     public function settingOpening(Request $request){
 
-        if(!$request->input('key') || !$request->input('c') || ( $request->input('key') != 'Moikzz' || $request->input('c') != 'Ghassan')){
+        if(!$request->input('key') || !$request->input('c') || ( $request->input('key') != 'Moikzz' || $request->input('c') != 'ghassan')){
             return json_encode(array("Message" => 'Invalid access', 'Status Code' => 403));
         }
 
@@ -46,8 +46,10 @@ class CronJobController extends Controller
                 'message' => 'Kindly add KPI manually / KPI already created.'
             ], 422);
         } 
-       
+        
+      
         foreach($lastYearSetting AS $k => $v){
+          
             $pmsArray = array(
                 'year' => $currentYear,
                 'state' => 'setting',
@@ -66,16 +68,17 @@ class CronJobController extends Controller
                 'end_year_review_start' => date('Y-m-d', strtotime($v['end_year_review_start']. '+1 year')),
                 'end_year_review_end' => date('Y-m-d', strtotime($v['end_year_review_end']. '+1 year')),
             );
+           
             if($current_month_day ==  date('m-d', strtotime($v['annual_kpi_setting_start']))){
                 $setting = PerformanceSetting::create($pmsArray);
-
+                
                 if($setting){
                     $query = Profile::whereHas('teams', function($q) use ($v) {
                         $q->where(['status' => 'Active', 'is_regular' => 1, 'company_id' => $v['company_id']]);
                     })->where('status', 'Active')->with('teams', function($q){
                         $q->where(['is_regular' => 1, 'status' => 'Active']);
                     })->get();
-                    
+                        
                     // Send Notification to all employees that have a team only. Manager without a team member will not receive the notification.
                     if($query && count($query) > 0){
                         foreach($query AS $k => $vb){
@@ -95,12 +98,15 @@ class CronJobController extends Controller
                                 }
                             }
                         }
-                        SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => true, 'closingSetting' => 'setting','allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $currentYear])->onQueue('processing');
+                     
+                         SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => true, 'closingSetting' => 'setting','allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $currentYear])->onQueue('processing');
                     } 
+                    
                 }
+              
             }
         } 
-
+       
         return json_encode(array("Message" => 'Invalid access', 'Status Code' => 401));
     }
 
@@ -349,7 +355,7 @@ class CronJobController extends Controller
             $closingReviews = Profile::whereHas('reviews', function($q) use ($v){ 
                             $q->where(['doj' => Carbon::now()->subDays($v['probation_first_review_end'])->format('Y-m-d')])
                             ->orWhere(['doj' => Carbon::now()->subDays($v['probation_final_review_end'])->format('Y-m-d')]); 
-                        })->where(['is_regular' => 0, 'company_id' => $v['company_id'],'status' => 'Active'])
+                        })->where(['is_regular' => 0, 'company_id' => $v['company_id'],'status' => 'Active']) 
                         ->get();
             
             if($closingReviews && count($closingReviews) > 0){

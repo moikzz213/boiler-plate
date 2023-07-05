@@ -47,8 +47,8 @@
 </template>
 
 <script setup>
-import { ref, computed, watch  } from "vue";
-import { Form, Field, useIsFormDirty, useIsFormValid } from "vee-validate";
+import { ref, watch  } from "vue";
+import { Form, Field, useIsFormValid } from "vee-validate";
 import * as yup from "yup";
 import Snackbar from "@/components/SnackBar.vue";
 const key = ref(import.meta.env.VITE_APP_KEY);
@@ -61,14 +61,14 @@ const snackbar = ref({
 }); 
   
 const isDisabled = ref(true);
-const isDirty = useIsFormDirty();
+ 
 const isValid = useIsFormValid();
-
+console.log(props.user);
 const password = ref({
   status: false,
   loading: false,
   data: {
-    username: props.user.ecode,
+    username: "",
     password: "",
     password_confirmation: "",
     url: key.value
@@ -112,10 +112,18 @@ const changePassword = async () => {
       console.log(err.response.data);
     });
 }; 
-
+watch(
+  () => props.user,
+  (newVal, oldValue) => { 
+    if (newVal != oldValue) {
+      password.value.data.username = Object.assign({}, newVal.ecode);
+      
+    }
+  }
+);
 watch(
   () => password.value.data.password,
-  (newVal, oldValue) => {
+  (newVal) => {
     console.log(isValid.value);
     if (newVal && newVal == password.value.data.password_confirmation) {
       isDisabled.value = false;

@@ -80,7 +80,6 @@ const getSingleUser = async () => {
     .then((response) => {
       user.value.data = response.data;
       user.value.loadingPage = false;
-      console.log("user.value", user.value);
     })
     .catch((err) => {
       user.value.loadingPage = false;

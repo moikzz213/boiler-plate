@@ -97,8 +97,8 @@
             </div>
         </v-row>
         <KpiContent
+        :selected-employee="selEmployeeObj"
             :measures-list="measuresList"
-            :selected-employee="selEmployeeObj"
             :industry-list="industryWithKPI"
             :ecd-list="ecdList"
             @savedResponse="savedResponseMethod"

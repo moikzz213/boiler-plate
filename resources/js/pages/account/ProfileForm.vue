@@ -42,8 +42,9 @@
           />
         </div>
         <div class="v-col-12 v-col-md-6 py-0">
+         
           <v-text-field
-            v-model="profileData.data.company.title"
+            v-model="profileData.company"
             label="Company"
             variant="outlined"
             density="compact"
@@ -54,11 +55,12 @@
           <v-text-field
             readonly
             label="Designation"
-            :v-model="profileData.data.designation"
+            v-model="profileData.data.designation"
             variant="outlined"
             density="compact"
           />
         </div>
+        
         <div class="v-col-12 v-col-md-6 py-0">
           <v-text-field
             readonly
@@ -101,11 +103,20 @@
           <v-text-field
             readonly
             label="Grade"
-            :model-value="profileData.data.grade"
+            :model-value="profileData.data.grade_original ? profileData.data.grade_original : profileData.data.grade"
             variant="outlined"
             density="compact"
           />
         </div>
+        <div class="v-col-12 v-col-md-6 py-0">
+          <v-text-field
+            readonly
+            label="Equivalent Grade"
+            :model-value="profileData.data.grade"
+            variant="outlined"
+            density="compact"
+          />
+        </div> 
         <div class="v-col-12 v-col-md-6 py-0">
           <v-text-field
             readonly
@@ -146,9 +157,10 @@ const profileData = ref({
 });
 watch(
   () => props.user,
-  (newVal, oldValue) => {
+  (newVal, oldValue) => { 
     if (newVal != oldValue) {
-      profileData.value.data = Object.assign({}, newVal);  
+      profileData.value.data = Object.assign({}, newVal);
+      profileData.value.company = newVal.company.title; 
     }
   }
 );

@@ -68,7 +68,9 @@
                               {{ kpi.title }}
                             </div>
                           </div>
-                          <div>
+                          <div> 
+                            <v-btn :icon="mdiFileFind" color="primary" class="rounded-md mr-1" size="small"
+                            @click="() => viewKPI(kpi, 'kpi')"></v-btn>
                             <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
                               @click="() => reviewKPI(kpi, 'kpi')">review</v-btn>
                             <v-btn v-if="canManage" @click="() => editKPI(kpi, 'kpi')" density="compact" size="30"
@@ -231,7 +233,7 @@
 <script setup>
 import { ref, computed, watch } from "vue";
 import { useAuthStore } from "@/stores/auth";
-import { mdiPrinter, mdiPlus, mdiPencil, mdiTrashCan } from "@mdi/js";
+import { mdiPrinter, mdiPlus, mdiPencil, mdiTrashCan,mdiFileFind } from "@mdi/js";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import KpiDialog from "@/components/kpi/KpiDialog.vue";
 import EcdDialog from "@/components/kpi/EcdDialog.vue";
@@ -296,7 +298,6 @@ const ecdSoftSkillArray = computed(() => {
 watch(
   () => props.selectedEmployee,
   (newVal) => { 
-   console.log("Employee", newVal);
     //isSubmitted.value = false;
     if(newVal.length > 0){
       viewingEmployee.value = Object.assign({}, newVal[0]);
@@ -581,6 +582,41 @@ const editKPI = async (item, type = "kpi",ecdType) => {
       },
     };
   }
+};
+
+const viewKPI = async (item, type = "kpi") => {
+  console.log("item",item);
+  if (type == "kpi") {
+    kpiOptions.value = {
+      ...kpiOptions.value,
+      ...{
+        title: type.toUpperCase(),
+        data: Object.assign({}, item),
+        dialog: true,
+        type: type,
+        action: "readonly",
+        is_review: true,
+        state:viewingEmployee.value.reviews[0].state,
+        is_regular: viewingEmployee.value.is_regular
+      },
+    };
+    console.log("kpiOptions",kpiOptions.value);
+  }
+
+  if (type == "ecd") {
+    ecdOptions.value = {
+      ...ecdOptions.value,
+      ...{
+        title: type.toUpperCase(),
+        data: Object.assign({}, item),
+        dialog: true,
+        type: type,
+        action: "readonly",
+        is_review: true,
+      },
+    };
+  }
+ 
 };
 const reviewKPI = async (item, type = "kpi") => {
   if (type == "kpi") {

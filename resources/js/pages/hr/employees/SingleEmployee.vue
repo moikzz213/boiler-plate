@@ -105,10 +105,10 @@
               </div>
               <div
                 v-if="['hr_admin', 'app_admin'].includes(authStore.authProfile.role)"
-                class="v-col-12 v-col-md-2 d-flex align-center"
-              >
-              
+                class="v-col-12 v-col-md-2 d-flex align-center" 
+              > 
                 <v-btn
+                v-if="employee.reviews && ((employee.reviews.length > 0 && (employee.reviews[0].status == 'closed' || employee.reviews[0].status == 'locked' || employee.reviews[0].status == 'submitted')) || employee.reviews.length == 0)"
                   :loading="reopen.loading"
                   @click="reopenReview"
                   block
@@ -123,7 +123,14 @@
         </v-card>
       </div>
     </v-row>
-    <KpiContent :selected-employee="employee" />
+    <KpiContent :selected-employee="employee" 
+            :measures-list="measuresList"
+            :industry-list="industryWithKPI"
+            :ecd-list="ecdList" 
+            @errorcheck="errorCheck"
+            @yearchange="selectedYearResponse"
+            :is-manager="true"
+    />
     <ConfirmDialog :options="confOptions" @confirm="confirmResponse" />
     <SnackBar :options="sbOptions" />
   </v-container>
@@ -140,7 +147,9 @@ import KpiContent from "@/components/kpi/KpiContent.vue";
 import EmployeeCard from "@/components/EmployeeCard.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import SnackBar from "@/components/SnackBar.vue";
+import { useIndustryStore } from "@/stores/industry";
 
+const industryStore = useIndustryStore();
 const authStore = useAuthStore();
 const settingStore = useSettingStore();
 const router = useRouter();
@@ -160,6 +169,60 @@ const statusArray = ref([
     color: "error",
   },
 ]);
+
+const industryList = ref([]);
+const selectIndustry = async () => {
+    if (industryStore.industries.length == 0) {
+        industryStore.getIndustries(authStore.authToken).then(() => {
+            industryList.value = industryStore.industries;
+        });
+    } else {
+        industryList.value = industryStore.industries;
+    }
+};
+
+const measuresList = ref([]);
+const fetchMeasures = async () => {
+    await clientApi(authStore.authToken)
+        .get("/api/fetch/measures/non-paginated")
+        .then((res) => {
+            measuresList.value = res.data;
+        })
+        .catch((err) => {});
+};
+
+const industryWithKPI = ref([]);
+const ecdList = ref([]);
+
+const kpiMaster = async () => {
+    await clientApi(authStore.authToken)
+        .get("/api/fetch/master-kpi/non-paginate")
+        .then((res) => {
+        
+            if (
+                industryList.value &&
+                industryList.value.length > 0 &&
+                res.data &&
+                res.data.length > 0
+            ) {
+                industryList.value.map((o, i) => {
+                    industryWithKPI.value[i] = o;
+                    industryWithKPI.value[i].kpis = [];
+                    let count = 0;
+                    let ecdCount = 0;
+                    res.data.map((oo, ii) => {
+                        if (o.id == oo.industry_id) {
+                            industryWithKPI.value[i].kpis[count] = oo;
+                            count++;
+                        } else if (oo.type == "ecd") {
+                            ecdList.value[ecdCount] = oo;
+                            ecdCount++;
+                        }
+                    });
+                });
+            } 
+        });
+};
 
 const ratingOrWeightage = (user) => {
   let sum = 0;
@@ -187,7 +250,9 @@ const getEmployee = async () => {
 const globalSetting = computed(() => settingStore.filteredSetting(employee.value.company_id));
 
 getEmployee();
-
+selectIndustry();
+kpiMaster();
+fetchMeasures();
 // select employee
 const selectStatus = (status) => {
   toUpdateStatus.value = status.title;
