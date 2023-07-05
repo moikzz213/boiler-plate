@@ -15,6 +15,11 @@ class Profile extends Model
 
     protected $guarded = [];
 
+    public function logs()
+    {
+        return $this->morphToMany(Log::class, 'loggable');
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class);
@@ -38,6 +43,6 @@ class Profile extends Model
     public function custom_kpis()
     {
         return $this->hasMany(KeyPerformanceIndicatorMaster::class, 'profile_ecode', 'ecode');
-    } 
-   
+    }
+
 }

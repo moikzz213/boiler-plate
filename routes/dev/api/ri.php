@@ -27,19 +27,19 @@ Route::middleware('authkey')->prefix('hr')->group(function () {
     // companies
     Route::get('/companies', [CompanyController::class, 'getCompanies'])->name('hr.companies');
     Route::post('/company/save', [CompanyController::class, 'saveCompany'])->name('hr.company.save');
-    Route::post('/company/remove/{id}', [CompanyController::class, 'removeCompany'])->name('hr.company.remove');
+    Route::post('/company/update-status/{id}', [CompanyController::class, 'updateStatusCompany'])->name('hr.company.remove');
     // industries
     Route::get('/industries', [IndustryController::class, 'getPaginatedIndustries'])->name('hr.industry.paginated');
     Route::post('/industry/save', [IndustryController::class, 'saveIndustry'])->name('hr.industry.save');
-    Route::post('/industry/remove/{id}', [IndustryController::class, 'removeIndustry'])->name('hr.industry.remove');
+    Route::post('/industry/update-status/{id}', [IndustryController::class, 'updateStatusIndustry'])->name('hr.industry.remove');
     // measures
     Route::get('/measures', [MeasureController::class, 'getPaginatedMeasures'])->name('hr.measure.paginated');
     Route::post('/measure/save', [MeasureController::class, 'saveMeasure'])->name('hr.measure.save');
-    Route::post('/measure/remove/{id}', [MeasureController::class, 'removeMeasure'])->name('hr.measure.remove');
+    Route::post('/measure/update-status/{id}', [MeasureController::class, 'updateStatusMeasure'])->name('hr.measure.remove');
     // weightages
     Route::get('/weightages', [WeightageController::class, 'getPaginatedWeightages'])->name('hr.weightage.paginated');
     Route::post('/weightage/save', [WeightageController::class, 'saveWeightage'])->name('hr.weightage.save');
-    Route::post('/weightage/remove/{id}', [WeightageController::class, 'removeWeightage'])->name('hr.weightage.remove');
+    Route::post('/weightage/update-status/{id}', [WeightageController::class, 'updateStatusWeightage'])->name('hr.weightage.remove');
     // kpi master
     Route::get('/kpis', [KeyPerformanceIndicatorMasterController::class, 'getPaginatedKpis'])->name('hr.kpi.paginated');
     Route::get('/kpi/type/{type}', [KeyPerformanceIndicatorMasterController::class, 'getPaginatedKpiByType'])->name('hr.kpi.paginated.type');
