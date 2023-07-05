@@ -24,7 +24,7 @@ class EmployeeController extends Controller
                 ->orWhere('display_name', 'like', '%' . $value . '%')
                 ->orWhere('email', 'like', '%' . $value . '%')
                 ->orWhere('ecode', 'like', '%' . $value . '%');
-            }),
+            })->ignore('null'),
             // AllowedFilter::exact('hrbp_email'),
             AllowedFilter::callback('hrbp_email', function ($query, $value) {
                 $auth = Profile::where('email', $value)->first();
