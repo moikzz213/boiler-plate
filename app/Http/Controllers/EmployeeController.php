@@ -17,7 +17,9 @@ class EmployeeController extends Controller
         $employees = QueryBuilder::for(Profile::class)
         ->allowedFilters([
             'is_regular',
-            'company_id',
+            AllowedFilter::callback('company_id', function ($query, $value) {
+                $query->where('company_id', $value);
+            })->ignore('null'),
             AllowedFilter::callback('employee', function ($query, $value) {
                 $query->where('first_name', 'like', '%' . $value . '%')
                 ->orWhere('last_name', 'like', '%' . $value . '%')
