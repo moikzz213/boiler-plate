@@ -194,11 +194,19 @@ const save = async () => {
     .catch((err) => {
       companyForm.value.loading = false;
       console.log("companies", err);
-      sbOptions.value = {
-        status: true,
-        type: "error",
-        text: "Error while saving company",
-      };
+      if (err.response.data.message.includes("Duplicate entry") == true) {
+        sbOptions.value = {
+          status: true,
+          type: "error",
+          text: data.title + " already exist",
+        };
+      } else {
+        sbOptions.value = {
+          status: true,
+          type: "error",
+          text: "Error while saving company",
+        };
+      }
     });
 };
 const add = () => {
