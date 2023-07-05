@@ -216,7 +216,12 @@ const remove = (item) => {
   confOptions.value = {
     dialog: true,
     title: "Confirm",
-    text: "Please confirm that you want to update the status of " + item.title + ".",
+    text:
+      "Please confirm that you want to update the status of " +
+      item.title +
+      " to " +
+      toRemove.value.new_status +
+      ".",
     btnColor: toRemove.value.new_status == "active" ? "success" : "error",
     btnTitle: toRemove.value.new_status,
   };
