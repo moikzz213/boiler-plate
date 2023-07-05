@@ -95,7 +95,7 @@
               <div class="v-col-12 v-col-md-2 d-flex flex-column">
                 <div class="text-caption text-grey">KPI's Target Year</div>
                 <div class="text-body-2">
-                 
+
                   {{ globalSetting.year }}
                 </div>
               </div>
@@ -107,7 +107,7 @@
                 v-if="['hr_admin', 'app_admin'].includes(authStore.authProfile.role)"
                 class="v-col-12 v-col-md-2 d-flex align-center"
               >
-              
+
                 <v-btn
                 v-if="employee.reviews && employee.reviews.length > 0 && (employee.reviews[0].status == 'closed' || employee.reviews[0].status == 'locked' || employee.reviews[0].status == 'submitted')"
                   :loading="reopen.loading"
@@ -168,7 +168,7 @@ const ratingOrWeightage = (user) => {
     user.reviews[0].key_review.map((o, i) => {
       sum += o.weightage;
     });
-  } 
+  }
   return sum;
 };
 // get employee
@@ -209,6 +209,7 @@ const selectStatus = (status) => {
 // update status
 const updateEmployeeStatus = async () => {
   let data = {
+    profile_id: authStore.authProfile.id,
     ecode: employee.value.ecode,
     status: toUpdateStatus.value,
   };
