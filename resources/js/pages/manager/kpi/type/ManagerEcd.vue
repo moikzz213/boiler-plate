@@ -145,10 +145,13 @@ const openKPI = (item) => {
 };
 const saveCustomKpi = async (kpi) => {
   let data = Object.assign({}, kpi);
+  data = Object.assign(data, {
+    type: route.params.type,
+    profile_id: authStore.authProfile.id,
+  });
   if (kpiOptions.value.action == "add") {
     data.profile_ecode = authStore.authProfile.ecode;
   }
-  data.type = route.params.type;
   await clientApi(authStore.authToken)
     .post("/api/manager/my-custom-kpi/save", data)
     .then((res) => {
@@ -209,8 +212,11 @@ const removeKPI = (item) => {
   };
 };
 const confirmRemove = async () => {
+  let data = {
+    profile_id: authStore.authProfile.id,
+  };
   await clientApi(authStore.authToken)
-    .post("/api/manager/my-custom-kpi/remove/" + toRemove.value.id)
+    .post("/api/manager/my-custom-kpi/remove/" + toRemove.value.id, data)
     .then((res) => {
       getCustomKpi(currentPage.value).then(() => {
         sbOptions.value = {

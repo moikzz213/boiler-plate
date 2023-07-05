@@ -22,29 +22,45 @@ class CompanyController extends Controller
 
     public function saveCompany(Request $request)
     {
+        $logType = '';
         if($request['id']){
-            $company = Company::where('id', $request['id'])->update([
+            $company = Company::where('id', $request['id'])->first();
+            $update = $company->update([
                 'title' => $request['title']
             ]);
+            $logType = 'update';
         }else{
             $company = Company::create([
                 'title' => $request['title']
             ]);
+            $logType = 'new';
         }
-
+        $company->logs()->create([
+            'profile_id' => $request['profile_id'],
+            'details' => $company,
+            'log_type' => $logType
+        ]);
         return response()->json([
             'message' => 'Company saved successfully'
         ], 200);
     }
 
-    public function removeCompany($id)
+    public function updateStatusCompany(Request $request, $id)
     {
         $company = Company::where('id', $id)->first();
         if($company){
-            $company->delete();
+            $update = $company->update([
+                'status' => $request['status']
+            ]);
+
+            $company->logs()->create([
+                'profile_id' => $request['profile_id'],
+                'details' => $company,
+                'log_type' => 'update'
+            ]);
         }
         return response()->json([
-            'message' => 'Company removed successfully'
+            'message' => 'Company status updated successfully'
         ], 200);
     }
 

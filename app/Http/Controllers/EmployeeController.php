@@ -66,8 +66,13 @@ class EmployeeController extends Controller
 
     function updateEmployeeStatus(Request $request)
     {
-        $employee = Profile::class::where('ecode', $request['ecode'])
-        ->update(['status' => $request['status']]);
+        $employee = Profile::class::where('ecode', $request['ecode'])->first();
+        $update = $employee->update(['status' => $request['status']]);
+        $employee->logs()->create([
+            'profile_id' => $request['profile_id'],
+            'details' => $employee,
+            'log_type' => 'update'
+        ]);
         return response()->json([
             'message' => 'Employee status updated successfully'
         ], 200);
@@ -76,9 +81,9 @@ class EmployeeController extends Controller
     function reopenEmployeeReview(Request $request)
     {
         $profile = Profile::class::where('ecode', $request['ecode'])->first();
-        
+
         $reviewID = Review::where(['profile_id' => $profile->id, 'year' =>Carbon::now()->format('Y')])->first();
-      
+
         if($reviewID && $reviewID->id){
             $updateReview = $profile->reviews()
             ->where('year', Carbon::now()->format('Y'))

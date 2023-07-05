@@ -75,6 +75,7 @@ class KeyPerformanceIndicatorMasterController extends Controller
 
     public function saveCustomKpiWithProfileEcode(Request $request)
     {
+        $logType = '';
         $kpiArray = array(
             'title' => $request['title'],
             'type' => $request['type'],
@@ -87,21 +88,35 @@ class KeyPerformanceIndicatorMasterController extends Controller
             'profile_ecode' => $request['profile_ecode'],
         );
         if($request['id']){
-            $kpis = KeyPerformanceIndicatorMaster::where('id', $request['id'])->update($kpiArray);
+            $kpis = KeyPerformanceIndicatorMaster::where('id', $request['id'])->first();
+            $update = $kpis->update($kpiArray);
+            $logType = 'update';
         }else{
             $kpis = KeyPerformanceIndicatorMaster::create($kpiArray);
+            $logType = 'new';
+        }
+        if($kpis){
+            $kpis->logs()->create([
+                'profile_id' => $request['profile_id'],
+                'details' => $kpis,
+                'log_type' => $logType
+            ]);
         }
         return response()->json([
-            'message' => 'Custom KPI saved successfully'
+            'message' => 'Custom '.$request['type'].' saved successfully'
         ], 200);
     }
 
-    public function removeCustomKpi($id)
+    public function removeCustomKpi(Request $request, $id)
     {
-        $kpi = KeyPerformanceIndicatorMaster::where('id', $id);
-        $check = $kpi->first();
-        if($check){
-            $kpi->update(['status' => 'trashed']);
+        $kpi = KeyPerformanceIndicatorMaster::where('id', $id)->first();
+        if($kpi){
+            $update = $kpi->update(['status' => 'trashed']);
+            $kpi->logs()->create([
+                'profile_id' => $request['profile_id'],
+                'details' => $kpi,
+                'log_type' => 'update'
+            ]);
         }
         return response()->json([
             'message' => 'Custom KPI removed successfully'
@@ -118,9 +133,13 @@ class KeyPerformanceIndicatorMasterController extends Controller
 
     public function approveCustomKpi(Request $request)
     {
-        $kpis = KeyPerformanceIndicatorMaster::where('id', $request['id'])
-        ->update([
-            'status' => 'approved',
+        $kpis = KeyPerformanceIndicatorMaster::where('id', $request['id'])->first();
+        $update = $kpis->update(['status' => 'approved']);
+
+        $kpis->logs()->create([
+            'profile_id' => $request['profile_id'],
+            'details' => $kpis,
+            'log_type' => 'update'
         ]);
         return response()->json([
             'message' => 'Custom KPI approved successfully'

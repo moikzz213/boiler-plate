@@ -4,7 +4,7 @@
       <div class="v-col-12 v-col-md-6">
         <v-autocomplete
           v-model="pms.data.company_id"
-          :items="companyStore.companies"
+          :items="companyStore.active_companies"
           item-title="title"
           item-value="id"
           variant="outlined"
@@ -53,7 +53,7 @@
       <div class="v-col-12 v-col-md-6 py-0">
         <v-text-field
           type="date"
-          label="Start Date (mm/dd/yyyy)"
+          label="Start Date"
           v-model="pms.data.annual_kpi_setting_start"
           variant="outlined"
           density="compact"
@@ -63,7 +63,7 @@
       <div class="v-col-12 v-col-md-6 py-0">
         <v-text-field
           type="date"
-          label="End Date (mm/dd/yyyy)"
+          label="End Date"
           v-model="pms.data.annual_kpi_setting_end"
           variant="outlined"
           density="compact"
@@ -76,7 +76,7 @@
       <div class="v-col-12 v-col-md-6 py-0">
         <v-text-field
           type="date"
-          label="Start Date (mm/dd/yyyy)"
+          label="Start Date"
           v-model="pms.data.mid_year_review_start"
           variant="outlined"
           density="compact"
@@ -86,7 +86,7 @@
       <div class="v-col-12 v-col-md-6 py-0">
         <v-text-field
           type="date"
-          label="End Date (mm/dd/yyyy)"
+          label="End Date"
           v-model="pms.data.mid_year_review_end"
           variant="outlined"
           density="compact"
@@ -100,7 +100,7 @@
       <div class="v-col-12 v-col-md-6 py-0">
         <v-text-field
           type="date"
-          label="Start Date (mm/dd/yyyy)"
+          label="Start Date"
           v-model="pms.data.end_year_review_start"
           variant="outlined"
           density="compact"
@@ -110,7 +110,7 @@
       <div class="v-col-12 v-col-md-6 py-0">
         <v-text-field
           type="date"
-          label="End Date (mm/dd/yyyy)"
+          label="End Date"
           v-model="pms.data.end_year_review_end"
           variant="outlined"
           density="compact"
@@ -273,6 +273,7 @@ const getPmsSettings = async () => {
 const saveSetting = async () => {
   pms.value.loading = true;
   pms.value.data.profile_ecode = authStore.authProfile.ecode;
+  pms.value.data.profile_id = authStore.authProfile.id;
   await clientApi(authStore.authToken)
     .post("/api/hr/pms-settings/save", pms.value.data)
     .then((res) => {
@@ -284,7 +285,7 @@ const saveSetting = async () => {
       };
 
       settingStore.setPmsSettings(res.data.result);
-       
+
       if(res.data.profile && res.data.profile.length > 0){
         authStore.setProfile(res.data.profile);
       }

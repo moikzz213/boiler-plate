@@ -23,7 +23,7 @@
           <v-autocomplete
             v-if="importData.conditionArray.includes('industry') == true"
             v-model="conditionData.industry_id"
-            :items="industryStore.industries"
+            :items="industryStore.active_industries"
             item-title="title"
             item-value="id"
             variant="outlined"

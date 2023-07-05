@@ -5,7 +5,7 @@
       <div class="v-col-12 v-col-md-4">
         <v-autocomplete
           v-model="filter.company_id"
-          :items="companyStore.companies"
+          :items="companyStore.active_companies"
           item-title="title"
           item-value="id"
           variant="outlined"

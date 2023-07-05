@@ -19,24 +19,29 @@
             <thead>
               <tr>
                 <th class="text-left text-capitalize">Title</th>
+                <th class="text-center text-capitalize">Status</th>
                 <th class="text-right text-capitalize">Actions</th>
               </tr>
             </thead>
             <tbody v-if="industries && industries.length > 0">
               <tr v-for="item in industries" :key="item.id">
                 <td>{{ item.title }}</td>
+                <td class="text-center">
+                  <v-btn
+                    size="small"
+                    @click="() => remove(item)"
+                    :color="item.status == 'active' ? 'success' : 'error'"
+                    class="mx-1 rounded-xl"
+                  >
+                    {{ item.status }}
+                  </v-btn>
+                </td>
                 <td>
                   <div class="d-flex align-center justify-end">
                     <v-icon
                       size="small"
                       @click="() => edit(item)"
                       :icon="mdiPencil"
-                      class="mx-1"
-                    />
-                    <v-icon
-                      size="small"
-                      @click="() => remove(item)"
-                      :icon="mdiTrashCan"
                       class="mx-1"
                     />
                   </div>
@@ -168,6 +173,7 @@ const getData = async (page) => {
 };
 const save = async () => {
   let data = {
+    profile_id: authStore.authProfile.id,
     id: industryForm.value.action == "edit" ? industryForm.value.data.id : null,
     title: industryForm.value.data.title,
   };
@@ -188,11 +194,19 @@ const save = async () => {
     .catch((err) => {
       industryForm.value.loading = false;
       console.log("industries", err);
-      sbOptions.value = {
-        status: true,
-        type: "error",
-        text: "Error while saving company",
-      };
+      if (err.response.data.message.includes("Duplicate entry") == true) {
+        sbOptions.value = {
+          status: true,
+          type: "error",
+          text: data.title + " already exist",
+        };
+      } else {
+        sbOptions.value = {
+          status: true,
+          type: "error",
+          text: "Error while saving industry",
+        };
+      }
     });
 };
 const add = () => {
@@ -239,17 +253,27 @@ const confOptions = ref({});
 const toRemove = ref({});
 const remove = (item) => {
   toRemove.value = Object.assign({}, item);
+  toRemove.value.new_status = toRemove.value.status == "active" ? "inactive" : "active";
   confOptions.value = {
     dialog: true,
-    title: "Confirm Remove",
-    text: "Please confirm that you want to remove " + item.title + ".",
-    btnColor: "error",
-    btnTitle: "Confirm",
+    title: "Confirm",
+    text:
+      "Please confirm that you want to update the status of " +
+      item.title +
+      " to " +
+      toRemove.value.new_status +
+      ".",
+    btnColor: toRemove.value.new_status == "active" ? "success" : "error",
+    btnTitle: toRemove.value.new_status,
   };
 };
 const confirmRemove = async () => {
+  let data = {
+    status: toRemove.value.new_status,
+    profile_id: authStore.authProfile.id,
+  };
   await clientApi(authStore.authToken)
-    .post("/api/hr/industry/remove/" + toRemove.value.id)
+    .post("/api/hr/industry/update-status/" + toRemove.value.id, data)
     .then((res) => {
       getData(currentPage.value).then(() => {
         sbOptions.value = {

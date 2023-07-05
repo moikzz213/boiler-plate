@@ -13,6 +13,11 @@ class PerformanceSetting extends Model
 
     protected $guarded = [];
 
+    public function logs()
+    {
+        return $this->morphToMany(Log::class, 'loggable');
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class);
