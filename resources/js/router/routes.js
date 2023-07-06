@@ -223,13 +223,13 @@ export const routes = [
         },
     },
     {
-        path: "/admin/departments",
-        component: () => import("../pages/admin/Departments.vue"),
-        name: "Departments",
+        path: "/admin/notifications",
+        component: () => import("../pages/admin/Notifications.vue"),
+        name: "Notifictions",
         meta: {
             requiresAuth: true,
             role: ["app_admin"],
-            title: "Departments",
+            title: "Notifictions",
         },
     },
 
