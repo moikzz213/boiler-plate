@@ -51,15 +51,19 @@ class KeyPerformanceIndicatorMasterController extends Controller
         ], 200);
     }
 
-    public function removeKpi($id)
+    public function removeKpi(Request $request, $id)
     {
-        $kpi = KeyPerformanceIndicatorMaster::where('id', $id);
-        $check = $kpi->first();
-        if($check){
-            $kpi->update(['status' => 'trashed']);
+        $kpi = KeyPerformanceIndicatorMaster::where('id', $id)->first();
+        if($kpi){
+            $update = $kpi->update(['status' => 'trashed']);
+            $kpi->logs()->create([
+                'profile_id' => $request['profile_id'],
+                'details' => $kpi,
+                'log_type' => 'update'
+            ]);
         }
         return response()->json([
-            'message' => 'KPI removed successfully'
+            'message' => 'KPI updated successfully'
         ], 200);
     }
 

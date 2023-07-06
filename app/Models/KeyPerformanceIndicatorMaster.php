@@ -24,7 +24,7 @@ class KeyPerformanceIndicatorMaster extends Model
         return $this->belongsTo(Profile::class, 'profile_ecode', 'ecode');
     }
 
-    public function industry(Type $var = null)
+    public function industry()
     {
         return $this->belongsTo(Industry::class);
     }
