@@ -144,7 +144,7 @@ class UserApiController extends Controller
                     'last_name' => trim(strtolower($v->Last_Name)),
                     'email' => @$v->E_Mail ? strtolower($v->E_Mail) : null,
                     'hrbp_email' => $v->HRBP_E_Mail,
-                    'department' => @$v->DepartmentDesc ? $v->DepartmentDesc : null,
+                    'department' => @$v->Pay_Department_Code ? $v->Pay_Department_Code : null,
                     'designation' => $v->PositionDescrition,
                     'dob' => $v->Birth_Date ? date('Y-m-d', strtotime($v->Birth_Date)) : null,
                     'doj' => @$v->Employment_Date ? date('Y-m-d', strtotime($v->Employment_Date)) : null, 
@@ -166,7 +166,7 @@ class UserApiController extends Controller
                         'last_name' => trim(strtolower($v->Last_Name)),
                         'email' => @$v->E_Mail ? strtolower($v->E_Mail) : null,
                         'hrbp_email' => $v->HRBP_E_Mail,
-                        'department' => @$v->DepartmentDesc ? $v->DepartmentDesc : null,
+                        'department' => @$v->Pay_Department_Code ? $v->Pay_Department_Code : null,
                         'designation' => $v->PositionDescrition, 
                         'doj' => @$v->Employment_Date
                             ? date('Y-m-d', strtotime($v->Employment_Date))
