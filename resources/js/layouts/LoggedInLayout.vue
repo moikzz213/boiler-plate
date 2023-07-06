@@ -111,7 +111,6 @@
           <!-- <v-btn size="36" class="mx-2" color="grey-darken-3" icon variant="flat">
             <v-icon color="white" size="small" :icon="mdiBellOutline"></v-icon>
           </v-btn> -->
-          <!-- <IconMenuNotification /> -->
           <IconMenuAccount />
         </div>
       </div>
@@ -130,7 +129,6 @@
         </div>
       </template>
       <v-spacer></v-spacer>
-      <!-- <IconMenuNotification :color="'light'" /> -->
       <IconMenuAccount :color="'grey-lighten-3'" />
     </v-app-bar>
     <v-main>
@@ -162,7 +160,6 @@ import {
 import { useAuthStore } from "@/stores/auth";
 import { printInitials } from "@/composables/printInitials";
 import { useRouter, useRoute } from "vue-router";
-import IconMenuNotification from "@/components/nav/IconMenuNotification.vue";
 import IconMenuAccount from "@/components/nav/IconMenuAccount.vue";
 
 const appName = ref(import.meta.env.VITE_APP_NAME);
@@ -243,6 +240,11 @@ const sideNavigation = ref([
         path: "/hr/companies",
       },
       {
+        title: "Notifications",
+        icon: mdiBellOutline,
+        path: "/admin/notifications",
+      },
+      {
         title: "Measures",
         icon: mdiClipboardEditOutline,
         path: "/hr/measures",
@@ -278,7 +280,7 @@ const openPage = (openPath) => {
 // app orientation
 const { mobile } = useDisplay();
 const menu = ref(false);
-const rail = ref(true);
+const rail = ref(false);
 const drawer = ref(true);
 const temporary = ref(false);
 watch(mobile, async (newMobileValue, oldMobileValue) => {

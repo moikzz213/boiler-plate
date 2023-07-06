@@ -7,6 +7,7 @@ use App\Http\Controllers\MeasureController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserApiController;
 use App\Http\Controllers\IndustryController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\KeyPerformanceReviewController;
 use App\Http\Controllers\KeyPerformanceIndicatorMasterController;
 
@@ -49,7 +50,11 @@ Route::middleware('authkey')->group(function () {
 
     // Non Paginate Fetch
 
-      // measures
+    // Notifications
+    Route::get('/fetch/setting/notifications', [NotificationController::class, 'fetchNotifications'])->name('fetch.notifications');
+    Route::post('/save/setting/notifications', [NotificationController::class, 'saveNotifications'])->name('save.notifications');
+
+    // measures
     Route::get('/fetch/measures/non-paginated', [MeasureController::class, 'getNonPaginatedMeasures'])->name('dialog.measure.non-paginated');
     Route::get('/fetch/master-kpi/non-paginate', [KeyPerformanceIndicatorMasterController::class, 'getNoNPaginatedKpis'])->name('fetch.master-kpi.non-paginate');
     Route::get('/fetch/master-custom-kpi/non-paginate/{ecode}', [KeyPerformanceIndicatorMasterController::class, 'getNoNPaginatedCustomKpis'])->name('fetch.master-custom-kpi.non-paginate');
