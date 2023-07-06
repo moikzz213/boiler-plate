@@ -177,6 +177,8 @@ watch(currentPage, (newValue, oldValue) => {
 // save kpi
 const saveKpiMaster = async () => {
   kpiForm.value.data.type = route.params.type;
+  kpiForm.value.data.profile_id = authStore.authProfile.id;
+
   await clientApi(authStore.authToken)
     .post("/api/hr/master-kpi/save", kpiForm.value.data)
     .then((res) => {

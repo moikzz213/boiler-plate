@@ -234,7 +234,9 @@ class KeyPerformanceIndicatorMasterController extends Controller
         ], $resCode);
     }
 
-    public function saveMasterKpi(Request $request){
+    public function saveMasterKpi(Request $request)
+    {
+        $logType = '';
         $kpiArray = array(
             'title' => $request['title'],
             'type' => $request['type'],
@@ -246,11 +248,22 @@ class KeyPerformanceIndicatorMasterController extends Controller
             'calculation_example' => $request['calculation_example'],
             'industry_id' => $request['industry_id'],
         );
+        $kpis = new KeyPerformanceIndicatorMaster;
         if($request['id']){
-            $kpis = KeyPerformanceIndicatorMaster::where('id', $request['id'])->update($kpiArray);
+            $kpis = $kpis->where('id', $request['id'])->first();
+            $update = $kpis->update($kpiArray);
+            $logType = 'update';
         }else{
-            $kpis = KeyPerformanceIndicatorMaster::create($kpiArray);
+            $kpis = $kpis->create($kpiArray);
+            $logType = 'new';
         }
+
+        $kpis->logs()->create([
+            'profile_id' => $request['profile_id'],
+            'details' => $kpis,
+            'log_type' => $logType
+        ]);
+
         return response()->json([
             'message' => 'KPI saved successfully'
         ], 200);
