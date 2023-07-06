@@ -177,6 +177,8 @@ watch(currentPage, (newValue, oldValue) => {
 // save kpi
 const saveKpiMaster = async () => {
   kpiForm.value.data.type = route.params.type;
+  kpiForm.value.data.profile_id = authStore.authProfile.id;
+
   await clientApi(authStore.authToken)
     .post("/api/hr/master-kpi/save", kpiForm.value.data)
     .then((res) => {
@@ -225,8 +227,11 @@ const remove = (item) => {
   };
 };
 const confirmRemove = async () => {
+  let data = {
+    profile_id: authStore.authProfile.id,
+  };
   await clientApi(authStore.authToken)
-    .post("/api/hr/kpi/remove/" + toRemove.value.id)
+    .post("/api/hr/kpi/remove/" + toRemove.value.id, data)
     .then((res) => {
       getData(currentPage.value).then(() => {
         sbOptions.value = {
