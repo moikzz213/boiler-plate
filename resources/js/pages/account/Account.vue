@@ -30,18 +30,19 @@
           >
         </div>
       </div>
+      
       <div class="v-col-12 v-col-md-8">
         <AccountForm
-          v-show="currentForm == 'account'"
+        v-if="currentForm === 'account'"
           :user="user.data"
           @saved="savedResponse"
         />
         <ProfileForm
-          v-show="currentForm == 'profile'"
+          v-if="currentForm == 'profile'"
           :user="user.data"
           @saved="savedResponse"
         />
-      <ChangePassword v-show="currentForm == 'change_password'" :user="user.data" />
+      <ChangePassword v-if="currentForm == 'change_password'" :user="user.data" />
       </div>
     </v-row>
     <Snackbar :options="sbOptions" />
