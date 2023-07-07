@@ -1,27 +1,38 @@
 <template>
   <v-card>
     <v-card-title class="text-primary text-capitalize mb-3"
-      >Account Settings</v-card-title
+      >Account - {{ user.data.status }}</v-card-title
     >
-    <v-card-text>
-       
-        <div class="mb-2 ma-auto text-body-2 d-flex">Status
-          <v-btn   class=" ml-5 mb-6" :color="statusColor">
-            {{ user.data.status }}
-          </v-btn>
-        </div>
+    <v-card-text> 
         
         
-        <Field name="username"  v-model="user.data.username">
+        <Field name="username" v-slot="{ field, errors }"  v-model="user.data.username">
           <v-text-field
-            v-model="user.data.username"
-            v-bind="field"
+          v-bind="field"
+            v-model="user.data.username" 
             label="Username"
             variant="outlined"
             density="compact"
-           
+            :error-messages="errors"
+            readonly
           />
         </Field> 
+
+        <Field name="role" v-slot="{ field, errors }" v-model="user.data.role">
+          <v-select
+            v-model="user.data.role"
+            v-bind="field"
+            :items="roleList"
+            label="Role"
+            variant="outlined"
+            density="compact"
+            class="mb-2"
+            :error-messages="errors"
+          />
+        </Field>
+        <v-btn color="primary" size="large" :loading="user.loading" @click="saveUser"
+          >Save</v-btn
+        >
     </v-card-text>
   </v-card>
 </template>
@@ -36,7 +47,7 @@ import { useAuthStore } from "@/stores/auth";
 const emit = defineEmits(["saved"]);
 const props = defineProps(["user"]);
 const authStore = useAuthStore();
-
+const roleList = ref(["normal","hrbp", "hr_admin"]);
 // status
 const statusList = ref([
   {
@@ -66,6 +77,20 @@ watch(
     user.value.data = newVal;
   }
 );
-
+ 
+const saveUser = async () => {
+  let data = user.value.data;
+   
+  user.value.loading = true;
+  await axios
+    .post("/account/save", data)
+    .then((response) => {
+      user.value.loading = false; 
+    })
+    .catch((err) => {
+      user.value.loading = false;
+       
+    });
+};
  
 </script>

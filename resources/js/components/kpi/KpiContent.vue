@@ -4,8 +4,8 @@
       <VueDatePicker v-model="year" year-picker class="pms-date-picker" />
     </div>
     <div class="v-col-12 v-col-md-2"> 
-      <v-btn v-if="viewingEmployee && viewingEmployee.reviews && viewingEmployee.reviews.length > 0" @click="printKPI" color="white" class="text-capitalize">View / Print KPI <v-icon
-          :icon="mdiPrinter" class="ml-3"> </v-icon></v-btn>
+      <v-btn v-if="viewingEmployee && viewingEmployee.reviews && viewingEmployee.reviews.length > 0" @click="printKPI" color="white" class="text-capitalize text-md-caption text-lg-body-2">View/Print<v-icon
+          :icon="mdiPrinter" class="ml-1"> </v-icon></v-btn>
     </div>
     <div class="v-col-12">
       <div class="d-flex align-center px-3">
@@ -36,7 +36,7 @@
           <div v-else class="text-uppercase text-center">
             {{ selectedTab == 'ecd' ? 'Employee Capability Development' : selectedTab }} List
           </div>
-          <div v-if="canManage" class="ml-auto text-body-1">Remaining {{ selectedTab.toUpperCase() }} weightage: {{ ratingOrWeightage(selectedTab) }}%</div>
+          <div v-if="canManage && ratingOrWeightage(selectedTab) > 0" class="ml-auto text-body-1">Remaining {{ selectedTab.toUpperCase() }} weightage: {{ ratingOrWeightage(selectedTab) }}%</div>
         </v-card-title>
         <v-card-text class="px-5 pb-10">
             <v-row v-if="hasError" class="mb-2">
@@ -68,9 +68,12 @@
                               {{ kpi.title }}
                             </div>
                           </div>
-                          <div> 
-                            <v-btn :icon="mdiFileFind" color="primary" class="rounded-md mr-1" size="small"
-                            @click="() => viewKPI(kpi, 'kpi')"></v-btn>
+                          <div>  
+                            
+                            <v-btn v-if="canManage" @click="() => viewKPI(kpi, 'kpi')" density="compact" size="30"
+                              color="primary" class="rounded-xl elevation-2 ml-1">
+                              <v-icon size="small" :icon="mdiFileFind"></v-icon></v-btn> 
+
                             <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
                               @click="() => reviewKPI(kpi, 'kpi')">review</v-btn>
                             <v-btn v-if="canManage" @click="() => editKPI(kpi, 'kpi')" density="compact" size="30"
@@ -539,11 +542,14 @@ const addKPI = async (type,ecdType) => {
               };
     }
   }else {
-     
+    let title = 'Identify Technical Skill Development';
+    if(ecdType == 'soft'){
+      title = 'Identify Behavioral Program';
+    }
     ecdOptions.value = {
       ...ecdOptions.value,
       ...{
-        title: "Add Technical & Behavioural Program",
+        title: title,
         data: {},
         dialog: true,
         type: type,

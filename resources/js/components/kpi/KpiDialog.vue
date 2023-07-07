@@ -61,15 +61,15 @@
               <v-textarea v-model="kpiData.definition" :readonly="isDisabled || kpiAction.action == 'edit' || kpiAction.is_review" label="KPI Definition*" variant="outlined" rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.formula" readonly label="Calulation Formula*" variant="outlined"
+              <v-textarea v-model="kpiData.formula" readonly label="Calculation Formula*" disabled variant="outlined"
                 rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.subordinate_measures" readonly label="Subordinate Measures*" variant="outlined"
+              <v-textarea v-model="kpiData.subordinate_measures" readonly label="Subordinate Measures*" disabled variant="outlined"
                 rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0 hidden hide" hidden>
-              <v-textarea v-model="kpiData.calculation_example" readonly label="KPI Calculation Example*" variant="outlined"
+              <v-textarea v-model="kpiData.calculation_example" readonly label="KPI Calculation Example*" disabled variant="outlined"
                 rows="2"></v-textarea>
             </div> 
             <div class="v-col-12 py-0">

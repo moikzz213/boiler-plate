@@ -6,12 +6,13 @@
         } mb-1 text-center d-flex align-center justify-center`" style="line-height: 1.2em; height: 30px">
         {{ item.title }}
       </div>
-      <div class="d-flex justify-center">
-        <v-chip style="margin: 0 1px" v-for="itemStatus, statusIndex in item.status" :key="itemStatus.status"
-          :size="`${props.density == 'compact' ? 'x-small' : 'small'}`"
-          :class="`${printColor(reviewSettings, index, statusIndex)}`">{{
-            itemStatus.title }}</v-chip>
-      </div>
+    
+        <div class="d-flex justify-center" >
+          <v-chip style="margin: 0 1px; font-size:10px" v-for="itemStatus, statusIndex in item.status" :key="itemStatus.status"
+            :size="`${props.density == 'compact' ? 'x-small' : 'small'}`"
+            :class="`${printColor(reviewSettings, index, statusIndex)}`">{{
+              itemStatus.title }}</v-chip>
+        </div>
     </div>
   </v-row>
 </template>
@@ -31,7 +32,7 @@ const props = defineProps({
  
 const settingStore = useSettingStore();
 const userProfile = ref(props.selectedEmployee);
-
+ 
 const states = computed(() => {
   let regularStates = [
     {
@@ -74,9 +75,11 @@ const states = computed(() => {
 
 const currentDate = ref(new Date());
 const printColor = (userState, index, statusIndex) => {
-
+ 
   let currentStatus = 0;
-
+ if(userState.status != 'Active' || (userState && userState.length > 0 && (userState[0].profile.status != 'Active' ))){
+  return '';
+ }
   if(userState && userState.reviews && userState.reviews.length > 0){
     let state = userState.reviews[0].state;
     let status = userState.reviews[0].status;
@@ -135,7 +138,7 @@ const reviewSettings = computed(() => {
   if (userProfile.value == null || !userProfile.value.reviews || userProfile.value.reviews.length == 0) {
     return [{
       state: globalSetting.value ? globalSetting.value.state : null,
-      status: globalSetting.value ? globalSetting.value.status : null,
+      status: globalSetting.value ? globalSetting.value.status : null, 
       probation_setting_allow_days: globalSetting.value ? globalSetting.value.probation_kpi_setting : null,
       profile: userProfile.value
       }
@@ -149,7 +152,7 @@ watch(
   () => props.selectedEmployee,
   (newVal) => {
     userProfile.value = Object.assign({}, newVal);
-   
+  
   }
 );
 </script>

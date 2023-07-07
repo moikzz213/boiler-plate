@@ -134,11 +134,17 @@ class ProfileController extends Controller
 
     public function saveAccount(Request $request)
     {
-        $profile = Profile::where('ecode', $request['ecode'])->update([
-            'username' => $request['username'],
-            'status' => $request['status'],
-            'role' => $request['role'],
+        dd($request);
+        $profile = Profile::where('ecode', $request['ecode'])->update([ 
+            'role' => $request['role']
         ]);
+
+        $profile->logs()->create([
+            'profile_id' => $request['profile_id'],
+            'details' => $employee,
+            'log_type' => 'update'
+        ]);
+
         return response()->json([
             'message' => 'Account saved successfully'
         ], 200);

@@ -1,5 +1,5 @@
 <template>
-    <v-container class="pb-16">
+    <v-container class="pb-16" style="max-width: 98%;">
         <v-row class="mt-5">
             <div class="v-col-12 pb-0">
                 <div class="text-h6">
@@ -49,51 +49,70 @@
         </v-row>
         <v-row>
             <div v-if="managerTeam && managerTeam.length > 0" class="v-col-12">
-                <v-card
-                    v-for="user in managerTeam"
-                    :key="user.id"
-                    class="mb-3 elevation-0"
-                    @click="() => openMember(user)"
-                >
-                    <!-- @click="() => openMember('SingleTeamMember', { id: user.id })" -->
-                    <v-card-text>
-                        <v-row>
-                            <div class="v-col-12 v-col-md-3">
-                                <EmployeeCard :profile="user" />
-                            </div>
-                            <div class="v-col-12 v-col-md-8">
-                                <KpiProgress
-                                    :density="'compact'"
-                                    :selected-employee="user"
-                                />
-                            </div>
-                            <div
-                                class="v-col-12 v-col-md-1 d-flex justify-end align-center"
-                            >
+                <div v-for="user in managerTeam" :key="user.id">
+                    <div
+                        class=""
+                        :style="`
+                            color: white;
+                            font-size: 8px;
+                            line-height: 8px;
+                            margin-left: 15px;
+                            padding: 4px 10px;
+                            display: inline-block;
+                            border-top-left-radius: 8px;
+                            border-top-right-radius: 8px;
+                            text-transform: uppercase;
+                            background-color: ${
+                                user.is_regular == true ? '#000' : '#2196F3'
+                            };
+                            `"
+                    >
+                        {{ user.is_regular == true ? "Regular Employee" : "Probation" }}
+                    </div>
+                    <v-card
+                        class="mb-1 elevation-0"
+                        @click="() => openMember(user)"
+                    >
+                        <!-- @click="() => openMember('SingleTeamMember', { id: user.id })" -->
+                        <v-card-text>
+                            <v-row>
+                                <div class="v-col-12 v-col-md-3">
+                                    <EmployeeCard :profile="user" />
+                                </div>
+                                <div class="v-col-12 v-col-md-8">
+                                    <KpiProgress
+                                        :density="'compact'"
+                                        :selected-employee="user"
+                                    />
+                                </div>
                                 <div
-                                    v-if="
-                                        (settingStore.pmsSettings &&
-                                            settingStore.pmsSettings.state !=
-                                                'yearend') ||
-                                        (user.reviews &&
-                                            user.reviews.length > 0 &&
-                                            user.reviews[0].type ==
-                                                'probation' &&
-                                            user.reviews[0].state !=
-                                                'final_review')
-                                    "
+                                    class="v-col-12 v-col-md-1 d-flex justify-end align-center"
                                 >
-                                    <div>
-                                        {{ ratingOrWeightage(user) }} / 100
-                                    </div>
-                                    <div class="text-caption text-grey">
-                                        Total KPI
+                                    <div
+                                        v-if="
+                                            (settingStore.pmsSettings &&
+                                                settingStore.pmsSettings
+                                                    .state != 'yearend') ||
+                                            (user.reviews &&
+                                                user.reviews.length > 0 &&
+                                                user.reviews[0].type ==
+                                                    'probation' &&
+                                                user.reviews[0].state !=
+                                                    'final_review')
+                                        "
+                                    >
+                                        <div>
+                                            {{ ratingOrWeightage(user) }} / 100
+                                        </div>
+                                        <div class="text-caption text-grey">
+                                            Total KPI
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </div>
             </div>
             <div v-else class="v-col-12">
                 <v-card>
@@ -106,8 +125,7 @@
         <v-dialog v-model="dialogOpenMember" width="450">
             <v-card class="rounded-lg">
                 <v-card-text>
-                  
-                   {{ message }} {{ selectedUser.first_name }}?
+                    {{ message }} {{ selectedUser.first_name }}?
                 </v-card-text>
                 <div class="pa-3 mt-3 d-flex justify-end">
                     <v-btn
@@ -256,11 +274,11 @@ const confirmOpenMember = () => {
     // redirect to SingleTeamMember
 };
 
-const message = ref('');
+const message = ref("");
 const openMember = (user) => {
     let msgError = "KPI review is currently closed";
     let statusGlobalSettings = settingStore.filteredSetting(user.company_id);
-    message.value = 'Do you want to set KPI for ';
+    message.value = "Do you want to set KPI for ";
     selectedUser.value = Object.assign({}, user);
     if (user.status == "Inactive") {
         errorMessage.value =
@@ -276,8 +294,8 @@ const openMember = (user) => {
             noKPIEmployee.value = true;
         } else if (user.reviews[0].status == "open") {
             dialogOpenMember.value = true;
-            if(statusGlobalSettings.state != "setting"){
-                message.value = 'Do you want to initialize the review for ';
+            if (statusGlobalSettings.state != "setting") {
+                message.value = "Do you want to initialize the review for ";
             }
         } else {
             openPage("SingleTeamMember", { id: user.ecode });

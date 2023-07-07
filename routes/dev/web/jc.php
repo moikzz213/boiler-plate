@@ -27,6 +27,5 @@ Route::get('/print/kpi/{year}/{ecode}', [PublicPageController::class, 'access'])
 Route::get('/setting-opening', [CronJobController::class, 'settingOpening'])->name('opening.setting');
 Route::get('/opening-mid-year-end', [CronJobController::class, 'midYearEndOpeningAndClosing'])->name('opening.mid.year');
 Route::get('/opening-probation-setting', [CronJobController::class, 'probationSettingOpening'])->name('opening.probation.setting');
-Route::get('/probation-first-final-review', [CronJobController::class, 'probationFirstFinalReview'])->name('probation.first.final.review');
-
+Route::get('/probation-first-final-review', [CronJobController::class, 'probationFirstFinalReview'])->name('probation.first.final.review'); 
 Route::get('/run-daily-api-cron-job', [CronJobController::class, 'dailyReminderToManagers'])->name('daily.run.cron.job');

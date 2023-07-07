@@ -15,7 +15,7 @@
       </div>
       <div class="d-flex align-center">
         <v-icon size="16"
-          :color="`${employeeKPIStatus == 'locked' || employeeKPIStatus == 'closed' || employeeKPIStatus == 'Inactive' ? 'error' : 'success'}`"
+          :color="`${employeeKPIStatus == 'locked' || employeeKPIStatus == 'closed' || employeeKPIStatus == 'Inactive' || employeeKPIStatus == 'Inactive' ? 'error' : 'success'}`"
           :icon="mdiCircleMedium"></v-icon>
         <div style="font-size: 10px; line-height: 12px">
           {{ employeeKPIStatus }}
@@ -54,7 +54,7 @@ const employeeKPIStatus = computed(() => {
   } else {
     profileKPI.value = props.profile;
   }
-  if (profileKPI.value && (profileKPI.value.status == 'Inactive' || profileKPI.value.status == 'InActive')) {
+  if (profileKPI.value && (profileKPI.value.status !== 'Active')) {
     return profileKPI.value.status;
   }else if (profileKPI.value && profileKPI.value.reviews && profileKPI.value.reviews.length > 0) {
     return profileKPI.value.reviews[0].status;
