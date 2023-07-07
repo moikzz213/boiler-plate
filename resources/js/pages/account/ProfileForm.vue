@@ -150,7 +150,7 @@
 <script setup>
 import { ref, watch } from "vue";
 const props = defineProps(["user"]);
-const emit = defineEmits(["saved"]);
+
 const profileData = ref({
   loading: false,
   data: Object.assign({}, props.user),

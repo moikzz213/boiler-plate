@@ -135,9 +135,21 @@ class ProfileController extends Controller
     public function saveAccount(Request $request)
     { 
         $profile = Profile::where('ecode', $request['ecode'])->first();
-        $profile->update([ 
-            'role' => $request['role']
-        ]);
+        $msg  = 'Account saved successfully';
+        if($request['enable']){
+            $profile->update([ 
+                'status' => $request['enable']
+            ]);
+            if($request['enable'] == 'Active'){
+                $msg = 'Account has been Enable';
+            }else{
+                $msg = 'Account has been Disabled';
+            }
+        }else{
+            $profile->update([ 
+                'role' => $request['role']
+            ]);
+        }
 
         $profile->logs()->create([
             'profile_id' => $request['author'],
@@ -146,7 +158,7 @@ class ProfileController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Account saved successfully'
+            'message' => $msg
         ], 200);
     }
 }

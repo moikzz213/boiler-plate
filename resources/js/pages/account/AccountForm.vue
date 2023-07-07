@@ -30,19 +30,22 @@
             :error-messages="errors"
           />
         </Field>
-        <v-btn v-if="route.name == 'EditUser'" color="primary" size="large" :loading="user.loading" @click="saveUser"
+        <v-btn v-if="route.name == 'EditUser'" color="primary" size="small" :loading="user.loading" @click="() => saveUser()"
           >Save</v-btn
+        >
+        <v-btn v-if="route.name == 'EditUser'" class="ml-3" :color="user.data.status == 'Inactive' ? 'success' : 'error'" size="small" :loading="user.loading"  @click="() => saveUser(user.data.status)"
+          > {{ user.data.status == 'Inactive' ? 'Enable Employee' : 'Disable Employee' }} </v-btn
         >
     </v-card-text>
   </v-card>
-  <SnackBar :options="sbOptions" />
+  
 </template>
 <script setup>
 import { ref, watch } from "vue";
 
 import { Field } from "vee-validate";
 import { clientApi } from "@/services/clientApi";
-import { useAuthStore } from "@/stores/auth";
+import { useAuthStore } from "@/stores/auth"; 
 import SnackBar from "@/components/SnackBar.vue";
 import { useRoute } from "vue-router";
 
@@ -50,19 +53,8 @@ const route = useRoute();
 const emit = defineEmits(["saved"]);
 const props = defineProps(["user"]);
 const authStore = useAuthStore();
-const roleList = ref(["normal","hrbp", "hr_admin"]);
-const sbOptions = ref({});
-// status
-const statusList = ref([
-  {
-    title: "Active",
-    color: "success",
-  },
-  {
-    title: "Inactive",
-    color: "error",
-  },
-]); 
+const roleList = ref(["normal","hrbp", "hr_admin"]); 
+  
 // user account
 const user = ref({
   loading: false,
@@ -75,20 +67,22 @@ watch(
   }
 );
  
-const saveUser = async () => {
-  let data = {role: user.value.data.role,ecode: user.value.data.ecode, author: authStore.authProfile.id};
+const saveUser = async (v) => {
+  let data = {enable: false, role: user.value.data.role,ecode: user.value.data.ecode, author: authStore.authProfile.id};
+  if(v){
+    let stats = 'Active';
+    if(v == 'Active'){
+      stats = 'Inactive'
+    }
+    data = {enable: stats,ecode: user.value.data.ecode, author: authStore.authProfile.id};
+  }
      
   user.value.loading = true;
   await clientApi(authStore.authToken)
     .post("/api/admin/account/save", data)
     .then((response) => {
-      console.log(response);
-      user.value.loading = false; 
-      sbOptions.value = {
-          status: true,
-          type: "success",
-          text: response.data.message,
-        };
+      emit('saved', response.data.message);
+      user.value.loading = false;  
     })
     .catch((err) => {
       user.value.loading = false;
