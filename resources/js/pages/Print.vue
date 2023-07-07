@@ -2,8 +2,7 @@
   <v-container class="pb-16" style="max-width:1200px;">
     <v-row class="my-5" v-if="have_access && kpiDataEncrypted">
       <div class="v-col-12">
-        <v-btn size="small" color="primary" class="btn btn-primary noprint mr-1 mt-5"
-          @click="() => printDocument(null, pdfcont, 'portrait')">Download PDF - Portrait</v-btn>
+        
         <v-btn size="small" color="primary" class="btn btn-primary noprint mr-1 mt-5"
           @click="() => printDocument(null, pdfcont, 'landscape')">Download PDF - Landscape</v-btn>
         <v-btn size="small" color="primary" class="btn btn-primary noprint ml-1 mt-5"
@@ -206,8 +205,7 @@
             </v-row>
           </div>
         </div>
-        <v-btn size="small" color="primary" class="btn btn-primary noprint mr-1 mt-5"
-          @click="() => printDocument(null, pdfcont, 'portrait')">Download PDF - Portrait</v-btn>
+        
         <v-btn size="small" color="primary" class="btn btn-primary noprint mr-1 mt-5"
           @click="() => printDocument(null, pdfcont, 'landscape')">Download PDF - Landscape</v-btn>
         <v-btn size="small" color="primary" class="btn btn-primary noprint ml-1 mt-5"

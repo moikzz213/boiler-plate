@@ -20,16 +20,15 @@
                 return-object
                 variant="outlined"
                 density="compact"
-                label="Select KPI*"
-              >
-               
+                label="Select *"
+              >               
               </v-autocomplete>
             </div>
             <div class="v-col-12 py-0">
               <v-select
                 v-model="ecdDataWeightage"
                 :items="kpiWeightageList"
-                label="KPI's Weightage (%)*"
+                label="Development Weightage (%)*"
                 variant="outlined"
                 density="compact"
               ></v-select>

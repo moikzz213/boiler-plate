@@ -1,5 +1,5 @@
 <template>
-    <v-container class="pb-16">
+    <v-container class="pb-16" style="max-width: 95%;">
         <v-row class="my-5">
             <div class="v-col-12 v-col-md-3">
                 <v-autocomplete
@@ -79,7 +79,7 @@
                                     block
                                     :disabled="disabledBtn"
                                     color="secondary"
-                                    class="text-capitalize rounded-lg"
+                                    class="text-capitalize rounded-lg text-md-caption text-lg-body-2"
                                     >{{
                                         selEmployeeObj.is_regular &&
                                         selEmployeeObj.reviews[0].state ==
