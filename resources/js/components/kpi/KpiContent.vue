@@ -22,6 +22,7 @@
         <!-- Final Rating here -->
         <div class="ml-auto text-h6" v-if="viewingEmployee && viewingEmployee.reviews && viewingEmployee.reviews.length > 0 && viewingEmployee.reviews[0].state == 'yearend' && viewingEmployee.reviews[0].status =='submitted'">Rate: Coming Soon</div>
       </div>
+     
       <v-card flat>
         <v-card-title class="px-5 py-5 d-flex align-center">
           <v-btn v-if="canManage && selectedTab == 'kpi'" @click="() => addKPI(selectedTab)" density="compact" size="35"
@@ -34,7 +35,7 @@
             {{ selectedTab }} not set
           </div>
           <div v-else class="text-uppercase text-center">
-            {{ selectedTab == 'ecd' ? 'Employee Capability Development' : selectedTab }} List
+            {{ selectedTab == 'ecd' ? 'Employee Capability Development' : (viewingEmployee.is_regular ? selectedTab : 'Probation KPI') }} List
           </div>
           <div v-if="canManage && ratingOrWeightage(selectedTab) > 0" class="ml-auto text-body-1">Remaining {{ selectedTab.toUpperCase() }} weightage: {{ ratingOrWeightage(selectedTab) }}%</div>
         </v-card-title>
