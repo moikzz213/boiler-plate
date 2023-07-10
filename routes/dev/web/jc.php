@@ -24,8 +24,12 @@ Route::get('/print/kpi/{year}/{ecode}', [PublicPageController::class, 'access'])
  * 
  */
  
-Route::get('/setting-opening', [CronJobController::class, 'settingOpening'])->name('opening.setting');
-Route::get('/opening-mid-year-end', [CronJobController::class, 'midYearEndOpeningAndClosing'])->name('opening.mid.year');
-Route::get('/opening-probation-setting', [CronJobController::class, 'probationSettingOpening'])->name('opening.probation.setting');
-Route::get('/probation-first-final-review', [CronJobController::class, 'probationFirstFinalReview'])->name('probation.first.final.review'); 
-Route::get('/run-daily-api-cron-job', [CronJobController::class, 'dailyReminderToManagers'])->name('daily.run.cron.job');
+ // Recommended to run every 4AM
+Route::get('/setting-opening', [CronJobController::class, 'setting_opening'])->name('opening.setting');
+Route::get('/opening-mid-year-end', [CronJobController::class, 'mid_year_end_opening_and_closing'])->name('opening.mid.year');
+Route::get('/opening-probation-setting', [CronJobController::class, 'probation_setting_opening'])->name('opening.probation.setting');
+Route::get('/probation-first-final-review', [CronJobController::class, 'probation_first_final_review'])->name('probation.first.final.review'); 
+Route::get('/run-daily-api-cron-job', [CronJobController::class, 'daily_reminder_to_managers'])->name('daily.run.cron.job');
+
+// always run this at last
+Route::get('/run-daily-api-probation-final-notification', [CronJobController::class, 'daily_reminder_probation_final_notification'])->name('daily.run.probation.final-notification');

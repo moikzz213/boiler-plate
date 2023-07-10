@@ -89,6 +89,12 @@
           <div class="btn-parent my-auto"><v-btn size="small" @click="saveNotification('probation_final_open',probation_final_open)" class="ml-2 save-btn" color="primary">Save</v-btn></div>
         </div>
       <v-divider></v-divider>
+      <div class="v-col-md-3 v-col-sm-12  my-0 ">Probation Final Notification</div>
+      <div class="v-col-md-9 v-col-sm-12 d-flex parent-div">
+          <v-textarea hide-details class="ma-0" v-model="probation_final_notification" rows="3" variant="outlined" density="compact" label="Probation Final Notification - Day before the final review date"></v-textarea>
+          <div class="btn-parent my-auto"><v-btn size="small" @click="saveNotification('probation_final_notification',probation_final_notification)" class="ml-2 save-btn" color="primary">Save</v-btn></div>
+        </div>
+      <v-divider></v-divider>
       <div class="v-col-md-3 v-col-sm-12  my-0 ">Probation Final Review: Submit</div>
       <div class="v-col-md-9 v-col-sm-12 d-flex parent-div">
           <v-textarea hide-details class="ma-0" v-model="probation_final_submit" rows="3" variant="outlined" density="compact" label="Probation Final Review: Submit"></v-textarea>
@@ -122,6 +128,7 @@ const probation_mid_open = ref("");
 const probation_mid_submit = ref("");
 const probation_final_open = ref("");
 const probation_final_submit = ref(""); 
+const probation_final_notification = ref("");
 
 const sbOptions = ref({});
 const saveNotification = (key,value) => {
@@ -141,7 +148,7 @@ const fetchNotifications = async () => {
         .get("/api/fetch/setting/notifications")
         .then((res) => {  
             if(res.data && res.data.length > 12){ 
-                default_reminder_days.value = res.data[13].meta_value;
+                default_reminder_days.value = res.data[14].meta_value;
                 kpi_setting_open.value = res.data[0].meta_value;
                 kpi_setting_review.value = res.data[1].meta_value;
                 kpi_setting_submit.value = res.data[2].meta_value;
@@ -155,6 +162,7 @@ const fetchNotifications = async () => {
                 probation_mid_submit.value = res.data[10].meta_value;
                 probation_final_open.value = res.data[11].meta_value;
                 probation_final_submit.value = res.data[12].meta_value;
+                probation_final_notification.value = res.data[13].meta_value;
             }
         })
         .catch((err) => {});

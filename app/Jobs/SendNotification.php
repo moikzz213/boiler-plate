@@ -195,7 +195,29 @@ class SendNotification implements ShouldQueue
                     $message = 'Hi '.$managerName.",<br/><br/>";
                     $subject = 'Probation KPI Final Review: Submitted';
                     $innerMessage = '<br/><br/>Employee: '.$employee->ecode. " | ". $employee->display_name;
-                } 
+                }elseif($current_status == 'final_notification'){
+                    $metaKey = 'probation_final_notification'; 
+                   
+                    $subject = 'Probation KPI Final Review: Final Notification';
+
+                    $cnt = 1;
+                    foreach($managerName AS $k => $v){ 
+                        $ccEmail = array($v->hrbp_email);
+                        $innerMessage = '<br/>';
+                        foreach($v->teams AS $kk => $vv){ 
+                            $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
+                            $ccEmail[$cnt] = $vv->email;
+                            $cnt++;
+                        }
+
+                        $managersObj[$k] = array(
+                            'to' => $v->email,
+                            'cc' => $ccEmail,
+                            'message' => 'Hi '.$v->display_name.',<br/><br/>', 
+                            'inner_message' => $innerMessage
+                        ); 
+                    } 
+                }
             }
 
         }else{
