@@ -207,7 +207,7 @@
         </div>
         
         <v-btn size="small" color="primary" class="btn btn-primary noprint mr-1 mt-5"
-          @click="() => printDocument(null, pdfcont, 'landscape')">Download PDF - Landscape</v-btn>
+          @click="() => printDocument(null, pdfcont, 'landscape')">Download PDF</v-btn>
         <v-btn size="small" color="primary" class="btn btn-primary noprint ml-1 mt-5"
           @click="() => printDocument(1)">PRINT</v-btn>
       </div>

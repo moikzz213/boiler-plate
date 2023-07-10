@@ -75,7 +75,7 @@ class PerformanceSettingController extends Controller
 
             $update = $setting->update($pmsArray);
 
-            $reviewResult = Review::where('company_id', $request['company_id'])->update(["state" => $state, 'status' => $status]);
+            $reviewResult = Review::where('company_id', $request['company_id'])->update(['status' => $status]);
 
             $profile = Profile::where(['ecode' => $request['profile_ecode']])
             ->with(
