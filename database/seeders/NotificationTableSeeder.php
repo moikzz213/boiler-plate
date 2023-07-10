@@ -26,6 +26,7 @@ class NotificationTableSeeder extends Seeder
             ['type' => 'probation_mid_submit', 'value' => "This is to inform you that the Probation review status for the employee listed below has been updated to 'First Review Completed'."],
             ['type' => 'probation_final_open', 'value' => "This is to inform you that the Probation review status for the employee listed below has been updated to 'Ready for Final Review'. Please take the necessary action."],
             ['type' => 'probation_final_submit', 'value' => "This is to inform you that the Probation review status for the employee listed below has been updated to 'Final Review Completed'."],
+            ['type' => 'probation_final_notification', 'value' => "This is to inform you that this is the last day for doing the Final review."],
             ['type' => 'default_reminder_days', 'value' => 3]
         );
         foreach ($notifications as $key => $notify) {

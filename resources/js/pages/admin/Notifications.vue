@@ -95,11 +95,11 @@
           <div class="btn-parent my-auto"><v-btn size="small" @click="saveNotification('probation_final_notification',probation_final_notification)" class="ml-2 save-btn" color="primary">Save</v-btn></div>
         </div>
       <v-divider></v-divider>
-      <div class="v-col-md-3 v-col-sm-12  my-0 ">Probation Final Review: Submit</div>
+      <div class="v-col-md-3 v-col-sm-12  my-0 ">Probation Final Review: Submit</div> 
       <div class="v-col-md-9 v-col-sm-12 d-flex parent-div">
-          <v-textarea hide-details class="ma-0" v-model="probation_final_submit" rows="3" variant="outlined" density="compact" label="Probation Final Review: Submit"></v-textarea>
-          <div class="btn-parent my-auto"><v-btn size="small" @click="saveNotification('probation_final_submit',probation_final_submit)" class="ml-2 save-btn" color="primary">Save</v-btn></div>
-        </div>
+            <v-textarea hide-details class="ma-0" v-model="probation_final_submit" rows="3" variant="outlined" density="compact" label="Probation Final Review: Submit"></v-textarea>
+            <div class="btn-parent my-auto"><v-btn  size="small" @click="saveNotification('probation_final_submit',probation_final_submit)" class="ml-2 save-btn" color="primary">Save</v-btn></div>
+          </div> 
       <v-divider></v-divider>
       <div class="v-col-md-12 mb-5"></div>
     </v-row>
@@ -129,6 +129,7 @@ const probation_mid_submit = ref("");
 const probation_final_open = ref("");
 const probation_final_submit = ref(""); 
 const probation_final_notification = ref("");
+const hover = ref(false);
 
 const sbOptions = ref({});
 const saveNotification = (key,value) => {
@@ -171,7 +172,7 @@ const fetchNotifications = async () => {
 fetchNotifications();
 </script>
 <style>
-.btn-parent{ min-width:80px;}
-.save-btn { display: none;}
-.parent-div:hover .save-btn { display: block;}
+.btn-parent{ min-width:80px;} 
+.btn-parent .save-btn { display:none; }
+.parent-div:hover .save-btn { display:block; }
 </style>

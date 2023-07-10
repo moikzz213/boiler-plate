@@ -165,7 +165,7 @@ class CronJobController extends Controller
                 }
 
                 // Check date if Mid Year Closing
-            }elseif($current_month_day ==  date('Y-m-d', strtotime($v['mid_year_review_end']))){
+            }elseif($current_month_day ==  date('Y-m-d', strtotime($v['mid_year_review_end'] . ' +1 day'))){
                 $setting = PerformanceSetting::where('id', $v->id)->first();
                 if($setting){
                     $setting->update(['state' => 'midyear', 'status' => 'closed']);
@@ -181,7 +181,7 @@ class CronJobController extends Controller
                 }
 
                 // Check date if Year End Closing
-            }elseif($current_month_day ==  date('Y-m-d', strtotime($v['end_year_review_end'] + 1))){
+            }elseif($current_month_day ==  date('Y-m-d', strtotime($v['end_year_review_end'] . ' +1 day'))){
                 $setting = PerformanceSetting::where('id', $v->id)->first();
                 if($setting){
                     $setting->update(['state' => 'locked', 'status' => 'locked']);
@@ -197,7 +197,7 @@ class CronJobController extends Controller
                 }
 
                 // Check date if Settings Closing
-            }elseif($current_month_day ==  date('Y-m-d', strtotime($v['annual_kpi_setting_end']))){
+            }elseif($current_month_day ==  date('Y-m-d', strtotime($v['annual_kpi_setting_end']. ' +1 day'))){
                 $setting = PerformanceSetting::where('id', $v->id)->first();
                 if($setting){
                     $setting->update(['state' => 'setting', 'status' => 'locked']);
