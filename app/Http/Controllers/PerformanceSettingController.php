@@ -71,8 +71,7 @@ class PerformanceSettingController extends Controller
         );
         $profile = array();
         if($request['id']){
-            $setting = PerformanceSetting::where('id', $request['id'])->first();
-
+            $setting = PerformanceSetting::where('id', $request['id'])->first(); 
             $update = $setting->update($pmsArray);
 
             $reviewResult = Review::where('company_id', $request['company_id'])->update(['status' => $status]);
