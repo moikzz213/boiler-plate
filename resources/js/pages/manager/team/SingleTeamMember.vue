@@ -402,6 +402,7 @@ const employeePassData = () => {
         return o.username == ecode.value;
     });
     selEmployeeObj.value = Object.assign({}, filteredEmp[0]);
+    getKPI(2023);
 };
 
 const globalSetting = computed(() =>

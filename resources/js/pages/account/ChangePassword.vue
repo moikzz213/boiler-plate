@@ -95,7 +95,6 @@ const changePassword = async () => {
           password_confirmation: "",
         },
       };
-      console.log('response',response.data);
       snackbar.value = {
         status: true,
         type: "success",

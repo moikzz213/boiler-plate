@@ -193,6 +193,35 @@ const fetchMeasures = async () => {
 
 const industryWithKPI = ref([]);
 const ecdList = ref([]);
+const year = ref(new Date().getFullYear());
+const selectedYearResponse = (v) => {
+  year.value = v;
+  getKPI(v);
+};
+
+const getKPI = async (year) => {
+    await clientApi(authStore.authToken)
+        .get("/api/dashboard/my-kpi/" + employee.value.id + "/" + year)
+        .then((res) => {
+            if (res.data.result == null) {
+              employee.value = {
+                    ...employee.value,
+                    ...{
+                        reviews: [],
+                    },
+                };
+            } else {
+              employee.value = {
+                    ...employee.value,
+                    ...{
+                        reviews: [res.data.result],
+                    },
+                };
+            }
+        })
+        .catch((err) => {});
+};
+
 
 const kpiMaster = async () => {
     await clientApi(authStore.authToken)
@@ -371,9 +400,7 @@ const reopenReview = () => {
   };
 };
 const updateEmployeeReview = async () => {
-  reopen.value.data = {
-    ecode: employee.value.ecode,
-  };
+  
   confOptions.value = {
     ...confOptions.value,
     ...{
@@ -381,8 +408,14 @@ const updateEmployeeReview = async () => {
     },
   };
 
+  let data = {
+    profile_id: authStore.authProfile.id,
+    ecode: employee.value.ecode, 
+    year: year.value
+  };
+
   await clientApi(authStore.authToken)
-    .post("/api/hr/employee/reopen", reopen.value.data)
+    .post("/api/hr/employee/reopen", data)
     .then((res) => {
       confOptions.value = {
         ...confOptions.value,

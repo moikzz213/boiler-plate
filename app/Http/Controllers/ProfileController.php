@@ -35,7 +35,10 @@ class ProfileController extends Controller
     }
 
     public function teamMembers($ecode){
-        $team = Profile::where(['superior_ecode' => $ecode, 'status' => 'Active'])->with('reviews.keyReview', 'company')->get();
+        $team = Profile::where(['superior_ecode' => $ecode, 'status' => 'Active'])
+        ->with('reviews', function($q) {
+            $q->where('year', Carbon::now()->format('Y'))->with('keyReview');
+        })->with('company')->get();
         return response()->json($team, 200);
     }
 
@@ -43,8 +46,8 @@ class ProfileController extends Controller
 
         $query = Profile::where(
             'ecode', $ecode
-        )->with('reviews.keyReview','company','managed_by', 'reviews.settings')->with('reviews', function($q) use ($year){
-            $q->where('year', $year);
+        )->with('company','managed_by', 'reviews.settings')->with('reviews', function($q) use ($year){
+            $q->where('year', $year)->with('keyReview');
         })->first();
 
         return response()->json([
@@ -65,10 +68,18 @@ class ProfileController extends Controller
     }
 
     public function fetchAuthProfile($ecode){
-        $profile = Profile::where('ecode', $ecode )->with('teams.reviews.keyReview','teams.company', 'reviews.keyReview','company')
-        ->with('reviews',function ($q) {
-            $q->where('year', Carbon::now()->format('Y'));
-        })->first();
+        $profile = Profile::where('ecode', $request['user_ecode']) 
+                ->with( 
+                    'teams.company', 
+                    'company')
+                ->with('reviews', function($q) {
+                    $q->where('year', Carbon::now()->format('Y'))->with('keyReview');
+                })
+                ->with('teams', function($q) {
+                    $q->with('reviews', function($qq) {
+                        $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
+                    });
+                })->first();
 
         return response()->json([
             'result' => $profile
