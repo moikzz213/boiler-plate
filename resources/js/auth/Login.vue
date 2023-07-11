@@ -18,7 +18,7 @@
             required
             class="border-radius"
             autocomplete="off"
-            label="Username or Email"
+            label="Enter Employee Code"
           >
           </v-text-field>
           <v-text-field
@@ -26,7 +26,7 @@
             variant="outlined"
             required
             autocomplete="off"
-            label="Password"
+            label="Enter Password"
             type="password"
           >
           </v-text-field>
