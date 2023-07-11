@@ -16,6 +16,11 @@ const theDataTitle = computed(() => fetchedData.value.map((d) => d.title));
 const theDataSet = computed(() => {
   let set = [
     {
+      label: "Locked",
+      data: filterData("locked"),
+      backgroundColor: "#FF5252",
+    },
+    {
       label: "Open",
       data: filterData("open"),
       backgroundColor: "#03A9F4",
@@ -28,7 +33,7 @@ const theDataSet = computed(() => {
     {
       label: "In Review",
       data: filterData("in_review"),
-      backgroundColor: "#FF5252",
+      backgroundColor: "#00B8D4",
     },
     {
       label: "Submitted",
