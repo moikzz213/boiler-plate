@@ -27,24 +27,24 @@ class ReviewController extends Controller
     }
 
     public function kpiSubmitted(Request $request){
-       
-        $query = Review::where('id', $request->reviewID)->first(); 
+
+        $query = Review::where('id', $request->reviewID)->first();
         $msg = 'KPI status changed to '.$request->newStatus;
 
-        $defaultDayReminder = Notification::where('meta_key', 'default_reminder_days')->first(); 
-        
+        $defaultDayReminder = Notification::where('meta_key', 'default_reminder_days')->first();
+
         $reminderDate = date('Y-m-d', strtotime("+". $defaultDayReminder->meta_value." days"));
-        if($request->newStatus == 'inreview'){ 
-            
+        if($request->newStatus == 'inreview'){
+
             $closingDate = Carbon::now()->addDays($request->allowedDays);
             $query->update(['status' => $request->newStatus, 'closing_date' => $closingDate, 'reminder_date' => $reminderDate]);
 
         }elseif($request->newStatus == 'submitted'){
             $msg = 'KPI for this employee is now complete.';
-            $query->update(['status' => $request->newStatus, 'closing_date' => null, 'reminder_date' => null]); 
+            $query->update(['status' => $request->newStatus, 'closing_date' => null, 'reminder_date' => null]);
         }else{
             $query->update(['status' => $request->newStatus, 'closing_date' => $closingDate, 'reminder_date' => $reminderDate]);
-        } 
+        }
 
         $profile = Profile::where('ecode', $request['user_ecode'])
         ->with(
@@ -69,15 +69,15 @@ class ReviewController extends Controller
 
         $weightage = explode('%', $request->data['data']['weightage']);
         if(@$request->data['state'] == 'final'){
-            $query = KeyPerformanceReview::where('id', $request->data['data']['id'])->first(); 
-            $query->update([ 
+            $query = KeyPerformanceReview::where('id', $request->data['data']['id'])->first();
+            $query->update([
                 'achievement_yearend'      => @$request->data['data']['achievement_yearend']
             ]);
             $msg = 'Final Review for this KPI has been updated';
         }elseif(@$request->data['state'] == 'mid'){
-          
-            $query = KeyPerformanceReview::where('id', $request->data['data']['id'])->first(); 
-            $query->update([ 
+
+            $query = KeyPerformanceReview::where('id', $request->data['data']['id'])->first();
+            $query->update([
                 'achievement_midyear'      => @$request->data['data']['achievement_midyear'],
                 'revised_annual_target'    => @$request->data['data']['revised_annual_target'],
             ]);
@@ -102,7 +102,7 @@ class ReviewController extends Controller
                     'weightage'             => @$weightage[0] ? $weightage[0] : 0
                 ]);
 
-                $msg = 'KPI has been created';                
+                $msg = 'KPI has been created';
             }else{
                 $query = KeyPerformanceReview::where('id', $request->data['data']['id'])->first();
                 $query->update([
@@ -140,17 +140,25 @@ class ReviewController extends Controller
         ->whereHas('profiles', function ($q) {
             $q->where('is_regular', true)->where('status', 'Active');
         })
-        ->whereHas('settings', function ($q) use($state) {
-            $q->where('year', Carbon::now()->format('Y'))
-            ->where('state', $state);
+        ->OrWhereHas('settings', function ($q) use($state) {
+            // $q->where('year', Carbon::now()->format('Y'))
+            $q->where('state', $state);
         })
         ->withCount([
-            'profiles as open' => function ($query) {
-                $query->whereHas('reviews', function($query){
-                    $query->where('status', 'open');
-                })
-                ->orDoesntHave('reviews');
+            'profiles',
+            'profiles as open' => function ($q) {
+                $q->whereHas('company', function($query){
+                    $query->whereHas('settings', function($qry){
+                        $qry->where('status', 'open');
+                    });
+                })->doesntHave('reviews');
             },
+            // 'profiles as open' => function ($query) {
+            //     $query->whereHas('reviews', function($query){
+            //         $query->where('status', 'open');
+            //     });
+            //     // ->orDoesntHave('reviews');
+            // },
             'profiles as in_progress' => function ($query) {
                 $query->whereHas('reviews', function($query){
                     $query->where('status', 'inprogress');
@@ -166,8 +174,12 @@ class ReviewController extends Controller
                     $query->where('status', 'submitted');
                 });
             },
-        ])
-        ->get();
+            'profiles as locked' => function ($q) {
+                $q->whereHas('company', function($query){
+                    $query->doesntHave('settings');
+                });
+            },
+        ])->get();
         return response()->json([
             'data' => $data
         ], 200);
