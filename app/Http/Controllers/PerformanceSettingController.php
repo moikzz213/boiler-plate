@@ -74,17 +74,20 @@ class PerformanceSettingController extends Controller
             $setting = PerformanceSetting::where('id', $request['id'])->first(); 
             $update = $setting->update($pmsArray);
 
-            $reviewResult = Review::where('company_id', $request['company_id'])->update(['status' => $status]);
+            $reviewResult = Review::where('company_id', $request['company_id'])->update(['status' => $status]); 
 
-            $profile = Profile::where(['ecode' => $request['profile_ecode']])
-            ->with(
-                'teams.reviews.keyReview',
-                'teams.company',
-                'reviews.keyReview',
-                'company')
-            ->with('reviews',function ($q) {
-                $q->where('year', Carbon::now()->format('Y'));
-            })->first();
+            $profile = Profile::where('ecode', $request['user_ecode']) 
+                ->with( 
+                    'teams.company', 
+                    'company')
+                ->with('reviews', function($q) {
+                    $q->where('year', Carbon::now()->format('Y'))->with('keyReview');
+                })
+                ->with('teams', function($q) {
+                    $q->with('reviews', function($qq) {
+                        $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
+                    });
+                })->first();
 
         }else{
             // check if the company and year are already present in the database
@@ -104,8 +107,10 @@ class PerformanceSettingController extends Controller
             if($setting && $status == 'open'){
                 $query = Profile::whereHas('teams', function($q) use($request) {
                     $q->where(['status' => 'Active', 'is_regular' => 1, 'company_id' => $request['company_id']]);
-                })->where('status', 'Active')->with('teams')->get();
-
+                })->where('status', 'Active')->with('teams', function($q) use($request) {
+                    $q->where(['status' => 'Active', 'is_regular' => 1, 'company_id' => $request['company_id']]);
+                })->get();
+               
                 // Send Notification to all employees that have a team only. Manager without a team member will not receive the notification.
                 SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => true, 'closingSetting' => 'setting','allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $request['year']])->onQueue('processing');
             }

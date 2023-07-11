@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Review;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Log extends Model
 {
@@ -43,5 +44,6 @@ class Log extends Model
     public function measures()
     {
         return $this->morphedByMany(Measure::class, 'loggable');
-    }
+    } 
+   
 }

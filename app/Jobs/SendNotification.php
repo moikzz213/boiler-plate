@@ -198,7 +198,7 @@ class SendNotification implements ShouldQueue
                 }elseif($current_status == 'final_notification'){
                     $metaKey = 'probation_final_notification'; 
                    
-                    $subject = 'Probation KPI Final Review: Final Notification';
+                    $subject = 'Probation KPI Final Notification';
 
                     $cnt = 1;
                     foreach($managerName AS $k => $v){ 

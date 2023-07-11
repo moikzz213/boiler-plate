@@ -25,18 +25,20 @@ class KeyPerformanceReviewController extends Controller
         if(!$request->id){
             return false;
         }
-        KeyPerformanceReview::where('id', $request->id)->delete();  
-        
+        KeyPerformanceReview::where('id', $request->id)->delete();
 
-        $profile = Profile::where('ecode', $request['user_ecode'])
-        ->with(
-            'teams.reviews.keyReview',
-            'teams.company',
-            'reviews.keyReview',
+        $profile = Profile::where('ecode', $request['user_ecode']) 
+        ->with( 
+            'teams.company', 
             'company')
-        ->with('reviews',function ($q) {
-            $q->where('year', Carbon::now()->format('Y'));
-        })->first(); 
+        ->with('reviews', function($q) {
+            $q->where('year', Carbon::now()->format('Y'))->with('keyReview');
+        })
+        ->with('teams', function($q) {
+            $q->with('reviews', function($qq) {
+                $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
+            });
+        })->first();
 
         return response()->json([
             'message' => $msg,

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Log;
 use App\Models\Profile;
 use App\Models\KeyPerformanceReview;
 use Illuminate\Database\Eloquent\Model;
@@ -25,5 +26,10 @@ class Review extends Model
     public function settings()
     {
         return $this->belongsTo(PerformanceSetting::class, 'performance_settings_id');
+    }
+
+    public function logs()
+    {
+        return $this->morphToMany(Log::class, 'loggable');
     }
 }
