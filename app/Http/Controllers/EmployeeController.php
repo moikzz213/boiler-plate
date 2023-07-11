@@ -38,7 +38,7 @@ class EmployeeController extends Controller
         ])
         ->with('company', 'managed_by')->with('reviews', function($q) {
             $q->where('year', Carbon::now()->format('Y'))->with('keyReview');
-        })
+        })->orderBy('status','asc')->orderBy('role','asc')
         ->paginate(10)
         ->appends(request()->query());
 

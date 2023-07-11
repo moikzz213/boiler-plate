@@ -137,7 +137,7 @@ class ProfileController extends Controller
                     ->orWhere('ecode', 'like', '%' . $value . '%');
                 }
             })->ignore('null')
-        ])
+        ])->orderBy('status','asc')->orderBy('role','asc')
         ->paginate(10)
         ->appends(request()->query());
         return response()->json($profiles, 200);
