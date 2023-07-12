@@ -36,7 +36,7 @@
                 <v-btn
                     @click="runFilter"
                     block
-                    color="primary"
+                    color="secondary"
                     class="text-capitalize"
                     >Filter</v-btn
                 >
@@ -136,7 +136,7 @@
                     >
                     <v-btn
                         :loading="loadingConfirmation"
-                        color="primary"
+                        color="secondary"
                         class="ml-2 px-8"
                         @click="confirmOpenMember"
                         >yes</v-btn
@@ -152,7 +152,7 @@
                 </v-card-text>
                 <div class="pa-3 mt-3 d-flex justify-end">
                     <v-btn
-                        color="primary"
+                        color="secondary"
                         variant="text"
                         @click="noKPIEmployee = false"
                         >Close</v-btn

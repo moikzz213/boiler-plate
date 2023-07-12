@@ -68,7 +68,7 @@ class ProfileController extends Controller
     }
 
     public function fetchAuthProfile($ecode){
-        $profile = Profile::where('ecode', $request['user_ecode']) 
+        $profile = Profile::where('ecode', $ecode) 
                 ->with( 
                     'teams.company', 
                     'company')
@@ -79,8 +79,7 @@ class ProfileController extends Controller
                     $q->with('reviews', function($qq) {
                         $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
                     });
-                })->first();
-
+                })->first(); 
         return response()->json([
             'result' => $profile
         ], 200);
@@ -90,7 +89,7 @@ class ProfileController extends Controller
 
         $query = Profile::where('ecode', $request->ecode )->first();
         $haveReview = Review::where(['profile_id' => $query->id, 'year' => $request->year, 'performance_settings_id' => $request->setting['id']])->first();
-       
+      
         if($haveReview){
             $query->reviews()->update([ 
                 'status'        => 'inprogress',
