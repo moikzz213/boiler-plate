@@ -77,7 +77,7 @@
             </div> 
             <div v-if="!kpiAction.is_review" class="v-col-12 d-flex justify-end">
               <v-btn color="primary" variant="text" @click="cancelKPI">Cancel</v-btn>
-              <v-btn :loading="saveLoading" :disabled="requiredFields.length < 6" color="primary" class="ml-2 px-8" @click="saveKpi">save</v-btn>
+              <v-btn :loading="saveLoading" :disabled="requiredFields.length < 6" color="secondary" class="ml-2 px-8" @click="saveKpi">save</v-btn>
             </div>
           </v-row>
         </div>
@@ -125,7 +125,7 @@
             <v-row> 
             <div class="v-col-12 d-flex justify-end">
               <v-btn class="bg-grey-lighten-2 text-primary" variant="text" @click="kpiAction.dialog = false">Cancel</v-btn>
-              <v-btn :loading="saveLoading" v-if="kpiAction.action !='readonly' && props.submitButton && finalReview.saveBtn" color="primary" class="ml-2" @click="submitReview">Save</v-btn>
+              <v-btn :loading="saveLoading" v-if="kpiAction.action !='readonly' && props.submitButton && finalReview.saveBtn" color="secondary" class="ml-2" @click="submitReview">Save</v-btn>
             </div>
           </v-row>
         </div>

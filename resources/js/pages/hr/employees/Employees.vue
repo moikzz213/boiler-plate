@@ -71,7 +71,7 @@
           <v-btn
             @click="runFilter"
             height="40px"
-            color="primary"
+            color="secondary"
             class="text-capitalize"
             :loading="filter.loadingFilter"
             style="width: 48%"

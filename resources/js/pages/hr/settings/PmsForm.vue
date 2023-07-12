@@ -190,7 +190,7 @@
     <div class="d-flex justify-end mt-5">
       <v-btn
         size="x-large"
-        color="primary"
+        color="secondary"
         :loading="pms.loading"
         class="px-10"
         @click="saveSetting"

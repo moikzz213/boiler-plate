@@ -68,7 +68,7 @@
             @click="importData.dialog = false"
             >Close</v-btn
           >
-          <v-btn color="primary" :loading="importData.loading" @click="importCSV"
+          <v-btn color="secondary" :loading="importData.loading" @click="importCSV"
             >Import</v-btn
           >
         </div>
@@ -114,7 +114,7 @@ const conditionData = ref({
 const importData = ref({
   dialog: false,
   btnTitle: "Import",
-  btnColor: "primary",
+  btnColor: "secondary",
   loading: false,
   cardTitle: "Import",
   endpoint: "",

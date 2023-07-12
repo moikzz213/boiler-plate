@@ -37,7 +37,7 @@
           :loading="filter.loading"
           @click="runFilter"
           height="40px"
-          color="primary"
+          color="secondary"
           class="text-capitalize"
           >Filter</v-btn
         >
