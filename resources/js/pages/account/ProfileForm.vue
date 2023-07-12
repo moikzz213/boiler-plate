@@ -44,7 +44,7 @@
         <div class="v-col-12 v-col-md-6 py-0">
          
           <v-text-field
-            v-model="profileData.company"
+            v-model="profileData.company.title"
             label="Company"
             variant="outlined"
             density="compact"
@@ -154,13 +154,15 @@ const props = defineProps(["user"]);
 const profileData = ref({
   loading: false,
   data: Object.assign({}, props.user),
-});
+  company: {title: props.user.company ? props.user.company.title :  '' }
+}); 
+
 watch(
   () => props.user,
-  (newVal, oldValue) => { 
+  (newVal, oldValue) => {
     if (newVal != oldValue) {
       profileData.value.data = Object.assign({}, newVal);
-      profileData.value.company = newVal.company.title; 
+      profileData.value.company = newVal.company;
     }
   }
 );
