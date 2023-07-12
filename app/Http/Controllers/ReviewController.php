@@ -143,6 +143,7 @@ class ReviewController extends Controller
         })
         ->whereHas('settings', function ($q) use($state) { 
             $q->where(['state' => $state, 'year' => Carbon::now()->format('Y')]);
+        
         })
         ->withCount([
             'profiles',
@@ -170,7 +171,10 @@ class ReviewController extends Controller
             },
             'profiles as locked' => function ($q) {
                 $q->whereHas('company', function($query){
-                    $query->doesntHave('settings');
+                    $query->doesntHave('settings')
+                    ->orWhereHas('settings', function($query){
+                        $query->where('status','closed'); 
+                    });
                 });
             },
         ])->orderBy('title','ASC')->get(); 
@@ -184,10 +188,10 @@ class ReviewController extends Controller
             $q->where('is_regular', true)->where('status', 'Active');
         })
         ->whereHas('settings', function ($q) use($state) { 
-            $q->where('status','!=', 'locked');
+            $q->whereNotIn('status',array('locked','closed'));
             
         })->with('settings', function ($q) use($state) { 
-            $q->where('status','!=', 'locked');
+            $q->whereNotIn('status',array('locked','closed'));
             
         })->orderBy('title','ASC')->get();
         
