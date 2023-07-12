@@ -3,21 +3,21 @@
     <div class="w-100 d-flex mb-3">
       <v-btn
         @click="() => selectState('setting')"
-        :color="currentState == 'setting' ? 'primary' : ''"
+        :color="currentState == 'setting' ? 'secondary' : ''"
         class="mr-2"
         size="large"
         >Setting</v-btn
       >
       <v-btn
         @click="() => selectState('midyear')"
-        :color="currentState == 'midyear' ? 'primary' : ''"
+        :color="currentState == 'midyear' ? 'secondary' : ''"
         class="mr-2"
         size="large"
         >Mid-year</v-btn
       >
       <v-btn
         @click="() => selectState('yearend')"
-        :color="currentState == 'yearend' ? 'primary' : ''"
+        :color="currentState == 'yearend' ? 'secondary' : ''"
         class="mr-2"
         size="large"
         >Year-end</v-btn

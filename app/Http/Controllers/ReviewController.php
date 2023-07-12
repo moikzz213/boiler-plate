@@ -196,8 +196,6 @@ class ReviewController extends Controller
         })->orderBy('title','ASC')->get();
         
         $company1IDs = $data->pluck('id')->toArray();
-        $company2IDs = $settingsCompanyData->pluck('id')->toArray();
-
         
         foreach($companyData AS $k => $v){
            if(in_array($v->id,$company1IDs)) unset($companyData[$k]);
