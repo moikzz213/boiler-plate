@@ -63,7 +63,7 @@ const snackbar = ref({
 const isDisabled = ref(true);
  
 const isValid = useIsFormValid();
-console.log(props.user);
+
 const password = ref({
   status: false,
   loading: false,
