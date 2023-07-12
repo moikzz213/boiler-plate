@@ -123,7 +123,7 @@
               >
               <v-btn
                 v-if="['edit', 'add'].includes(kpiData.action) == true"
-                color="primary"
+                color="secondary"
                 class="ml-2 px-8"
                 @click="saveKpi"
                 :loading="kpiData.loading"
@@ -131,7 +131,7 @@
               >
               <v-btn
                 v-if="kpiData.action == 'approve'"
-                color="primary"
+                color="secondary"
                 class="ml-2 px-8"
                 :loading="kpiData.loading"
                 @click="approveKpi"

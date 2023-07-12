@@ -67,7 +67,7 @@
                             };
                             `"
                     >
-                        {{ user.is_regular == true ? "Confirm Employee" : "Probation Employee" }}
+                        {{ user.is_regular == true ? "Confirmed Employee" : "Probation Employee" }}
                     </div>
                     <v-card
                         class="mb-1 elevation-0"

@@ -5,7 +5,7 @@
       <div class="v-col-12">
         <v-btn
           size="x-large"
-          :color="`${currentType == 'kpi' ? 'primary' : ''}`"
+          :color="`${currentType == 'kpi' ? 'secondary' : ''}`"
           :readonly="`${currentType == 'kpi' ? true : false}`"
           class="px-12 mr-3"
           @click="() => selectType('kpi')"
@@ -14,7 +14,7 @@
         </v-btn>
         <v-btn
           size="x-large"
-          :color="`${currentType == 'ecd' ? 'primary' : ''}`"
+          :color="`${currentType == 'ecd' ? 'secondary' : ''}`"
           :readonly="`${currentType == 'ecd' ? true : false}`"
           class="px-12"
           @click="() => selectType('ecd')"
