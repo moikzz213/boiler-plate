@@ -136,13 +136,13 @@ class ReviewController extends Controller
 
         // graph array
         $company = new Company;
+        
         $data = $company
         ->whereHas('profiles', function ($q) {
             $q->where('is_regular', true)->where('status', 'Active');
         })
-        ->OrWhereHas('settings', function ($q) use($state) {
-            // $q->where('year', Carbon::now()->format('Y'))
-            $q->where('state', $state);
+        ->whereHas('settings', function ($q) use($state) { 
+            $q->where(['state' => $state, 'year' => Carbon::now()->format('Y')]);
         })
         ->withCount([
             'profiles',
@@ -152,13 +152,7 @@ class ReviewController extends Controller
                         $qry->where('status', 'open');
                     });
                 })->doesntHave('reviews');
-            },
-            // 'profiles as open' => function ($query) {
-            //     $query->whereHas('reviews', function($query){
-            //         $query->where('status', 'open');
-            //     });
-            //     // ->orDoesntHave('reviews');
-            // },
+            }, 
             'profiles as in_progress' => function ($query) {
                 $query->whereHas('reviews', function($query){
                     $query->where('status', 'inprogress');
@@ -179,7 +173,50 @@ class ReviewController extends Controller
                     $query->doesntHave('settings');
                 });
             },
-        ])->get();
+        ])->orderBy('title','ASC')->get(); 
+       
+        $companyData = $company->whereHas('profiles', function ($q) {
+            $q->where('is_regular', true)->where('status', 'Active');
+        })->orderBy('title','ASC')->get();
+
+
+        $settingsCompanyData = $company->whereHas('profiles', function ($q) {
+            $q->where('is_regular', true)->where('status', 'Active');
+        })
+        ->whereHas('settings', function ($q) use($state) { 
+            $q->where('status','!=', 'locked');
+            
+        })->with('settings', function ($q) use($state) { 
+            $q->where('status','!=', 'locked');
+            
+        })->orderBy('title','ASC')->get();
+        
+        $company1IDs = $data->pluck('id')->toArray();
+        $company2IDs = $settingsCompanyData->pluck('id')->toArray();
+
+        
+        foreach($companyData AS $k => $v){
+           if(in_array($v->id,$company1IDs)) unset($companyData[$k]);
+           
+           if($settingsCompanyData && count($settingsCompanyData) > 0){
+                foreach($settingsCompanyData AS $kk => $vv){
+                    if($v->id == $vv->id) { 
+                        if($vv->settings[0]->state == 'setting'){
+                            $state = 'set';
+                        }elseif($vv->settings[0]->state == 'midyear'){
+                            $state = 'mid';
+                        }else{
+                            $state = 'end';
+                        }
+                        $v->sub_title = $state;
+                    }
+                }
+           }
+           $v->locked = 100;
+        }
+        
+        $data = $data->merge($companyData);
+        
         return response()->json([
             'data' => $data
         ], 200);

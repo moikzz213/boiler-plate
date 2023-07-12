@@ -12,13 +12,13 @@ const props = defineProps(["data"]);
 const chart_container = ref(null);
 const fetchedData = ref(props.data);
 const filterData = (property) => fetchedData.value.map((d) => d[property]);
-const theDataTitle = computed(() => fetchedData.value.map((d) => d.title));
+const theDataTitle = computed(() => fetchedData.value.map((d) => d.sub_title ? d.title + " - " + d.sub_title.toUpperCase() : d.title));
 const theDataSet = computed(() => {
   let set = [
     {
       label: "Locked",
       data: filterData("locked"),
-      backgroundColor: "#FF5252",
+      backgroundColor: "#cfcfcf",
     },
     {
       label: "Open",
@@ -45,7 +45,7 @@ const theDataSet = computed(() => {
   return set;
 });
 const chartData = computed(() => {
-  return { labels: theDataTitle.value, datasets: theDataSet.value };
+  return { labels: theDataTitle.value , datasets: theDataSet.value };
 });
 let chart = null;
 const loadChart = (container) => {
