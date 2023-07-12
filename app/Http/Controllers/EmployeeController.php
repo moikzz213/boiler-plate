@@ -95,7 +95,7 @@ class EmployeeController extends Controller
     private function pushToUMS($data){
         
         $formData = json_encode(array('query' => $data));
-        $url = 'http://127.0.0.1:8082/api/pms-application/update';
+        $url = env('VITE_SANCTUM_USER_URL').'/api/pms-application/update';
         $loginpassw = "user_integration@gagroup.local:Abcd@123"; 
         $globalFunction = new GlobalFunction();
         $stringReponse = $globalFunction->runCurl($url, $data, $loginpassw);
