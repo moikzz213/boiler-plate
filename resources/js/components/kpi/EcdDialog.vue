@@ -21,7 +21,14 @@
                 variant="outlined"
                 density="compact"
                 label="Select *"
-              >               
+              >             
+              <template v-slot:item="{ props, item }">
+                <v-list-item
+                :style="`${item.raw.profile_ecode ? 'background-color:#f1f1f1' : ''} `"
+                  v-bind="props" 
+                  :title="item?.raw?.title" 
+                ></v-list-item>
+              </template>  
               </v-autocomplete>
             </div>
             <div class="v-col-12 py-0">
