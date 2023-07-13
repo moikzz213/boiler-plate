@@ -38,12 +38,13 @@ class PerformanceSettingController extends Controller
 
     public function saveSetting(Request $request)
     {
-        $currentDate = Carbon::now();
-
+        $currentDate = Carbon::now()->format('Y-m-d'); 
         $status = 'open';
         if($currentDate >= $request['annual_kpi_setting_start'] && $currentDate <= $request['annual_kpi_setting_end']){
+             
             $state = 'setting';
         }elseif($currentDate >= $request['mid_year_review_start'] && $currentDate <= $request['mid_year_review_end']){
+           
             $state = 'midyear';
         }elseif($currentDate >= $request['end_year_review_start'] && $currentDate <= $request['end_year_review_end']){
             $state = 'yearend';

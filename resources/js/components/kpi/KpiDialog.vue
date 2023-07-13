@@ -8,17 +8,19 @@
             <div class="v-col-12">{{ kpiAction.title }}</div>
             <div class="v-col-12 v-col-md-6 py-0">
               <v-autocomplete v-model="industry" :items="industryList" 
-              item-title="title" item-value="title"  
-              return-object
-              :disabled="kpiAction.action == 'edit' || kpiAction.is_review"
+              item-title="title" item-value="title"   
+             hide-details
+              return-object 
+             v-if="kpiAction.action == 'add'"
                 variant="outlined" density="compact" label="Select Industry*">
               </v-autocomplete>
+              <v-text-field v-else  v-model="industry" hide-details variant="outlined" density="compact" label="Select Industry*" class="bg-grey-lighten-4 mb-3"></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-6 py-0">
               <v-autocomplete v-model="selectedKPI"  :items="kpiList" 
                 item-title="title" item-value="id" 
                 variant="outlined"
-                :disabled="kpiAction.action == 'edit' || kpiAction.is_review"
+                v-if="kpiAction.action == 'add'"
                 density="compact" label="Select KPI*"> 
                 <template v-slot:selection="{ props, item }">
                   <span v-bind="props">
@@ -26,27 +28,31 @@
                   </span>
                 </template>
               </v-autocomplete>
+              <v-text-field v-else  v-model="selectedKPI" hide-details variant="outlined" density="compact" label="Select KPI*" class="bg-grey-lighten-4 mb-3"></v-text-field>
             </div>
           
-            <div class="v-col-12 v-col-md-3 py-0">
-              <v-select  :disabled="isDisabled || kpiAction.is_review" v-model="kpiData.target_type" :items="targetTypeList" label="Target Type*" variant="outlined"
+            <div class="v-col-12 v-col-md-3 py-0 mb-2">
+              <v-select  v-if="!isDisabled && !kpiAction.is_review" v-model="kpiData.target_type" :items="targetTypeList" label="Target Type*" variant="outlined"
                 density="compact"></v-select>
+                <v-text-field v-else  v-model="kpiData.target_type" hide-details variant="outlined" density="compact" label="Target Type*" class="bg-grey-lighten-4 mb-3"></v-text-field>
             </div>
-            <div class="v-col-12 v-col-md-3 py-0">
-              <v-text-field  :disabled="isDisabled || kpiAction.is_review"  v-model="kpiData.target" label="Target*" variant="outlined" density="compact"
+            <div class="v-col-12 v-col-md-3 py-0 mb-2">
+              <v-text-field  :readonly="isDisabled || kpiAction.is_review" :class="`${isDisabled || kpiAction.is_review ? 'bg-grey-lighten-4 mb-3' : ''}`" hide-details type="number" v-model="kpiData.target" label="Target*" variant="outlined" density="compact"
                 persistent-hint></v-text-field>
             </div>
-            <div class="v-col-12 v-col-md-3 py-0">
-              <v-select  :disabled="isDisabled || kpiAction.is_review"   v-model="kpiData.measures" :items="measuresList" label="Measures*" variant="outlined"
+            <div class="v-col-12 v-col-md-3 py-0 mb-2">
+              <v-select  v-if="!isDisabled && !kpiAction.is_review"   v-model="kpiData.measures" :items="measuresList" label="Measures*" variant="outlined"
                 density="compact"></v-select>
+                <v-text-field v-else  v-model="kpiData.measures" hide-details variant="outlined" density="compact" label="Measures*" class="bg-grey-lighten-4 mb-3"></v-text-field>
             </div>
-            <div class="v-col-12 v-col-md-3 py-0">
-              <v-select :disabled="isDisabled || kpiAction.is_review"  v-model="kpiData.weightage" :items="kpiWeightageList" label="KPI's Weightage (%)*"
+            <div class="v-col-12 v-col-md-3 py-0 mb-2">
+              <v-select v-if="!isDisabled && !kpiAction.is_review"  v-model="kpiData.weightage" :items="kpiWeightageList" label="KPI's Weightage (%)*"
                 variant="outlined" density="compact"></v-select>
+                <v-text-field v-else  v-model="kpiData.weightage" hide-details variant="outlined" density="compact" label="KPI's Weightage (%)*" class="bg-grey-lighten-4 mb-3"></v-text-field>
             </div>
             <div class="v-col-12 py-0">
               <v-row class="mx-0  mb-3">
-                <v-col class="pa-3" style="border:1px solid #b1b1b1;border-radius: 5px;min-height:70px;" v-html="kpiData.evaluation_pattern">
+                <v-col class="pa-3 bg-grey-lighten-4" style="border:1px solid #b1b1b1;border-radius: 5px;min-height:70px;" v-html="kpiData.evaluation_pattern">
                
                 </v-col>
               </v-row>
@@ -58,18 +64,18 @@
               <v-divider class="mx-auto"></v-divider>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.definition" :readonly="isDisabled || kpiAction.action == 'edit' || kpiAction.is_review" label="KPI Definition*" variant="outlined" rows="2"></v-textarea>
+              <v-textarea  auto-grow v-model="kpiData.definition" :readonly="isDisabled || kpiAction.action == 'edit' || kpiAction.is_review" label="KPI Definition*" variant="outlined" rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.formula" readonly label="Calculation Formula*" disabled variant="outlined"
+              <v-textarea  auto-grow v-model="kpiData.formula" class="bg-grey-lighten-4 mb-4" hide-details readonly label="Calculation Formula*" variant="outlined"
                 rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0">
-              <v-textarea v-model="kpiData.subordinate_measures" readonly label="Subordinate Measures*" disabled variant="outlined"
+              <v-textarea  auto-grow v-model="kpiData.subordinate_measures" class="bg-grey-lighten-4 mb-4" hide-details readonly label="Subordinate Measures*" variant="outlined"
                 rows="2"></v-textarea>
             </div>
             <div class="v-col-12 py-0 hidden hide" hidden>
-              <v-textarea v-model="kpiData.calculation_example" readonly label="KPI Calculation Example*" disabled variant="outlined"
+              <v-textarea  auto-grow v-model="kpiData.calculation_example" class="bg-grey-lighten-4 mb-4" hide-details readonly label="KPI Calculation Example*" variant="outlined"
                 rows="2"></v-textarea>
             </div> 
             <div class="v-col-12 py-0">
@@ -86,39 +92,35 @@
             <div class="v-col-12 px-1">{{ "Review" }}</div>
             <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
              {{  kpiAction.is_regular ? "Mid-year Achievement" : 'First Review Achievement'}} 
+            </div>          
+            <div class="v-col-12 v-col-md-6 py-0 px-1">
+              <v-text-field type="number" :readonly="finalReview.isFinal || kpiAction.action =='readonly'" hide-details :class="`${finalReview.isFinal || kpiAction.action =='readonly' ? 'bg-grey-lighten-2': '' } mb-4`" v-model="kpiData.achievement_midyear" label="Achievement*" variant="outlined"
+                density="compact" persistent-hint></v-text-field>
+            </div>
+            <div class="v-col-12 v-col-md-6 py-0 px-1">
+              <v-text-field readonly v-model="mid_target_variation" label="Remainder Annual Target" class="bg-grey-lighten-2" hide-details variant="outlined"
+                density="compact" persistent-hint></v-text-field>
+            </div>
+            <div class="v-col-12 v-col-md-12 py-0 px-1">
+              <v-text-field type="number" v-if="kpiAction.is_regular" :readonly="finalReview.isFinal || kpiAction.action =='readonly'" hide-details :class="`${finalReview.isFinal || kpiAction.action =='readonly' ? 'bg-grey-lighten-2': '' } mb-4`" v-model="kpiData.revised_annual_target" label="Revised Annual Target" variant="outlined"
+                density="compact" persistent-hint></v-text-field>
             </div> 
-          
-            <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field :disabled="finalReview.isFinal || kpiAction.action =='readonly'" v-model="kpiData.achievement_midyear" label="Achievement*" variant="outlined"
-                density="compact" persistent-hint></v-text-field>
-            </div>
-            <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field readonly v-model="mid_target_variation" label="Target Variation" variant="outlined"
-                density="compact" persistent-hint></v-text-field>
-            </div>
-            <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field v-if="kpiAction.is_regular" :disabled="finalReview.isFinal || kpiAction.action =='readonly'" v-model="kpiData.revised_annual_target" label="Revised Annual Target*" variant="outlined"
-                density="compact" persistent-hint></v-text-field>
-            </div>
-            <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field v-if="kpiAction.is_regular" readonly v-model="kpiData.mid_year_remainder_target" label="Remainder Annual Target*"
-                variant="outlined" density="compact" persistent-hint></v-text-field>
-            </div>
             </v-row>
-            <v-row class="px-3" v-if="finalReview.isFinal"> 
+            
+            <v-row class="px-3"  v-if="finalReview.isFinal"> 
             <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
               {{  kpiAction.is_regular ? "Year-end Achievement" : 'Final Review Achievement'}}
             </div>
             <div class="v-col-12 py-0 px-1">
-              <v-text-field v-model="kpiData.achievement_yearend" label="Achievement*" variant="outlined"
+              <v-text-field v-model="kpiData.achievement_yearend" :readonly="kpiAction.action =='readonly'" hide-details :class="`${kpiAction.action =='readonly' ? 'bg-grey-lighten-2': '' } mb-4`" label="Achievement*" variant="outlined"
                 density="compact" persistent-hint></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field readonly v-model="final_target_variation" disabled label="Target Variation" variant="outlined"
+              <v-text-field   v-model="final_target_variation" readonly hide-details class="bg-grey-lighten-2 mb-3" label="Target Variation" variant="outlined"
                 density="compact" persistent-hint></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field v-model="kpiData.year_end_remainder_target" disabled label="Remainer Annual Target*" variant="outlined"
+              <v-text-field v-model="kpiData.year_end_remainder_target" readonly hide-details class="bg-grey-lighten-2 mb-3" label="Remainer Annual Target*" variant="outlined"
                 density="compact" persistent-hint></v-text-field>
             </div>
             </v-row>
@@ -179,7 +181,7 @@ const listIndustries = ref([]);
 const industry = ref('');  
  
 const selectedKPI = ref('');
-
+const mid_target_variation = ref('');
 const industryTitle = ref('');
 const saveLoading = ref(false);
 const isDisabled = ref(true);
@@ -221,11 +223,20 @@ const submitReview = () => {
 watch(
   () => props.kpiOptions,
   (newVal) => {
-     
+    mid_target_variation.value = '';
     saveLoading.value = false;
       listIndustries.value = props.industryList;
-      console.log('listIndustries.value',listIndustries.value);
       kpiData.value = Object.assign({}, newVal.data);
+      
+      if(kpiData.value.measures == '%'){ 
+          mid_target_variation.value = kpiData.value.target;
+      }
+      if(kpiData.value.achievement_midyear){
+        if(kpiData.value.measures != '%'){ 
+          mid_target_variation.value = kpiData.value.target - kpiData.value.achievement_midyear;
+        } 
+      }
+
       kpiAction.value = Object.assign({}, newVal);
       
       if(kpiAction.value.action == 'edit' ||  kpiAction.value.action == 'review' ||  kpiAction.value.action == 'readonly'){
@@ -271,8 +282,7 @@ watch(
   () => selectedKPI.value,
   (newVal) => { 
     
-    if(kpiAction.value.action == 'add'){
-      
+    if(kpiAction.value.action == 'add'){ 
 
       kpiData.value = {};
       let newData = kpiList.value.filter((el) => {

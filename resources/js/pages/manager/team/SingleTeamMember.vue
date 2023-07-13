@@ -186,6 +186,7 @@ const kpiMaster = async () => {
     await clientApi(authStore.authToken)
         .get("/api/fetch/master-kpi/non-paginate")
         .then((res) => {
+           
             if (
                 industryList.value &&
                 industryList.value.length > 0 &&
@@ -208,7 +209,6 @@ const kpiMaster = async () => {
                     });
                 });
             }
-            console.log(ecdList.value);
         });
 };
 
@@ -228,17 +228,21 @@ const customKpiMaster = async () => {
                 industryList.value.map((o, i) => {
                     let ecdCount = 0;
                     res.data.map((oo) => {
-                        if (o.id == oo.industry_id) {
-                            industryWithKPI.value[i].kpis[
-                                industryWithKPI.value[i].kpis.length
-                            ] = oo;
+                        if (o.id == oo.industry_id) { 
+                          
+                            industryWithKPI.value[i].kpis.slice().unshift(oo);
+                            // industryWithKPI.value[i].kpis[
+                            //     industryWithKPI.value[i].kpis.length
+                            // ] = oo;
                         } else if (oo.type == "ecd") {
+                          
                             ecdList.value[ecdCount] = oo;
                             ecdCount++;
                         }
                     });
                 });
             }
+            console.log('ecdList.value',industryWithKPI.value);
         });
 };
 
