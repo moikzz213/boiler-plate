@@ -3,6 +3,7 @@
     <v-row>
       <div class="v-col-12 v-col-md-6">
         <v-autocomplete
+        :disabled="route.name != 'NewPms'"
           v-model="pms.data.company_id"
           :items="companyStore.active_companies"
           item-title="title"
@@ -28,7 +29,7 @@
         </v-autocomplete>
       </div>
       <div class="v-col-12 v-col-md-6">
-        <VueDatePicker v-model="pms.data.year" year-picker class="pms-date-picker" />
+        <VueDatePicker v-model="pms.data.year" year-picker class="pms-date-picker" :disabled="route.name != 'NewPms'"/>
       </div>
     </v-row>
     <v-row class="mt-6">
@@ -189,6 +190,7 @@
     </v-row>
     <div class="d-flex justify-end mt-5">
       <v-btn
+      v-if="pms.data.year >= currentYear "
         size="x-large"
         color="secondary"
         :loading="pms.loading"
@@ -223,6 +225,8 @@ const props = defineProps({
   },
 });
 
+const currentYear = ref(new Date().getFullYear() - 1); 
+ 
 // PMS
 const pms = ref({
   title: "Add PMS Setting",

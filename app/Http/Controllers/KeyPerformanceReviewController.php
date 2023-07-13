@@ -8,10 +8,8 @@ use Illuminate\Support\Carbon;
 use App\Models\PerformanceSetting;
 use App\Models\KeyPerformanceReview;
 
-
 class KeyPerformanceReviewController extends Controller
 {
-
     function getPmsSettings(){
         $currentPmsSettings = PerformanceSetting::where([ 
             'year' => Carbon::now()->format('Y')

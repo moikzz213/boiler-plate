@@ -146,7 +146,6 @@ class ReviewController extends Controller
         
         })
         ->withCount([
-            'profiles',
             'profiles as open' => function ($q) {
                 $q->whereHas('company', function($query){
                     $query->whereHas('settings', function($qry){
@@ -192,7 +191,6 @@ class ReviewController extends Controller
             
         })->with('settings', function ($q) use($state) { 
             $q->whereNotIn('status',array('locked','closed'));
-            
         })->orderBy('title','ASC')->get();
         
         $company1IDs = $data->pluck('id')->toArray();
