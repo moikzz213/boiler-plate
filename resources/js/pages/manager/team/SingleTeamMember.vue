@@ -208,6 +208,7 @@ const kpiMaster = async () => {
                     });
                 });
             }
+            console.log(ecdList.value);
         });
 };
 
@@ -225,11 +226,15 @@ const customKpiMaster = async () => {
                 res.data.length > 0
             ) {
                 industryList.value.map((o, i) => {
+                    let ecdCount = 0;
                     res.data.map((oo) => {
                         if (o.id == oo.industry_id) {
                             industryWithKPI.value[i].kpis[
                                 industryWithKPI.value[i].kpis.length
                             ] = oo;
+                        } else if (oo.type == "ecd") {
+                            ecdList.value[ecdCount] = oo;
+                            ecdCount++;
                         }
                     });
                 });

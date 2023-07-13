@@ -89,6 +89,7 @@ class PerformanceSettingController extends Controller
                     });
                 })->first();
 
+            $type = 'update-kpi-setting';
         }else{
             // check if the company and year are already present in the database
             $check = PerformanceSetting::where([
@@ -102,6 +103,7 @@ class PerformanceSettingController extends Controller
                 ], 422);
             }
 
+            $type = 'new-kpi-setting';
             $setting = PerformanceSetting::create($pmsArray);
 
             if($setting && $status == 'open'){
@@ -119,7 +121,7 @@ class PerformanceSettingController extends Controller
         $setting->logs()->create([
             'profile_id' => $request['profile_id'],
             'details' => $setting,
-            'log_type' => 'new'
+            'log_type' => $type
         ]);
 
         return response()->json([

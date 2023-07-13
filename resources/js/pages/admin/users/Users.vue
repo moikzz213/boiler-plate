@@ -37,7 +37,7 @@
               <tr v-for="item in users.data" :key="item.id">
                 <td>{{ item.username }}</td>
                 <td>{{ item.email }}</td>
-                <td>{{ item.role }}</td>
+                <td>{{ item.role == 'app_admin' ? 'Super admin' : (item.role == 'hr_admin' ? 'HR Admin' : item.role) }}</td>
                 <td>
                   <v-chip
                     class="text-uppercase"
