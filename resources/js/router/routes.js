@@ -105,7 +105,7 @@ export const routes = [
         name: "HrCustomKpi",
         meta: {
             requiresAuth: true,
-            role: ["app_admin", "hr_admin", "hrbp"],
+            role: ["app_admin", "hr_admin"],
             title: "KPI List",
         },
     },
@@ -115,7 +115,7 @@ export const routes = [
         name: "PaginatedHrCustomKpi",
         meta: {
             requiresAuth: true,
-            role: ["app_admin", "hr_admin", "hrbp"],
+            role: ["app_admin", "hr_admin"],
             title: "KPI List",
         },
     },
@@ -125,7 +125,7 @@ export const routes = [
         name: "HrMasterKpi",
         meta: {
             requiresAuth: true,
-            role: ["app_admin", "hr_admin", "hrbp"],
+            role: ["app_admin", "hr_admin"],
             title: "KPI List",
         },
     },
@@ -135,7 +135,7 @@ export const routes = [
         name: "PaginatedHrMasterKpi",
         meta: {
             requiresAuth: true,
-            role: ["app_admin", "hr_admin", "hrbp"],
+            role: ["app_admin", "hr_admin"],
             title: "KPI List",
         },
     },
@@ -146,7 +146,7 @@ export const routes = [
         name: "Pms",
         meta: {
             requiresAuth: true,
-            role: ["app_admin", "hr_admin", "hrbp"],
+            role: ["app_admin"],
             title: "Performance Settings",
         },
     },
@@ -156,7 +156,7 @@ export const routes = [
         name: "PaginatedPms",
         meta: {
             requiresAuth: true,
-            role: ["app_admin", "hr_admin", "hrbp"],
+            role: ["app_admin"],
             title: "Performance Settings",
         },
     },
@@ -166,7 +166,7 @@ export const routes = [
         name: "SinglePms",
         meta: {
             requiresAuth: true,
-            role: ["app_admin", "hr_admin", "hrbp"],
+            role: ["app_admin"],
             title: "Performance Settings",
         },
     },
@@ -176,7 +176,7 @@ export const routes = [
         name: "NewPms",
         meta: {
             requiresAuth: true,
-            role: ["app_admin", "hr_admin", "hrbp"],
+            role: ["app_admin"],
             title: "Performance Settings",
         },
     },
