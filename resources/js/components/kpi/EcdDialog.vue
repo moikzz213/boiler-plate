@@ -3,9 +3,10 @@
     v-model="kpiAction.dialog"
     width="100%"
     :max-width="`${ecdOptions.is_review == true ? '1240' : '700'} `"
+     
     persistent
   >
-    <v-card class="rounded-lg">
+    <v-card class="rounded-lg" minHeight="300">
       <v-row class="ma-0 pa-0">
         <div :class="`v-col-12 ${ecdOptions.is_review == true ? 'v-col-md-8' : ''} px-4`">
           <v-row>
@@ -48,82 +49,45 @@
               <v-btn color="primary" variant="text" @click="kpiAction.dialog = false"
                 >Cancel</v-btn
               >
-              <v-btn :disabled="!isValid" color="secondary" class="ml-2 px-8" @click="saveKpi">save</v-btn>
+              <v-btn :disabled="!isValid" :loading="saveLoading" color="secondary" class="ml-2 px-8" @click="saveKpi">save</v-btn>
             </div>
           </v-row>
         </div>
+      
         <div v-if="kpiAction.is_review" class="v-col-12 v-col-md-4 bg-grey-lighten-4">
-          <v-row class="px-3">
+          <v-row class="px-3" v-if="!finalReview.isFinal">
             <div class="v-col-12 px-1">{{ "Review" }}</div>
             <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
-              Mid-year Achievement
-            </div>
-            <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field
-                v-model="ecdData.revised_annual_target"
-                label="Revised Annual Target*"
-                variant="outlined"
-                density="compact"
-                persistent-hint
-              ></v-text-field>
-            </div>
-            <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field
-                v-model="ecdData.mid_year_remainder_target"
-                label="Remainder Annual Target*"
-                variant="outlined"
-                density="compact"
-                persistent-hint
-              ></v-text-field>
-            </div>
-            <div class="v-col-12 v-col-md-6 py-0 px-1">
+              {{  kpiAction.is_regular ? "Mid-Year Achievement" : 'First Review Achievement'}} 
+            </div> 
+            <div class="v-col-12 v-col-md-12 py-0 px-1">
               <v-text-field
                 v-model="ecdData.mid_year_achievement"
-                label="Mid-year Achievement*"
+                label="Achievement*"
                 variant="outlined"
                 density="compact"
                 persistent-hint
               ></v-text-field>
-            </div>
-            <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field
-                v-model="ecdData.mid_year_target_variation"
-                label="Target Variation*"
-                variant="outlined"
-                density="compact"
-                persistent-hint
-              ></v-text-field>
-            </div>
+            </div> 
+            </v-row>
+          
+            <v-row class="px-3" v-if="finalReview.isFinal">
             <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
-              Year-year Achievement
+              {{  kpiAction.is_regular ? "Year-End Achievement" : 'Final Review Achievement'}}
             </div>
+            
             <div class="v-col-12 py-0 px-1">
               <v-text-field
                 v-model="ecdData.year_end_achievement"
-                label="Year-end Achievement*"
+                label="Achievement*"
                 variant="outlined"
                 density="compact"
                 persistent-hint
               ></v-text-field>
             </div>
-            <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field
-                v-model="ecdData.year_end_target_variation"
-                label="Mid-year Achievement*"
-                variant="outlined"
-                density="compact"
-                persistent-hint
-              ></v-text-field>
-            </div>
-            <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field
-                v-model="ecdData.year_end_remainder_target"
-                label="Target Variation*"
-                variant="outlined"
-                density="compact"
-                persistent-hint
-              ></v-text-field>
-            </div>
+            
+            </v-row>
+            <v-row class="pb-4">
             <div class="v-col-12 d-flex justify-end">
               <v-btn
                 class="bg-grey-lighten-2 text-primary"
@@ -131,7 +95,7 @@
                 @click="kpiAction.dialog = false"
                 >Cancel</v-btn
               >
-              <v-btn color="secondary" class="ml-2" @click="submitReview">Submit</v-btn>
+              <v-btn :loading="saveLoading" v-if="kpiAction.action !='readonly' && props.submitButton && finalReview.saveBtn" color="secondary" class="ml-2" @click="submitReview">Submit</v-btn>
             </div>
           </v-row>
         </div>
@@ -156,6 +120,14 @@ const props = defineProps({
   remainWeightage:{
     type: Number,
     default: 30
+  },
+  submitButton: {
+    type: Boolean,
+    default: true
+  },
+  finalReview:{
+    type: Boolean,
+    default: false
   }
 });
 
@@ -168,27 +140,34 @@ const kpiList = ref([]);
 const kpiAction = ref({});
 const selectedKPI = ref(null);
 const ecdDataWeightage = ref(null);
+const saveLoading = ref(false);
 
 const kpiWeightageList = ref(["5%", "10%", "15%", "20%"]);
 const saveKpi = () => { 
+  saveLoading.value = true;
   ecdData.value.weightage = ecdDataWeightage.value;
   ecdData.value.ecd_type = props.ecdOptions.ecdType;
-  kpiAction.value.data = ecdData.value;
-  kpiAction.value.dialog = false;
-  kpiEmit('savedResponse', kpiAction.value);
+  kpiAction.value.data = ecdData.value; 
+
+  setTimeout(() => {
+      saveLoading.value = false;
+      kpiAction.value.dialog = false;
+      kpiEmit('savedResponse', kpiAction.value);
+    }, 1200);
 };
 
 watch(
   () => props.ecdOptions,
-  (newVal) => {
-    ecdData.value = Object.assign({}, newVal.data); 
+  (newVal) => { 
+
+    ecdData.value = Object.assign({}, newVal.data);
     kpiList.value = props.ecdList.filter((el) => {
       return el.ecd_type == newVal.ecdType || el.ecd_type == 'both'
     }); 
    
     kpiAction.value = Object.assign({}, newVal);
     
-    if(kpiAction.value.action == 'edit'){
+    if(kpiAction.value.action == 'edit' ||  kpiAction.value.action == 'review' ||  kpiAction.value.action == 'readonly'){
       oldWeightage.value = newVal.data.weightage;
       selectedKPI.value = newVal.data.title;
       ecdDataWeightage.value = newVal.data.weightage;
@@ -197,8 +176,20 @@ watch(
       selectedKPI.value = null;
       ecdDataWeightage.value = null;
     }
+ 
   }
-); 
+);   
+
+const submitReview = () => { 
+    if(props.finalReview.isFinal){
+      kpiAction.value.state = 'final';
+    }else{
+      kpiAction.value.state = 'mid';
+    }
+
+    saveKpi(); 
+}
+
 watch(
   () => selectedKPI.value,
   (newVal) => {

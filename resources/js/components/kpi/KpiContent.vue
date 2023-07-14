@@ -71,17 +71,17 @@
                           </div>
                           <div>  
                             
-                            <v-btn v-if="canManage" @click="() => viewKPI(kpi, 'kpi')" density="compact" size="30"
-                              color="primary" class="rounded-xl elevation-2 ml-1">
-                              <v-icon size="small" :icon="mdiFileFind"></v-icon></v-btn> 
+                            <v-btn v-if="canManage" @click="() => viewKPI(kpi, 'kpi')" density="compact" 
+                              color="primary" class="rounded-xl elevation-2 ml-1 text-caption">
+                              View<v-icon size="small" :icon="mdiEye"  class="ml-1"></v-icon></v-btn>
 
-                            <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
+                            <v-btn v-if="isReviewStage" color="secondary" class="rounded-xl px-5 " size="small"
                               @click="() => reviewKPI(kpi, 'kpi')">review</v-btn>
-                            <v-btn v-if="canManage" @click="() => editKPI(kpi, 'kpi')" density="compact" size="30"
-                              color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
+                            <v-btn v-if="canManage" @click="() => editKPI(kpi, 'kpi')" density="compact" 
+                              color="teal" class="rounded-xl elevation-2 ml-1 text-caption">Edit<v-icon size="small"  class="ml-1"
                                 :icon="mdiPencil"></v-icon></v-btn>
-                            <v-btn v-if="canManage" @click="() => removeKPI(kpi)" density="compact" size="30"
-                              color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
+                            <v-btn v-if="canManage" @click="() => removeKPI(kpi)" density="compact"  
+                              color="error" class="rounded-xl elevation-2 ml-1 text-caption">Delete<v-icon size="small" class="ml-1"
                                 :icon="mdiTrashCan"></v-icon></v-btn>
                           </div>
                         </div>
@@ -130,15 +130,18 @@
                               {{ ecd.title }}
                             </div>
                           </div>
-                          <div>
-                            <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
+                          <div> 
+                            <v-btn v-if="canManage" @click="() => viewKPI(ecd, 'ecd')" density="compact" 
+                              color="primary" class="rounded-xl elevation-2 ml-1 text-caption">
+                              View<v-icon size="small" :icon="mdiEye"  class="ml-1"></v-icon></v-btn> 
+                            <v-btn v-if="isReviewStage" color="secondary" class="rounded-xl px-5 " size="small"
                               @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
-                            <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'tech')" density="compact" size="30"
-                              color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
+                            <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'tech')" density="compact" 
+                              color="teal" class="rounded-xl elevation-2 ml-1 text-caption">Edit<v-icon size="small"  class="ml-1"
                                 :icon="mdiPencil"></v-icon></v-btn>
-                                <v-btn v-if="canManage" @click="() => removeKPI(ecd)" density="compact" size="30"
-                                color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
-                                  :icon="mdiTrashCan"></v-icon></v-btn>
+                            <v-btn v-if="canManage" @click="() => removeKPI(ecd)" density="compact"  
+                              color="error" class="rounded-xl elevation-2 ml-1 text-caption">Delete<v-icon size="small" class="ml-1"
+                                :icon="mdiTrashCan"></v-icon></v-btn>
                           </div>
                         </div>
                         <div class="v-col-3">
@@ -174,14 +177,17 @@
                             {{ ecd.title }}
                           </div>
                         </div>
-                        <div>
-                          <v-btn v-if="isReviewStage" color="primary" class="rounded-xl px-5" size="small"
-                            @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
-                          <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'soft')" density="compact" size="30"
-                            color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
-                              :icon="mdiPencil"></v-icon></v-btn>
-                              <v-btn v-if="canManage" @click="() => removeKPI(ecd)" density="compact" size="30"
-                              color="primary" class="rounded-xl elevation-2 ml-1"><v-icon size="small"
+                        <div> 
+                          <v-btn v-if="canManage" @click="() => viewKPI(ecd, 'ecd')" density="compact" 
+                              color="primary" class="rounded-xl elevation-2 ml-1 text-caption">
+                              View<v-icon size="small" :icon="mdiEye"  class="ml-1"></v-icon></v-btn> 
+                            <v-btn v-if="isReviewStage" color="secondary" class="rounded-xl px-5 " size="small"
+                              @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
+                            <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'soft')" density="compact" 
+                              color="teal" class="rounded-xl elevation-2 ml-1 text-caption">Edit<v-icon size="small"  class="ml-1"
+                                :icon="mdiPencil"></v-icon></v-btn>
+                            <v-btn v-if="canManage" @click="() => removeKPI(ecd)" density="compact"  
+                              color="error" class="rounded-xl elevation-2 ml-1 text-caption">Delete<v-icon size="small" class="ml-1"
                                 :icon="mdiTrashCan"></v-icon></v-btn>
                         </div>
                       </div>
@@ -237,7 +243,7 @@
 <script setup>
 import { ref, computed, watch } from "vue";
 import { useAuthStore } from "@/stores/auth";
-import { mdiPrinter, mdiPlus, mdiPencil, mdiTrashCan,mdiFileFind } from "@mdi/js";
+import { mdiPrinter, mdiPlus, mdiPencil, mdiTrashCan,mdiEye } from "@mdi/js";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import KpiDialog from "@/components/kpi/KpiDialog.vue";
 import EcdDialog from "@/components/kpi/EcdDialog.vue";
@@ -607,7 +613,6 @@ const viewKPI = async (item, type = "kpi") => {
         is_regular: viewingEmployee.value.is_regular
       },
     };
-    console.log("kpiOptions",kpiOptions.value);
   }
 
   if (type == "ecd") {
@@ -620,6 +625,7 @@ const viewKPI = async (item, type = "kpi") => {
         type: type,
         action: "readonly",
         is_review: true,
+        is_regular: viewingEmployee.value.is_regular
       },
     };
   }
@@ -652,6 +658,7 @@ const reviewKPI = async (item, type = "kpi") => {
         type: type,
         action: "review",
         is_review: true,
+        is_regular: viewingEmployee.value.is_regular
       },
     };
   }

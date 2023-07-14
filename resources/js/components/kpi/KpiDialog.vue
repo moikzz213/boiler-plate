@@ -88,17 +88,21 @@
           </v-row>
         </div>
         <div v-if="kpiAction.is_review" class="v-col-12 v-col-md-4 bg-grey-lighten-4">
-          <v-row class="px-3">
+          <v-row class="px-3" v-if="!finalReview.isFinal">
             <div class="v-col-12 px-1">{{ "Review" }}</div>
             <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
              {{  kpiAction.is_regular ? "Mid-year Achievement" : 'First Review Achievement'}} 
             </div>          
-            <div class="v-col-12 v-col-md-6 py-0 px-1">
+            <div class="v-col-12 v-col-md-12 py-0 px-1">
               <v-text-field type="number" :readonly="finalReview.isFinal || kpiAction.action =='readonly'" hide-details :class="`${finalReview.isFinal || kpiAction.action =='readonly' ? 'bg-grey-lighten-2': '' } mb-4`" v-model="kpiData.achievement_midyear" label="Achievement*" variant="outlined"
                 density="compact" persistent-hint></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field readonly v-model="mid_target_variation" label="Remainder Annual Target" class="bg-grey-lighten-2" hide-details variant="outlined"
+              <v-text-field readonly v-model="mid_target_variation" label="Target Variation" :class="`${mid_target_variation && mid_target_variation >= 0 ? 'text-success' : 'text-red'} bg-grey-lighten-2`" hide-details variant="outlined"
+                density="compact" persistent-hint></v-text-field>
+            </div>
+            <div class="v-col-12 v-col-md-6 py-0 px-1 mb-3">
+              <v-text-field readonly v-model="mid_remainder_target" label="Remainder Annual Target" class="bg-grey-lighten-2" hide-details variant="outlined"
                 density="compact" persistent-hint></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-12 py-0 px-1">
@@ -106,22 +110,21 @@
                 density="compact" persistent-hint></v-text-field>
             </div> 
             </v-row>
-            
-            <v-row class="px-3"  v-if="finalReview.isFinal"> 
+            <!--  -->
+            <v-row class="px-3" v-if="finalReview.isFinal" > 
             <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
-              {{  kpiAction.is_regular ? "Year-end Achievement" : 'Final Review Achievement'}}
+              {{  kpiAction.is_regular ? "Year-End Achievement" : 'Final Review Achievement'}}
             </div>
+            <div class="v-col-12 v-col-md-12 py-0 px-1">
+              <v-text-field type="number" v-if="kpiAction.is_regular" readonly hide-details class="bg-grey-lighten-2 mb-4" v-model="kpiData.revised_annual_target" label="Revised Annual Target" variant="outlined"
+                density="compact" persistent-hint></v-text-field>
+                </div>
             <div class="v-col-12 py-0 px-1">
-              <v-text-field v-model="kpiData.achievement_yearend" :readonly="kpiAction.action =='readonly'" hide-details :class="`${kpiAction.action =='readonly' ? 'bg-grey-lighten-2': '' } mb-4`" label="Achievement*" variant="outlined"
+              <v-text-field v-model="kpiData.achievement_yearend" :readonly="kpiAction.action =='readonly'" hide-details :class="`${kpiAction.action =='readonly' ? 'bg-grey-lighten-2': '' } mb-4`" label="Total Achievement*" variant="outlined"
                 density="compact" persistent-hint></v-text-field>
             </div>
-            <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field   v-model="final_target_variation" readonly hide-details class="bg-grey-lighten-2 mb-3" label="Target Variation" variant="outlined"
-                density="compact" persistent-hint></v-text-field>
-            </div>
-            <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field v-model="kpiData.year_end_remainder_target" readonly hide-details class="bg-grey-lighten-2 mb-3" label="Remainer Annual Target*" variant="outlined"
-                density="compact" persistent-hint></v-text-field>
+            <div class="v-col-12 py-0 px-1 text-center mb-3">
+                <h3 :class="`${end_rating_title && end_rating_title == 'Poor' ? 'text-red' : 'text-success'}`">{{ end_rating_title }}</h3>
             </div>
             </v-row>
             <v-row> 
@@ -182,6 +185,8 @@ const industry = ref('');
  
 const selectedKPI = ref('');
 const mid_target_variation = ref('');
+const mid_remainder_target = ref(''); 
+const end_rating_title = ref('');
 const industryTitle = ref('');
 const saveLoading = ref(false);
 const isDisabled = ref(true);
@@ -220,25 +225,69 @@ const submitReview = () => {
   saveKpi();
   
 }
-watch(
-  () => props.kpiOptions,
-  (newVal) => {
-    mid_target_variation.value = '';
-    saveLoading.value = false;
-      listIndustries.value = props.industryList;
-      kpiData.value = Object.assign({}, newVal.data);
+
+const midYearFunction = (newVal) => {
+  mid_remainder_target.value = '';
+      mid_target_variation.value = '';
+      let getMidYearTarget = kpiData.value.target / 2;
+
+      if(kpiData.value.measures == '%'){  
+          mid_remainder_target.value = kpiData.value.target;
+      }  
       
-      if(kpiData.value.measures == '%'){ 
-          mid_target_variation.value = kpiData.value.target;
-      }
-      if(kpiData.value.achievement_midyear){
+      if(newVal.data.achievement_midyear){
+        if(kpiData.value.target_type == 'max'){ 
+          mid_target_variation.value = (getMidYearTarget - newVal.data.achievement_midyear).toFixed(2);
+        }else{
+          mid_target_variation.value = (newVal.data.achievement_midyear - getMidYearTarget).toFixed(2);
+        }
+
         if(kpiData.value.measures != '%'){ 
-          mid_target_variation.value = kpiData.value.target - kpiData.value.achievement_midyear;
+          mid_remainder_target.value = kpiData.value.target - newVal.data.achievement_midyear; 
         } 
       }
+};
 
-      kpiAction.value = Object.assign({}, newVal);
-      
+const yearEndFunction = (newVal) => {
+    let annualTarget = newVal.data.target;
+    if(newVal.data.revised_annual_target){
+      annualTarget = newVal.data.revised_annual_target
+    }
+    let targetAchievement = 0;
+    if( newVal.data.achievement_yearend){
+        if(kpiData.value.target_type == 'max'){
+          targetAchievement = parseFloat(annualTarget / newVal.data.achievement_yearend).toFixed(2);
+        }else{
+          targetAchievement = parseFloat(newVal.data.achievement_yearend / annualTarget).toFixed(2);
+        }
+
+        if(targetAchievement >= 100){
+          end_rating_title.value = "Extremely Excellent";
+        }else if(targetAchievement >= 90 && targetAchievement <= 99.99 ){
+          end_rating_title.value = "Excellent";
+        }else if(targetAchievement >= 70 && targetAchievement <= 89.99 ){
+          end_rating_title.value = "Very Good";
+        }else if(targetAchievement >= 50 && targetAchievement <= 69.99 ){
+          end_rating_title.value = "Good";
+        }else if(targetAchievement >= 35 && targetAchievement <= 49.99 ){
+          end_rating_title.value = "Satisfactory";
+        }else{
+          end_rating_title.value = "Poor";
+        } 
+    }
+};
+
+watch(
+  () => props.kpiOptions,
+  (newVal) => { 
+      saveLoading.value = false;
+      listIndustries.value = props.industryList;
+      kpiData.value = Object.assign({}, newVal.data);
+      kpiAction.value = Object.assign({}, newVal); 
+      console.log(newVal);
+      midYearFunction(newVal);
+      yearEndFunction(newVal);
+
       if(kpiAction.value.action == 'edit' ||  kpiAction.value.action == 'review' ||  kpiAction.value.action == 'readonly'){
         industry.value = newVal.data.industry;
         selectedKPI.value = newVal.data.title;
@@ -251,8 +300,64 @@ watch(
         isDisabled.value = true;
       }
   }
-);
+); 
 
+watch(
+  () => kpiData.value.achievement_midyear,
+  (newVal) => {
+      mid_remainder_target.value = '';
+      mid_target_variation.value = '';
+      let getMidYearTarget = kpiData.value.target / 2;
+      let percentage = '';
+      if(kpiData.value.measures == '%'){  
+          mid_remainder_target.value = kpiData.value.target;
+          percentage = '%';
+      }
+      
+      if(newVal){
+        if(kpiData.value.target_type == 'max'){ 
+          mid_target_variation.value = (getMidYearTarget - newVal).toFixed(2) + percentage;
+        }else{
+          mid_target_variation.value = (newVal - getMidYearTarget).toFixed(2) + percentage;
+        }
+
+        if(kpiData.value.measures != '%'){ 
+          mid_remainder_target.value = kpiData.value.target - newVal; 
+        } 
+      }
+  });
+
+  watch(
+  () => kpiData.value.achievement_yearend,
+  (newVal) => {
+    end_rating_title.value = '';
+    let annualTarget = kpiData.value.target;
+    if(kpiData.value.revised_annual_target){
+      annualTarget = kpiData.value.revised_annual_target
+    }
+    let targetAchievement = 0;
+    if( newVal ){
+        if(kpiData.value.target_type == 'max'){
+          targetAchievement = ((annualTarget / newVal)*100).toFixed(2);
+        }else{
+          targetAchievement = ((newVal / annualTarget)*100).toFixed(2);
+        }
+        
+        if(targetAchievement >= 100){
+          end_rating_title.value = "Extremely Excellent";
+        }else if(targetAchievement >= 90 && targetAchievement <= 99.99 ){
+          end_rating_title.value = "Excellent";
+        }else if(targetAchievement >= 70 && targetAchievement <= 89.99 ){
+          end_rating_title.value = "Very Good";
+        }else if(targetAchievement >= 50 && targetAchievement <= 69.99 ){
+          end_rating_title.value = "Good";
+        }else if(targetAchievement >= 35 && targetAchievement <= 49.99 ){
+          end_rating_title.value = "Satisfactory";
+        }else{
+          end_rating_title.value = "Poor";
+        } 
+    }
+  });
 watch(
   () => industry.value,
   (newVal) => {
