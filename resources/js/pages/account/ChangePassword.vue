@@ -51,6 +51,9 @@ import { ref, watch  } from "vue";
 import { Form, Field, useIsFormValid } from "vee-validate";
 import * as yup from "yup";
 import Snackbar from "@/components/SnackBar.vue";
+import {  useRoute } from "vue-router";
+
+const route = useRoute();
 const key = ref(import.meta.env.VITE_APP_KEY);
 const sanctumBaseURL = ref(import.meta.env.VITE_SANCTUM_USER_URL);
 const props = defineProps(["user"]);
@@ -59,9 +62,8 @@ const snackbar = ref({
   type: "",
   text: "",
 }); 
-  
-const isDisabled = ref(true);
  
+const isDisabled = ref(true);
 const isValid = useIsFormValid();
 
 const password = ref({
@@ -82,7 +84,9 @@ const validation = yup.object({
     .oneOf([yup.ref("password")], "Passwords do not match"),
 });
 const changePassword = async () => {
+ 
   password.value.loading = true;
+  password.value.data.username = props.user ? props.user.ecode : route.params.ecode;
   await axios
     .post(sanctumBaseURL.value+"/api/application/reset-password", password.value.data)
     .then((response) => {
@@ -90,7 +94,7 @@ const changePassword = async () => {
         status: false,
         loading: false,
         data: {
-          username: props.user.ecode,
+          username: props.user ? props.user.ecode : route.params.ecode,
           password: "",
           password_confirmation: "",
         },
@@ -102,6 +106,7 @@ const changePassword = async () => {
       };
     })
     .catch((err) => {
+      console.log(err);
       password.value.loading = false;
       snackbar.value = {
         status: true,

@@ -59,7 +59,7 @@
             <v-row v-show="selectedTab == 'kpi'" class="mt-3">
               <template v-if="kpiArray && kpiArray.length > 0">
                 <div class="v-col-12 pb-0" v-for="kpi in kpiArray" :key="kpi.id">
-                  <v-card class="rounded-lg">
+                  <v-card class="rounded-lg content-card">
                     <v-card-text>
                       <v-row>
                         <div class="v-col-12 pb-0 d-flex justify-space-between">
@@ -598,7 +598,6 @@ const editKPI = async (item, type = "kpi",ecdType) => {
 };
 
 const viewKPI = async (item, type = "kpi") => {
-  console.log("item",item);
   if (type == "kpi") {
     kpiOptions.value = {
       ...kpiOptions.value,
@@ -741,4 +740,5 @@ const ratingOrWeightage = (type) => {
 .pms-tab:hover>.v-card__overlay {
   display: none;
 }
+.content-card:hover{ background-color: #ECEFF1;}
 </style>
