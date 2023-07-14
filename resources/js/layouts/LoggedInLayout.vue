@@ -26,22 +26,23 @@
                   ></v-list-item>
                 </template>
                 <div class="bg-grey-darken-4" style="border-radius: 4px">
+                  <template v-for="(sub, i) in item.subs" :key="i">
                   <v-list-item
                     density="compact"
                     style="padding-left: 12px !important"
-                    v-for="(sub, i) in item.subs"
-                    :key="i"
+                    v-if="hasAccess(sub.roles) == true" 
                     :title="sub.title"
                     :value="sub.title"
                     @click="() => openPage(sub.path)"
                   >
                     <template v-slot:title>
-                      <div style="font-size: 12px">{{ sub.title }}</div>
+                      <div style="font-size: 12px" >{{ sub.title }}</div>
                     </template>
                     <template v-slot:prepend>
                       <v-icon size="16" :icon="sub.icon"></v-icon>
                     </template>
                   </v-list-item>
+                </template>
                 </div>
               </v-list-group>
               <v-list-item
@@ -218,41 +219,49 @@ const sideNavigation = ref([
         title: "PMS Settings",
         icon: mdiCogOutline,
         path: "/hr/settings/pms",
+        roles: ["app_admin"],
       },
       {
         title: "Custom KPIs",
         icon: mdiPlaylistEdit,
         path: "/hr/custom/kpi",
+        roles: ["app_admin", "hr_admin"],
       },
       {
         title: "KPIs",
         icon: mdiFormatListBulleted,
         path: "/hr/master/kpi",
+        roles: ["app_admin", "hr_admin"],
       },
       {
         title: "Industries",
         icon: mdiDomain,
         path: "/hr/industries",
+        roles: ["app_admin", "hr_admin"],
       },
       {
         title: "Companies",
         icon: mdiOfficeBuilding,
         path: "/hr/companies",
+        roles: ["app_admin", "hr_admin"],
       },
       {
         title: "Notifications",
         icon: mdiBellOutline,
         path: "/admin/notifications",
+        roles: ["app_admin", "hr_admin"],
       },
       {
         title: "Measures",
         icon: mdiClipboardEditOutline,
         path: "/hr/measures",
+        roles: ["app_admin", "hr_admin"],
       },
       {
         title: "Weightage",
         icon: mdiPercent,
         path: "/hr/weightages",
+        roles: ["app_admin", "hr_admin"],
       },
     ],
   },
