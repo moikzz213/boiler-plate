@@ -111,7 +111,7 @@
             </div> 
             </v-row>
             <!--  -->
-            <v-row class="px-3" > 
+            <v-row class="px-3" v-if="finalReview.isFinal"> 
             <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
               {{  kpiAction.is_regular ? "Year-End Achievement" : 'Final Review Achievement'}}
             </div>
