@@ -111,7 +111,7 @@
             </div> 
             </v-row>
             <!--  -->
-            <v-row class="px-3" v-if="finalReview.isFinal" > 
+            <v-row class="px-3" v-if="finalReview.isFinal"> 
             <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
               {{  kpiAction.is_regular ? "Year-End Achievement" : 'Final Review Achievement'}}
             </div>
@@ -227,14 +227,10 @@ const submitReview = () => {
 }
 
 const midYearFunction = (newVal) => {
-  mid_remainder_target.value = '';
+      mid_remainder_target.value = '';
       mid_target_variation.value = '';
-      let getMidYearTarget = kpiData.value.target / 2;
-
-      if(kpiData.value.measures == '%'){  
-          mid_remainder_target.value = kpiData.value.target;
-      }  
-      
+      let getMidYearTarget = kpiData.value.target / 2; 
+       
       if(newVal.data.achievement_midyear){
         if(kpiData.value.target_type == 'max'){ 
           mid_target_variation.value = (getMidYearTarget - newVal.data.achievement_midyear).toFixed(2);
@@ -244,7 +240,9 @@ const midYearFunction = (newVal) => {
 
         if(kpiData.value.measures != '%'){ 
           mid_remainder_target.value = kpiData.value.target - newVal.data.achievement_midyear; 
-        } 
+        } else{
+          mid_remainder_target.value = kpiData.value.target;
+        }
       }
 };
 
@@ -284,7 +282,6 @@ watch(
       listIndustries.value = props.industryList;
       kpiData.value = Object.assign({}, newVal.data);
       kpiAction.value = Object.assign({}, newVal); 
-      console.log(newVal);
       midYearFunction(newVal);
       yearEndFunction(newVal);
 
@@ -309,8 +306,7 @@ watch(
       mid_target_variation.value = '';
       let getMidYearTarget = kpiData.value.target / 2;
       let percentage = '';
-      if(kpiData.value.measures == '%'){  
-          mid_remainder_target.value = kpiData.value.target;
+      if(kpiData.value.measures == '%'){
           percentage = '%';
       }
       
@@ -323,7 +319,9 @@ watch(
 
         if(kpiData.value.measures != '%'){ 
           mid_remainder_target.value = kpiData.value.target - newVal; 
-        } 
+        } else{
+          mid_remainder_target.value = kpiData.value.target;
+        }
       }
   });
 
