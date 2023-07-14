@@ -55,10 +55,8 @@
                 <v-col class="pa-3 bg-grey-lighten-4" style="border:1px solid #b1b1b1;border-radius: 5px;min-height:70px;" v-html="kpiData.evaluation_pattern">
                
                 </v-col>
-              </v-row>
-              
-              <!-- <v-textarea v-model="kpiData.evaluation_pattern" readonly label="KPI Evaluation Pattern*" variant="outlined"
-                rows="2"></v-textarea> -->
+              </v-row> 
+               
             </div>
             <div class="v-col-12 pt-0">
               <v-divider class="mx-auto"></v-divider>
@@ -106,17 +104,17 @@
                 density="compact" persistent-hint></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-12 py-0 px-1">
-              <v-text-field type="number" v-if="kpiAction.is_regular" :readonly="finalReview.isFinal || kpiAction.action =='readonly'" hide-details :class="`${finalReview.isFinal || kpiAction.action =='readonly' ? 'bg-grey-lighten-2': '' } mb-4`" v-model="kpiData.revised_annual_target" label="Revised Annual Target" variant="outlined"
+              <v-text-field type="number" :readonly="finalReview.isFinal || kpiAction.action =='readonly'" hide-details :class="`${finalReview.isFinal || kpiAction.action =='readonly' ? 'bg-grey-lighten-2': '' } mb-4`" v-model="kpiData.revised_annual_target" label="Revised Annual Target" variant="outlined"
                 density="compact" persistent-hint></v-text-field>
             </div> 
             </v-row>
             <!--  -->
-            <v-row class="px-3" v-if="finalReview.isFinal"> 
+            <v-row class="px-3" v-if="finalReview.isFinal || kpiAction.action == 'readonly'"> 
             <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
               {{  kpiAction.is_regular ? "Year-End Achievement" : 'Final Review Achievement'}}
             </div>
             <div class="v-col-12 v-col-md-12 py-0 px-1">
-              <v-text-field type="number" v-if="kpiAction.is_regular" readonly hide-details class="bg-grey-lighten-2 mb-4" v-model="kpiData.revised_annual_target" label="Revised Annual Target" variant="outlined"
+              <v-text-field type="number" v-if="kpiAction.action != 'readonly'" readonly hide-details class="bg-grey-lighten-2 mb-4" v-model="kpiData.revised_annual_target" label="Revised Annual Target" variant="outlined"
                 density="compact" persistent-hint></v-text-field>
                 </div>
             <div class="v-col-12 py-0 px-1">
