@@ -71,7 +71,7 @@
                           </div>
                           <div>  
                             
-                            <v-btn v-if="canManage" @click="() => viewKPI(kpi, 'kpi')" density="compact" 
+                            <v-btn v-if="!isReviewStage && isNotDashboard" @click="() => viewKPI(kpi, 'kpi')" density="compact" 
                               color="primary" class="rounded-xl elevation-2 ml-1 text-caption">
                               View<v-icon size="small" :icon="mdiEye"  class="ml-1"></v-icon></v-btn>
 
@@ -131,7 +131,7 @@
                             </div>
                           </div>
                           <div> 
-                            <v-btn v-if="canManage" @click="() => viewKPI(ecd, 'ecd')" density="compact" 
+                            <v-btn v-if="!isReviewStage && isNotDashboard" @click="() => viewKPI(ecd, 'ecd')" density="compact" 
                               color="primary" class="rounded-xl elevation-2 ml-1 text-caption">
                               View<v-icon size="small" :icon="mdiEye"  class="ml-1"></v-icon></v-btn> 
                             <v-btn v-if="isReviewStage" color="secondary" class="rounded-xl px-5 " size="small"
@@ -178,7 +178,7 @@
                           </div>
                         </div>
                         <div> 
-                          <v-btn v-if="canManage" @click="() => viewKPI(ecd, 'ecd')" density="compact" 
+                          <v-btn v-if="!isReviewStage && isNotDashboard" @click="() => viewKPI(ecd, 'ecd')" density="compact" 
                               color="primary" class="rounded-xl elevation-2 ml-1 text-caption">
                               View<v-icon size="small" :icon="mdiEye"  class="ml-1"></v-icon></v-btn> 
                             <v-btn v-if="isReviewStage" color="secondary" class="rounded-xl px-5 " size="small"
@@ -304,11 +304,12 @@ const ecdSoftSkillArray = computed(() => {
     return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'ecd' && kpi.ecd_type == 'soft');  
 });
 
-//const isSubmitted = ref(false);
+const isNotDashboard = ref(false);
 watch(
   () => props.selectedEmployee,
   (newVal) => { 
-    //isSubmitted.value = false;
+    isNotDashboard.value = true;
+
     if(newVal.length > 0){
       viewingEmployee.value = Object.assign({}, newVal[0]);
     }else{
