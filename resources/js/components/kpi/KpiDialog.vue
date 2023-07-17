@@ -340,17 +340,17 @@ watch(
         }
         
         if(targetAchievement >= 100){
-          end_rating_title.value = "Extremely Excellent";
+          end_rating_title.value = "Extremely Excellent"; // 6
         }else if(targetAchievement >= 90 && targetAchievement <= 99.99 ){
-          end_rating_title.value = "Excellent";
+          end_rating_title.value = "Excellent"; // 5
         }else if(targetAchievement >= 70 && targetAchievement <= 89.99 ){
-          end_rating_title.value = "Very Good";
+          end_rating_title.value = "Very Good"; // 4
         }else if(targetAchievement >= 50 && targetAchievement <= 69.99 ){
-          end_rating_title.value = "Good";
+          end_rating_title.value = "Good"; // 3
         }else if(targetAchievement >= 35 && targetAchievement <= 49.99 ){
-          end_rating_title.value = "Satisfactory";
+          end_rating_title.value = "Satisfactory"; // 2
         }else{
-          end_rating_title.value = "Poor";
+          end_rating_title.value = "Poor"; // 1
         } 
     }
   });
