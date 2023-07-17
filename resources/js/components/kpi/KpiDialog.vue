@@ -96,7 +96,7 @@
                 density="compact" persistent-hint></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-6 py-0 px-1">
-              <v-text-field readonly v-model="mid_target_variation" label="Target Variation" :class="`${mid_target_variation && mid_target_variation >= 0 ? 'text-success' : 'text-red'} bg-grey-lighten-2`" hide-details variant="outlined"
+              <v-text-field readonly v-model="mid_target_variation" label="Target Variation" :class="`${mid_target_variation && parseFloat(mid_target_variation) >= 0 ? 'text-success' : 'text-red'} bg-grey-lighten-2`" hide-details variant="outlined"
                 density="compact" persistent-hint></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-6 py-0 px-1 mb-3">

@@ -62,7 +62,7 @@
             </div> 
             <div class="v-col-12 v-col-md-12 py-0 px-1">
               <v-text-field
-                v-model="ecdData.mid_year_achievement"
+                v-model="ecdData.achievement_midyear"
                 label="Achievement*"
                 variant="outlined"
                 density="compact"
@@ -77,7 +77,7 @@
             </div> 
             <div class="v-col-12 py-0 px-1">
               <v-text-field
-                v-model="ecdData.year_end_achievement"
+                v-model="ecdData.achievement_yearend"
                 label="Achievement*"
                 variant="outlined"
                 density="compact"
