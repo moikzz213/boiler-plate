@@ -142,8 +142,7 @@ class ReviewController extends Controller
             $q->where('is_regular', true)->whereIn('status', ['active','Active']);
         })
         ->whereHas('settings', function ($q) use($state) { 
-            $q->where(['state' => $state, 'year' => Carbon::now()->format('Y')]);
-        
+            $q->where(['state' => $state, 'year' => Carbon::now()->format('Y')]); 
         })
         ->withCount([
             'profiles as open' => function ($q) {
@@ -183,23 +182,23 @@ class ReviewController extends Controller
         })->withCount(['profiles AS profiles_count' =>  function ($q) {
             $q->whereIn('status', ['active', 'Active']);
         }])->orderBy('title','ASC')->get();
-
+        
 
         $settingsCompanyData = $company->whereHas('profiles', function ($q) {
             $q->where('is_regular', true)->whereIn('status', ['active','Active']);
         })
         ->whereHas('settings', function ($q) use($state) { 
-            $q->whereNotIn('status',array('locked','closed'));
-            
+            $q->whereNotIn('status',array('locked','closed')); 
         })->with('settings', function ($q) use($state) { 
             $q->whereNotIn('status',array('locked','closed'));
         })->orderBy('title','ASC')->get();
-        
+       
         $company1IDs = $data->pluck('id')->toArray();
-        
+       
         foreach($companyData AS $k => $v){
-           if(in_array($v->id,$company1IDs)) unset($companyData[$k]);
-           
+            if(count($company1IDs) > 0){
+                if(in_array($v->id,$company1IDs)) unset($companyData[$k]);
+            }
            if($settingsCompanyData && count($settingsCompanyData) > 0){
                 foreach($settingsCompanyData AS $kk => $vv){
                     if($v->id == $vv->id) { 
@@ -216,7 +215,7 @@ class ReviewController extends Controller
            }
            $v->locked = $v->profiles_count;
         }
-        
+       
         $data = $data->merge($companyData);
         
         return response()->json([

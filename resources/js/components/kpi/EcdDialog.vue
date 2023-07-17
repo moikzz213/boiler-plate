@@ -71,11 +71,10 @@
             </div> 
             </v-row>
           
-            <v-row class="px-3" v-if="!finalReview.isFinal">
+            <v-row class="px-3" v-if="finalReview.isFinal">
             <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
               {{  kpiAction.is_regular ? "Year-End Achievement" : 'Final Review Achievement'}}
-            </div>
-            
+            </div> 
             <div class="v-col-12 py-0 px-1">
               <v-text-field
                 v-model="ecdData.year_end_achievement"
@@ -84,10 +83,9 @@
                 density="compact"
                 persistent-hint
               ></v-text-field>
-            </div>
-            
-            </v-row>
-            <v-row class="pb-4" v-if="finalReview.isFinal">
+            </div> 
+            </v-row> 
+            <v-row class="pb-4" v-if="finalReview.saveBtn">
             <div class="v-col-12 d-flex justify-end">
               <v-btn
                 class="bg-grey-lighten-2 text-primary"
