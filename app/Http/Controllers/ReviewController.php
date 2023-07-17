@@ -139,7 +139,7 @@ class ReviewController extends Controller
         
         $data = $company
         ->whereHas('profiles', function ($q) {
-            $q->where('is_regular', true)->where('status', 'Active');
+            $q->where('is_regular', true)->whereIn('status', ['active','Active']);
         })
         ->whereHas('settings', function ($q) use($state) { 
             $q->where(['state' => $state, 'year' => Carbon::now()->format('Y')]);
@@ -151,22 +151,22 @@ class ReviewController extends Controller
                     $query->whereHas('settings', function($qry){
                         $qry->where('status', 'open');
                     });
-                })->doesntHave('reviews');
+                })->doesntHave('reviews')->whereIn('status', ['active', 'Active']);
             }, 
             'profiles as in_progress' => function ($query) {
                 $query->whereHas('reviews', function($query){
                     $query->where('status', 'inprogress');
-                });
+                })->whereIn('status', ['active', 'Active']);
             },
             'profiles as in_review' => function ($query) {
                 $query->whereHas('reviews', function($query){
                     $query->where('status', 'inreview');
-                });
+                })->whereIn('status', ['active', 'Active']);
             },
             'profiles as submitted' => function ($query) {
                 $query->whereHas('reviews', function($query){
                     $query->where('status', 'submitted');
-                });
+                })->whereIn('status', ['active', 'Active']);
             },
             'profiles as locked' => function ($q) {
                 $q->whereHas('company', function($query){
@@ -174,17 +174,19 @@ class ReviewController extends Controller
                     ->orWhereHas('settings', function($query){
                         $query->where('status','closed'); 
                     });
-                });
+                })->whereIn('status', ['active', 'Active']);
             },
         ])->orderBy('title','ASC')->get(); 
        
         $companyData = $company->whereHas('profiles', function ($q) {
-            $q->where('is_regular', true)->where('status', 'Active');
-        })->orderBy('title','ASC')->get();
+            $q->where('is_regular', true)->whereIn('status', ['active','Active']);
+        })->withCount(['profiles AS profiles_count' =>  function ($q) {
+            $q->whereIn('status', ['active', 'Active']);
+        }])->orderBy('title','ASC')->get();
 
 
         $settingsCompanyData = $company->whereHas('profiles', function ($q) {
-            $q->where('is_regular', true)->where('status', 'Active');
+            $q->where('is_regular', true)->whereIn('status', ['active','Active']);
         })
         ->whereHas('settings', function ($q) use($state) { 
             $q->whereNotIn('status',array('locked','closed'));
@@ -212,7 +214,7 @@ class ReviewController extends Controller
                     }
                 }
            }
-           $v->locked = 100;
+           $v->locked = $v->profiles_count;
         }
         
         $data = $data->merge($companyData);
