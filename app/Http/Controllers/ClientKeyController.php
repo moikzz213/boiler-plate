@@ -23,7 +23,7 @@ class ClientKeyController extends Controller
         $profile = Profile::where('ecode', $request['user_ecode'])
         ->where('status', 'Active')
         ->with(  
-            'company')
+            'company','managed_by')
         ->with('reviews', function($q) {
             $q->where('year', Carbon::now()->format('Y'))->with('keyReview');
         })
