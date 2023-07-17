@@ -51,6 +51,7 @@
             <div v-if="managerTeam && managerTeam.length > 0" class="v-col-12">
                 <div v-for="user in managerTeam" :key="user.id">
                     <div
+                    v-if=" user.is_regular == false "
                         class=""
                         :style="`
                             color: white;
@@ -67,7 +68,8 @@
                             };
                             `"
                     >
-                        {{ user.is_regular == true ? "Confirmed Employee" : "Probation Employee" }}
+                        <!-- {{ user.is_regular == true ? "Confirmed Employee" : "Probation Employee" }} -->
+                        Probation Employee
                     </div>
                     <v-card
                         class="mb-1 elevation-0"
