@@ -22,8 +22,7 @@ class ClientKeyController extends Controller
         // return profile with role for hrbp hr_admin
         $profile = Profile::where('ecode', $request['user_ecode'])
         ->where('status', 'Active')
-        ->with( 
-            'teams.company', 
+        ->with(  
             'company')
         ->with('reviews', function($q) {
             $q->where('year', Carbon::now()->format('Y'))->with('keyReview');
@@ -31,7 +30,7 @@ class ClientKeyController extends Controller
         ->with('teams', function($q) {
             $q->with('reviews', function($qq) {
                 $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
-            });
+            })->with('company')->where('grade', '>', 5);
         })->first();
 
         $currentPmsSettings = PerformanceSetting::where([ 

@@ -111,39 +111,54 @@ class UserApiController extends Controller
         $query = null; 
        
         if ($postRequest->query && count($postRequest->query) > 0) {
+          
             foreach ($postRequest->query as $k => $v) {
                 $userQuery = Profile::where('username', $v->No)->first(); 
+              
                 $comp = null;
                 if ($v->Company_Name) {
+                    if(is_numeric($v->Company_Name)){
+                        $comp = $v->Company_Name;
+                      
+                    }else{
                     $comp = Company::where('title', $v->Company_Name)->first();
-                    if (!$comp) {
-                        $comp = Company::create([
-                            'title' => $v->Company_Name
-                        ]);
+                        if (!$comp) {
+                            $comp = Company::create([
+                                'title' => $v->Company_Name
+                            ]);
+                        }
                     }
                 }
+                if(@$v->fullname){
+                    $fullname = $v->fullname;
+                    $arrayName = explode(" ",$fullname);
+                    $firstName = @$arrayName[0] ? $arrayName[0] : '';
+                    $lastName =  @$arrayName[1] ? end($arrayName) : '';
+                }else{
+                    $fullname = $v->Last_Name
+                        ? trim(strtolower($v->First_Name)) .
+                            ' ' .
+                            trim(strtolower($v->Last_Name))
+                        : trim(strtolower($v->First_Name));
+                    $firstName = $v->First_Name;
+                    $lastName = $v->Last_Name;
+                }
                
-                $fullname = $v->Last_Name
-                    ? trim(strtolower($v->First_Name)) .
-                        ' ' .
-                        trim(strtolower($v->Last_Name))
-                    : trim(strtolower($v->First_Name));
-                
                 $now = Carbon::now();
                 $date = Carbon::parse($v->Employment_Date);
                 $diff = $date->diffInDays($now);
                 $profileData = [
-                    'status' => $v->Status,
+                    'status' => @$v->Status ? $v->Status : 'Active',
                     'ecode' => $v->No,
                     'username' => $v->No,
                     'superior_ecode' => @$v->Superior_ID ? $v->Superior_ID : null,
                     'display_name' => ucwords($fullname),
-                    'first_name' => trim(strtolower($v->First_Name)),
-                    'grade' => $v->Equivalent_Grade_Code,
-                    'grade_original' => $v->Grade_Code,
-                    'last_name' => trim(strtolower($v->Last_Name)),
+                    'first_name' => trim(strtolower($firstName)),
+                    'grade' => @$v->Equivalent_Grade_Code,
+                    'grade_original' => @$v->Grade_Code,
+                    'last_name' => trim(strtolower($lastName)),
                     'email' => @$v->E_Mail ? strtolower($v->E_Mail) : null,
-                    'hrbp_email' => $v->HRBP_E_Mail,
+                    'hrbp_email' => @$v->HRBP_E_Mail,
                     'department' => @$v->Pay_Department_Code ? $v->Pay_Department_Code : null,
                     'designation' => $v->PositionDescrition,
                     'dob' => $v->Birth_Date ? date('Y-m-d', strtotime($v->Birth_Date)) : null,
@@ -151,19 +166,19 @@ class UserApiController extends Controller
                     'nationality' => $v->Nationality,
                     'role'          => 'normal',
                     'is_regular'    => $diff < 200 ? 0 : 1,
-                    'company_id' => $comp ? $comp->id : 0
+                    'company_id' => $comp ? (is_numeric($comp) ? $comp : $comp->id ): 0
                 ];
-
+             
                 if ($userQuery) {
 
                     $profileData = [
-                        'status' => $v->Status, 
+                        'status' => @$v->Status && in_array($v->Status, array('Active','active')) ? 'Active' : 'Inactive',
                         'superior_ecode' => @$v->Superior_ID ? $v->Superior_ID : null,
                         'display_name' => ucwords($fullname),
-                        'first_name' => trim(strtolower($v->First_Name)),
-                        'grade' => $v->Equivalent_Grade_Code,
-                        'grade_original' => $v->Grade_Code,
-                        'last_name' => trim(strtolower($v->Last_Name)),
+                        'first_name' => trim(strtolower($firstName)),
+                        'grade' => @$v->Equivalent_Grade_Code,
+                        'grade_original' => @$v->Grade_Code,
+                        'last_name' => trim(strtolower($lastName)),
                         'email' => @$v->E_Mail ? strtolower($v->E_Mail) : null,
                         'hrbp_email' => $v->HRBP_E_Mail,
                         'department' => @$v->Pay_Department_Code ? $v->Pay_Department_Code : null,
@@ -172,8 +187,9 @@ class UserApiController extends Controller
                             ? date('Y-m-d', strtotime($v->Employment_Date))
                             : null,
                         'is_regular'    => $diff < 200 ? 0 : 1,
-                        'company_id' => $comp ? $comp->id : 0                    
-                    ];
+                        'company_id' => $comp ? (is_numeric($comp) ? $comp : $comp->id ): 0              
+                    ]; 
+                
                     $query = $userQuery->update($profileData);
                      
                 } else { 

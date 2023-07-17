@@ -4,7 +4,7 @@
       <div class="v-col-12">
         
         <v-btn size="small" color="primary" class="btn btn-primary noprint mr-1 mt-5"
-          @click="() => printDocument(null, pdfcont, 'landscape')">Download PDF - Landscape</v-btn>
+          @click="() => printDocument(null, pdfcont, 'landscape')">Download PDF</v-btn>
         <v-btn size="small" color="primary" class="btn btn-primary noprint ml-1 mt-5"
           @click="() => printDocument(1)">PRINT</v-btn>
         <div id="divToPrint" ref="pdfcont" width="100%">
@@ -42,9 +42,8 @@
             </v-col>
           </v-row>
           <v-row class="download-print my-0">
-            <v-col style="max-width:200px" class="my-0 pb-0 pt-1">KPI's & Target Setting Year & Month :</v-col>
-            <v-col style="max-width:70%" class="my-0 pb-0 pt-1">
-          
+            <v-col style="max-width:200px" class="my-0 pb-0 pt-1">KPI's & Target Setting Month & Year:</v-col>
+            <v-col style="max-width:70%" class="my-0 pb-0 pt-1"> 
               {{ kpiDataEncrypted.reviews && kpiDataEncrypted.reviews.length > 0 && kpiDataEncrypted.reviews[0].type == 'regular' ? useFormatDateString(kpiDataEncrypted.reviews[0].settings.annual_kpi_setting_start) : useFormatDateString(kpiDataEncrypted.doj)}}
             </v-col>
           </v-row>
@@ -80,7 +79,7 @@
                   == 'Percentage' ? '%' : '' }}</td>
                 <td class="px-2 text-center"> {{ item.achievement_yearend }}{{ item.achievement_yearend && item.measures
                   == 'Percentage' ? '%' : '' }}</td>
-                <td class="px-2 text-center"> {{ item.achievement_yearend }}</td>
+                <td class="px-2 text-center"> {{  overAllRating(item) }}</td> 
               </tr>
             </tbody>
           </table>
@@ -247,6 +246,41 @@ if (authStore.authProfile.ecode == ecode.value || adminRoles.value.includes(auth
     have_access.value = true;
   }
 }
+
+const overAllRating = (item) => {
+    let rating = 0;
+    let annualTarget = item.target;
+    if(item.revised_annual_target){
+      annualTarget = item.revised_annual_target
+    }
+    let targetAchievement = 0;
+    if( item.achievement_yearend ){
+        if(item.target_type == 'max'){
+          targetAchievement = ((annualTarget / item.achievement_yearend)*100).toFixed(2);
+        }else{
+          targetAchievement = ((item.achievement_yearend / annualTarget)*100).toFixed(2);
+        }
+        
+        if(targetAchievement >= 100){
+          rating = 6; // "Extremely Excellent"; //
+        }else if(targetAchievement >= 90 && targetAchievement <= 99.99 ){
+          rating = 5; //"Excellent"; // 
+        }else if(targetAchievement >= 70 && targetAchievement <= 89.99 ){
+          rating = 4; // "Very Good"; //
+        }else if(targetAchievement >= 50 && targetAchievement <= 69.99 ){
+          rating = 3; //"Good"; //
+        }else if(targetAchievement >= 35 && targetAchievement <= 49.99 ){
+          rating = 2; //"Satisfactory"; //
+        }else{
+          rating = 1; //"Poor"; // 
+        } 
+        console.log(rating);
+        let weightage = item.weightage / 100;
+        return (rating * weightage).toFixed(2);
+    }
+
+    return null
+};
 
 const printDocument = (isPrint, container, orientation) => {
   const doc = html2pdf();
