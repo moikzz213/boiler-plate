@@ -183,6 +183,7 @@ class UserApiController extends Controller
                         'hrbp_email' => $v->HRBP_E_Mail,
                         'department' => @$v->Pay_Department_Code ? $v->Pay_Department_Code : null,
                         'designation' => $v->PositionDescrition, 
+                        'nationality' => $v->Nationality,
                         'doj' => @$v->Employment_Date
                             ? date('Y-m-d', strtotime($v->Employment_Date))
                             : null,
