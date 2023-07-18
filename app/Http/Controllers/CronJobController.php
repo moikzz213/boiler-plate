@@ -136,15 +136,15 @@ class CronJobController extends Controller
                     $setting->update(['state' => 'midyear', 'status' => 'open']);
                     
                     $query = Profile::whereHas('teams', function($q) use ($v) {
-                        $q->where([ 'is_regular' => 1, 'company_id' => $v['company_id']]);
+                        $q->where([ 'is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
                     })->whereIn('status', ['active', 'Active'])->with('teams', function($q) use($v){
                         $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
-                    })->get(); 
-                    
+                    })->get();  
+                   
                     // Send Notification to all employees that have a team only. 
                     if($query && count($query) > 0){  
                         Review::where('company_id', $v['company_id'])->update(['state' => 'midyear', 'status' => 'open', 'reminder_date' => $reminderEvery]);
-                         SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => true, 'closingSetting' => 'midyear','allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $v['year']])->onQueue('processing');
+                        SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => true, 'closingSetting' => 'midyear','allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $v['year']])->onQueue('processing');
                     }
                 }
 
@@ -155,9 +155,9 @@ class CronJobController extends Controller
                 if($setting){
                     $setting->update(['state' => 'yearend', 'status' => 'open']);
                     $query = Profile::whereHas('teams', function($q) use ($v) {
-                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->where('status',  'Active');
-                    })->where('status',  'Active')->with('teams', function($q) use ($v) {
-                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->where('status', 'Active');
+                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
+                    })->whereIn('status', ['active', 'Active'])->with('teams', function($q) use ($v) {
+                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
                     })->get();
                   
                     // Send Notification to all employees that have a team only. Manager without a team member will not receive the notification.
@@ -176,7 +176,7 @@ class CronJobController extends Controller
                     $query = Profile::whereHas('teams', function($q) use ($v) {
                         $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
                     })->whereIn('status', ['active', 'Active'])->with('teams', function($q){
-                        $q->where('is_regular', 0);
+                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
                     })->get();
                     
                     if($query && count($query) > 0){
@@ -193,7 +193,7 @@ class CronJobController extends Controller
                     $query = Profile::whereHas('teams', function($q) use ($v) {
                         $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
                     })->whereIn('status', ['active', 'Active'])->with('teams', function($q){
-                        $q->where('is_regular', 0);
+                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
                     })->get();
                     
                     if($query && count($query) > 0){
@@ -209,7 +209,7 @@ class CronJobController extends Controller
                     $query = Profile::whereHas('teams', function($q) use ($v) {
                         $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
                     })->whereIn('status', ['active', 'Active'])->with('teams', function($q){
-                        $q->where('is_regular', 0)->whereIn('status', ['active', 'Active']);
+                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
                     })->get();
                     
                     if($query && count($query) > 0){
