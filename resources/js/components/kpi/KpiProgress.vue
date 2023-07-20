@@ -77,9 +77,9 @@ const currentDate = ref(new Date());
 const printColor = (userState, index, statusIndex) => {
  
   let currentStatus = 0;
- if(userState.status != 'Active' || (userState && userState.length > 0 && (userState[0].profile.status != 'Active' ))){
-  return '';
- }
+//  if(userState.status != 'Active' || (userState && userState.length > 0 && (userState[0].profile.status != 'Active' ))){
+//   return '';
+//  }
   if(userState && userState.reviews && userState.reviews.length > 0){
     let state = userState.reviews[0].state;
     let status = userState.reviews[0].status;
