@@ -303,8 +303,12 @@ const openMember = (user) => {
             openPage("SingleTeamMember", { id: user.ecode });
         }
     } else {
-         
-            if (user.is_regular == 0) {
+          if (
+            statusGlobalSettings.status == "open" &&
+            statusGlobalSettings.state == "setting" && user.is_regular == 1
+        ) {
+            dialogOpenMember.value = true;
+        } else if (user.is_regular == 0) {
                 let date = new Date(user.doj);
                 date.setDate(
                     date.getDate() +
@@ -318,11 +322,6 @@ const openMember = (user) => {
                 }
             } else {
                 if (
-            statusGlobalSettings.status == "open" &&
-            statusGlobalSettings.state == "setting"
-        ) {
-            dialogOpenMember.value = true;
-        } else if (
                     statusGlobalSettings.status == "locked" &&
                     statusGlobalSettings.state == "closed"
                 ) {
