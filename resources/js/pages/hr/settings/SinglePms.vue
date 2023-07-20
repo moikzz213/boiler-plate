@@ -5,8 +5,8 @@
       <div class="v-col-12">
         <v-card :loading="loadingSetting" class="rounded-lg">
           <v-card-title class="text-primary mb-3">
-            Updated Performance Setting</v-card-title
-          >
+            Updated Performance Setting - <span class="text-secondary">{{ stateFn(singleSetting.state)}} ( {{ singleSetting?.status?.toUpperCase() }} )</span></v-card-title
+          > 
           <v-card-text>
             <PmsForm :pms="singleSetting" />
           </v-card-text>
@@ -40,8 +40,16 @@ const getSingleSetting = async () => {
     })
     .catch((err) => {
       loadingSetting.value = false;
-      console.log("getSingleSetting", err);
     });
 };
+const stateFn = (v) => {
+  if(v == 'midyear'){
+    return 'MID-YEAR';
+  }else if(v == 'yearend'){
+    return 'YEAR-END';
+  }else{
+    return v;
+  }
+}
 getSingleSetting();
 </script>
