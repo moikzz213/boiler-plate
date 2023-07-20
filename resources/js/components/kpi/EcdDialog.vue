@@ -202,6 +202,12 @@ const isValid = ref(false);
 watch(
   () => ecdDataWeightage.value,
   (newVal) => { 
+    sbOptions.value = {
+      status: false,
+      type: "info",
+      text: "",
+    };
+
     if(!isNaN(newVal) || newVal == undefined || newVal == null){ 
       isValid.value = false;
     }else{

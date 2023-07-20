@@ -417,6 +417,11 @@ watch(
   () => kpiData.value.weightage,
   (newVal) => { 
     let isValid = false;
+    sbOptions.value = {
+      status: false,
+      type: "info",
+      text: "",
+    };
     if(!isNaN(newVal) || newVal == undefined || newVal == null){ 
       isValid = false;
     }else{
@@ -426,7 +431,7 @@ watch(
           sbOptions.value = {
             status: true,
             type: "error",
-            text: "Weightage is over the limit!",
+            text: "Weightage is over the limit!11",
           };
         }else{
           isValid = true;
