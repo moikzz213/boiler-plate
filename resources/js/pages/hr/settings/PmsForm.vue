@@ -188,9 +188,10 @@
         </v-text-field>
       </div>
     </v-row>
+  
     <div class="d-flex justify-end mt-5">
       <v-btn
-      v-if="pms.data.year >= currentYear "
+      v-if="pms.data.status != 'locked'"
         size="x-large"
         color="secondary"
         :loading="pms.loading"
@@ -271,7 +272,6 @@ const getPmsSettings = async () => {
     })
     .catch((err) => {
       pms.value.loading = false;
-      console.log("getEmployees", err);
     });
 };
 const saveSetting = async () => {
@@ -313,7 +313,6 @@ const saveSetting = async () => {
           text: err.response.data.message,
         };
       }
-      console.log("err", err);
     });
 };
 getPmsSettings();

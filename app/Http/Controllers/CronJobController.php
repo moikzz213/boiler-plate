@@ -29,7 +29,7 @@ class CronJobController extends Controller
 
         $current_month_day = date('m-d');  
 
-        $currentSetting = PerformanceSetting::where(['state' => 'yearend', 'status' => 'locked'])->get(); 
+        $currentSetting = PerformanceSetting::where(['state' => 'yearend', 'status' => 'closed'])->get(); 
         
         if(!$currentSetting || count($currentSetting) == 0){
             return response()->json([
@@ -143,7 +143,7 @@ class CronJobController extends Controller
                    
                     // Send Notification to all employees that have a team only. 
                     if($query && count($query) > 0){  
-                        Review::where('company_id', $v['company_id'])->update(['state' => 'midyear', 'status' => 'open', 'reminder_date' => $reminderEvery]);
+                        Review::where(['type' => 'regular', 'company_id' => $v['company_id']])->update(['state' => 'midyear', 'status' => 'open', 'reminder_date' => $reminderEvery]);
                         SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => true, 'closingSetting' => 'midyear','allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $v['year']])->onQueue('processing');
                     }
                 }
@@ -162,7 +162,7 @@ class CronJobController extends Controller
                   
                     // Send Notification to all employees that have a team only. Manager without a team member will not receive the notification.
                     if($query && count($query) > 0){ 
-                        Review::where('company_id', $v['company_id'])->update(['state' => 'yearend', 'status' => 'open', 'reminder_date' => $reminderEvery]);
+                        Review::where(['type' => 'regular', 'company_id' => $v['company_id']])->update(['state' => 'yearend', 'status' => 'open', 'reminder_date' => $reminderEvery]);
                         SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => true, 'closingSetting' => 'yearend','allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $v['year']])->onQueue('processing');
                     }
                 }
@@ -180,7 +180,7 @@ class CronJobController extends Controller
                     })->get();
                     
                     if($query && count($query) > 0){
-                        Review::where('company_id', $v['company_id'])->update(['state' => 'midyear', 'status' => 'closed', 'reminder_date' => null]);
+                        Review::where(['type' => 'regular', 'company_id' => $v['company_id']])->update(['state' => 'midyear', 'status' => 'closed', 'reminder_date' => null]);
                     }
                 }
 
@@ -197,7 +197,7 @@ class CronJobController extends Controller
                     })->get();
                     
                     if($query && count($query) > 0){
-                        Review::where('company_id', $v['company_id'])->update(['state' => 'yearend', 'status' => 'locked', 'reminder_date' => null]);
+                        Review::where(['type' => 'regular', 'company_id' => $v['company_id']])->update(['state' => 'yearend', 'status' => 'closed', 'reminder_date' => null]);
                     }
                 }
 
@@ -213,14 +213,11 @@ class CronJobController extends Controller
                     })->get();
                     
                     if($query && count($query) > 0){
-                        Review::where('company_id', $v['company_id'])->update(['state' => 'setting', 'status' => 'closed', 'reminder_date' => null]);
+                        Review::where(['type' => 'regular', 'company_id' => $v['company_id']])->update(['state' => 'setting', 'status' => 'closed', 'reminder_date' => null]);
                     } 
                 }
             }
-
-            
-        } 
-
+        }
         return json_encode(array("Message" => 'Invalid access', 'Status Code' => 401));
     }
 
@@ -420,7 +417,7 @@ class CronJobController extends Controller
         if(!$request->input('key') || !$request->input('c') || ( $request->input('key') != 'Moikzz' || $request->input('c') != 'Ghassan')){
             return json_encode(array("Message" => 'Invalid access', 'Status Code' => 403));
         }
-
+        $current_month_day = date('Y-m-d');
         $currentYear = date('Y'); 
         
         $currentSetting = PerformanceSetting::where('status' ,'!=', 'locked')->get(); 
@@ -455,6 +452,14 @@ class CronJobController extends Controller
                     foreach($vb->teams AS $d => $zd){
                         $zd->reviews()->update(['closing_date' => null, 'reminder_date' => null]);
                     }
+                }
+            }
+
+            // Automatic Locked the Year-End after 7 days of it's due
+            if($current_month_day ==  date('Y-m-d', strtotime($v['end_year_review_end'] . ' +7 day'))){
+                $setting = PerformanceSetting::where('id', $v->id)->first();
+                if($setting){
+                    $setting->update(['status' => 'locked']); 
                 }
             }
         }
