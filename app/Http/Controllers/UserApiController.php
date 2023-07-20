@@ -170,7 +170,8 @@ class UserApiController extends Controller
                 ];
              
                 if ($userQuery) {
-
+                    $dept = array();
+                    
                     $profileData = [
                         'status' => @$v->Status && in_array($v->Status, array('Active','active')) ? 'Active' : 'Inactive',
                         'superior_ecode' => @$v->Superior_ID ? $v->Superior_ID : null,
@@ -181,7 +182,6 @@ class UserApiController extends Controller
                         'last_name' => trim(strtolower($lastName)),
                         'email' => @$v->E_Mail ? strtolower($v->E_Mail) : null,
                         'hrbp_email' => $v->HRBP_E_Mail,
-                        'department' => @$v->Pay_Department_Code ? $v->Pay_Department_Code : null,
                         'designation' => $v->PositionDescrition, 
                         'nationality' => $v->Nationality,
                         'doj' => @$v->Employment_Date
@@ -190,7 +190,12 @@ class UserApiController extends Controller
                         'is_regular'    => $diff < 200 ? 0 : 1,
                         'company_id' => $comp ? (is_numeric($comp) ? $comp : $comp->id ): 0              
                     ]; 
-                
+                    
+                    if(@$v->Pay_Department_Code){
+                        $dept = array('department' => $v->Pay_Department_Code);
+                        $profileData = array_merge($profileData, $dept);
+                    }
+                  
                     $query = $userQuery->update($profileData);
                      
                 } else { 

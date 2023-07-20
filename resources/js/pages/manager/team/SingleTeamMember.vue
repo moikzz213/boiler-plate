@@ -59,7 +59,7 @@
                             </div>
                             <div
                                 class="v-col-12 v-col-md-2 d-flex align-center"
-                            >
+                            > 
                                 <v-btn
                                     size="large"
                                     v-if="
@@ -228,14 +228,10 @@ const customKpiMaster = async () => {
                 industryList.value.map((o, i) => {
                     let ecdCount = 0;
                     res.data.map((oo) => {
-                        if (o.id == oo.industry_id) { 
-                          
-                            industryWithKPI.value[i].kpis.slice().unshift(oo);
-                            // industryWithKPI.value[i].kpis[
-                            //     industryWithKPI.value[i].kpis.length
-                            // ] = oo;
-                        } else if (oo.type == "ecd") {
-                          
+                        if (o.id == oo.industry_id) {  
+                            
+                            o.kpis.unshift(oo);
+                        } else if (oo.type == "ecd") { 
                             ecdList.value[ecdCount] = oo;
                             ecdCount++;
                         }
