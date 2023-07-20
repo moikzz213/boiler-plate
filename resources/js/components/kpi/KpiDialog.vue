@@ -249,7 +249,7 @@ const midYearFunction = (newVal) => {
           mid_remainder_target.value = kpiData.value.target - newVal.data.achievement_midyear; 
         } else{
           mid_remainder_target.value = kpiData.value.target;
-          mid_target_variation.value = kpiData.value.target;
+          mid_target_variation.value = kpiData.value.target - newVal.data.achievement_midyear;
         }
       }
 };
@@ -330,7 +330,7 @@ watch(
           mid_remainder_target.value = kpiData.value.target - newVal; 
         } else{ 
           mid_remainder_target.value = kpiData.value.target;
-          mid_target_variation.value = kpiData.value.target;
+          mid_target_variation.value = kpiData.value.target - newVal;
         }
       }
   });
