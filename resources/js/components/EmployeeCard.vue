@@ -55,18 +55,22 @@ const employeeKPIStatus = computed(() => {
     profileKPI.value = props.profile;
   }
   if (profileKPI.value && (profileKPI.value.status !== 'Active')) {
+    
     return profileKPI.value.status;
   }else if (profileKPI.value && profileKPI.value.reviews && profileKPI.value.reviews.length > 0) {
+    
     return profileKPI.value.reviews[0].status;
   } else {
     let isKPISetByCompany = settingStore.filteredSetting(profileKPI.value.company_id);
-    
+   
     if (isKPISetByCompany && isKPISetByCompany.id) {
       if (profileKPI.value.is_regular == 0) {
         let date = new Date(profileKPI.value.doj);
         date.setDate(date.getDate() + parseInt(isKPISetByCompany.probation_kpi_setting));
         if (date >= currentDate.value) {
           return 'open' ;
+        }else{
+          return 'locked';
         }
       }  
       return isKPISetByCompany.status; 
