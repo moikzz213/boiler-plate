@@ -197,7 +197,7 @@ const currentDate = ref(new Date());
 // filter employee
 const employeeTypeList = ref(["All", "Regular", "Probation"]);
 const errorMessage = ref(
-    "Employee doesn`t have a KPI review setup for this year."
+    "Employee doesn`t have a KPI review setup for this year. Contact your HRBP for more info."
 );
 const filter = ref({
     data: {
@@ -284,7 +284,7 @@ const openMember = (user) => {
     selectedUser.value = Object.assign({}, user);
     if (user.status == "Inactive") {
         errorMessage.value =
-            "Employee is currently Inactive, kindly contact your HRBP if this is a mistake.";
+            "Employee is currently Inactive, kindly contact your HRBP for more info.";
         noKPIEmployee.value = true;
     } else if (user.reviews && user.reviews.length > 0) {
         if (
@@ -303,12 +303,7 @@ const openMember = (user) => {
             openPage("SingleTeamMember", { id: user.ecode });
         }
     } else {
-        if (
-            statusGlobalSettings.status == "open" &&
-            statusGlobalSettings.state == "setting"
-        ) {
-            dialogOpenMember.value = true;
-        } else {
+         
             if (user.is_regular == 0) {
                 let date = new Date(user.doj);
                 date.setDate(
@@ -323,6 +318,11 @@ const openMember = (user) => {
                 }
             } else {
                 if (
+            statusGlobalSettings.status == "open" &&
+            statusGlobalSettings.state == "setting"
+        ) {
+            dialogOpenMember.value = true;
+        } else if (
                     statusGlobalSettings.status == "locked" &&
                     statusGlobalSettings.state == "closed"
                 ) {
@@ -330,7 +330,7 @@ const openMember = (user) => {
                 }
                 noKPIEmployee.value = true;
             }
-        }
+        
     }
 };
 

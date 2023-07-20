@@ -1,0 +1,1 @@
+import{a3 as e}from"./app-b1c2b405.js";import{c as i}from"./clientApi-3e3a9b39.js";const n=e("company",{state:()=>({company_list:[]}),getters:{companies:t=>t.company_list,active_companies:t=>t.company_list.filter(a=>a.status==="active")},actions:{async getCompanies(t){await i(t).get("/api/companies").then(a=>{this.company_list=a.data})}}});export{n as u};

@@ -22,7 +22,6 @@
         <!-- Final Rating here -->
         <!-- <div class="ml-auto text-h6" v-if="viewingEmployee && viewingEmployee.reviews && viewingEmployee.reviews.length > 0 && viewingEmployee.reviews[0].state == 'yearend' && viewingEmployee.reviews[0].status =='submitted'">Rate: Coming Soon</div> -->
       </div>
-     
       <v-card flat>
         <v-card-title class="px-5 py-5 d-flex align-center">
           <v-btn v-if="canManage && selectedTab == 'kpi'" @click="() => addKPI(selectedTab)" density="compact" size="35"
@@ -55,7 +54,6 @@
                   </v-card>
                 </div>
             </v-row>
-          
             <v-row v-show="selectedTab == 'kpi'" class="mt-3">
               <template v-if="kpiArray && kpiArray.length > 0">
                 <div class="v-col-12 pb-0" v-for="kpi in kpiArray" :key="kpi.id">
