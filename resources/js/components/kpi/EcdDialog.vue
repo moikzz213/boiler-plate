@@ -25,7 +25,7 @@
               >             
               <template v-slot:item="{ props, item }">
                 <v-list-item
-                :style="`${item.raw.profile_ecode ? 'background-color:#f1f1f1' : ''} `"
+                :style="`${item.raw.profile_ecode ? 'background-color:#2196F3; color:#fff;' : ''} `"
                   v-bind="props" 
                   :title="item?.raw?.title" 
                 ></v-list-item>

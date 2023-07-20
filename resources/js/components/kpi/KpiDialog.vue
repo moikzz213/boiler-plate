@@ -27,6 +27,14 @@
                     {{ item?.title.substring(0, 35) + "..." }}
                   </span>
                 </template>
+
+                <template v-slot:item="{ props, item }">
+                <v-list-item
+                :style="`${item.raw.profile_ecode ? 'background-color:#2196F3; color:#fff;' : ''} `"
+                  v-bind="props" 
+                  :title="item?.raw?.title" 
+                ></v-list-item>
+              </template>  
               </v-autocomplete>
               <v-text-field v-else  v-model="selectedKPI" hide-details variant="outlined" density="compact" label="Select KPI*" class="bg-grey-lighten-4 mb-3"></v-text-field>
             </div>
@@ -109,6 +117,7 @@
             </div> 
             </v-row>
             <!--  -->
+        
             <v-row class="px-3" v-if="finalReview.isFinal || kpiAction.action == 'readonly'"> 
             <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
               {{  kpiAction.is_regular ? "Year-End Achievement" : 'Final Review Achievement'}}
@@ -236,10 +245,11 @@ const midYearFunction = (newVal) => {
           mid_target_variation.value = (newVal.data.achievement_midyear - getMidYearTarget).toFixed(2);
         }
 
-        if(kpiData.value.measures != '%'){ 
+        if(!kpiData.value.measures.includes('%')){ 
           mid_remainder_target.value = kpiData.value.target - newVal.data.achievement_midyear; 
         } else{
           mid_remainder_target.value = kpiData.value.target;
+          mid_target_variation.value = kpiData.value.target;
         }
       }
 };
@@ -304,10 +314,11 @@ watch(
       mid_target_variation.value = '';
       let getMidYearTarget = kpiData.value.target / 2;
       let percentage = '';
-      if(kpiData.value.measures == '%'){
+     
+      if(kpiData.value.measures.includes('%')){ 
           percentage = '%';
       }
-      
+       
       if(newVal){
         if(kpiData.value.target_type == 'max'){ 
           mid_target_variation.value = (getMidYearTarget - newVal).toFixed(2) + percentage;
@@ -315,10 +326,11 @@ watch(
           mid_target_variation.value = (newVal - getMidYearTarget).toFixed(2) + percentage;
         }
 
-        if(kpiData.value.measures != '%'){ 
+        if(!kpiData.value.measures.includes('%')){
           mid_remainder_target.value = kpiData.value.target - newVal; 
-        } else{
+        } else{ 
           mid_remainder_target.value = kpiData.value.target;
+          mid_target_variation.value = kpiData.value.target;
         }
       }
   });

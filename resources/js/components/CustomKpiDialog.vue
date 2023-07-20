@@ -96,14 +96,14 @@
                 rows="2"
               ></v-textarea>
             </div>
-            <div v-if="enableOn(['kpi'])" class="v-col-12 py-0">
+            <!-- <div v-if="enableOn(['kpi'])" class="v-col-12 py-0">
               <v-textarea
                 v-model="kpiData.data.calculation_example"
                 label="KPI Calculation Example*"
                 variant="outlined"
                 rows="2"
               ></v-textarea>
-            </div>
+            </div> -->
             <div class="v-col-12 py-0">
               <v-divider class="mx-auto"></v-divider>
             </div>

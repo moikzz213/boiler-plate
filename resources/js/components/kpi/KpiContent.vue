@@ -134,8 +134,8 @@
                             <v-btn v-if="!isReviewStage && isNotDashboard" @click="() => viewKPI(ecd, 'ecd')" density="compact" 
                               color="primary" class="rounded-xl elevation-2 ml-1 text-caption">
                               View<v-icon size="small" :icon="mdiEye"  class="ml-1"></v-icon></v-btn> 
-                            <v-btn v-if="isReviewStage" color="secondary" class="rounded-xl px-5 " size="small"
-                              @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
+                            <!-- <v-btn v-if="isReviewStage" color="secondary" class="rounded-xl px-5 " size="small"
+                              @click="() => reviewKPI(ecd, 'ecd')">review</v-btn> -->
                             <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'tech')" density="compact" 
                               color="teal" class="rounded-xl elevation-2 ml-1 text-caption">Edit<v-icon size="small"  class="ml-1"
                                 :icon="mdiPencil"></v-icon></v-btn>
@@ -181,8 +181,8 @@
                           <v-btn v-if="!isReviewStage && isNotDashboard" @click="() => viewKPI(ecd, 'ecd')" density="compact" 
                               color="primary" class="rounded-xl elevation-2 ml-1 text-caption">
                               View<v-icon size="small" :icon="mdiEye"  class="ml-1"></v-icon></v-btn> 
-                            <v-btn v-if="isReviewStage" color="secondary" class="rounded-xl px-5 " size="small"
-                              @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
+                            <!-- <v-btn v-if="isReviewStage" color="secondary" class="rounded-xl px-5 " size="small"
+                              @click="() => reviewKPI(ecd, 'ecd')">review</v-btn> -->
                             <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'soft')" density="compact" 
                               color="teal" class="rounded-xl elevation-2 ml-1 text-caption">Edit<v-icon size="small"  class="ml-1"
                                 :icon="mdiPencil"></v-icon></v-btn>
@@ -330,7 +330,7 @@ const singlePageHasError = ref(false);
 const emitResponseWeightageValidation = () => {
  
   if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && (viewingEmployee.value.reviews[0].state == 'midyear' || viewingEmployee.value.reviews[0].state == 'first_review')){
-    let nVal = viewingEmployee.value.reviews[0].key_review.filter(el => el.achievement_midyear == null);
+    let nVal = viewingEmployee.value.reviews[0].key_review.filter(el => el.type == 'kpi' && el.achievement_midyear == null);
     let errorCheck = false;
     if(nVal && nVal.length > 0 ){
       errorCheck = true;
@@ -338,7 +338,7 @@ const emitResponseWeightageValidation = () => {
     kpiEmit('errorcheck', {hasError: errorCheck});
   }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && (viewingEmployee.value.reviews[0].state == 'yearend' || viewingEmployee.value.reviews[0].state == 'final_review')){
     
-    let nVal = viewingEmployee.value.reviews[0].key_review.filter(el => el.achievement_yearend == null);
+    let nVal = viewingEmployee.value.reviews[0].key_review.filter(el => el.type == 'kpi' && el.achievement_yearend == null);
     let errorCheck = false;
     if(nVal && nVal.length > 0 ){
       errorCheck = true;
@@ -421,11 +421,11 @@ const canManage = computed(() => {
           &&   (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress' || viewingEmployee.value.reviews[0].status == 'inreview')
             ? true
             : false;
-    }else if(route.name == "SingleTeamMember" && globalSetting && globalSetting.state == 'setting' && ( globalSetting.status == 'open' || globalSetting.status == 'inprogress')){
+    }else if(route.name == "SingleTeamMember" && globalSetting.value && globalSetting.value.state == 'setting' && ( globalSetting.value.status == 'open' || globalSetting.value.status == 'inprogress')){
       return true;
     } else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){ 
           let date = new Date(viewingEmployee.value.doj);  
-          date.setDate(date.getDate() +  parseInt(globalSetting.probation_kpi_setting));  
+          date.setDate(date.getDate() +  parseInt(globalSetting.value.probation_kpi_setting));  
           if(date >= currentDate.value ){
             return true;
           } 
@@ -434,22 +434,24 @@ const canManage = computed(() => {
 });
 const isFinalReview = ref({saveBtn: false, isFinal: false});
 const isReviewStage = computed(() => {
-   
   isFinalReview.value = {saveBtn: false, isFinal: false};
-    if(route.name == "SingleTeamMember" && globalSetting && globalSetting.state == 'yearend'){ 
-      isFinalReview.value = {saveBtn: false, isFinal: true};
-    }
-    if(route.name == "SingleTeamMember" && globalSetting && (globalSetting.state == 'midyear' || globalSetting.state == 'yearend' ) && ( globalSetting.status == 'open' || globalSetting.status == 'inprogress')){
+
+  if(route.name == "SingleTeamMember" && globalSetting && globalSetting.value.state == 'yearend' && (viewingEmployee.value.reviews[0].status == 'submitted' || viewingEmployee.value.reviews[0].status == 'closed' || viewingEmployee.value.reviews[0].status == 'locked')){ 
+      isFinalReview.value = {saveBtn: false, isFinal: false};
+      return false;
+    }else
+    if(route.name == "SingleTeamMember" && globalSetting.value && (globalSetting.value.state == 'midyear' || globalSetting.value.state == 'yearend' ) && ( globalSetting.value.status == 'open' || globalSetting.value.status == 'inprogress')){
       isFinalReview.value = {saveBtn: true, isFinal: true};
+      console.log("sssssssssxx");
       return true;
     }else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){  
           isFinalReview.value = {saveBtn: false, isFinal: false};
-        if(globalSetting){
+        if(globalSetting.value){
         
           let midStart = new Date(viewingEmployee.value.doj);  
           let midEnd = new Date(viewingEmployee.value.doj);   
-          midStart.setDate(midStart.getDate() +  parseInt(globalSetting.probation_first_review_start));  
-          midEnd.setDate(midEnd.getDate() +  parseInt(globalSetting.probation_first_review_end));  
+          midStart.setDate(midStart.getDate() +  parseInt(globalSetting.value.probation_first_review_start));  
+          midEnd.setDate(midEnd.getDate() +  parseInt(globalSetting.value.probation_first_review_end));  
           
           if(viewingEmployee.value.reviews[0].state == 'first_review' && (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')){
             isFinalReview.value = {saveBtn: true, isFinal: false};
@@ -461,8 +463,8 @@ const isReviewStage = computed(() => {
 
           let yearEndStart = new Date(viewingEmployee.value.doj);  
           let yearEnd = new Date(viewingEmployee.value.doj);  
-          yearEndStart.setDate(yearEndStart.getDate() +  parseInt(globalSetting.probation_final_review_start));  
-          yearEnd.setDate(yearEnd.getDate() +  parseInt(globalSetting.probation_final_review_end));  
+          yearEndStart.setDate(yearEndStart.getDate() +  parseInt(globalSetting.value.probation_final_review_start));  
+          yearEnd.setDate(yearEnd.getDate() +  parseInt(globalSetting.value.probation_final_review_end));  
 
           if(viewingEmployee.value.reviews[0].state == 'final_review' && (viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')){
             isFinalReview.value = {saveBtn: true, isFinal: true}; 
