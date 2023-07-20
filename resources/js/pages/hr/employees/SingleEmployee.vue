@@ -117,6 +117,16 @@
                   class="text-capitalize rounded-lg"
                   >Reopen</v-btn
                 >
+                <v-btn
+                v-else-if="employee.status == 'Active' && employee.reviews.length == 0 && employee.is_regular == 0"
+                  :loading="reopen.loading"
+                  @click="reopenReview"
+                  block
+                  size="large"
+                  color="secondary"
+                  class="text-capitalize rounded-lg"
+                  >Open</v-btn
+                >
               </div>
             </v-row>
           </v-card-text>
@@ -390,12 +400,12 @@ const reopen = ref({
 const reopenReview = () => {
   confOptions.value = {
     dialog: true,
-    title: "Confirm Reopen",
+    title: "Confirm to Open KPI",
     text:
-      "Please confirm that you want to reopen the KPI for " +
+      "Please confirm that you want to open the KPI for " +
       authStore.authProfile.email +
       ".",
-    btnColor: "primary",
+    btnColor: "secondary",
     btnTitle: "Confirm",
   };
 };
@@ -455,7 +465,7 @@ const confOptions = ref();
 const confirmResponse = (v) => {
   if (confOptions.value.title == "Confirm Status Update") {
     updateEmployeeStatus();
-  } else if (confOptions.value.title == "Confirm Reopen") {
+  } else if (confOptions.value.title == "Confirm to Open KPI") {
     updateEmployeeReview();
   }
 };

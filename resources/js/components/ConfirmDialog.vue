@@ -39,7 +39,7 @@ const confirmOptions = ref({
   dialog: false,
   title: "Confirm",
   text: "Please confirm <action>",
-  btnColor: "primary",
+  btnColor: "secondary",
   btnTitle: "Confirm",
   loading: false,
 });
