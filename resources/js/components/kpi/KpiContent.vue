@@ -439,10 +439,8 @@ const isReviewStage = computed(() => {
   if(route.name == "SingleTeamMember" && globalSetting && globalSetting.value.state == 'yearend' && (viewingEmployee.value.reviews[0].status == 'submitted' || viewingEmployee.value.reviews[0].status == 'closed' || viewingEmployee.value.reviews[0].status == 'locked')){ 
       isFinalReview.value = {saveBtn: false, isFinal: false};
       return false;
-    }else
-    if(route.name == "SingleTeamMember" && globalSetting.value && (globalSetting.value.state == 'midyear' || globalSetting.value.state == 'yearend' ) && ( globalSetting.value.status == 'open' || globalSetting.value.status == 'inprogress')){
-      isFinalReview.value = {saveBtn: true, isFinal: true};
-      console.log("sssssssssxx");
+    }else if(route.name == "SingleTeamMember" && globalSetting.value && (globalSetting.value.state == 'yearend' ) && ( globalSetting.value.status == 'open' || globalSetting.value.status == 'inprogress')){
+      isFinalReview.value = {saveBtn: true, isFinal: true}; 
       return true;
     }else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){  
           isFinalReview.value = {saveBtn: false, isFinal: false};
