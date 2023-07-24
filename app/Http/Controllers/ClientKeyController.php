@@ -26,12 +26,8 @@ class ClientKeyController extends Controller
             'company','managed_by')
         ->with('reviews', function($q) {
             $q->where('year', Carbon::now()->format('Y'))->with('keyReview');
-        })
-        ->with('teams', function($q) {
-            $q->with('reviews', function($qq) {
-                $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
-            })->with('company')->where('grade', '>', 5)->whereIn('status', ['active', 'Active']);
-        })->first();
+        }) // First Level
+        ->with('teams')->first();
 
         $currentPmsSettings = PerformanceSetting::where([ 
             'year'      => Carbon::now()->format('Y')
