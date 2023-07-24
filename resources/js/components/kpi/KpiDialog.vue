@@ -14,10 +14,10 @@
              v-if="kpiAction.action == 'add'"
                 variant="outlined" density="compact" label="Select Industry*">
               </v-autocomplete>
-              <v-text-field v-else  v-model="industry" hide-details variant="outlined" density="compact" label="Select Industry*" class="bg-grey-lighten-4 mb-3"></v-text-field>
+              <v-text-field v-else readonly v-model="industry" hide-details variant="outlined" density="compact" label="Select Industry*" class="bg-grey-lighten-4 mb-3"></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-6 py-0">
-              <v-autocomplete v-model="selectedKPI"  :items="kpiList" 
+              <v-autocomplete v-model="selectedKPI"  :items="updatedKpiList" 
                 item-title="title" item-value="id" 
                 variant="outlined"
                 v-if="kpiAction.action == 'add'"
@@ -36,13 +36,13 @@
                 ></v-list-item>
               </template>  
               </v-autocomplete>
-              <v-text-field v-else  v-model="selectedKPI" hide-details variant="outlined" density="compact" label="Select KPI*" class="bg-grey-lighten-4 mb-3"></v-text-field>
+              <v-text-field v-else  readonly v-model="selectedKPI" hide-details variant="outlined" density="compact" label="Select KPI*" class="bg-grey-lighten-4 mb-3"></v-text-field>
             </div>
           
             <div class="v-col-12 v-col-md-3 py-0 mb-2">
               <v-select  v-if="!isDisabled && !kpiAction.is_review" v-model="kpiData.target_type" :items="targetTypeList" label="Target Type*" variant="outlined"
                 density="compact"></v-select>
-                <v-text-field v-else  v-model="kpiData.target_type" hide-details variant="outlined" density="compact" label="Target Type*" class="bg-grey-lighten-4 mb-3"></v-text-field>
+                <v-text-field v-else readonly v-model="kpiData.target_type" hide-details variant="outlined" density="compact" label="Target Type*" class="bg-grey-lighten-4 mb-3"></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-3 py-0 mb-2">
               <v-text-field  :readonly="isDisabled || kpiAction.is_review" :class="`${isDisabled || kpiAction.is_review ? 'bg-grey-lighten-4 mb-3' : ''}`" hide-details type="number" v-model="kpiData.target" label="Target*" variant="outlined" density="compact"
@@ -51,12 +51,12 @@
             <div class="v-col-12 v-col-md-3 py-0 mb-2">
               <v-select  v-if="!isDisabled && !kpiAction.is_review"   v-model="kpiData.measures" :items="measuresList" label="Measures*" variant="outlined"
                 density="compact"></v-select>
-                <v-text-field v-else  v-model="kpiData.measures" hide-details variant="outlined" density="compact" label="Measures*" class="bg-grey-lighten-4 mb-3"></v-text-field>
+                <v-text-field v-else readonly v-model="kpiData.measures" hide-details variant="outlined" density="compact" label="Measures*" class="bg-grey-lighten-4 mb-3"></v-text-field>
             </div>
             <div class="v-col-12 v-col-md-3 py-0 mb-2">
               <v-select v-if="!isDisabled && !kpiAction.is_review"  v-model="kpiData.weightage" :items="kpiWeightageList" label="KPI's Weightage (%)*"
                 variant="outlined" density="compact"></v-select>
-                <v-text-field v-else  v-model="kpiData.weightage" hide-details variant="outlined" density="compact" label="KPI's Weightage (%)*" class="bg-grey-lighten-4 mb-3"></v-text-field>
+                <v-text-field v-else readonly v-model="kpiData.weightage" hide-details variant="outlined" density="compact" label="KPI's Weightage (%)*" class="bg-grey-lighten-4 mb-3"></v-text-field>
             </div>
             <div class="v-col-12 py-0">
               <v-row class="mx-0  mb-3">
@@ -148,9 +148,13 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import SnackBar from "@/components/SnackBar.vue";
 const props = defineProps({
+  createdKpiTitle: {
+    type: Array,
+    default: [],
+  },
   kpiOptions: {
     type: Object,
     default: null,
@@ -187,6 +191,7 @@ const kpiAction = ref({});
 
 const kpiData = ref({measures: null});
 const kpiList = ref([]); 
+const updatedKpiList = computed(() => kpiList.value.filter((kpi) => !props.createdKpiTitle.includes(kpi.title))); 
 const listIndustries = ref([]);
 const industry = ref('');  
  
@@ -286,6 +291,7 @@ const yearEndFunction = (newVal) => {
 watch(
   () => props.kpiOptions,
   (newVal) => { 
+    
       saveLoading.value = false;
       listIndustries.value = props.industryList;
       kpiData.value = Object.assign({}, newVal.data);
@@ -377,7 +383,8 @@ watch(
       selectedKPI.value = null;
       if(newVal){
         requiredFields.value.push('industry'); 
-      removeDuplicateFromArray();
+        
+        removeDuplicateFromArray();
         industryTitle.value = newVal.title;
         listIndustries.value.map((el) => {
           if(el.id == newVal.id){

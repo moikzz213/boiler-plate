@@ -232,8 +232,8 @@
       </v-card>
     </v-dialog>
     
-    <KpiDialog :final-review="isFinalReview" :measures-list="measuresList" :kpi-options="kpiOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :industry-list="industryList"  :submit-button="props.submitButton"  @savedResponse="savedResponseMethod"/>
-    <EcdDialog :final-review="isFinalReview" :ecd-options="ecdOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :ecd-list="ecdList" :submit-button="props.submitButton" @savedResponse="savedResponseMethod"/>
+    <KpiDialog :created-kpi-title="createdKpis" :final-review="isFinalReview" :measures-list="measuresList" :kpi-options="kpiOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :industry-list="industryList"  :submit-button="props.submitButton"  @savedResponse="savedResponseMethod"/>
+    <EcdDialog :created-kpi-title="createdKpis" :final-review="isFinalReview" :ecd-options="ecdOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :ecd-list="ecdList" :submit-button="props.submitButton" @savedResponse="savedResponseMethod"/>
     <SnackBar :options="sbOptions" />
   </v-row>
 </template>
@@ -281,6 +281,14 @@ const props = defineProps({
 const sbOptions = ref({});
 const settingStore = useSettingStore();
 const viewingEmployee = ref(props.selectedEmployee);
+const createdKpis = computed(() => {
+  let data = [];
+  if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews[0] && viewingEmployee.value.reviews[0].key_review.length > 0){
+    data = viewingEmployee.value.reviews[0].key_review.map((kpi) =>  kpi.title)
+  }
+  
+  return data;
+});
  
 const kpiArray = computed(() => { 
   if (!viewingEmployee.value || (viewingEmployee.value && (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0))) return [];

@@ -238,7 +238,6 @@ const customKpiMaster = async () => {
                     });
                 });
             }
-            console.log('ecdList.value',industryWithKPI.value);
         });
 };
 
@@ -358,6 +357,7 @@ const savedResponseMethod = (v) => {
                 type: "success",
                 text: res.data.message,
             };
+         
             teamList.value = res.data.profile.teams;
             authStore.setProfile(res.data.profile).then(() => {
                 employeePassData();
@@ -417,8 +417,10 @@ const globalSetting = computed(() =>
 const fetchTeamMembers = async () => {
     await clientApi(authStore.authToken)
         .get("/api/fetch/team-members/" + authStore.authProfile.ecode)
-        .then((res) => {
-            teamList.value = res.data;
+        .then((res) => { 
+            if(res.data && res.data.length > 0){
+                teamList.value = res.data.filter( o => o.reviews.length > 0);
+            }
         })
         .catch((err) => {});
 };

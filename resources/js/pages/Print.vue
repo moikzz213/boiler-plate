@@ -274,7 +274,6 @@ const overAllRating = (item) => {
         }else{
           rating = 1; //"Poor"; // 
         } 
-        console.log(rating);
         let weightage = item.weightage / 100;
         return (rating * weightage).toFixed(2);
     }

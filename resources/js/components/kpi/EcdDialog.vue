@@ -15,7 +15,7 @@
             <div class="v-col-12 py-0">
               <v-autocomplete
                 v-model="selectedKPI"
-                :items="kpiList"
+                :items="updatedKpiList"
                 item-title="title"
                 item-value="id"
                 return-object
@@ -104,9 +104,13 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue"; 
+import { ref, watch, computed } from "vue"; 
 import SnackBar from "@/components/SnackBar.vue";
 const props = defineProps({
+  createdKpiTitle: {
+    type: Array,
+    default: [],
+  },
   ecdOptions: {
     type: Object,
     default: null,
@@ -139,6 +143,8 @@ const kpiAction = ref({});
 const selectedKPI = ref(null);
 const ecdDataWeightage = ref(null);
 const saveLoading = ref(false);
+
+const updatedKpiList = computed(() => kpiList.value.filter((kpi) => !props.createdKpiTitle.includes(kpi.title))); 
 
 const kpiWeightageList = ref(["5%", "10%", "15%", "20%"]);
 const saveKpi = () => { 

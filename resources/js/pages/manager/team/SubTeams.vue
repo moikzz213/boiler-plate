@@ -121,23 +121,17 @@ const ratingOrWeightage = (user) => {
 
 const userTeam = ref(props.user);
 
-const count = ref(0);
 const showSubTeamFn = (user) => {
     if (user.sign) {
         if (user.sign == "+") {
-            user.sign = "-";
-            count.value += 1;
-            //  userTeam.value = user;
+            user.sign = "-"; 
         } else {
             user.sign = "+";
             signDefault(user);
         }
     } else {
         user.sign = "-";
-        count.value += 1;
-        //  userTeam.value = user;
     }
-    console.log(userTeam.value);
 };
 
 const signDefault = (data) => {

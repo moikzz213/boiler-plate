@@ -65,36 +65,8 @@ class ProfileController extends Controller
                     });
                 });
             });
-        })->get();
+        })->orderBy('is_regular', 'ASC')->get();
         return response()->json($team, 200);
-
-        // ->with('teams', function($q) {
-        //     // Second Level
-        //     $q->with('reviews', function($qq) {
-        //         $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
-        //     })->with('company')->where('grade', '>', 5)->whereIn('status', ['active', 'Active']);
-
-        //     // Third Level
-        //     $q->with('teams', function($qq) {
-        //         $qq->with('reviews', function($qq) {
-        //             $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
-        //         })->with('company')->where('grade', '>', 5)->whereIn('status', ['active', 'Active']);
-
-        //         // Fourth Level
-        //         $qq->with('teams', function($qq) {
-        //             $qq->with('reviews', function($qq) {
-        //                 $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
-        //             })->with('company')->where('grade', '>', 5)->whereIn('status', ['active', 'Active']);
-
-        //             // Fifth Level
-        //             $qq->with('teams', function($qq) {
-        //                 $qq->with('reviews', function($qq) {
-        //                     $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
-        //                 })->with('company')->where('grade', '>', 5)->whereIn('status', ['active', 'Active']);
-        //             });
-        //         });
-        //     });
-        // })
     }
 
     public function EmployeeKPI($ecode, $year){
