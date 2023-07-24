@@ -49,37 +49,57 @@
         </v-row>
         <v-row>
             <div v-if="managerTeam && managerTeam.length > 0" class="v-col-12">
-                <div :style="`${user.sign && user.sign == '-' ? 'border-bottom:1px solid #C6A92D;' :''}`" v-for="(user,index) in managerTeam" :key="user.id"> 
-                    <div @click="showSubTeamFn(user)" style="width:2%;  position: absolute;" class="my-7"><v-btn :color="`${user.sign && user.sign == '-' ? 'grey' :'primary'}`" class="pr-4" size="x-small" v-if="user.teams && user.teams.length > 0">{{ user.sign ? user.sign : '+' }}</v-btn></div>
-                    <div  style="padding-left:2%" >
-                            <div
-                                v-if="user.is_regular == false"
+                <div
+                    :style="`${
+                        user.sign && user.sign == '-'
+                            ? 'border-bottom:1px solid #C6A92D;'
+                            : ''
+                    }`"
+                    v-for="(user, index) in managerTeam"
+                    :key="user.id"
+                >
+                    <div class="d-flex align-center w-100">
+                        <div style="width: 25px">
+                            <v-btn
+                                @click="showSubTeamFn(user)"
                                 class=""
-                                style="
-                                    color: white;
-                                    font-size: 8px;
-                                    line-height: 8px;
-                                    margin-left: 15px;
-                                    padding: 4px 10px;
-                                    display: inline-block;
-                                    border-top-left-radius: 8px;
-                                    border-top-right-radius: 8px;
-                                    text-transform: uppercase;
-                                    background-color: #2196f3;
-                                "
+                                color="primary"
+                                size="25"
+                                v-if="user.teams && user.teams.length > 0"
+                                >{{ user.sign ? user.sign : "+" }}</v-btn
                             >
-                                <!-- {{ user.is_regular == true ? "Confirmed Employee" : "Probation Employee" }} -->
-                                Probation Employee
-                            </div>
-                            <v-card
-                            width="100%"
-                                class="mb-1 elevation-0"
-                                @click="() => openMember(user)"
-                            >
-                                <!-- @click="() => openMember('SingleTeamMember', { id: user.id })" -->
-                                <v-card-text>
+                        </div>
+
+                        <div style="width: 100%">
+                            <v-card width="100%" class="mb-1 elevation-0" @click="() => openMember(user)">
+                                <!-- -->
+                                <v-card-text style="position: relative">
+                                    <div
+                                        v-if="user.is_regular == false"
+                                        class="mb-2"
+                                        style="
+                                            color: white;
+                                            font-size: 8px;
+                                            line-height: 8px;
+                                            padding: 4px 10px;
+                                            display: inline-block;
+                                            text-transform: uppercase;
+                                            background-color: #2196f3;
+                                            position: absolute;
+                                            top: 0;
+                                            left: 0;
+                                        "
+                                    >
+                                        Probation Employee
+                                    </div>
                                     <v-row>
-                                        <div class="v-col-12 v-col-md-3">
+                                        <div
+                                            :class="`v-col-12 ${
+                                                user.is_regular == false
+                                                    ? 'pt-6'
+                                                    : ''
+                                            } v-col-md-3`"
+                                        >
                                             <EmployeeCard :profile="user" />
                                         </div>
                                         <div class="v-col-12 v-col-md-8">
@@ -122,12 +142,19 @@
                                     </v-row>
                                 </v-card-text>
                             </v-card>
-                    </div> 
+                        </div>
+                    </div>
 
-                    <!-- Sub Team here --> 
-                    <SubTeam :user="user" v-if="user.teams && user.teams.length > 0 && user.sign == '-'" @ratingOrWeightage="ratingOrWeightage"/>
+                    <!-- Sub Team here -->
+                    <SubTeam
+                        :user="user"
+                        v-if="
+                            user.teams &&
+                            user.teams.length > 0 &&
+                            user.sign == '-'
+                        "
+                    />
                     <!-- End Sub Team -->
-
                 </div>
             </div>
             <div v-else class="v-col-12">
@@ -230,21 +257,30 @@ const ratingOrWeightage = (user) => {
     }
     return sum;
 };
- 
- 
-const showSubTeamFn = (user) => { 
-    if(user.sign){
-        if( user.sign == '+'){
-            user.sign = '-';
-        }else{
-            user.sign = '+';
-        }
-       
-    }else{
-        user.sign = '-';
-    } 
-}
 
+const showSubTeamFn = (user) => {
+    if (user.sign) {
+        if (user.sign == "+") {
+            user.sign = "-";
+        } else {
+            user.sign = "+";
+            signDefault(user);
+        }
+    } else {
+        user.sign = "-";
+    }
+};
+
+const signDefault = (data) => {
+    let datas = Object.assign([], data);
+
+    datas.teams.map((o, i) => {
+        o.sign = "+";
+        if (o.teams && o.teams.length > 0) {
+            signDefault(o);
+        }
+    });
+};
 
 const loadingConfirmation = ref(false);
 // open team member
@@ -307,15 +343,12 @@ const confirmOpenMember = () => {
 };
 
 const message = ref("");
-const openMember = (user, v) => {
-    
+const openMember = (user) => {
     let msgError = "KPI review is currently closed";
     let statusGlobalSettings = settingStore.filteredSetting(user.company_id);
     message.value = "Do you want to set KPI for ";
     selectedUser.value = Object.assign({}, user);
-    if(v){
-        openPage("SingleTeamMember", { id: user.ecode });
-    }else if (user.status == "Inactive") {
+   if (user.status == "Inactive") {
         errorMessage.value =
             "Employee is currently Inactive, kindly contact your HRBP for more info.";
         noKPIEmployee.value = true;

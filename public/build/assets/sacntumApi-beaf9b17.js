@@ -1,1 +1,0 @@
-import{aw as a}from"./app-f17a5130.js";let e="https://users.moikzz.tech";const r=a.create({baseURL:e}),s=t=>a.create({baseURL:e,headers:{Accept:"application/json","Content-Type":"application/json",Authorization:`Bearer ${t}`}});export{r as a,s as b};
