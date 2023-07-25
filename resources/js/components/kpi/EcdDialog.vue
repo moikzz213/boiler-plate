@@ -55,7 +55,7 @@
         </div>
       
         <div v-if="kpiAction.is_review" class="v-col-12 v-col-md-4 bg-grey-lighten-4">
-          <v-row class="px-3" v-if="!finalReview.isFinal">
+          <!-- <v-row class="px-3" v-if="!finalReview.isFinal">
             <div class="v-col-12 px-1">{{ "Review" }}</div>
             <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
               {{  kpiAction.is_regular ? "Mid-Year Achievement" : 'First Review Achievement'}} 
@@ -69,20 +69,22 @@
                 persistent-hint
               ></v-text-field>
             </div> 
-            </v-row>
+            </v-row> -->
           
             <v-row class="px-3" v-if="finalReview.isFinal">
             <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
               {{  kpiAction.is_regular ? "Year-End Achievement" : 'Final Review Achievement'}}
             </div> 
-            <div class="v-col-12 py-0 px-1">
-              <v-text-field
+            <div class="v-col-12 py-0 px-1"> 
+              <v-autocomplete
                 v-model="ecdData.achievement_yearend"
-                label="Achievement*"
+                :items="ecdAchievement"
+                item-title="title"
+                item-value="value" 
                 variant="outlined"
                 density="compact"
-                persistent-hint
-              ></v-text-field>
+                label="Select *"
+              > </v-autocomplete>
             </div> 
             </v-row> 
             <v-row class="pb-4" v-if="finalReview.saveBtn">
@@ -140,13 +142,22 @@ const selectedKPI = ref(null);
 const ecdDataWeightage = ref(null);
 const saveLoading = ref(false);
 
+const ecdAchievement = ref([
+  {title: '6 - Extremely Excellent', value: 6},
+  {title: '5 - Excellent', value: 5},
+  {title: '4 - Very Good', value: 4},
+  {title: '3 - Good', value: 3},
+  {title: '2 - Satisfactory', value: 2},
+  {title: '1 - Poor', value: 1}
+])
+
 const kpiWeightageList = ref(["5%", "10%", "15%", "20%"]);
 const saveKpi = () => { 
   saveLoading.value = true;
   ecdData.value.weightage = ecdDataWeightage.value;
   ecdData.value.ecd_type = props.ecdOptions.ecdType;
   kpiAction.value.data = ecdData.value; 
-
+  console.log(kpiAction.value);
   setTimeout(() => {
       saveLoading.value = false;
       kpiAction.value.dialog = false;
