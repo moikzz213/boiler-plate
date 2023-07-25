@@ -510,7 +510,7 @@
                                 Perfomer,1- Low Performer
                             </v-col>
                             </v-row>
-                            <v-row class="mt-0 py-5"> 
+                            <v-row class="mt-0 py-5" v-if="kpiDataEncrypted.reviews && kpiDataEncrypted.reviews.length > 0 && (kpiDataEncrypted.reviews[0].settings.state == 'yearend' || kpiDataEncrypted.reviews[0].settings.state == 'final_review')"> 
                                 <h3 class="text-center py-2 bg-success" style=" border-radius: 8px;display:inline-block; width:200px; margin:0 auto;font-weight:normal;">
                                     {{ ratingTitle(finalRating) }}
                                 </h3>                             
