@@ -168,7 +168,9 @@ class CronJobController extends Controller
                 }
 
                 // Check date if Mid Year Closing
-            }elseif($current_month_day ==  date('Y-m-d', strtotime($v['mid_year_review_end'] . ' +1 day'))){
+            }
+            
+            if($current_month_day ==  date('Y-m-d', strtotime($v['mid_year_review_end'] . ' +1 day'))){
               
                 $setting = PerformanceSetting::where('id', $v->id)->first();
                 if($setting){

@@ -156,6 +156,7 @@ import {
   mdiPercent,
   mdiAccountCog,
   mdiOfficeBuilding,
+  mdiChartArc,
   mdiClipboardEditOutline,
 } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
@@ -208,6 +209,12 @@ const sideNavigation = ref([
     icon: mdiAccountGroup,
     roles: ["app_admin", "hr_admin", "hrbp"],
     path: "/hr/employees",
+  },
+  {
+    title: "Reports",
+    icon: mdiChartArc,
+    roles: ["app_admin", "hr_admin", "hrbp"],
+    path: "/hr/reports",
   },
   {
     title: "Settings",

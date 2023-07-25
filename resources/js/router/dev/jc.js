@@ -8,4 +8,14 @@ export const jc = [
             title: "Performance Review",
         },
     },
+    {
+        path: "/hr/reports",
+        component: () => import("../../pages/hr/reports/Report.vue"),
+        name: "reports",
+        meta: {
+            requiresAuth: true,
+            role: ["app_admin", "hr_admin", "hrbp"],
+            title: "Reports",
+        },
+    },
 ];

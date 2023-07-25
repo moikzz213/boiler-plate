@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\MeasureController;
 use App\Http\Controllers\ProfileController;
@@ -53,6 +54,7 @@ Route::middleware('authkey')->group(function () {
     // Notifications
     Route::get('/fetch/setting/notifications', [NotificationController::class, 'fetchNotifications'])->name('fetch.notifications');
     Route::post('/save/setting/notifications', [NotificationController::class, 'saveNotifications'])->name('save.notifications');
+    Route::get('/reports/business-entity/kpi-employees', [ReportController::class, 'getEmployees'])->name('report.employees.non-paginated');
 
     // measures
     Route::get('/fetch/measures/non-paginated', [MeasureController::class, 'getNonPaginatedMeasures'])->name('dialog.measure.non-paginated');

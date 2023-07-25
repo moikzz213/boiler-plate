@@ -58,10 +58,14 @@ const bgItems = ref([
     id: 8,
     src: baseUrl.value + "/assets/images/login-slider/slider-8.jpg",
   },
+  {
+    id: 9,
+    src: baseUrl.value + "/assets/images/login-slider/slider-9.jpg",
+  },
 ]);
 
 const bgUpdate = () => {
-  if (bgCurrent.value == 8) {
+  if (bgCurrent.value == 9) {
     bgCurrent.value = 1;
   } else {
     bgCurrent.value = bgCurrent.value + 1;
@@ -70,7 +74,7 @@ const bgUpdate = () => {
 onMounted(() => {
   interval.value = setInterval(() => {
     bgUpdate();
-  }, 10000);
+  }, 6000);
 });
 onUnmounted(() => clearInterval(interval.value));
 </script>
