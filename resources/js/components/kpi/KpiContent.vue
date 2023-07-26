@@ -3,8 +3,9 @@
     <div class="v-col-12 v-col-md-2">
       <VueDatePicker v-model="year" year-picker class="pms-date-picker" />
     </div>
+    
     <div class="v-col-12 v-col-md-2"> 
-      <v-btn v-if="viewingEmployee && viewingEmployee.reviews && viewingEmployee.reviews.length > 0" @click="printKPI" color="white" class="text-capitalize text-md-caption text-lg-body-2">View/Print<v-icon
+      <v-btn v-if="viewingEmployee && viewingEmployee.reviews && viewingEmployee.reviews.length > 0 && viewingEmployee.reviews[0].key_review.length > 0" @click="printKPI" color="white" class="text-capitalize text-md-caption text-lg-body-2">View/Print<v-icon
           :icon="mdiPrinter" class="ml-1"> </v-icon></v-btn>
     </div>
     <div class="v-col-12">
@@ -341,7 +342,6 @@ const emitResponseWeightageValidation = () => {
     if(nVal && nVal.length > 0 ){
       errorCheck = true;
     }
-    console.log("sssssss");
     kpiEmit('errorcheck', {hasError: errorCheck});
   }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && (viewingEmployee.value.reviews[0].state == 'yearend' || viewingEmployee.value.reviews[0].state == 'final_review')){
     
@@ -350,10 +350,8 @@ const emitResponseWeightageValidation = () => {
     if(nVal && nVal.length > 0 ){
       errorCheck = true;
     }
-    console.log("aaaaaaaa");
     kpiEmit('errorcheck', {hasError: errorCheck});
   } else{
-    console.log("ttttttttttt");
     weightageValidation().then(() => {
      
       kpiEmit('errorcheck', {hasError: singlePageHasError.value});
@@ -440,14 +438,16 @@ const canManage = computed(() => {
     } 
     return false;
 });
+
+
 const isFinalReview = ref({saveBtn: false, isFinal: false});
 const isReviewStage = computed(() => {
   isFinalReview.value = {saveBtn: false, isFinal: false};
-
-  if(route.name == "SingleTeamMember" && globalSetting && globalSetting.value.state == 'yearend' && (viewingEmployee.value.reviews[0].status == 'submitted' || viewingEmployee.value.reviews[0].status == 'closed' || viewingEmployee.value.reviews[0].status == 'locked')){ 
+   
+  if(route.name == "SingleTeamMember" && viewingEmployee.value.reviews.length > 0 && viewingEmployee.value.reviews[0].state == 'yearend' && (viewingEmployee.value.reviews[0].status == 'submitted' || viewingEmployee.value.reviews[0].status == 'closed' || viewingEmployee.value.reviews[0].status == 'locked')){ 
       isFinalReview.value = {saveBtn: false, isFinal: false};
       return false;
-    }else if(route.name == "SingleTeamMember" && globalSetting.value && (globalSetting.value.state == 'yearend' ) && ( globalSetting.value.status == 'open' || globalSetting.value.status == 'inprogress')){
+    }else if(route.name == "SingleTeamMember" && viewingEmployee.value.reviews.length > 0 && (viewingEmployee.value.reviews[0].state == 'yearend' ) && ( viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')){
       isFinalReview.value = {saveBtn: true, isFinal: true}; 
       return true;
     }else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){  

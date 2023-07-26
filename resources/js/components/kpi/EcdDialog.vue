@@ -72,22 +72,27 @@
             </v-row> -->
           
             <v-row class="px-3" v-if="finalReview.isFinal">
-            <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
-              {{  kpiAction.is_regular ? "Year-End Achievement" : 'Final Review Achievement'}}
-            </div> 
-            <div class="v-col-12 py-0 px-1"> 
-              <v-autocomplete
-                v-model="ecdData.achievement_yearend"
-                :items="ecdAchievement"
-                item-title="title"
-                item-value="value" 
-                variant="outlined"
-                density="compact"
-                label="Select *"
-              > </v-autocomplete>
-            </div> 
+              <div class="v-col-12 py-0 px-1 mt-3 mb-3 text-body-2">
+                {{  kpiAction.is_regular ? "Year-End Achievement" : 'Final Review Achievement'}}
+              </div> 
+              <div class="v-col-12 py-0 px-1"> 
+                <v-autocomplete
+                  v-model="ecdData.achievement_yearend"
+                  :items="ecdAchievement"
+                  item-title="title"
+                  item-value="value" 
+                  variant="outlined"
+                  density="compact"
+                  label="Select *"
+                > </v-autocomplete>
+              </div> 
             </v-row> 
-            <v-row class="pb-4" v-if="finalReview.saveBtn">
+            <v-row v-else>
+                 <div class="v-col-12 my-5">
+                  <h3 :class="`${ecdData.achievement_yearend >= 1 ? 'text-success' : 'text-error'} text-center`">{{ ratingTitle(ecdData.achievement_yearend) }}</h3>
+                </div>
+            </v-row>
+            <v-row class="pb-4">
             <div class="v-col-12 d-flex justify-end">
               <v-btn
                 class="bg-grey-lighten-2 text-primary"
@@ -135,6 +140,7 @@ const props = defineProps({
   }
 });
 
+
 const kpiEmit = defineEmits(['savedResponse']);
 
 const oldWeightage = ref(null);
@@ -161,12 +167,27 @@ const saveKpi = () => {
   ecdData.value.weightage = ecdDataWeightage.value;
   ecdData.value.ecd_type = props.ecdOptions.ecdType;
   kpiAction.value.data = ecdData.value; 
-  console.log(kpiAction.value);
   setTimeout(() => {
       saveLoading.value = false;
       kpiAction.value.dialog = false;
       kpiEmit('savedResponse', kpiAction.value);
     }, 1200);
+};
+
+const ratingTitle = (v) => {
+    if (v > 5) {
+        return "Extremely Excellent";
+    } else if (v >= 4) {
+        return "Excellent";
+    } else if (v >= 3) {
+        return "Very Good";
+    } else if (v >= 2) {
+        return "Good";
+    } else if (v >= 1) {
+        return "Satisfactory";
+    } else {
+        return "Poor";
+    }
 };
 
 watch(
