@@ -163,7 +163,6 @@ const saveKpi = () => {
   ecdData.value.weightage = ecdDataWeightage.value;
   ecdData.value.ecd_type = props.ecdOptions.ecdType;
   kpiAction.value.data = ecdData.value; 
-  console.log(kpiAction.value);
   setTimeout(() => {
       saveLoading.value = false;
       kpiAction.value.dialog = false;

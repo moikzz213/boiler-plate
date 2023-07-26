@@ -3,8 +3,9 @@
     <div class="v-col-12 v-col-md-2">
       <VueDatePicker v-model="year" year-picker class="pms-date-picker" />
     </div>
+    
     <div class="v-col-12 v-col-md-2"> 
-      <v-btn v-if="viewingEmployee && viewingEmployee.reviews && viewingEmployee.reviews.length > 0" @click="printKPI" color="white" class="text-capitalize text-md-caption text-lg-body-2">View/Print<v-icon
+      <v-btn v-if="viewingEmployee && viewingEmployee.reviews && viewingEmployee.reviews.length > 0 && viewingEmployee.reviews[0].key_review.length > 0" @click="printKPI" color="white" class="text-capitalize text-md-caption text-lg-body-2">View/Print<v-icon
           :icon="mdiPrinter" class="ml-1"> </v-icon></v-btn>
     </div>
     <div class="v-col-12">
@@ -333,7 +334,6 @@ const emitResponseWeightageValidation = () => {
     if(nVal && nVal.length > 0 ){
       errorCheck = true;
     }
-    console.log("sssssss");
     kpiEmit('errorcheck', {hasError: errorCheck});
   }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && (viewingEmployee.value.reviews[0].state == 'yearend' || viewingEmployee.value.reviews[0].state == 'final_review')){
     
@@ -342,10 +342,8 @@ const emitResponseWeightageValidation = () => {
     if(nVal && nVal.length > 0 ){
       errorCheck = true;
     }
-    console.log("aaaaaaaa");
     kpiEmit('errorcheck', {hasError: errorCheck});
   } else{
-    console.log("ttttttttttt");
     weightageValidation().then(() => {
      
       kpiEmit('errorcheck', {hasError: singlePageHasError.value});
