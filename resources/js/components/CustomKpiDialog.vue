@@ -16,6 +16,7 @@
                 kpiData.type == 'ecd' ? 'v-col-md-12' : 'v-col-md-6'
               }  py-0`"
             >
+            
               <v-text-field
                 v-model="kpiData.data.title"
                 variant="outlined"
@@ -121,8 +122,9 @@
                 @click="kpiData.dialog = false"
                 >Cancel</v-btn
               >
-              <v-btn
-                v-if="['edit', 'add'].includes(kpiData.action) == true"
+             
+              <v-btn 
+                v-if="['edit', 'add'].includes(kpiData.action) == true  && kpiData.data.title && ( enableOn(['kpi']) && kpiData.data.industry_id || (enableOn(['ecd']) && kpiData.data.ecd_type))"
                 color="secondary"
                 class="ml-2 px-8"
                 @click="saveKpi"
