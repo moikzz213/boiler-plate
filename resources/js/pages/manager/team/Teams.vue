@@ -287,10 +287,12 @@ const openMember = (user) => {
             "Employee is currently Inactive, kindly contact your HRBP for more info.";
         noKPIEmployee.value = true;
     } else if (user.reviews && user.reviews.length > 0) {
-        if (
-            user.is_regular == 1 &&
-            user.reviews[0].status == "locked" &&
-            user.reviews[0].state == "closed"
+        if(user.reviews[0].key_review == 0 && user.reviews[0].state != 'setting'){
+            noKPIEmployee.value = true;
+        } else if (
+            user.is_regular == 1 && (
+            user.reviews[0].status == "locked" ||
+            user.reviews[0].status == "closed" )
         ) {
             errorMessage.value = msgError;
             noKPIEmployee.value = true;
@@ -322,8 +324,8 @@ const openMember = (user) => {
                 }
             } else {
                 if (
-                    statusGlobalSettings.status == "locked" &&
-                    statusGlobalSettings.state == "closed"
+                    statusGlobalSettings.status == "locked" ||
+                    statusGlobalSettings.status == "closed"
                 ) {
                     errorMessage.value = msgError;
                 }
