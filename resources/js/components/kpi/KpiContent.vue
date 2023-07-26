@@ -432,14 +432,16 @@ const canManage = computed(() => {
     } 
     return false;
 });
+
+
 const isFinalReview = ref({saveBtn: false, isFinal: false});
 const isReviewStage = computed(() => {
   isFinalReview.value = {saveBtn: false, isFinal: false};
-
-  if(route.name == "SingleTeamMember" && globalSetting && globalSetting.value.state == 'yearend' && (viewingEmployee.value.reviews[0].status == 'submitted' || viewingEmployee.value.reviews[0].status == 'closed' || viewingEmployee.value.reviews[0].status == 'locked')){ 
+   
+  if(route.name == "SingleTeamMember" && viewingEmployee.value.reviews.length > 0 && viewingEmployee.value.reviews[0].state == 'yearend' && (viewingEmployee.value.reviews[0].status == 'submitted' || viewingEmployee.value.reviews[0].status == 'closed' || viewingEmployee.value.reviews[0].status == 'locked')){ 
       isFinalReview.value = {saveBtn: false, isFinal: false};
       return false;
-    }else if(route.name == "SingleTeamMember" && globalSetting.value && (globalSetting.value.state == 'yearend' ) && ( globalSetting.value.status == 'open' || globalSetting.value.status == 'inprogress')){
+    }else if(route.name == "SingleTeamMember" && viewingEmployee.value.reviews.length > 0 && (viewingEmployee.value.reviews[0].state == 'yearend' ) && ( viewingEmployee.value.reviews[0].status == 'open' || viewingEmployee.value.reviews[0].status == 'inprogress')){
       isFinalReview.value = {saveBtn: true, isFinal: true}; 
       return true;
     }else if(viewingEmployee.value && viewingEmployee.value.is_regular == 0 && route.name == "SingleTeamMember"){  
