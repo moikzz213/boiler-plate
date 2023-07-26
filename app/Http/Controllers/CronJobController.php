@@ -113,12 +113,7 @@ class CronJobController extends Controller
         if(!$request->input('key') || !$request->input('c') || ( $request->input('key') != 'Moikzz' || $request->input('c') != 'Ghassan')){
             return json_encode(array("Message" => 'Invalid access', 'Status Code' => 403));
         }
-       
-        $defaultDayReminder = Notification::where('meta_key', 'default_reminder_days')->first();  
-        $reminderEvery = date('Y-m-d', strtotime("+". $defaultDayReminder->meta_value." days"));
- 
-        $current_month_day = date('Y-m-d');
-        
+
         $currentSetting = PerformanceSetting::where('status' ,'!=', 'locked')->get();  
 
         if(!$currentSetting || count($currentSetting) == 0){
@@ -126,6 +121,11 @@ class CronJobController extends Controller
                 'message' => 'Kindly add KPI manually / KPI already created.'
             ], 422);
         } 
+       
+        $defaultDayReminder = Notification::where('meta_key', 'default_reminder_days')->first();  
+        $reminderEvery = date('Y-m-d', strtotime("+". $defaultDayReminder->meta_value." days"));
+ 
+        $current_month_day = date('Y-m-d'); 
        
         foreach($currentSetting AS $k => $v){
            
@@ -167,14 +167,14 @@ class CronJobController extends Controller
                     }
                 }
 
-                // Check date if Mid Year Closing
             }
             
+            // Check date if Mid Year Closing
             if($current_month_day ==  date('Y-m-d', strtotime($v['mid_year_review_end'] . ' +1 day'))){
               
                 $setting = PerformanceSetting::where('id', $v->id)->first();
                 if($setting){
-                    $setting->update(['state' => 'midyear', 'status' => 'closed']);
+                    $setting->update(['status' => 'closed']);
                     $query = Profile::whereHas('teams', function($q) use ($v) {
                         $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
                     })->whereIn('status', ['active', 'Active'])->with('teams', function($q){
@@ -191,7 +191,7 @@ class CronJobController extends Controller
                
                 $setting = PerformanceSetting::where('id', $v->id)->first();
                 if($setting){
-                    $setting->update(['status' => 'locked']);
+                    $setting->update(['status' => 'closed']);
                     $query = Profile::whereHas('teams', function($q) use ($v) {
                         $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
                     })->whereIn('status', ['active', 'Active'])->with('teams', function($q){
@@ -207,7 +207,7 @@ class CronJobController extends Controller
             }elseif($current_month_day ==  date('Y-m-d', strtotime($v['annual_kpi_setting_end']. ' +1 day'))){
                 $setting = PerformanceSetting::where('id', $v->id)->first();
                 if($setting){
-                    $setting->update(['state' => 'setting', 'status' => 'locked']);
+                    $setting->update(['status' => 'closed']);
                     $query = Profile::whereHas('teams', function($q) use ($v) {
                         $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
                     })->whereIn('status', ['active', 'Active'])->with('teams', function($q){
@@ -461,7 +461,7 @@ class CronJobController extends Controller
             if($current_month_day ==  date('Y-m-d', strtotime($v['end_year_review_end'] . ' +7 day'))){
                 $setting = PerformanceSetting::where('id', $v->id)->first();
                 if($setting){
-                    $setting->update(['status' => 'locked']); 
+                    $setting->update(['status' => 'locked']);
                 }
             }
         }

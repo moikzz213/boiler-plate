@@ -132,8 +132,8 @@
                             <v-btn v-if="!isReviewStage && isNotDashboard" @click="() => viewKPI(ecd, 'ecd')" density="compact" 
                               color="primary" class="rounded-xl elevation-2 ml-1 text-caption">
                               View<v-icon size="small" :icon="mdiEye"  class="ml-1"></v-icon></v-btn> 
-                            <!-- <v-btn v-if="isReviewStage" color="secondary" class="rounded-xl px-5 " size="small"
-                              @click="() => reviewKPI(ecd, 'ecd')">review</v-btn> -->
+                            <v-btn v-if="isReviewStage && isFinalReview.isFinal" color="secondary" class="rounded-xl px-5 " size="small"
+                              @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
                             <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'tech')" density="compact" 
                               color="teal" class="rounded-xl elevation-2 ml-1 text-caption">Edit<v-icon size="small"  class="ml-1"
                                 :icon="mdiPencil"></v-icon></v-btn>
@@ -179,8 +179,8 @@
                           <v-btn v-if="!isReviewStage && isNotDashboard" @click="() => viewKPI(ecd, 'ecd')" density="compact" 
                               color="primary" class="rounded-xl elevation-2 ml-1 text-caption">
                               View<v-icon size="small" :icon="mdiEye"  class="ml-1"></v-icon></v-btn> 
-                            <!-- <v-btn v-if="isReviewStage" color="secondary" class="rounded-xl px-5 " size="small"
-                              @click="() => reviewKPI(ecd, 'ecd')">review</v-btn> -->
+                            <v-btn v-if="isReviewStage  && isFinalReview.isFinal" color="secondary" class="rounded-xl px-5 " size="small"
+                              @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
                             <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'soft')" density="compact" 
                               color="teal" class="rounded-xl elevation-2 ml-1 text-caption">Edit<v-icon size="small"  class="ml-1"
                                 :icon="mdiPencil"></v-icon></v-btn>
@@ -341,17 +341,19 @@ const emitResponseWeightageValidation = () => {
     if(nVal && nVal.length > 0 ){
       errorCheck = true;
     }
+    console.log("sssssss");
     kpiEmit('errorcheck', {hasError: errorCheck});
   }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && (viewingEmployee.value.reviews[0].state == 'yearend' || viewingEmployee.value.reviews[0].state == 'final_review')){
     
-    let nVal = viewingEmployee.value.reviews[0].key_review.filter(el => el.type == 'kpi' && el.achievement_yearend == null);
+    let nVal = viewingEmployee.value.reviews[0].key_review.filter(el => el.achievement_yearend == null);
     let errorCheck = false;
     if(nVal && nVal.length > 0 ){
       errorCheck = true;
     }
-    
+    console.log("aaaaaaaa");
     kpiEmit('errorcheck', {hasError: errorCheck});
   } else{
+    console.log("ttttttttttt");
     weightageValidation().then(() => {
      
       kpiEmit('errorcheck', {hasError: singlePageHasError.value});

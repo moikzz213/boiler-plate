@@ -33,11 +33,14 @@ class ClientKeyController extends Controller
             'year'      => Carbon::now()->format('Y')
         ])->get();
 
+        $allSettings = PerformanceSetting::get();
+
         return response()->json([
             "message" => 'Key saved successfully',
             "client" => $clientKey,
             "profile" => $profile,
-            "pms_settings" => $currentPmsSettings
+            "pms_settings" => $currentPmsSettings,
+            'all_settings' => $allSettings
         ], 200);
     }
 

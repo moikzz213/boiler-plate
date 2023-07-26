@@ -438,6 +438,7 @@ const fetchSettings = async () => {
         .get("/api/pms-settings/all")
         .then((res) => {
             settingStore.setPmsSettings(res.data);
+            settingStore.setAllSettings(res.data);
         });
 };
 fetchSettings();

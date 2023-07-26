@@ -12,7 +12,8 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 
 class PerformanceSettingController extends Controller
-{
+{ 
+
     public function getSingleSetting($id)
     {
         $pmsSetting = PerformanceSetting::where('id', $id)->with('company')->first();
@@ -40,8 +41,7 @@ class PerformanceSettingController extends Controller
     {
         $currentDate = Carbon::now()->format('Y-m-d'); 
         $status = 'open';
-        if($currentDate >= $request['annual_kpi_setting_start'] && $currentDate <= $request['annual_kpi_setting_end']){
-             
+        if($currentDate >= $request['annual_kpi_setting_start'] && $currentDate <= $request['annual_kpi_setting_end']){ 
             $state = 'setting';
         }elseif($currentDate >= $request['mid_year_review_start'] && $currentDate <= $request['mid_year_review_end']){
            
@@ -49,8 +49,8 @@ class PerformanceSettingController extends Controller
         }elseif($currentDate >= $request['end_year_review_start'] && $currentDate <= $request['end_year_review_end']){
             $state = 'yearend';
         }else{
-            $status = 'locked';
-            $state = 'closed';
+            $status = 'closed';
+            $state = 'setting';
         }
         $pmsArray = array(
             'year' => $request['year'],

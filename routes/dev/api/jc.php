@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserApiController;
 use App\Http\Controllers\IndustryController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PerformanceSettingController;
 use App\Http\Controllers\KeyPerformanceReviewController;
 use App\Http\Controllers\KeyPerformanceIndicatorMasterController;
 
@@ -24,7 +25,6 @@ use App\Http\Controllers\KeyPerformanceIndicatorMasterController;
 */
 Route::post('/system/api-post/employees', [UserApiController::class, 'addUpdateFromUMS'])->name('system.api.employees');
 Route::middleware('authkey')->group(function () {
-  
   Route::get('/pms-settings/all', [KeyPerformanceReviewController::class, 'getPmsSettings'])->name('pms.settings');
 
     Route::get('/dashboard/my-kpi/{id}/{year}', [ReviewController::class, 'KeyPerformance'])->name('dashboard.kpi');

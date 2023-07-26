@@ -11,30 +11,21 @@ use Spatie\QueryBuilder\AllowedFilter;
 
 class ReportController extends Controller
 {
-    public function getEmployees()
+    public function getEmployees(Request $request)
     {
+      
         $employees = QueryBuilder::for(Profile::class)
         ->allowedFilters([
-            'is_regular',
-            AllowedFilter::callback('company_id', function ($query, $value) {
-                $query->where('company_id', $value);
-            })->ignore('null'),
-            AllowedFilter::callback('employee', function ($query, $value) {
-                $query->where('first_name', 'like', '%' . $value . '%')
-                ->orWhere('last_name', 'like', '%' . $value . '%')
-                ->orWhere('display_name', 'like', '%' . $value . '%')
-                ->orWhere('email', 'like', '%' . $value . '%')
-                ->orWhere('ecode', 'like', '%' . $value . '%');
-            })->ignore('null'),
+            'is_regular', 
             AllowedFilter::callback('hrbp_email', function ($query, $value) {
-                $auth = Profile::where('email', $value)->first();
+                $auth = Profile::where('email', $value)->first(); 
                 if ($auth->role == 'hrbp'){
                     $query->where('hrbp_email', $value);
                 }
             }),
         ])
-        ->with('company')->with('reviews', function($q) {
-            $q->where('year', Carbon::now()->format('Y'))->with('keyReview');
+        ->with('company')->with('reviews', function($q) use ($request) { 
+            $q->where('year', $request->year);
         })->orderBy('status','asc')->orderBy('role','asc')
         ->get();
 

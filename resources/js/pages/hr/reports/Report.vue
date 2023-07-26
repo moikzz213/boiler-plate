@@ -1,10 +1,9 @@
 <template>
     <v-container class="pb-16">
         <v-row class="mt-5">
-            <div class="v-col-12">
-                <div class="text-h6">Report</div>
+            <div class="v-col-12 v-col-md-2">
+            <VueDatePicker v-model="year" year-picker class="pms-date-picker" />
             </div>
-
             <div class="v-col-12 v-col-md-2">
                 <v-select
                     v-model="filter.data.is_regular"
@@ -28,17 +27,17 @@
                         color="secondary"
                         class="text-capitalize"
                         :loading="filter.loadingFilter"
-                        style="width: 48%"
-                        >Search</v-btn
+                        
+                        >Generate Report</v-btn
                     >
                 </div>
             </div>
         </v-row>
         <v-row>
-            <div v-if="employees.length > 0" class="v-col-12">
+            <div class="v-col-12">
                 <v-card class="mb-3 elevation-0">
                     <v-card-text>
-                        <v-table density="compact">
+                        <v-table density="compact" >
                             <thead>
                                 <tr>
                                     <th class="text-center">#</th>
@@ -50,22 +49,26 @@
                                     <th class="text-center">Submitted</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <tbody  v-if="companiesObj.length > 0" >
+                                <tr v-for="(item,index) in companiesObj" :key="item.id">
+                                    <td class="text-center">{{ index += 1}}</td>
+                                    <td class="text-center text-capitalize py-2">
+                                        {{ item.title }} <br/>
+                                        <span :class="`${item.state == 'no-setting' ? 'text-error' : 'text-info'}`">{{ item.state == 'no-setting' ? "( No Setting )" : "( "+item.state + " - " + item.status + " )"}}</span>
+                                    </td>
+                                    <td class="text-center">{{ item.lock }}</td>
+                                    <td class="text-center">{{ item.open }}</td>
+                                    <td class="text-center">{{ item.inprogress }}</td>
+                                    <td class="text-center">{{ item.inreview }}</td>
+                                    <td class="text-center">{{ item.submitted }}</td>
+                                </tr>
+                            </tbody>
+                            <tbody v-else>
+                                <tr>
+                                    <td colspan="8" class="text-center">No record found.</td>
+                                </tr>
                             </tbody>
                         </v-table>
-                    </v-card-text>
-                </v-card>
-            </div>
-            <div v-else class="v-col-12">
-                <v-card>
-                    <v-card-text class="text-center">
-                        No records found
                     </v-card-text>
                 </v-card>
             </div>
@@ -74,52 +77,16 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { clientApi } from "@/services/clientApi";
-import { useCompanyStore } from "@/stores/company";
-import KpiProgress from "@/components/kpi/KpiProgress.vue";
-import EmployeeCard from "@/components/EmployeeCard.vue";
+import VueDatePicker from "@vuepic/vue-datepicker";
 import { useSettingStore } from "@/stores/settings";
 const settingStore = useSettingStore();
 
 // authenticated user object
 const authStore = useAuthStore();
-
-// router
-const router = useRouter();
-const route = useRoute();
-const openPage = (pathName, openParams = null) => {
-    let paramsValue = openParams ? Object.assign({}, openParams) : false;
-    router
-        .push({
-            name: pathName,
-            params: paramsValue,
-        })
-        .catch((err) => {});
-};
-
-const ratingOrWeightage = (user) => {
-    let sum = 0;
-    if (user.reviews && user.reviews.length > 0 && user.reviews[0].key_review) {
-        user.reviews[0].key_review.map((o, i) => {
-            sum += o.weightage;
-        });
-    }
-    return sum;
-};
-// companies
-const companyStore = useCompanyStore();
-const loadingCompany = ref(false);
-const loadCompnaies = () => {
-    if (companyStore.companies.length == 0) {
-        loadingCompany.value = true;
-        companyStore.getCompanies(authStore.authToken).then(() => {
-            loadingCompany.value = false;
-        });
-    }
-};
+const year = ref(new Date().getFullYear()); 
 
 // filter employee
 const employeeTypeList = ref([
@@ -135,15 +102,14 @@ const employeeTypeList = ref([
 
 const filter = ref({
     loadingFilter: false,
-    data: {
-        employee: null,
+    data: { 
         company_id: null,
         is_regular: 1,
     },
 });
 const runFilter = async () => {
     filter.value.loadingFilter = true;
-    getEmployees(1)
+    getEmployees()
         .then(() => {
             filter.value.loadingFilter = false;
         })
@@ -160,7 +126,7 @@ const companiesObj = ref([]);
 const getEmployees = async () => {
     let endpoint =
         "/api/reports/business-entity/kpi-employees?&filter[is_regular]=" +
-        filter.value.data.is_regular +
+        filter.value.data.is_regular + "&year=" + year.value +
         "&filter[hrbp_email]=" +
         authStore.authProfile.email;
 
@@ -179,20 +145,72 @@ const getEmployees = async () => {
                         });
                     }
                 });
-                let companyStatus = [];
-                if (companiesObj.value && companiesObj.value.length > 0) {
-                    companiesObj.value.map((o, i) => { 
-                          companyStatus = settingStore.filteredSetting( o.id );
-                          console.log("companyStatus", companyStatus);
-                    });
-                }
-                console.log("companiesObj.value", companiesObj.value);
+                companyStatus();
             }
         })
         .catch((err) => {
             console.log("getEmployees", err);
         });
-};
+}; 
 
-getEmployees();
+const companyStatus = () => {
+    let companyStatus = {};
+    if (companiesObj.value && companiesObj.value.length > 0) {
+        companiesObj.value.map((o, i) => {
+            companyStatus = settingStore.filterAllSettings(o.id, year.value);
+           
+            if (companyStatus.state) {
+                o.state = companyStatus.state;
+                o.status = companyStatus.status; 
+                o.sort = i;
+            } else {
+                o.state = "no-setting";
+                o.status = "locked"; 
+                o.sort = 99;
+            }
+            o.lock = "-";
+            o.open ="-";
+            o.inprogress = "-";
+            o.inreview = "-";
+            o.submitted = "-";
+
+            employees.value.map((j) =>{
+                if(j.company_id == o.id){
+                    if(j.reviews.length > 0){
+                        if(j.reviews[0].status && (j.reviews[0].status == 'locked' || j.reviews[0].status == 'closed')){
+                                 o.lock = !isNaN(o.lock) ? o.lock : 0;
+                                 o.lock = parseInt(o.lock) + 1;
+                        }else if(j.reviews[0].status && j.reviews[0].status == 'open'){ 
+                                 o.open = !isNaN(o.open) ? o.open : 0;
+                                 o.open = parseInt(o.open) + 1;
+                        }else if(j.reviews[0].status && j.reviews[0].status == 'inprogress'){ 
+                                 o.inprogress = !isNaN(o.inprogress) ? o.inprogress : 0;
+                                 o.inprogress = parseInt(o.inprogress) + 1;
+                        }else if(j.reviews[0].status && j.reviews[0].status == 'inreview'){ 
+                                 o.inreview = !isNaN(o.inreview) ? o.inreview : 0;
+                                 o.inreview = parseInt(o.inreview) + 1;
+                        }else if(j.reviews[0].status && j.reviews[0].status == 'submitted'){   
+                                 o.submitted = !isNaN(o.submitted) ? o.submitted : 0;
+                                 o.submitted = parseInt(o.submitted) + 1;
+                        }
+                    }else if(o.state == 'no-setting'){ 
+                            o.lock = !isNaN(o.lock) ? o.lock : 0; 
+                            o.lock = parseInt(o.lock) + 1; 
+                    }else{
+                        if(o.status == 'closed' || o.status == 'locked'){
+                            o.lock = !isNaN(o.lock) ? o.lock : 0;
+                            o.lock = parseInt(o.lock) + 1;
+                        }else{
+                            o.open = !isNaN(o.open) ? o.open : 0;
+                            o.open = parseInt(o.open) + 1;
+                        }
+                    }
+                }
+            });
+        });
+    }
+    companiesObj.value.sort((a, b) => {
+        return a.sort - b.sort;
+    }); 
+} 
 </script>
