@@ -122,7 +122,9 @@ const printColor = (userState, index, statusIndex) => {
         let status = userState[0].status;
         let currentState = states.value.findIndex((el) => el.state == state);
 
-          if (index < currentState) {
+          if(state != 'setting'){
+            return 'bg-grey-darken-1';
+          } else if (index < currentState) {
             return 'bg-grey-darken-1';
           } else if (index == currentState) {
 
