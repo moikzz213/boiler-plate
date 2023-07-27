@@ -219,14 +219,14 @@ const sideNavigation = ref([
   {
     title: "Settings",
     icon: mdiCog,
-    roles: ["app_admin", "hr_admin"],
+    roles: ["app_admin", "hr_admin", 'hrbp'],
     path: "",
     subs: [
       {
         title: "PMS Settings",
         icon: mdiCogOutline,
         path: "/hr/settings/pms",
-        roles: ["app_admin"],
+        roles: ["app_admin", "hr_admin", 'hrbp'],
       },
       {
         title: "Custom KPIs",

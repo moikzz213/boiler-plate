@@ -239,7 +239,7 @@
                                 variant="text"
                                 @click="cancelKPI"
                                 >Cancel</v-btn
-                            >
+                            > 
                             <v-btn
                                 :loading="saveLoading"
                                 :disabled="requiredFields.length < 6"
@@ -329,7 +329,7 @@
                                         : ''
                                 } mb-4`"
                                 v-model="kpiData.revised_annual_target"
-                                label="Revised Annual Target"
+                                :label="`${kpiAction.is_regular ? 'Revised Annual Target' : 'Revised Probation Target'}`"
                                 variant="outlined"
                                 density="compact"
                                 persistent-hint
@@ -360,13 +360,25 @@
                                 hide-details
                                 class="bg-grey-lighten-2 mb-4"
                                 v-model="kpiData.revised_annual_target"
-                                label="Revised Annual Target"
+                                :label="`${kpiAction.is_regular ? 'Revised Annual Target' : 'Revised Probation Target'}`"
                                 variant="outlined"
                                 density="compact"
                                 persistent-hint
                             ></v-text-field>
                         </div>
-                        <div class="v-col-12 py-0 px-1">
+                        <div class="v-col-md-4 v-col-12 py-0 px-1">
+                            <v-text-field
+                            v-if="kpiAction.is_review"
+                                readonly
+                                v-model="kpiData.target_type"
+                                hide-details
+                                variant="outlined"
+                                density="compact"
+                                label="Target Type*"
+                                class="bg-grey-lighten-2 mb-3"
+                            ></v-text-field>
+                          </div>
+                        <div class="v-col-md-8 v-col-12 py-0 px-1">
                             <v-text-field
                                 v-model="kpiData.achievement_yearend"
                                 :readonly="kpiAction.action == 'readonly'"
@@ -382,7 +394,7 @@
                                 persistent-hint
                             ></v-text-field>
                         </div>
-                        <div class="v-col-12 py-0 px-1 text-center mb-3">
+                        <div class="v-col-12 py-5 px-1 text-center">
                             <h3
                                 :class="`${
                                     end_rating_title &&
@@ -396,7 +408,7 @@
                         </div>
                     </v-row>
                     <v-row>
-                        <div class="v-col-12 d-flex justify-end">
+                        <div class="v-col-12 d-flex justify-end justify-center">
                             <v-btn
                                 class="bg-grey-lighten-2 text-primary"
                                 variant="text"
@@ -606,18 +618,7 @@ watch(
     }
 );
 
-const rulesNumberOnly = ref([(v) => v || !isNaN(v)]);
-// watch(
-//   () => kpiData.value.target,
-//   (newVal) => {
-   
-//       if(isNaN(newVal) || !newVal){
-//         console.log('isNaN',newVal);
-//         return '';
-//       }
-//       console.log('!isNaN',newVal);
-//       return newVal;
-//   });
+const rulesNumberOnly = ref([(v) => v && !isNaN(v)]); 
 
 watch(
     () => kpiData.value.achievement_midyear,

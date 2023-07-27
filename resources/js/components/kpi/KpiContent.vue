@@ -57,16 +57,18 @@
             </v-row>
             <v-row v-show="selectedTab == 'kpi'" class="mt-3">
               <template v-if="kpiArray && kpiArray.length > 0">
-                <div class="v-col-12 pb-0" v-for="kpi in kpiArray" :key="kpi.id">
+                <div class="v-col-12 pb-0" v-for="kpi in kpiArray" :key="kpi.id"> 
                   <v-card class="rounded-lg content-card">
                     <v-card-text>
                       <div class="text-right" style="position:absolute; top:4px; right:4px;">  
                             <v-btn v-if="!isReviewStage && isNotDashboard" @click="() => viewKPI(kpi, 'kpi')" density="compact" 
                               color="primary" class="rounded-xl elevation-2 ml-1 text-caption">
                               View<v-icon size="small" :icon="mdiEye"  class="ml-1"></v-icon></v-btn>
-
+                               
                             <v-btn v-if="isReviewStage" color="secondary" class="rounded-xl px-5 " size="small"
-                              @click="() => reviewKPI(kpi, 'kpi')">review</v-btn>
+                              @click="() => reviewKPI(kpi, 'kpi')"> 
+                              {{ isFinalReview.isFinal && kpi.achievement_yearend ? 'Reviewed' : (!isFinalReview.isFinal && kpi.achievement_midyear ? 'Reviewed': 'Review')  }}
+                             </v-btn>
                             <v-btn v-if="canManage" @click="() => editKPI(kpi, 'kpi')" density="compact" 
                               color="teal" class="rounded-xl elevation-2 ml-1 text-caption">Edit<v-icon size="small"  class="ml-1"
                                 :icon="mdiPencil"></v-icon></v-btn>
@@ -121,12 +123,15 @@
                 <div class="v-col-12 pb-0" v-for="ecd in ecdTechnicalSkillArray" :key="ecd.id">
                   <v-card class="rounded-lg">
                     <v-card-text>
+                    
                       <div class="text-right" style="position:absolute; top:4px; right:4px;"> 
                             <v-btn v-if="!isReviewStage && isNotDashboard" @click="() => viewKPI(ecd, 'ecd')" density="compact" 
                               color="primary" class="rounded-xl elevation-2 ml-1 text-caption">
                               View<v-icon size="small" :icon="mdiEye"  class="ml-1"></v-icon></v-btn> 
                             <v-btn v-if="isReviewStage && isFinalReview.isFinal" color="secondary" class="rounded-xl px-5 " size="small"
-                              @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
+                              @click="() => reviewKPI(ecd, 'ecd')">
+                              {{ ecd.achievement_yearend ? 'Reviewed' : 'Review'  }}
+                            </v-btn>
                             <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'tech')" density="compact" 
                               color="teal" class="rounded-xl elevation-2 ml-1 text-caption">Edit<v-icon size="small"  class="ml-1"
                                 :icon="mdiPencil"></v-icon></v-btn>
@@ -173,7 +178,9 @@
                               color="primary" class="rounded-xl elevation-2 ml-1 text-caption">
                               View<v-icon size="small" :icon="mdiEye"  class="ml-1"></v-icon></v-btn> 
                             <v-btn v-if="isReviewStage  && isFinalReview.isFinal" color="secondary" class="rounded-xl px-5 " size="small"
-                              @click="() => reviewKPI(ecd, 'ecd')">review</v-btn>
+                              @click="() => reviewKPI(ecd, 'ecd')">
+                              {{ ecd.achievement_yearend ? 'Reviewed' : 'Review'  }}
+                            </v-btn>
                             <v-btn v-if="canManage" @click="() => editKPI(ecd, 'ecd', 'soft')" density="compact" 
                               color="teal" class="rounded-xl elevation-2 ml-1 text-caption">Edit<v-icon size="small"  class="ml-1"
                                 :icon="mdiPencil"></v-icon></v-btn>
