@@ -153,12 +153,12 @@ const ecdDataWeightage = ref(null);
 const saveLoading = ref(false);
 
 const ecdAchievement = ref([
-  {title: '6 - Extremely Excellent', value: 6},
-  {title: '5 - Excellent', value: 5},
-  {title: '4 - Very Good', value: 4},
-  {title: '3 - Good', value: 3},
-  {title: '2 - Satisfactory', value: 2},
-  {title: '1 - Poor', value: 1}
+  {title: '5 - Skill level improved drastically & widely noticed', value: 5},
+  {title: '4 - Improvement is noticed', value: 4},
+  {title: '3 - Marginal improvement in skills', value: 3},
+  {title: '2 - Very slight Improvement', value: 2},
+  {title: '1 - No Improvement at all', value: 1},
+  {title: '0 - Didn`t attend the training', value: 0}
 ])
 
 const kpiWeightageList = ref(["5%", "10%", "15%", "20%"]);
