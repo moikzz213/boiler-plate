@@ -68,7 +68,6 @@ const getData = async () => {
     .get("/api/hr/graph/pms/state/" + currentState.value)
     .then((res) => {
       pmsData.value = res.data.data;
-      console.log("pmsData.value", pmsData.value);
     })
     .catch((err) => {
       console.log("getData error", err.response);

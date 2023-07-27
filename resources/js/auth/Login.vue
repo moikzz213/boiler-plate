@@ -94,6 +94,7 @@ const login = async () => {
         .then((keyResponse) => {
           loadingLogin.value = false;
           settingStore.setPmsSettings(keyResponse.data.pms_settings);
+          settingStore.setAllSettings(keyResponse.data.all_settings);
           router.push({ path: redirectPath });
           settingStore.setPageLoading(false, "logging in");
         })

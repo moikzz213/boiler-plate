@@ -289,6 +289,7 @@ const saveSetting = async () => {
       };
 
       settingStore.setPmsSettings(res.data.result);
+      settingStore.setAllSettings(res.data.result);
 
       if(res.data.profile && res.data.profile.length > 0){
         authStore.setProfile(res.data.profile);

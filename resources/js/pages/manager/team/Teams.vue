@@ -1,5 +1,5 @@
 <template>
-    <v-container class="pb-16" style="max-width: 98%;">
+    <v-container class="pb-16" style="max-width: 98%">
         <v-row class="mt-5">
             <div class="v-col-12 pb-0">
                 <div class="text-h6">
@@ -49,71 +49,112 @@
         </v-row>
         <v-row>
             <div v-if="managerTeam && managerTeam.length > 0" class="v-col-12">
-                <div v-for="user in managerTeam" :key="user.id">
-                    <div
-                    v-if=" user.is_regular == false "
-                        class=""
-                        :style="`
-                            color: white;
-                            font-size: 8px;
-                            line-height: 8px;
-                            margin-left: 15px;
-                            padding: 4px 10px;
-                            display: inline-block;
-                            border-top-left-radius: 8px;
-                            border-top-right-radius: 8px;
-                            text-transform: uppercase;
-                            background-color: ${
-                                user.is_regular == true ? '#000' : '#2196F3'
-                            };
-                            `"
-                    >
-                        <!-- {{ user.is_regular == true ? "Confirmed Employee" : "Probation Employee" }} -->
-                        Probation Employee
-                    </div>
-                    <v-card
-                        class="mb-1 elevation-0"
-                        @click="() => openMember(user)"
-                    >
-                        <!-- @click="() => openMember('SingleTeamMember', { id: user.id })" -->
-                        <v-card-text>
-                            <v-row>
-                                <div class="v-col-12 v-col-md-3">
-                                    <EmployeeCard :profile="user" />
-                                </div>
-                                <div class="v-col-12 v-col-md-8">
-                                    <KpiProgress
-                                        :density="'compact'"
-                                        :selected-employee="user"
-                                    />
-                                </div>
-                                <div
-                                    class="v-col-12 v-col-md-1 d-flex justify-end align-center"
-                                >
+                <div
+                    :style="`${
+                        user.sign && user.sign == '-'
+                            ? 'border-bottom:1px solid #C6A92D;'
+                            : ''
+                    }`"
+                    v-for="(user, index) in managerTeam"
+                    :key="user.id"
+                >
+                    <div class="d-flex align-center w-100">
+                        <div style="width: 25px">
+                            <v-btn
+                                @click="showSubTeamFn(user)"
+                                class=""
+                                color="primary"
+                                size="25"
+                                v-if="user.teams && user.teams.length > 0"
+                                >{{ user.sign ? user.sign : "+" }}</v-btn
+                            >
+                        </div>
+
+                        <div style="width: 100%">
+                            <v-card width="100%" class="mb-1 elevation-0" @click="() => openMember(user)">
+                                <!-- -->
+                                <v-card-text style="position: relative">
                                     <div
-                                        v-if="
-                                            (settingStore.pmsSettings &&
-                                                settingStore.pmsSettings
-                                                    .state != 'yearend') ||
-                                            (user.reviews &&
-                                                user.reviews.length > 0 &&
-                                                user.reviews[0].type ==
-                                                    'probation' &&
-                                                user.reviews[0].state !=
-                                                    'final_review')
+                                        v-if="user.is_regular == false"
+                                        class="mb-2"
+                                        style="
+                                            color: white;
+                                            font-size: 8px;
+                                            line-height: 8px;
+                                            padding: 4px 10px;
+                                            display: inline-block;
+                                            text-transform: uppercase;
+                                            background-color: #2196f3;
+                                            position: absolute;
+                                            top: 0;
+                                            left: 0;
                                         "
                                     >
-                                        <div>
-                                            {{ ratingOrWeightage(user) }} / 100
-                                        </div>
-                                        <div class="text-caption text-grey">
-                                            Total KPI
-                                        </div>
+                                        Probation Employee
                                     </div>
-                                </div>
-                            </v-row>
-                        </v-card-text>
-                    </v-card>
+                                    <v-row>
+                                        <div
+                                            :class="`v-col-12 ${
+                                                user.is_regular == false
+                                                    ? 'pt-6'
+                                                    : ''
+                                            } v-col-md-3`"
+                                        >
+                                            <EmployeeCard :profile="user" />
+                                        </div>
+                                        <div class="v-col-12 v-col-md-8">
+                                            <KpiProgress
+                                                :density="'compact'"
+                                                :selected-employee="user"
+                                            />
+                                        </div>
+                                        <div
+                                            class="v-col-12 v-col-md-1 d-flex justify-end align-center"
+                                        >
+                                            <div
+                                                v-if="
+                                                    (settingStore.pmsSettings &&
+                                                        settingStore.pmsSettings
+                                                            .state !=
+                                                            'yearend') ||
+                                                    (user.reviews &&
+                                                        user.reviews.length >
+                                                            0 &&
+                                                        user.reviews[0].type ==
+                                                            'probation' &&
+                                                        user.reviews[0].state !=
+                                                            'final_review')
+                                                "
+                                            >
+                                                <div>
+                                                    {{
+                                                        ratingOrWeightage(user)
+                                                    }}
+                                                    / 100
+                                                </div>
+                                                <div
+                                                    class="text-caption text-grey"
+                                                >
+                                                    Total KPI
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </v-row>
+                                </v-card-text>
+                            </v-card>
+                        </div>
+                    </div>
+
+                    <!-- Sub Team here -->
+                    <SubTeam
+                        :user="user"
+                        v-if="
+                            user.teams &&
+                            user.teams.length > 0 &&
+                            user.sign == '-'
+                        "
+                    />
+                    <!-- End Sub Team -->
                 </div>
             </div>
             <div v-else class="v-col-12">
@@ -174,6 +215,7 @@ import EmployeeCard from "@/components/EmployeeCard.vue";
 import { clientApi } from "@/services/clientApi";
 import { useSettingStore } from "@/stores/settings";
 import SnackBar from "@/components/SnackBar.vue";
+import SubTeam from "./SubTeams.vue";
 const router = useRouter();
 const openPage = (pathName, openParams = null) => {
     let paramsValue = openParams ? Object.assign({}, openParams) : false;
@@ -214,6 +256,30 @@ const ratingOrWeightage = (user) => {
         });
     }
     return sum;
+};
+
+const showSubTeamFn = (user) => {
+    if (user.sign) {
+        if (user.sign == "+") {
+            user.sign = "-";
+        } else {
+            user.sign = "+";
+            signDefault(user);
+        }
+    } else {
+        user.sign = "-";
+    }
+};
+
+const signDefault = (data) => {
+    let datas = Object.assign([], data);
+
+    datas.teams.map((o, i) => {
+        o.sign = "+";
+        if (o.teams && o.teams.length > 0) {
+            signDefault(o);
+        }
+    });
 };
 
 const loadingConfirmation = ref(false);
@@ -282,7 +348,7 @@ const openMember = (user) => {
     let statusGlobalSettings = settingStore.filteredSetting(user.company_id);
     message.value = "Do you want to set KPI for ";
     selectedUser.value = Object.assign({}, user);
-    if (user.status == "Inactive") {
+   if (user.status == "Inactive") {
         errorMessage.value =
             "Employee is currently Inactive, kindly contact your HRBP for more info.";
         noKPIEmployee.value = true;
@@ -305,23 +371,21 @@ const openMember = (user) => {
             openPage("SingleTeamMember", { id: user.ecode });
         }
     } else {
-          if (
+        if (
             statusGlobalSettings.status == "open" &&
-            statusGlobalSettings.state == "setting" && user.is_regular == 1
+            statusGlobalSettings.state == "setting" &&
+            user.is_regular == 1
         ) {
             dialogOpenMember.value = true;
         } else if (user.is_regular == 0) {
-                let date = new Date(user.doj);
-                date.setDate(
-                    date.getDate() +
-                        parseInt(statusGlobalSettings.probation_kpi_setting)
-                );
+            let date = new Date(user.doj);
+            date.setDate(
+                date.getDate() +
+                    parseInt(statusGlobalSettings.probation_kpi_setting)
+            );
 
-                if (date >= currentDate.value) {
-                    dialogOpenMember.value = true;
-                } else {
-                    noKPIEmployee.value = true;
-                }
+            if (date >= currentDate.value) {
+                dialogOpenMember.value = true;
             } else {
                 if (
                     statusGlobalSettings.status == "locked" ||
@@ -331,7 +395,15 @@ const openMember = (user) => {
                 }
                 noKPIEmployee.value = true;
             }
-        
+        } else {
+            if (
+                statusGlobalSettings.status == "locked" &&
+                statusGlobalSettings.state == "closed"
+            ) {
+                errorMessage.value = msgError;
+            }
+            noKPIEmployee.value = true;
+        }
     }
 };
 
@@ -374,6 +446,7 @@ const fetchSettings = async () => {
         .get("/api/pms-settings/all")
         .then((res) => {
             settingStore.setPmsSettings(res.data);
+            settingStore.setAllSettings(res.data);
         });
 };
 fetchSettings();

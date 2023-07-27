@@ -42,7 +42,6 @@ const Graph = defineAsyncComponent(() => import("../components/Graph.vue"));
 // authenticated user object
 const authStore = useAuthStore();
 const selectedProfileKpi = ref(authStore.authProfile);
-console.log(selectedProfileKpi.value);
 const selectedYearResponse = (v) => {
   getKPI(v);
 };

@@ -26,22 +26,21 @@ class ClientKeyController extends Controller
             'company','managed_by')
         ->with('reviews', function($q) {
             $q->where('year', Carbon::now()->format('Y'))->with('keyReview');
-        })
-        ->with('teams', function($q) {
-            $q->with('reviews', function($qq) {
-                $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
-            })->with('company')->where('grade', '>', 5)->whereIn('status', ['active', 'Active']);
-        })->first();
+        }) // First Level
+        ->with('teams')->first();
 
         $currentPmsSettings = PerformanceSetting::where([ 
             'year'      => Carbon::now()->format('Y')
         ])->get();
 
+        $allSettings = PerformanceSetting::get();
+
         return response()->json([
             "message" => 'Key saved successfully',
             "client" => $clientKey,
             "profile" => $profile,
-            "pms_settings" => $currentPmsSettings
+            "pms_settings" => $currentPmsSettings,
+            'all_settings' => $allSettings
         ], 200);
     }
 

@@ -27,6 +27,7 @@ const refreshAuth = async () => {
         settingStore.setPageLoading(false);
         settingStore.setIsFromLogin(false);
         settingStore.setPmsSettings(keyResponse.data.pms_settings);
+        settingStore.setAllSettings(keyResponse.data.all_settings);
       });
     })
     .catch((err) => {
