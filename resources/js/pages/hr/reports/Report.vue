@@ -41,7 +41,7 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">#</th>
-                                    <th class="text-center">Entity</th>
+                                    <th class="text-left">Entity</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center">Locked</th>
                                     <th class="text-center">Open</th>
@@ -53,7 +53,7 @@
                             <tbody  v-if="companiesObj.length > 0" >
                                 <tr v-for="(item,index) in companiesObj" :key="item.id">
                                     <td class="text-center">{{ index += 1}}</td>
-                                    <td class="text-center"> {{ item.title }}</td>
+                                    <td class="text-left"> {{ item.title }}</td>
                                     <td class="text-center text-capitalize py-2"><span :class="`${item.state == 'no-setting' ? 'text-error' : 'text-info'}`">{{ item.state == 'no-setting' ? "( No Setting )" : "( "+item.state + " - " + item.status + " )"}}</span></td>
                                     <td class="text-center">{{ item.lock }}</td>
                                     <td class="text-center">{{ item.open }}</td>
