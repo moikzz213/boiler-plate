@@ -89,7 +89,7 @@
             </v-row> 
             <v-row v-else>
                  <div class="v-col-12 my-5">
-                  <h3 :class="`${ecdData.achievement_yearend >= 1 ? 'text-success' : 'text-error'} text-center`">{{ ratingTitle(ecdData.achievement_yearend) }}</h3>
+                  <h3 :class="`${ecdData.achievement_yearend >= 1 ? 'text-success' : 'text-error'} text-center`">{{ ecdData.achievement_yearend ? ratingTitle(ecdData.achievement_yearend) : '' }}</h3>
                 </div>
             </v-row>
             <v-row class="pb-4">
