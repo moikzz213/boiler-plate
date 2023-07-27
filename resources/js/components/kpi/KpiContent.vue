@@ -60,16 +60,7 @@
                 <div class="v-col-12 pb-0" v-for="kpi in kpiArray" :key="kpi.id">
                   <v-card class="rounded-lg content-card">
                     <v-card-text>
-                      <v-row>
-                        <div class="v-col-12 pb-0 d-flex justify-space-between">
-                          <div>
-                            <div class="text-grey text-caption">KPI</div>
-                            <div class="text-primary text-body-1">
-                              {{ kpi.title }}
-                            </div>
-                          </div>
-                          <div>  
-                            
+                      <div class="text-right" style="position:absolute; top:4px; right:4px;">  
                             <v-btn v-if="!isReviewStage && isNotDashboard" @click="() => viewKPI(kpi, 'kpi')" density="compact" 
                               color="primary" class="rounded-xl elevation-2 ml-1 text-caption">
                               View<v-icon size="small" :icon="mdiEye"  class="ml-1"></v-icon></v-btn>
@@ -83,6 +74,15 @@
                               color="error" class="rounded-xl elevation-2 ml-1 text-caption">Delete<v-icon size="small" class="ml-1"
                                 :icon="mdiTrashCan"></v-icon></v-btn>
                           </div>
+                      <v-row>
+                        <div class="v-col-12 pb-0 d-flex justify-space-between">
+                          <div>
+                            <div class="text-grey text-caption">KPI</div>
+                            <div class="text-primary text-body-1">
+                              {{ kpi.title }}
+                            </div>
+                          </div>
+                         
                         </div>
                         <div class="v-col-3">
                           <div class="text-grey text-caption">Industry</div>
@@ -112,24 +112,16 @@
             <v-row v-show="selectedTab == 'ecd'" class="mt-n3">
 
             <!-- Start Technical Skill -->
-            <div class="v-col-6 pb-0"><v-btn v-if="canManage" @click="() => addKPI(selectedTab,'tech')" density="compact" size="35"
+            <div class="v-col-md-6 v-col-12 pb-0"><v-btn v-if="canManage" @click="() => addKPI(selectedTab,'tech')" density="compact" size="35"
             class="rounded-xl elevation-2 mr-2"><v-icon size="small" :icon="mdiPlus"></v-icon></v-btn><span v-if="canManage">Technical Skill</span></div>
-            <div class="v-col-6 pb-0"><v-btn v-if="canManage" @click="() => addKPI(selectedTab, 'soft')" density="compact" size="35"
+            <div class="v-col-md-6 v-col-12 pb-0"><v-btn v-if="canManage" @click="() => addKPI(selectedTab, 'soft')" density="compact" size="35"
             class="rounded-xl elevation-2 mr-2"><v-icon size="small" :icon="mdiPlus"></v-icon></v-btn> <span v-if="canManage">Soft Skill</span></div>
-            <div class="v-col-6 pb-0"> 
+            <div class="v-col-md-6 v-col-12 pb-2"> 
               <v-row>
                 <div class="v-col-12 pb-0" v-for="ecd in ecdTechnicalSkillArray" :key="ecd.id">
                   <v-card class="rounded-lg">
                     <v-card-text>
-                      <v-row>
-                        <div class="v-col-12 pb-0 d-flex justify-space-between">
-                          <div>
-                            <div class="text-grey text-caption">Training</div>
-                            <div class="text-primary text-body-1">
-                              {{ ecd.title }}
-                            </div>
-                          </div>
-                          <div> 
+                      <div class="text-right" style="position:absolute; top:4px; right:4px;"> 
                             <v-btn v-if="!isReviewStage && isNotDashboard" @click="() => viewKPI(ecd, 'ecd')" density="compact" 
                               color="primary" class="rounded-xl elevation-2 ml-1 text-caption">
                               View<v-icon size="small" :icon="mdiEye"  class="ml-1"></v-icon></v-btn> 
@@ -142,6 +134,14 @@
                               color="error" class="rounded-xl elevation-2 ml-1 text-caption">Delete<v-icon size="small" class="ml-1"
                                 :icon="mdiTrashCan"></v-icon></v-btn>
                           </div>
+                      <v-row>
+                        <div class="v-col-12 pb-0 d-flex justify-space-between">
+                          <div>
+                            <div class="text-grey text-caption">Training</div>
+                            <div class="text-primary text-body-1">
+                              {{ ecd.title }}
+                            </div>
+                          </div> 
                         </div>
                         <div class="v-col-3">
                           <div class="text-grey text-caption">{{ "KPI's Weightage(%)" }}</div>
@@ -163,20 +163,12 @@
             </div>
             <!-- End Technical Skill -->
             <!-- Start Soft Skill -->
-            <div class="v-col-6 pb-0">
+            <div class="v-col-md-6 v-col-12  pb-0">
               <v-row>
               <div class="v-col-12 pb-0" v-for="ecd in ecdSoftSkillArray" :key="ecd.id">
                 <v-card class="rounded-lg">
                   <v-card-text>
-                    <v-row>
-                      <div class="v-col-12 pb-0 d-flex justify-space-between">
-                        <div>
-                          <div class="text-grey text-caption">Training</div>
-                          <div class="text-primary text-body-1">
-                            {{ ecd.title }}
-                          </div>
-                        </div>
-                        <div> 
+                    <div class="text-right" style="position:absolute; top:4px; right:4px;"> 
                           <v-btn v-if="!isReviewStage && isNotDashboard" @click="() => viewKPI(ecd, 'ecd')" density="compact" 
                               color="primary" class="rounded-xl elevation-2 ml-1 text-caption">
                               View<v-icon size="small" :icon="mdiEye"  class="ml-1"></v-icon></v-btn> 
@@ -189,6 +181,14 @@
                               color="error" class="rounded-xl elevation-2 ml-1 text-caption">Delete<v-icon size="small" class="ml-1"
                                 :icon="mdiTrashCan"></v-icon></v-btn>
                         </div>
+                    <v-row>
+                      <div class="v-col-12 pb-0 d-flex justify-space-between">
+                        <div>
+                          <div class="text-grey text-caption">Training</div>
+                          <div class="text-primary text-body-1">
+                            {{ ecd.title }}
+                          </div>
+                        </div> 
                       </div>
                       <div class="v-col-3">
                         <div class="text-grey text-caption">{{ "KPI's Weightage(%)" }}</div>
@@ -233,8 +233,8 @@
       </v-card>
     </v-dialog>
     
-    <KpiDialog :final-review="isFinalReview" :measures-list="measuresList" :kpi-options="kpiOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :industry-list="industryList"  :submit-button="props.submitButton"  @savedResponse="savedResponseMethod"/>
-    <EcdDialog :final-review="isFinalReview" :ecd-options="ecdOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :ecd-list="ecdList" :submit-button="props.submitButton" @savedResponse="savedResponseMethod"/>
+    <KpiDialog :created-kpi-title="createdKpis" :final-review="isFinalReview" :measures-list="measuresList" :kpi-options="kpiOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :industry-list="industryList"  :submit-button="props.submitButton"  @savedResponse="savedResponseMethod"/>
+    <EcdDialog :created-kpi-title="createdKpis" :final-review="isFinalReview" :ecd-options="ecdOptions" :remain-weightage="ratingOrWeightage(selectedTab)" :ecd-list="ecdList" :submit-button="props.submitButton" @savedResponse="savedResponseMethod"/>
     <SnackBar :options="sbOptions" />
   </v-row>
 </template>
@@ -282,6 +282,14 @@ const props = defineProps({
 const sbOptions = ref({});
 const settingStore = useSettingStore();
 const viewingEmployee = ref(props.selectedEmployee);
+const createdKpis = computed(() => {
+  let data = [];
+  if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews[0] && viewingEmployee.value.reviews[0].key_review.length > 0){
+    data = viewingEmployee.value.reviews[0].key_review.map((kpi) =>  kpi.title)
+  }
+  
+  return data;
+});
  
 const kpiArray = computed(() => { 
   if (!viewingEmployee.value || (viewingEmployee.value && (!viewingEmployee.value.reviews || viewingEmployee.value.reviews.length == 0))) return [];

@@ -38,7 +38,7 @@ class ProfileController extends Controller
         $team = Profile::where(['superior_ecode' => $ecode, 'status' => 'Active'])
         ->with('reviews', function($q) {
             $q->where('year', Carbon::now()->format('Y'))->with('keyReview');
-        })->with('company')->get();
+        })->with('company')->orderBy('is_regular', 'ASC')->get();
         return response()->json($team, 200);
     }
 
