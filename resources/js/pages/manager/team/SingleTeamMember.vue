@@ -59,7 +59,7 @@
                             </div>
                             <div
                                 class="v-col-12 v-col-md-2 d-flex align-center"
-                            > 
+                            >  
                                 <v-btn
                                     size="large"
                                     v-if="

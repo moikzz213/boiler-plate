@@ -235,13 +235,17 @@
                     </v-row>
                     <v-row class="download-print my-0 mb-5 mx-0">
                         <v-col md="8" class="mt-0 pt-0">
-                            125% & Above target achievement = 5 (Significant Achievement - Role Model)<br />
-                            95% to 109% of target achievement = 3 (Fully Successful)<br />
+                            125% & Above target achievement = 5 (Significant
+                            Achievement - Role Model)<br />
+                            95% to 109% of target achievement = 3 (Fully
+                            Successful)<br />
                             0% to 69% of target achievement = 1 (Unsuccessful)
                         </v-col>
                         <v-col md="4" class="mt-0 pt-0">
-                            110% to 124% of target achievement = 4 (Excellent)<br />
-                            70% to 94% of target achievement = 2 (Partially Successful)
+                            110% to 124% of target achievement = 4
+                            (Excellent)<br />
+                            70% to 94% of target achievement = 2 (Partially
+                            Successful)
                         </v-col>
 
                         <v-col
@@ -335,151 +339,151 @@
                         ></v-col>
                     </v-row>
                     <div>
-                          <div
-                        id="ecd-print"
-                        class="ecd-print"
-                        v-if="technicalArr.length > 0"
-                    >
                         <div
-                            class="text-h6 mb-1 header-title text-center"
-                            style="text-align: center; margin-bottom: 10px"
+                            id="ecd-print"
+                            class="ecd-print"
+                            v-if="technicalArr.length > 0"
                         >
-                            GHASSAN ABOUD GROUP
+                            <div
+                                class="text-h6 mb-1 header-title text-center"
+                                style="text-align: center; margin-bottom: 10px"
+                            >
+                                GHASSAN ABOUD GROUP
+                            </div>
+                            <div
+                                class="sub-header py-1 mb-1 header-title text-center"
+                                style="text-align: center; margin-bottom: 10px;font-size:14px; !important"
+                            >
+                                Performance Management System KPI's Form (Grade
+                                6 - 10 Only)
+                            </div>
+
+                            <v-row class="download-print ma-0 mb-1">
+                                <v-col
+                                    md="12"
+                                    sm="12"
+                                    xs="12"
+                                    class="px-4 py-2"
+                                    style="border: 1px solid #000"
+                                >
+                                    Employee Capability Development - ECD (To be
+                                    filled at the Time of KPI's Target Setting
+                                    Phase Only, 30% weightage can be distributed
+                                    between Technical & Behavioural areas)
+                                </v-col>
+                                <v-col
+                                    md="6"
+                                    sm="6"
+                                    xs="6"
+                                    class="px-4 py-2"
+                                    style="border: 1px solid #000"
+                                >
+                                    <strong
+                                        >Technical / Functional / Job Related
+                                        Trainings:</strong
+                                    >
+                                    Identify 2 or 3 training programs along with
+                                    weightage% which may help or increase the
+                                    employee job knowledge or competency level
+                                    to achieve the assigned target. (For
+                                    Example: Business Analytics, Strategic
+                                    Planning, Essential Food Safety, Advance MS
+                                    Office skills, Project Management,
+                                    ECommerce, International Trade Terms, Supply
+                                    chain Analytics , CRM, Business
+                                    Intelligence, Advance Financial Management)
+                                </v-col>
+                                <v-col
+                                    md="6"
+                                    sm="6"
+                                    xs="6"
+                                    class="px-4 py-2"
+                                    style="border: 1px solid #000"
+                                >
+                                    <strong
+                                        >Soft Skills or Behaviour Related
+                                        Trainings:</strong
+                                    >
+                                    Identify 1 or 2 training programs weightage%
+                                    which may enhance the employee behaviour or
+                                    a skill which enables to achieve the
+                                    assigned target. ( For example: Negotiation
+                                    skills, Coaching & Mentoring skills,
+                                    Managerial skills development, Leadership
+                                    Development, Planning & Organizing skills,
+                                    Team Management & Supervisory development
+                                    skills, Emotional Intelligence etc)
+                                </v-col>
+                            </v-row>
+
+                            <v-row class="download-print ma-0 mb-1">
+                                <v-col md="6" sm="6" xs="6" class="px-3 py-2">
+                                    <v-row
+                                        v-for="(item, index) in technicalArr"
+                                        :key="item.id"
+                                    >
+                                        <v-col style="border: 1px solid #000">
+                                            {{ index + 1 }}. {{ item.title }}
+                                        </v-col>
+                                        <v-col
+                                            v-if="technicalArr.length == 1"
+                                            md="12"
+                                            sm="12"
+                                            xs="12"
+                                            style="border: 1px solid #000"
+                                        >
+                                            2.
+                                        </v-col>
+                                    </v-row>
+                                </v-col>
+
+                                <v-col md="6" sm="6" xs="6" class="px-3 py-2">
+                                    <v-row
+                                        v-for="(item, index) in softskillArr"
+                                        :key="item.id"
+                                    >
+                                        <v-col
+                                            md="12"
+                                            sm="12"
+                                            xs="12"
+                                            style="border: 1px solid #000"
+                                        >
+                                            {{ index + 1 }}. {{ item.title }}
+                                        </v-col>
+                                        <v-col
+                                            v-if="softskillArr.length == 1"
+                                            md="12"
+                                            sm="12"
+                                            xs="12"
+                                            style="border: 1px solid #000"
+                                        >
+                                            2.
+                                        </v-col>
+                                    </v-row>
+                                </v-col>
+                            </v-row>
+
+                            <v-row class="download-print ma-0">
+                                <v-col
+                                    md="12"
+                                    sm="12"
+                                    xs="12"
+                                    class="px-4 py-2"
+                                    style="border: 1px solid #000"
+                                >
+                                    <strong
+                                        >ECD Ratings by end of the year (after
+                                        attending the training):</strong
+                                    >
+                                    5 - Skill level improved drastically &
+                                    widely noticed, 4 - Improvement is noticed,
+                                    3 - Marginal improvement in skills, 2 - Very
+                                    slight Improvement, 1 - No Improvement at
+                                    all, 0 - Didn't attend the training
+                                </v-col>
+                            </v-row>
                         </div>
-                        <div
-                            class="sub-header py-1 mb-1 header-title text-center"
-                            style="text-align: center; margin-bottom: 10px;font-size:14px; !important"
-                        >
-                            Performance Management System KPI's Form (Grade 6 -
-                            10 Only)
-                        </div>
 
-                        <v-row class="download-print ma-0 mb-1">
-                            <v-col
-                                md="12"
-                                sm="12"
-                                xs="12"
-                                class="px-4 py-2"
-                                style="border: 1px solid #000"
-                            >
-                                Employee Capability Development - ECD (To be
-                                filled at the Time of KPI's Target Setting Phase
-                                Only, 30% weightage can be distributed between
-                                Technical & Behavioural areas)
-                            </v-col>
-                            <v-col
-                                md="6"
-                                sm="6"
-                                xs="6"
-                                class="px-4 py-2"
-                                style="border: 1px solid #000"
-                            >
-                                <strong
-                                    >Technical / Functional / Job Related
-                                    Trainings:</strong
-                                >
-                                Identify 2 or 3 training programs along with
-                                weightage% which may help or increase the
-                                employee job knowledge or competency level to
-                                achieve the assigned target. (For Example:
-                                Business Analytics, Strategic Planning,
-                                Essential Food Safety, Advance MS Office skills,
-                                Project Management, ECommerce, International
-                                Trade Terms, Supply chain Analytics , CRM,
-                                Business Intelligence, Advance Financial
-                                Management)
-                            </v-col>
-                            <v-col
-                                md="6"
-                                sm="6"
-                                xs="6"
-                                class="px-4 py-2"
-                                style="border: 1px solid #000"
-                            >
-                                <strong
-                                    >Soft Skills or Behaviour Related
-                                    Trainings:</strong
-                                >
-                                Identify 1 or 2 training programs weightage%
-                                which may enhance the employee behaviour or a
-                                skill which enables to achieve the assigned
-                                target. ( For example: Negotiation skills,
-                                Coaching & Mentoring skills, Managerial skills
-                                development, Leadership Development, Planning &
-                                Organizing skills, Team Management & Supervisory
-                                development skills, Emotional Intelligence etc)
-                            </v-col>
-                        </v-row>
-
-                        <v-row class="download-print ma-0 mb-1">
-                            <v-col md="6" sm="6" xs="6" class="px-3 py-2">
-                                <v-row
-                                    v-for="(item, index) in technicalArr"
-                                    :key="item.id"
-                                >
-                                    <v-col style="border: 1px solid #000">
-                                        {{ index + 1 }}. {{ item.title }}
-                                    </v-col>
-                                    <v-col
-                                        v-if="technicalArr.length == 1"
-                                        md="12"
-                                        sm="12"
-                                        xs="12"
-                                        style="border: 1px solid #000"
-                                    >
-                                        2.
-                                    </v-col>
-                                </v-row>
-                            </v-col>
-
-                            <v-col md="6" sm="6" xs="6" class="px-3 py-2">
-                                <v-row
-                                    v-for="(item, index) in softskillArr"
-                                    :key="item.id"
-                                >
-                                    <v-col
-                                        md="12"
-                                        sm="12"
-                                        xs="12"
-                                        style="border: 1px solid #000"
-                                    >
-                                        {{ index + 1 }}. {{ item.title }}
-                                    </v-col>
-                                    <v-col
-                                        v-if="softskillArr.length == 1"
-                                        md="12"
-                                        sm="12"
-                                        xs="12"
-                                        style="border: 1px solid #000"
-                                    >
-                                        2.
-                                    </v-col>
-                                </v-row>
-                            </v-col>
-                        </v-row>
-
-                        <v-row class="download-print ma-0">
-                            <v-col
-                                md="12"
-                                sm="12"
-                                xs="12"
-                                class="px-4 py-2"
-                                style="border: 1px solid #000"
-                            >
-                                <strong
-                                    >ECD Ratings by end of the year (after
-                                    attending the training):</strong
-                                >
-                                5 - Skill level improved drastically & widely
-                                noticed, 4 - Improvement is noticed, 3 -
-                                Marginal improvement in skills, 2 - Very slight
-                                Improvement, 1 - No Improvement at all, 0 -
-                                Didn't attend the training
-                            </v-col>
-
-                          </v-row>
-                          </div>
-                         
                         <v-row class="download-print ma-0">
                             <v-col
                                 md="12"
@@ -499,19 +503,50 @@
                             >
                                 Employee Comments:
                             </v-col>
-                            <v-col md="12" sm="12" xs="12" class="px-1 py-2 d-flex">
+                            <v-col
+                                md="12"
+                                sm="12"
+                                xs="12"
+                                class="px-1 py-2 d-flex"
+                            >
                                 Final Rating (KPI's + Employee Capability
                                 Development): 5 - Top Performer,4- Strong
                                 Performer, 3- Competent Performer, 2- Developing
                                 Perfomer,1- Low Performer
                             </v-col>
-                            </v-row>
-                            <v-row class="mt-0 py-5" v-if="kpiDataEncrypted.reviews && kpiDataEncrypted.reviews.length > 0 && (kpiDataEncrypted.reviews[0].state == 'yearend' || kpiDataEncrypted.reviews[0].state == 'final_review')"> 
-                                <h3 class="text-center py-2 bg-success" style=" border-radius: 8px;display:inline-block; width:200px; margin:0 auto;font-weight:normal;">
-                                    {{ ratingTitle(finalRating) }}
-                                </h3>                             
-                            </v-row>
-                            <v-row class="download-print ma-0 mb-5">
+                        </v-row>
+                        <v-row
+                            class="mb-5"
+                            v-if="
+                                kpiDataEncrypted.reviews &&
+                                kpiDataEncrypted.reviews.length > 0 &&
+                                (kpiDataEncrypted.reviews[0].state ==
+                                    'yearend' ||
+                                    kpiDataEncrypted.reviews[0].state ==
+                                        'final_review')
+                            "
+                        >
+                            <div class="v-col-12 text-center">
+                                Your PMS rating for the Year {{ year }} is
+                            </div>
+                            <div
+                                :class="`text-center py-2 ${
+                                    ratingTitle(finalRating) == 'Unsuccessful'
+                                        ? 'bg-warning'
+                                        : 'bg-success'
+                                }`"
+                                style="
+                                    border-radius: 8px;
+                                    display: inline-block;
+                                    width: 200px;
+                                    margin: 0 auto;
+                                    font-weight: normal;
+                                "
+                            >
+                                {{ ratingTitle(finalRating) }}
+                            </div>
+                        </v-row>
+                        <v-row class="download-print ma-0 mb-5">
                             <v-col md="6" sm="6" xs="6" class="px-1 py-4 d-flex"
                                 >Reporting Manager's Signature & Date:
                                 <div
@@ -652,7 +687,7 @@ const overAllRating = (item) => {
         } else {
             rating = 1; //"Unsuccessful"; //
         }
- 
+
         let weightage = item.weightage / 100;
         let totalFinalRating = (rating * weightage).toFixed(2);
 

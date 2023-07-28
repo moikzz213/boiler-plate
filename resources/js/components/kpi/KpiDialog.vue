@@ -398,7 +398,7 @@
                             <h3
                                 :class="`${
                                     end_rating_title &&
-                                    end_rating_title == 'Poor'
+                                    end_rating_title == 'Unsuccessful'
                                         ? 'text-red'
                                         : 'text-success'
                                 }`"
@@ -743,7 +743,7 @@ watch(
                     sbOptions.value = {
                         status: true,
                         type: "error",
-                        text: "Weightage is over the limit!11",
+                        text: "Weightage is over the limit!",
                     };
                 } else {
                     isValid = true;
