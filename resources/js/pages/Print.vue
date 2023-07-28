@@ -235,13 +235,12 @@
                     </v-row>
                     <v-row class="download-print my-0 mb-5 mx-0">
                         <v-col md="8" class="mt-0 pt-0">
-                            125% & Above: Exceeded Targets / Stretch Target = 5
-                            (Significant Achievement - Role Model)<br />
+                            125% & Above target achievement = 5 (Significant Achievement - Role Model)<br />
                             95% to 109% of target achievement = 3 (Fully Successful)<br />
                             0% to 69% of target achievement = 1 (Unsuccessful)
                         </v-col>
                         <v-col md="4" class="mt-0 pt-0">
-                            110% to 124% Closeness to reach the Target = 4
+                            110% to 124% of target achievement = 4
                             (Excellent)<br />
                             70% to 94% of target achievement = 2 (Partially Successful)
                         </v-col>
