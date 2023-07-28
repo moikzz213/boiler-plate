@@ -105,9 +105,33 @@
             @errorcheck="errorCheck"
             @yearchange="selectedYearResponse"
             @removeKPI="removeKPIMethod"
+            @rating="finalRatingfn"
             :is-manager="true"
         />
+        <v-dialog v-model="finalRatingConfirmation" width="450">
+            <v-card class="rounded-lg">
+                <v-card-text>
+                    {{ finalMessage }}.
 
+                    Do you want to Submit?
+                </v-card-text>
+                <div class="pa-3 mt-3 d-flex justify-end">
+                    <v-btn
+                        color="primary"
+                        variant="text"
+                        class="mr-2"
+                        @click="cancelConfirmation"
+                        >Close</v-btn
+                    >
+                    <v-btn
+                        color="secondary"
+                       
+                        @click="confirmedSubmission"
+                        >Confirm</v-btn
+                    >
+                </div>
+            </v-card>
+        </v-dialog>
         <SnackBar :options="sbOptions" />
     </v-container>
 </template>
@@ -124,7 +148,8 @@ import { useIndustryStore } from "@/stores/industry";
 import SnackBar from "@/components/SnackBar.vue";
 const router = useRouter();
 const route = useRoute();
-
+const finalRatingConfirmation = ref(false);
+const finalMessage = ref("");
 const props = defineProps({
     manager: {
         type: String,
@@ -241,10 +266,20 @@ const customKpiMaster = async () => {
         });
 };
 
+const cancelConfirmation = () => {
+    finalRatingConfirmation.value = false;
+    loadingBtn.value = false;
+    disabledBtn.value = false; 
+}
+const emitRating = ref('');
+const finalRatingfn = (v) =>{
+    emitRating.value = v; 
+}
 const loadingBtn = ref(false);
 const disabledBtn = ref(false);
 const submitForReview = () => {
     loadingBtn.value = true;
+    let popUp = false
     let status = "inprogress";
     let reviewID = selEmployeeObj.value.reviews[0].id;
     if (!reviewID) {
@@ -273,7 +308,26 @@ const submitForReview = () => {
         ) {
             status = "submitted";
         }
+ 
+        if (selEmployeeObj.value.reviews[0].state == "yearend") {
+            popUp = true;
+            finalRatingConfirmation.value = true;
+            finalMessage.value = "The Final PMS rating of "+selEmployeeObj.value.first_name+" for the year "+selEmployeeObj.value.reviews[0].year+" is: "+emitRating.value
+        }
     }
+
+    if(!popUp){
+        formSubmit(reviewID,status);
+    }
+   
+};
+
+const confirmedSubmission = () => {
+    formSubmit(selEmployeeObj.value.reviews[0].id,'submitted');
+    finalRatingConfirmation.value = false;
+}
+
+const formSubmit = (reviewID,status) => {
     let formData = {
         reviewID: reviewID,
         newStatus: status,
@@ -312,7 +366,7 @@ const submitForReview = () => {
           });
         })
         .catch((err) => {});
-};
+}
 
 const hasError = ref(false);
 const errorCheck = (v) => {
