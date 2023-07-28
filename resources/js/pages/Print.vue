@@ -240,8 +240,7 @@
                             0% to 69% of target achievement = 1 (Unsuccessful)
                         </v-col>
                         <v-col md="4" class="mt-0 pt-0">
-                            110% to 124% of target achievement = 4
-                            (Excellent)<br />
+                            110% to 124% of target achievement = 4 (Excellent)<br />
                             70% to 94% of target achievement = 2 (Partially Successful)
                         </v-col>
 
