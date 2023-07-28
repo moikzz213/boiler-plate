@@ -38,11 +38,11 @@ class ProfileController extends Controller
         // First Level
         $team = Profile::where(['superior_ecode' => $ecode, 'status' => 'Active'])
         ->with('reviews', function($q) {
-            $q->with('keyReview');
+            $q->where('year', Carbon::now()->format('Y'))->with('keyReview');
         })->with('company')->with('teams', function($q) {
             // Second Level
             $q->with('reviews', function($qq) {
-                $qq->with('keyReview');
+                $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
             })->with('company')->where('grade', '>', 5)->whereIn('status', ['active', 'Active'])->orderBy('is_regular', 'ASC');
 
             // Third Level
