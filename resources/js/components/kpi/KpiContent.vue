@@ -261,7 +261,7 @@ import { mdiAlert  } from '@mdi/js';
 
 const router = useRouter();
 const route = useRoute();
-const kpiEmit = defineEmits(['yearchange', 'savedResponse', 'errorcheck']); 
+const kpiEmit = defineEmits(['yearchange', 'savedResponse', 'errorcheck','rating']); 
  
 const authStore = useAuthStore();
 const props = defineProps({
@@ -380,15 +380,7 @@ const ratingTitle = (v) => {
     } else {
         return "Unsuccessful";
     }
-};
-
-
-
-
-
-
-
-
+}; 
 
 const isNotDashboard = ref(false);
 watch(
@@ -439,6 +431,7 @@ const emitResponseWeightageValidation = () => {
       kpiEmit('errorcheck', {hasError: singlePageHasError.value});
     }) 
   }
+  kpiEmit('rating', ratingTitle(finalRating.value));
  
 } 
 
