@@ -132,8 +132,6 @@ class ReviewController extends Controller
     }
 
     function getReviewForGraph($state){
-        // $stateArray = array('setting', 'midyear', 'yearend');
-
         // graph array
         $company = new Company;
         

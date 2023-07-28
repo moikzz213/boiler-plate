@@ -18,10 +18,11 @@
         <v-card v-if="viewingEmployee && viewingEmployee.is_regular" @click="() => selectTab('ecd')" flat :class="`${selectedTab == 'ecd' ? '' : 'bg-grey-darken-3 text-white'
           } d-flex align-center justify-center px-3 text-caption text-center pms-tab`">
           Employee Capability Development {{ "(" + ecdArray.length + ")" }}
-        </v-card>
-        
+        </v-card> 
         <!-- Final Rating here -->
-        <!-- <div class="ml-auto text-h6" v-if="viewingEmployee && viewingEmployee.reviews && viewingEmployee.reviews.length > 0 && viewingEmployee.reviews[0].state == 'yearend' && viewingEmployee.reviews[0].status =='submitted'">Rate: Coming Soon</div> -->
+        <div class="ml-auto text-h6" v-if="viewingEmployee && viewingEmployee.reviews && viewingEmployee.reviews.length > 0 && viewingEmployee.reviews[0].state == 'yearend' && !viewFinalRating && (viewingEmployee.reviews[0].status =='submitted' || viewingEmployee.reviews[0].status =='inprogress')">
+          Rate: {{ ratingTitle(finalRating) }}
+        </div>
       </div>
       <v-card flat>
         <v-card-title class="px-5 py-5 d-flex align-center">
@@ -36,7 +37,7 @@
           </div>
           <div v-else class="text-uppercase text-center">
             {{ selectedTab == 'ecd' ? 'Employee Capability Development' : (viewingEmployee.is_regular ? selectedTab : 'Probation KPI') }} List
-          </div>
+          </div> 
           <div v-if="canManage && ratingOrWeightage(selectedTab) > 0" class="ml-auto text-body-1">Remaining {{ selectedTab.toUpperCase() }} weightage: {{ ratingOrWeightage(selectedTab) }}%</div>
         </v-card-title>
         <v-card-text class="px-5 pb-10">
@@ -318,6 +319,77 @@ const ecdSoftSkillArray = computed(() => {
     return viewingEmployee.value.reviews[0].key_review.filter((kpi) => kpi.type == 'ecd' && kpi.ecd_type == 'soft');  
 });
 
+const finalRating = computed(() => {
+    let total = 0;
+    viewingEmployee.value.reviews[0].key_review.map((t) => {
+        total = total + overAllRating(t);
+    });
+    return total.toFixed(2);
+});
+
+const overAllRating = (item) => {
+    let rating = 0;
+    let annualTarget = item.target;
+    if (item.revised_annual_target) {
+        annualTarget = item.revised_annual_target;
+    }
+    let targetAchievement = 0;
+    if (item.achievement_yearend) {
+        if (item.target_type == "max") {
+            targetAchievement = (
+                (annualTarget / item.achievement_yearend) *
+                100
+            ).toFixed(2);
+        } else {
+            targetAchievement = (
+                (item.achievement_yearend / annualTarget) *
+                100
+            ).toFixed(2);
+        }
+
+        if (targetAchievement >= 125) {
+            rating = 5; // "Role Model" //
+        } else if (targetAchievement >= 110 && targetAchievement <= 124.99) {
+            rating = 4; //"Excellent"; //
+        } else if (targetAchievement >= 95 && targetAchievement <= 109.99) {
+            rating = 3; // "Fully Successful"; //
+        } else if (targetAchievement >= 70 && targetAchievement <= 94.99) {
+            rating = 2; //"Partially Successful"; //
+        } else {
+            rating = 1; //"Unsuccessful"; //
+        }
+ 
+        let weightage = item.weightage / 100;
+        let totalFinalRating = (rating * weightage).toFixed(2);
+
+        return parseFloat(totalFinalRating);
+    }
+
+    return null;
+};
+
+const ratingTitle = (v) => {
+    if (v >= 5) {
+        return "Role Model";
+    } else if (v >= 4) {
+        return "Excellent";
+    } else if (v >= 3) {
+        return "Fully Successful";
+    } else if (v >= 2) {
+        return "Partially Successful";
+    } else {
+        return "Unsuccessful";
+    }
+};
+
+
+
+
+
+
+
+
+
 const isNotDashboard = ref(false);
 watch(
   () => props.selectedEmployee,
@@ -341,6 +413,7 @@ const globalSetting = computed(() => settingStore.filteredSetting(viewingEmploye
 
 const hasError = ref(false);
 const singlePageHasError = ref(false);
+const viewFinalRating = ref(false);
 const emitResponseWeightageValidation = () => {
  
   if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && (viewingEmployee.value.reviews[0].state == 'midyear' || viewingEmployee.value.reviews[0].state == 'first_review')){
@@ -349,6 +422,7 @@ const emitResponseWeightageValidation = () => {
     if(nVal && nVal.length > 0 ){
       errorCheck = true;
     }
+    viewFinalRating.value = errorCheck;
     kpiEmit('errorcheck', {hasError: errorCheck});
   }else if(viewingEmployee.value && viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && (viewingEmployee.value.reviews[0].state == 'yearend' || viewingEmployee.value.reviews[0].state == 'final_review')){
     
@@ -357,10 +431,11 @@ const emitResponseWeightageValidation = () => {
     if(nVal && nVal.length > 0 ){
       errorCheck = true;
     }
+    viewFinalRating.value = errorCheck;
     kpiEmit('errorcheck', {hasError: errorCheck});
   } else{
     weightageValidation().then(() => {
-     
+      viewFinalRating.value = singlePageHasError.value;
       kpiEmit('errorcheck', {hasError: singlePageHasError.value});
     }) 
   }
