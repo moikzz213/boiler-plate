@@ -37,7 +37,7 @@ class Profile extends Model
 
     public function reviews()
     {
-        return $this->hasMany(Review::class)->latest();
+        return $this->hasMany(Review::class)->limit(1)->orderBy('id', 'DESC');
     }
 
     public function custom_kpis()

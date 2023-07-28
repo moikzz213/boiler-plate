@@ -235,17 +235,15 @@
                     </v-row>
                     <v-row class="download-print my-0 mb-5 mx-0">
                         <v-col md="8" class="mt-0 pt-0">
-                            100% & Above: Exceeded Targets / Stretch Target = 6
-                            (Significant Achievement - Extremely Excellent)<br />
-                            70% to 89% of target achievement = 4 (Very Good)<br />
-                            35% to 49% of target achievement = 2 (Satisfactory)
+                            125% & Above: Exceeded Targets / Stretch Target = 5
+                            (Significant Achievement - Role Model)<br />
+                            95% to 109% of target achievement = 3 (Fully Successful)<br />
+                            0% to 69% of target achievement = 1 (Unsuccessful)
                         </v-col>
                         <v-col md="4" class="mt-0 pt-0">
-                            90 % to 99% Closeness to reach the Target = 5
+                            110% to 124% Closeness to reach the Target = 4
                             (Excellent)<br />
-                            50% to 69% of target achievement = 3 (Good)<br />
-                            1% to 34% of target achievement = 1 ( Needs to
-                            Improve - Poor)
+                            70% to 94% of target achievement = 2 (Partially Successful)
                         </v-col>
 
                         <v-col
@@ -622,8 +620,7 @@ const finalRating = computed(() => {
     kpiDataEncrypted.value.reviews[0].key_review.map((t) => {
         total = total + overAllRating(t);
     });
-
-    return total;
+    return total.toFixed(2);
 });
 
 const overAllRating = (item) => {
@@ -646,20 +643,18 @@ const overAllRating = (item) => {
             ).toFixed(2);
         }
 
-        if (targetAchievement >= 100) {
-            rating = 6; // "Extremely Excellent"; //
-        } else if (targetAchievement >= 90 && targetAchievement <= 99.99) {
-            rating = 5; //"Excellent"; //
-        } else if (targetAchievement >= 70 && targetAchievement <= 89.99) {
-            rating = 4; // "Very Good"; //
-        } else if (targetAchievement >= 50 && targetAchievement <= 69.99) {
-            rating = 3; //"Good"; //
-        } else if (targetAchievement >= 35 && targetAchievement <= 49.99) {
-            rating = 2; //"Satisfactory"; //
+        if (targetAchievement >= 125) {
+            rating = 5; // "Role Model" //
+        } else if (targetAchievement >= 110 && targetAchievement <= 124.99) {
+            rating = 4; //"Excellent"; //
+        } else if (targetAchievement >= 95 && targetAchievement <= 109.99) {
+            rating = 3; // "Fully Successful"; //
+        } else if (targetAchievement >= 70 && targetAchievement <= 94.99) {
+            rating = 2; //"Partially Successful"; //
         } else {
-            rating = 1; //"Poor"; //
+            rating = 1; //"Unsuccessful"; //
         }
-
+ 
         let weightage = item.weightage / 100;
         let totalFinalRating = (rating * weightage).toFixed(2);
 
@@ -670,18 +665,16 @@ const overAllRating = (item) => {
 };
 
 const ratingTitle = (v) => {
-    if (v > 5) {
-        return "Extremely Excellent";
+    if (v >= 5) {
+        return "Role Model";
     } else if (v >= 4) {
         return "Excellent";
     } else if (v >= 3) {
-        return "Very Good";
+        return "Fully Successful";
     } else if (v >= 2) {
-        return "Good";
-    } else if (v >= 1) {
-        return "Satisfactory";
+        return "Partially Successful";
     } else {
-        return "Poor";
+        return "Unsuccessful";
     }
 };
 
