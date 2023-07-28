@@ -5,7 +5,7 @@
       <div :class="`${props.density == 'compact' ? 'text-caption' : 'text-body-1'
         } mb-1 text-center d-flex align-center justify-center`" style="line-height: 1.2em; height: 30px">
         {{ item.title }}
-      </div> 
+      </div>  
         <div class="d-flex justify-center" >
           <v-chip style="margin: 0 1px; font-size:10px" v-for="itemStatus, statusIndex in item.status" :key="itemStatus.status"
             :size="`${props.density == 'compact' ? 'x-small' : 'small'}`"
@@ -81,6 +81,7 @@ const printColor = (userState, index, statusIndex) => {
    
     let state = userState.reviews[0].state;
     let status = userState.reviews[0].status;
+   
     let currentState = states.value.findIndex((el) => el.state == state);
 
         if (index < currentState) {
@@ -97,7 +98,7 @@ const printColor = (userState, index, statusIndex) => {
 
   }else if(userState && userState.reviews && userState.reviews.length > 0){
     let state = userState.reviews[0].state;
-    
+    console.log("state",state);
     if(state != 'setting'){
       return 'bg-grey-darken-1';
     } 

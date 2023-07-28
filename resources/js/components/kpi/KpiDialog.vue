@@ -574,18 +574,16 @@ const yearEndFunction = (newVal) => {
             ).toFixed(2);
         }
 
-        if (targetAchievement >= 100) {
-            end_rating_title.value = "Extremely Excellent";
-        } else if (targetAchievement >= 90 && targetAchievement <= 99.99) {
+        if (targetAchievement >= 125) {
+            end_rating_title.value = "Role Model";
+        } else if (targetAchievement >= 110 && targetAchievement <= 124.99) {
             end_rating_title.value = "Excellent";
-        } else if (targetAchievement >= 70 && targetAchievement <= 89.99) {
-            end_rating_title.value = "Very Good";
-        } else if (targetAchievement >= 50 && targetAchievement <= 69.99) {
-            end_rating_title.value = "Good";
-        } else if (targetAchievement >= 35 && targetAchievement <= 49.99) {
-            end_rating_title.value = "Satisfactory";
+        } else if (targetAchievement >= 95 && targetAchievement <= 109.99) {
+            end_rating_title.value = "Fully Successful";
+        } else if (targetAchievement >= 70 && targetAchievement <= 94.99) {
+            end_rating_title.value = "Partially Successful";
         } else {
-            end_rating_title.value = "Poor";
+            end_rating_title.value = "Unsuccessful";
         }
     }
 };
@@ -667,19 +665,17 @@ watch(
                 targetAchievement = ((newVal / annualTarget) * 100).toFixed(2);
             }
 
-            if (targetAchievement >= 100) {
-                end_rating_title.value = "Extremely Excellent"; // 6
-            } else if (targetAchievement >= 90 && targetAchievement <= 99.99) {
-                end_rating_title.value = "Excellent"; // 5
-            } else if (targetAchievement >= 70 && targetAchievement <= 89.99) {
-                end_rating_title.value = "Very Good"; // 4
-            } else if (targetAchievement >= 50 && targetAchievement <= 69.99) {
-                end_rating_title.value = "Good"; // 3
-            } else if (targetAchievement >= 35 && targetAchievement <= 49.99) {
-                end_rating_title.value = "Satisfactory"; // 2
+            if (targetAchievement >= 125) {
+                end_rating_title.value = "Role Model";
+            } else if (targetAchievement >= 110 && targetAchievement <= 124.99) {
+                end_rating_title.value = "Excellent";
+            } else if (targetAchievement >= 95 && targetAchievement <= 109.99) {
+                end_rating_title.value = "Fully Successful";
+            } else if (targetAchievement >= 70 && targetAchievement <= 94.99) {
+                end_rating_title.value = "Partially Successful";
             } else {
-                end_rating_title.value = "Poor"; // 1
-            }
+                end_rating_title.value = "Unsuccessful";
+            } 
         }
     }
 );
