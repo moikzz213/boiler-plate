@@ -18,7 +18,7 @@
                         <div class="v-col-12 py-0">
                             <v-autocomplete
                                 v-model="selectedKPI"
-                                :items="updatedKpiList"
+                                :items="kpiList"
                                 item-title="title"
                                 item-value="id"
                                 return-object
