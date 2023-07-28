@@ -557,36 +557,36 @@ const midYearFunction = (newVal) => {
     }
 };
 
-const yearEndFunction = (newVal) => {
-    let annualTarget = newVal.data.target;
-    if (newVal.data.revised_annual_target) {
-        annualTarget = newVal.data.revised_annual_target;
-    }
-    let targetAchievement = 0;
-    if (newVal.data.achievement_yearend) {
-        if (kpiData.value.target_type == "max") {
-            targetAchievement = parseFloat(
-                annualTarget / newVal.data.achievement_yearend
-            ).toFixed(2);
-        } else {
-            targetAchievement = parseFloat(
-                newVal.data.achievement_yearend / annualTarget
-            ).toFixed(2);
-        }
+// const yearEndFunction = (newVal) => {
+//     let annualTarget = newVal.data.target;
+//     if (newVal.data.revised_annual_target) {
+//         annualTarget = newVal.data.revised_annual_target;
+//     }
+//     let targetAchievement = 0;
+//     if (newVal.data.achievement_yearend) {
+//         if (kpiData.value.target_type == "max") {
+//             targetAchievement = parseFloat(
+//                 annualTarget / newVal.data.achievement_yearend
+//             ).toFixed(2);
+//         } else {
+//             targetAchievement = parseFloat(
+//                 newVal.data.achievement_yearend / annualTarget
+//             ).toFixed(2);
+//         }
 
-        if (targetAchievement >= 125) {
-            end_rating_title.value = "Role Model";
-        } else if (targetAchievement >= 110 && targetAchievement <= 124.99) {
-            end_rating_title.value = "Excellent";
-        } else if (targetAchievement >= 95 && targetAchievement <= 109.99) {
-            end_rating_title.value = "Fully Successful";
-        } else if (targetAchievement >= 70 && targetAchievement <= 94.99) {
-            end_rating_title.value = "Partially Successful";
-        } else {
-            end_rating_title.value = "Unsuccessful";
-        }
-    }
-};
+//         if (targetAchievement >= 125) {
+//             end_rating_title.value = "Role Model";
+//         } else if (targetAchievement >= 110 && targetAchievement <= 124.99) {
+//             end_rating_title.value = "Excellent";
+//         } else if (targetAchievement >= 95 && targetAchievement <= 109.99) {
+//             end_rating_title.value = "Fully Successful";
+//         } else if (targetAchievement >= 70 && targetAchievement <= 94.99) {
+//             end_rating_title.value = "Partially Successful";
+//         } else {
+//             end_rating_title.value = "Unsuccessful";
+//         }
+//     }
+// };
 
 watch(
     () => props.kpiOptions,
@@ -596,7 +596,7 @@ watch(
         kpiData.value = Object.assign({}, newVal.data);
         kpiAction.value = Object.assign({}, newVal);
         midYearFunction(newVal);
-        yearEndFunction(newVal);
+        //yearEndFunction(newVal);
 
         if (
             kpiAction.value.action == "edit" ||
