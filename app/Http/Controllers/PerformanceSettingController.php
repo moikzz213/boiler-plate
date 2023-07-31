@@ -110,7 +110,7 @@ class PerformanceSettingController extends Controller
             if($setting && $status == 'open'){
                 $query = Profile::whereHas('teams', function($q) use($request) {
                     $q->where(['is_regular' => 1, 'company_id' => $request['company_id']])->whereIn('status', ['active', 'Active']);
-                })->where('status', 'Active')->with('teams', function($q) use($request) {
+                })->whereIn('status', ['active', 'Active'])->with('teams', function($q) use($request) {
                     $q->where(['is_regular' => 1, 'company_id' => $request['company_id']])->whereIn('status', ['active', 'Active']);
                 })->get();
                
@@ -131,4 +131,17 @@ class PerformanceSettingController extends Controller
             'profile' => $profile
         ], 200);
     }
+
+    // public function manualSendNotification(Request $request){
+    //     if($request['status'] == 'open'){
+    //         $query = Profile::whereHas('teams', function($q) use($request) {
+    //             $q->where(['is_regular' => 1, 'company_id' => $request['company_id']])->whereIn('status', ['active', 'Active']);
+    //         })->whereIn('status', ['active', 'Active'])->with('teams', function($q) use($request) {
+    //             $q->where(['is_regular' => 1, 'company_id' => $request['company_id']])->whereIn('status', ['active', 'Active']);
+    //         })->get();
+    //         // Send Notification to all employees that have a team only. Manager without a team member will not receive the notification.
+    //         SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => true, 'closingSetting' => $request['setting'],'allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $request['year']])->onQueue('processing');
+    //     }
+    //     //closingSetting == setting / midyear / yearend
+    // }
 }
