@@ -128,6 +128,57 @@ class CronJobController extends Controller
         $current_month_day = date('Y-m-d'); 
        
         foreach($currentSetting AS $k => $v){
+
+              // Check date if Mid Year Closing
+              if($current_month_day ==  date('Y-m-d', strtotime($v['mid_year_review_end'] . ' +1 day'))){
+              
+                $setting = PerformanceSetting::where('id', $v->id)->first();
+                if($setting){
+                    $setting->update(['status' => 'closed']);
+                    $query = Profile::whereHas('teams', function($q) use ($v) {
+                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
+                    })->whereIn('status', ['active', 'Active'])->with('teams', function($q){
+                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
+                    })->get();
+                    
+                    if($query && count($query) > 0){
+                        Review::where(['type' => 'regular', 'performance_settings_id' => $v->id])->update(['state' => 'midyear', 'status' => 'closed', 'reminder_date' => null]);
+                    }
+                }
+
+                // Check date if Year End Closing
+            }elseif($current_month_day ==  date('Y-m-d', strtotime($v['end_year_review_end'] . ' +1 day'))){
+               
+                $setting = PerformanceSetting::where('id', $v->id)->first();
+                if($setting){
+                    $setting->update(['status' => 'closed']);
+                    $query = Profile::whereHas('teams', function($q) use ($v) {
+                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
+                    })->whereIn('status', ['active', 'Active'])->with('teams', function($q){
+                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
+                    })->get();
+                    
+                    if($query && count($query) > 0){
+                        Review::where(['type' => 'regular', 'performance_settings_id' => $v->id])->update(['state' => 'yearend', 'status' => 'closed', 'reminder_date' => null]);
+                    }
+                }
+
+                // Check date if Settings Closing
+            }elseif($current_month_day ==  date('Y-m-d', strtotime($v['annual_kpi_setting_end']. ' +1 day'))){
+                $setting = PerformanceSetting::where('id', $v->id)->first();
+                if($setting){
+                    $setting->update(['status' => 'closed']);
+                    $query = Profile::whereHas('teams', function($q) use ($v) {
+                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
+                    })->whereIn('status', ['active', 'Active'])->with('teams', function($q){
+                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
+                    })->get();
+                    
+                    if($query && count($query) > 0){
+                        Review::where(['type' => 'regular', 'performance_settings_id' => $v->id])->update(['state' => 'setting', 'status' => 'closed', 'reminder_date' => null]);
+                    }
+                }
+            }
            
             // Check date if Mid Year Opening
             if($current_month_day ==  date('Y-m-d', strtotime($v['mid_year_review_start']))){
@@ -143,7 +194,7 @@ class CronJobController extends Controller
                    
                     // Send Notification to all employees that have a team only. 
                     if($query && count($query) > 0){  
-                        Review::where(['type' => 'regular', 'company_id' => $v['company_id']])->update(['state' => 'midyear', 'status' => 'open', 'reminder_date' => $reminderEvery]);
+                        Review::where(['type' => 'regular', 'performance_settings_id' => $v->id])->update(['state' => 'midyear', 'status' => 'open', 'reminder_date' => $reminderEvery]);
                         SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => true, 'closingSetting' => 'midyear','allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $v['year']])->onQueue('processing');
                     }
                 }
@@ -162,63 +213,12 @@ class CronJobController extends Controller
                   
                     // Send Notification to all employees that have a team only. Manager without a team member will not receive the notification.
                     if($query && count($query) > 0){ 
-                        Review::where(['type' => 'regular', 'company_id' => $v['company_id']])->update(['state' => 'yearend', 'status' => 'open', 'reminder_date' => $reminderEvery]);
+                        Review::where(['type' => 'regular', 'performance_settings_id' => $v->id])->update(['state' => 'yearend', 'status' => 'open', 'reminder_date' => $reminderEvery]);
                         SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => true, 'closingSetting' => 'yearend','allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $v['year']])->onQueue('processing');
                     }
                 }
 
-            }
-            
-            // Check date if Mid Year Closing
-            if($current_month_day ==  date('Y-m-d', strtotime($v['mid_year_review_end'] . ' +1 day'))){
-              
-                $setting = PerformanceSetting::where('id', $v->id)->first();
-                if($setting){
-                    $setting->update(['status' => 'closed']);
-                    $query = Profile::whereHas('teams', function($q) use ($v) {
-                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
-                    })->whereIn('status', ['active', 'Active'])->with('teams', function($q){
-                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
-                    })->get();
-                    
-                    if($query && count($query) > 0){
-                        Review::where(['type' => 'regular', 'company_id' => $v['company_id']])->update(['state' => 'midyear', 'status' => 'closed', 'reminder_date' => null]);
-                    }
-                }
-
-                // Check date if Year End Closing
-            }elseif($current_month_day ==  date('Y-m-d', strtotime($v['end_year_review_end'] . ' +1 day'))){
-               
-                $setting = PerformanceSetting::where('id', $v->id)->first();
-                if($setting){
-                    $setting->update(['status' => 'closed']);
-                    $query = Profile::whereHas('teams', function($q) use ($v) {
-                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
-                    })->whereIn('status', ['active', 'Active'])->with('teams', function($q){
-                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
-                    })->get();
-                    
-                    if($query && count($query) > 0){
-                        Review::where(['type' => 'regular', 'company_id' => $v['company_id']])->update(['state' => 'yearend', 'status' => 'closed', 'reminder_date' => null]);
-                    }
-                }
-
-                // Check date if Settings Closing
-            }elseif($current_month_day ==  date('Y-m-d', strtotime($v['annual_kpi_setting_end']. ' +1 day'))){
-                $setting = PerformanceSetting::where('id', $v->id)->first();
-                if($setting){
-                    $setting->update(['status' => 'closed']);
-                    $query = Profile::whereHas('teams', function($q) use ($v) {
-                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
-                    })->whereIn('status', ['active', 'Active'])->with('teams', function($q){
-                        $q->where(['is_regular' => 1, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active']);
-                    })->get();
-                    
-                    if($query && count($query) > 0){
-                        Review::where(['type' => 'regular', 'company_id' => $v['company_id']])->update(['state' => 'setting', 'status' => 'closed', 'reminder_date' => null]);
-                    } 
-                }
-            }
+            } 
         }
         return json_encode(array("Message" => 'Invalid access', 'Status Code' => 401));
     }
@@ -257,8 +257,7 @@ class CronJobController extends Controller
                     ->orWhere(['doj' => Carbon::now()->subDays(6)->format('Y-m-d')])
                     ->orWhere(['doj' => Carbon::now()->subDays(9)->format('Y-m-d')])
                     ->orWhere(['doj' => Carbon::now()->subDays(12)->format('Y-m-d')]);
-                });
-                
+                }); 
             })
             ->with('teams', function($q){
                 $q->doesntHave('reviews')
@@ -303,7 +302,10 @@ class CronJobController extends Controller
                 'message' => 'Kindly add KPI manually / KPI already created.'
             ], 422);
         }
-      
+
+        $defaultDayReminder = Notification::where('meta_key', 'default_reminder_days')->first();  
+        $remnderPlusDays = Carbon::now()->addDay($defaultDayReminder->meta_value)->format('Y-m-d');
+
         foreach($currentSetting AS $k => $v){ 
             $firstReview = Profile::whereHas('teams', function($q) use ($v) { 
                 $q->where(['is_regular' => 0, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active'])
@@ -313,11 +315,12 @@ class CronJobController extends Controller
                 $q->where(['is_regular' => 0, 'company_id' => $v['company_id']])->whereIn('status', ['active', 'Active'])
                 ->where(['doj' => Carbon::now()->subDays($v['probation_first_review_start'])->format('Y-m-d')]);
             })->get();
-            
-         
+
             // Notification: First Review Open
             if($firstReview && count($firstReview) > 0){
-              SendNotification::dispatchAfterResponse(['data' => $firstReview, 'isOpening' => true, 'closingSetting' => 'first_review','allowedDays' => null, 'employee_type' => 'probation', 'year' => $v['year']])->onQueue('processing');
+               SendNotification::dispatchAfterResponse(['data' => $firstReview, 'isOpening' => true, 'closingSetting' => 'first_review','allowedDays' => null, 'employee_type' => 'probation', 'year' => $v['year']])->onQueue('processing');
+            
+               $this->update_review_reminder_date($firstReview, $remnderPlusDays);
             }
 
             $finalReview = Profile::whereHas('teams', function($q) use ($v) { 
@@ -333,6 +336,7 @@ class CronJobController extends Controller
              // Notification: Final Review Open
             if($finalReview && count($finalReview) > 0){
                 SendNotification::dispatchAfterResponse(['data' => $finalReview, 'isOpening' => true, 'closingSetting' => 'final_review','allowedDays' => null, 'employee_type' => 'probation', 'year' => $v['year']])->onQueue('processing');
+                $this->update_review_reminder_date($finalReview, $remnderPlusDays);
             }
            
             $closingReviews = Profile::whereHas('reviews')->where(function($q) use ($v){ 
@@ -350,6 +354,15 @@ class CronJobController extends Controller
        
         return json_encode(array("Message" => 'Invalid access', 'Status Code' => 401));
      }
+
+    private function update_review_reminder_date($query, $remnderPlusDays){
+        foreach($query AS $k => $v){ 
+            foreach($v->teams AS $kk => $vv){
+                $q = Review::where('id', $vv->reviews[0]->id)->first();
+                $q->update(['reminder_date' => $remnderPlusDays]); 
+            }  
+        } 
+    }
 
     /**
      *  Based on Model Review, field reminder_date eq current date
@@ -404,6 +417,15 @@ class CronJobController extends Controller
                 }
             }
         }
+
+        $query = Profile::whereHas('reviews', function($qq) use ($reminderEvery){
+                $qq->where(['reminder_date' => $reminderEvery]); 
+        })
+        ->with(['teams' => function($q) use ($reminderEvery) { 
+            $q->whereHas('reviews', function($qq) use ($reminderEvery){
+                $qq->where(['reminder_date' => $reminderEvery]);
+            })->whereIn('status', ['active', 'Active'])->with('reviews');
+        }])->get();
     }
 
      /**

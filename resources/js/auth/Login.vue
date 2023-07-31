@@ -82,12 +82,7 @@ const login = async () => {
   loadingLogin.value = true;
   authLogin()
     .then((res) => {
-      settingStore.setPageLoading(true, "logging in");
-
-      // redirect to previous path
-      //   let redirectPath = router.options.history.state.back
-      //     ? router.options.history.state.back
-      //     : "/dashboard";
+      settingStore.setPageLoading(true, "logging in"); 
       let redirectPath = "/dashboard";
       authStore
         .saveClientKey(res.data)
@@ -104,6 +99,8 @@ const login = async () => {
         });
     })
     .catch((err) => {
+      hasError.value = true;
+      message.value = "Enter Username and Password...";
       loadingLogin.value = false;
       console.log("error while trying to login to server", err);
     });
@@ -117,7 +114,10 @@ const authLogin = async () => {
     url: credentials.value.url,
   };
 
-  const response = await authApi.post("/api/sanctumlogin", data);
+  //data = {form: btoa(data)};
+  
+  const response = await authApi.post("/api/sanctumlogin",data );
+  
   if (response.data.status == false) {
     hasError.value = true;
     message.value = response.data.message;
