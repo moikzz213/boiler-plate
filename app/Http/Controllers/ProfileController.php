@@ -174,14 +174,17 @@ class ProfileController extends Controller
         $profile = Profile::where('ecode', $request['ecode'])->first();
         $msg  = 'Account saved successfully';
         if($request['enable']){
-            $profile->update([ 
-                'status' => $request['enable']
-            ]);
+            
             if($request['enable'] == 'Active'){
                 $msg = 'Account has been Enable';
+                $updateData = array('status' => $request['enable'], 'sync' => 1);
             }else{
                 $msg = 'Account has been Disabled';
+                $updateData = array('status' => $request['enable'], 'sync' => 0);
             }
+
+            $profile->update($updateData);
+
         }else{
             $profile->update([ 
                 'role' => $request['role']
