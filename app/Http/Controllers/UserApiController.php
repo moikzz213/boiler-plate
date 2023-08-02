@@ -170,7 +170,7 @@ class UserApiController extends Controller
                 ];
              
                 if ($userQuery) {
-                    $dept = array();
+                    $dept = array(); 
                     
                     $profileData = [
                         'status' => @$v->Status && in_array($v->Status, array('Active','active')) ? 'Active' : 'Inactive',
@@ -195,8 +195,10 @@ class UserApiController extends Controller
                         $dept = array('department' => $v->Pay_Department_Code);
                         $profileData = array_merge($profileData, $dept);
                     }
-                  
-                    $query = $userQuery->update($profileData);
+
+                    if($userQuery->sync){
+                        $query = $userQuery->update($profileData);
+                    }
                      
                 } else { 
                     $query = Profile::create($profileData); 

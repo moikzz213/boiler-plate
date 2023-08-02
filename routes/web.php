@@ -64,7 +64,7 @@ Route::post('/client/removekey', [ClientKeyController::class, 'removeKey'])->nam
 /**
  * Sanctum login
  */
-Route::get('/access', [PublicPageController::class, 'access'])->name('sanctum.login');
+#Route::get('/access', [PublicPageController::class, 'access'])->name('sanctum.login');
 
 /**
  * Admin routes
@@ -83,10 +83,10 @@ Route::prefix('admin')->group(function () {
 /**
  * Normal routes
  */
-Route::prefix('u')->group(function () {
-    Route::get('/', [PageController::class, 'home'])->name('normal');
-    Route::get('/{slug}', [PageController::class, 'home'])->name('normal.slug');
-});
+// Route::prefix('u')->group(function () {
+//     Route::get('/', [PageController::class, 'home'])->name('normal');
+//     Route::get('/{slug}', [PageController::class, 'home'])->name('normal.slug');
+// });
 
 /**
  * Accout routes
@@ -98,7 +98,7 @@ Route::prefix('account')->group(function () {
 /**
  * Custom authentication
  */
-Route::post('login', [CustomAuthController::class, 'login'])->name('custom.login');
+#Route::post('login', [CustomAuthController::class, 'login'])->name('custom.login');
 
 require __DIR__.'/dev/web/jc.php';
 require __DIR__.'/dev/web/ri.php';

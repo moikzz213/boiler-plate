@@ -421,7 +421,7 @@ class CronJobController extends Controller
         $query = Profile::whereHas('reviews', function($qq) use ($reminderEvery){
                 $qq->where(['reminder_date' => $reminderEvery]); 
         })
-        ->with(['teams' => function($q) use ($reminderEvery) { 
+        ->with(['teams' => function($q) use ($reminderEvery) {
             $q->whereHas('reviews', function($qq) use ($reminderEvery){
                 $qq->where(['reminder_date' => $reminderEvery]);
             })->whereIn('status', ['active', 'Active'])->with('reviews');
@@ -442,9 +442,9 @@ class CronJobController extends Controller
             return json_encode(array("Message" => 'Invalid access', 'Status Code' => 403));
         }
         $current_month_day = date('Y-m-d');
-        $currentYear = date('Y'); 
+        $currentYear = date('Y');
         
-        $currentSetting = PerformanceSetting::where('status' ,'!=', 'locked')->get(); 
+        $currentSetting = PerformanceSetting::where('status' ,'!=', 'locked')->get();
 
         if(!$currentSetting || count($currentSetting) == 0){
             return response()->json([

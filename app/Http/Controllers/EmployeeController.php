@@ -75,7 +75,13 @@ class EmployeeController extends Controller
     function updateEmployeeStatus(Request $request)
     {
         $employee = Profile::class::where('ecode', $request['ecode'])->first();
-        $update = $employee->update(['status' => $request['status']]);
+        if($request['status'] == 'Active'){
+            $updateData = array('status' => $request['status'], 'sync' => 1);
+        }else{
+            $updateData = array('status' => $request['status'], 'sync' => 0);
+        }
+
+        $update = $employee->update($updateData);
 
         $employee->logs()->create([
             'profile_id' => $request['profile_id'],
