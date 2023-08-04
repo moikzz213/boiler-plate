@@ -154,7 +154,7 @@ class ProfileController extends Controller
         ->allowedFilters([
             AllowedFilter::callback('employee', function ($query, $value) {
                 if($value !== null) {
-                    $query->where('first_name', 'like', '%' . $value . '%')
+                    $query->where('first_name', 'like', '%' . $value . '%') 
                     ->orWhere('last_name', 'like', '%' . $value . '%')
                     ->orWhere('display_name', 'like', '%' . $value . '%')
                     ->orWhere('email', 'like', '%' . $value . '%')
