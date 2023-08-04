@@ -86,9 +86,9 @@ class CronJobController extends Controller
                                     ]);
                                 }
                             }
+                            SendNotification::dispatchAfterResponse(['data' => $vb, 'isOpening' => true, 'closingSetting' => 'setting','allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $v['year']])->onQueue('processing');
                         }
                      
-                         SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => true, 'closingSetting' => 'setting','allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $v['year']])->onQueue('processing');
                     } 
                     
                 }
@@ -401,7 +401,7 @@ class CronJobController extends Controller
                 $regular = array();
                 foreach($v->teams AS $kk => $vv){
                     $q = Review::where('id', $vv->reviews[0]->id)->first();
-                    $q->update(['reminder_date' => $remnderPlusDays]);
+                    //$q->update(['reminder_date' => $remnderPlusDays]);
 
                     if(!in_array($q->state, $state)){
                         array_push($state, $q->state); 
@@ -411,9 +411,9 @@ class CronJobController extends Controller
                 } 
               
                 if(count($state) > 0){
-                    foreach($state AS $kz => $vz){
-                        SendNotification::dispatchAfterResponse(['data' => $query,'daily_run' => true, 
-                        'isOpening' => true, 'closingSetting' => $vz, 'year' => $currentYear, 'employee_type' => $regular[$kz], 'status' => $status[$kz]])->onQueue('processing');
+                    foreach($state AS $kz => $vz){ 
+                       SendNotification::dispatchAfterResponse(['data' => $v,'daily_run' => true, 
+                       'isOpening' => true, 'closingSetting' => $vz, 'year' => $currentYear, 'employee_type' => $regular[$kz], 'status' => $status[$kz]])->onQueue('processing');
                     }
                 }
             }
