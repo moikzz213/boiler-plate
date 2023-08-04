@@ -403,7 +403,7 @@ class CronJobController extends Controller
                 $regular = array();
                 foreach($v->teams AS $kk => $vv){
                     $q = Review::where('id', $vv->reviews[0]->id)->first();
-                    //$q->update(['reminder_date' => $remnderPlusDays]);
+                    $q->update(['reminder_date' => $remnderPlusDays]);
 
                     if(!in_array($q->state, $state)){
                         array_push($state, $q->state); 
@@ -420,14 +420,15 @@ class CronJobController extends Controller
             }
         }
 
-        // $query = Profile::whereHas('reviews', function($qq) use ($reminderEvery){
-        //         $qq->where(['reminder_date' => $reminderEvery]); 
-        // })
-        // ->with(['teams' => function($q) use ($reminderEvery) {
-        //     $q->whereHas('reviews', function($qq) use ($reminderEvery){
-        //         $qq->where(['reminder_date' => $reminderEvery]);
-        //     })->whereIn('status', ['active', 'Active'])->with('reviews');
-        // }])->get();
+        $query = Profile::whereHas('reviews', function($qq){
+                        $qq->where('status', '!=', 'locked'); 
+                })->where('status','Inactive')->get();
+             
+        if(count($query) > 0){
+            foreach($query AS $kz => $vz){ 
+                $vz->reviews()->update(['status' => 'locked']);
+            }
+        } 
     }
 
      /**
