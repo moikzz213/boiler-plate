@@ -231,13 +231,13 @@ class SendNotification implements ShouldQueue
             if($current_state == 'setting'){
 
                 // All Open status should automatic from CRON JOB
-
+               
                 if($current_status == 'open' || $current_status == 'inprogress'){
                     $metaKey = 'kpi_setting_open'; 
                     $subject = 'PMS '.$reminder.': KPI and Annual Target Setting is now Open';  
                     foreach($managerName AS $k => $v){ 
                         $innerMessage = '<br/>';
-                       
+                     
                         foreach($v->teams AS $kk => $vv){ 
                             $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
                         }

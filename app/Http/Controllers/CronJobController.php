@@ -86,8 +86,8 @@ class CronJobController extends Controller
                                     ]);
                                 }
                             }
-                            SendNotification::dispatchAfterResponse(['data' => $vb, 'isOpening' => true, 'closingSetting' => 'setting','allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $v['year']])->onQueue('processing');
                         }
+                        SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => true, 'closingSetting' => 'setting','allowedDays' => null, 'managerEmail' => null, 'managerName' => null, 'year' => $v['year']])->onQueue('processing');
                      
                     } 
                     
@@ -394,7 +394,9 @@ class CronJobController extends Controller
         }])->get();
         $currentYear = date('Y');
         if($query && count($query) > 0){
-        
+            $state = array();
+            $status= array();
+            $regular = array();
             foreach($query AS $k => $v){
                 $state = array();
                 $status= array();
@@ -408,13 +410,12 @@ class CronJobController extends Controller
                         array_push($status, $q->status);
                         array_push($regular, $q->type);
                     }
-                } 
-              
-                if(count($state) > 0){
-                    foreach($state AS $kz => $vz){ 
-                       SendNotification::dispatchAfterResponse(['data' => $v,'daily_run' => true, 
-                       'isOpening' => true, 'closingSetting' => $vz, 'year' => $currentYear, 'employee_type' => $regular[$kz], 'status' => $status[$kz]])->onQueue('processing');
-                    }
+                }  
+            }
+            if(count($state) > 0){
+                foreach($state AS $kz => $vz){ 
+                   SendNotification::dispatchAfterResponse(['data' => $query,'daily_run' => true, 
+                   'isOpening' => true, 'closingSetting' => $vz, 'year' => $currentYear, 'employee_type' => $regular[$kz], 'status' => $status[$kz]])->onQueue('processing');
                 }
             }
         }
