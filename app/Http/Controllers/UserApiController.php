@@ -201,6 +201,8 @@ class UserApiController extends Controller
                     }
                      
                 } else { 
+
+                    //$profileData = array_merge($profileData, array('created_at' => Carbon::now()));
                     $query = Profile::create($profileData); 
                 }
             }

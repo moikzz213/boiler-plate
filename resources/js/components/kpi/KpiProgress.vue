@@ -78,10 +78,8 @@ const printColor = (userState, index, statusIndex) => {
   let currentStatus = 0;
  
   if(userState && userState.reviews && userState.reviews.length > 0 && userState.reviews[0].key_review.length > 0){
-   
     let state = userState.reviews[0].state;
     let status = userState.reviews[0].status;
-   
     let currentState = states.value.findIndex((el) => el.state == state);
 
         if (index < currentState) {
@@ -96,12 +94,25 @@ const printColor = (userState, index, statusIndex) => {
           }
         }
 
-  }else if(userState && userState.reviews && userState.reviews.length > 0){
+  }else if(userState && userState.reviews && userState.reviews.length > 0){ 
     let state = userState.reviews[0].state;
-    console.log("state",state);
+    let status = userState.reviews[0].status;
     if(state != 'setting'){
+      
       return 'bg-grey-darken-1';
     } 
+    let currentState = states.value.findIndex((el) => el.state == state);
+    if (index < currentState) {
+          return 'bg-grey-darken-1';
+        } else if (index == currentState) {
+
+          currentStatus = states.value[index].status.findIndex((el) => el.status == status);
+          if (currentStatus == statusIndex) {
+            return 'bg-secondary text-white';
+          } else if (statusIndex < currentStatus) {
+            return 'bg-grey-darken-1';
+          }
+        }
       
   }else if(userState && userState.length > 0) {
 
@@ -119,8 +130,8 @@ const printColor = (userState, index, statusIndex) => {
             }
           }
       }else{
-        let state = userState[0].state;
-        let status = userState[0].status;
+          let state = userState[0].state;
+          let status = userState[0].status;
         let currentState = states.value.findIndex((el) => el.state == state);
 
           if(state != 'setting'){

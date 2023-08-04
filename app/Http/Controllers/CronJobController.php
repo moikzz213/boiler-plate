@@ -122,7 +122,7 @@ class CronJobController extends Controller
             ], 422);
         } 
        
-        $defaultDayReminder = Notification::where('meta_key', 'default_reminder_days')->first();  
+        $defaultDayReminder = Notification::where('meta_key', 'default_reminder_days')->first();
         $reminderEvery = date('Y-m-d', strtotime("+". $defaultDayReminder->meta_value." days"));
  
         $current_month_day = date('Y-m-d'); 
@@ -392,7 +392,7 @@ class CronJobController extends Controller
                 $qq->where(['reminder_date' => $reminderEvery]);
             })->whereIn('status', ['active', 'Active'])->with('reviews');
         }])->get();
-       
+        $currentYear = date('Y');
         if($query && count($query) > 0){
         
             foreach($query AS $k => $v){
@@ -409,23 +409,24 @@ class CronJobController extends Controller
                         array_push($regular, $q->type);
                     }
                 } 
+              
                 if(count($state) > 0){
                     foreach($state AS $kz => $vz){
                         SendNotification::dispatchAfterResponse(['data' => $query,'daily_run' => true, 
-                        'isOpening' => true, 'closingSetting' => $vz, 'employee_type' => $regular[$kz], 'status' => $status[$kz]])->onQueue('processing');
+                        'isOpening' => true, 'closingSetting' => $vz, 'year' => $currentYear, 'employee_type' => $regular[$kz], 'status' => $status[$kz]])->onQueue('processing');
                     }
                 }
             }
         }
 
-        $query = Profile::whereHas('reviews', function($qq) use ($reminderEvery){
-                $qq->where(['reminder_date' => $reminderEvery]); 
-        })
-        ->with(['teams' => function($q) use ($reminderEvery) {
-            $q->whereHas('reviews', function($qq) use ($reminderEvery){
-                $qq->where(['reminder_date' => $reminderEvery]);
-            })->whereIn('status', ['active', 'Active'])->with('reviews');
-        }])->get();
+        // $query = Profile::whereHas('reviews', function($qq) use ($reminderEvery){
+        //         $qq->where(['reminder_date' => $reminderEvery]); 
+        // })
+        // ->with(['teams' => function($q) use ($reminderEvery) {
+        //     $q->whereHas('reviews', function($qq) use ($reminderEvery){
+        //         $qq->where(['reminder_date' => $reminderEvery]);
+        //     })->whereIn('status', ['active', 'Active'])->with('reviews');
+        // }])->get();
     }
 
      /**

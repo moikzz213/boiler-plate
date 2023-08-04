@@ -38,6 +38,7 @@ class SendNotification implements ShouldQueue
         $query = $publisherData['data'];
         $isOpening = $publisherData['isOpening'];
         $managersObj = array();
+        $reminder = '';
         if(!$isOpening){ 
                 $employee = Profile::where('id', $query->profile_id)->first();
                 $employeeEmail = $employee->email;
@@ -60,6 +61,7 @@ class SendNotification implements ShouldQueue
             if(@$publisherData['daily_run']){ // daily reminder
                 $current_status = @$publisherData['status'];
                 $year = @$publisherData['year'];
+                $reminder = "Reminder";
             }else{ 
                 $current_status = 'open';  
                 $year = @$publisherData['year'];
@@ -80,7 +82,7 @@ class SendNotification implements ShouldQueue
 
                 if($current_status == 'open' || $current_status == 'inprogress'){
                     $metaKey = 'probation_setting_open';
-                    $subject = 'Probation KPI & Target Setting: Open'; 
+                    $subject = 'PMS '.$reminder.': Probation KPI & Target Setting: Open'; 
                     $cnt = 1;
                     foreach($managerName AS $k => $v){ 
                         $ccEmail = array($v->hrbp_email);
@@ -109,7 +111,7 @@ class SendNotification implements ShouldQueue
                     $toEmail = $employeeEmail;
                     $ccEmail = array($HRBPEmail,$managerEmail);
                     $message = 'Hi '.$employee->display_name.",<br/><br/>";
-                    $subject = 'Probation KPI & Target Setting: Submitted'; 
+                    $subject = 'PMS: Probation KPI & Target Setting: Submitted'; 
                 }
 
             }elseif($current_state == 'first_review'){
@@ -121,7 +123,7 @@ class SendNotification implements ShouldQueue
                      * Notify Manager, Employee & HRBP
                      */
                     $metaKey = 'probation_mid_open';
-                    $subject = 'Probation KPI First Review: Open';
+                    $subject = 'PMS '.$reminder.': Probation KPI First Review: Open';
 
                     $cnt = 1;
                     foreach($managerName AS $k => $v){ 
@@ -149,7 +151,7 @@ class SendNotification implements ShouldQueue
                     $toEmail = $managerEmail;
                     $ccEmail = array($HRBPEmail);
                     $message = 'Hi '.$managerName.",<br/><br/>";
-                    $subject = 'Probation KPI First Review: Completed';
+                    $subject = 'PMS: Probation KPI First Review: Completed';
                     $innerMessage = '<br/><br/>Employee: '.$employee->ecode. " | ". $employee->display_name;
                 } 
             }elseif($current_state == 'final_review'){
@@ -163,7 +165,7 @@ class SendNotification implements ShouldQueue
                      */
 
                     $metaKey = 'probation_final_open'; 
-                    $subject = 'Probation KPI Final Review: Open';
+                    $subject = 'PMS '.$reminder.': Probation KPI Final Review: Open';
 
                     $cnt = 1;
                     foreach($managerName AS $k => $v){ 
@@ -193,12 +195,12 @@ class SendNotification implements ShouldQueue
                     $toEmail = $managerEmail;
                     $ccEmail = array($HRBPEmail);
                     $message = 'Hi '.$managerName.",<br/><br/>";
-                    $subject = 'Probation KPI Final Review: Submitted';
+                    $subject = 'PMS: Probation KPI Final Review: Submitted';
                     $innerMessage = '<br/><br/>Employee: '.$employee->ecode. " | ". $employee->display_name;
                 }elseif($current_status == 'final_notification'){
                     $metaKey = 'probation_final_notification'; 
                    
-                    $subject = 'Probation KPI Final Notification';
+                    $subject = 'PMS: Probation KPI Final Notification';
 
                     $cnt = 1;
                     foreach($managerName AS $k => $v){ 
@@ -232,7 +234,7 @@ class SendNotification implements ShouldQueue
 
                 if($current_status == 'open' || $current_status == 'inprogress'){
                     $metaKey = 'kpi_setting_open'; 
-                    $subject = 'KPI and Annual Target Setting is now Open';  
+                    $subject = 'PMS '.$reminder.': KPI and Annual Target Setting is now Open';  
                     foreach($managerName AS $k => $v){ 
                         $innerMessage = '<br/>';
                        
@@ -257,7 +259,7 @@ class SendNotification implements ShouldQueue
                     $toEmail = $employeeEmail;
                     $ccEmail = array($HRBPEmail,$managerEmail);
                     $message = 'Hi '.$employee->display_name.",<br/><br/>";
-                    $subject = 'KPI and Annual Target Setting : In-Review';
+                    $subject = 'PMS '.$reminder.': KPI and Annual Target Setting : In-Review';
 
                     if( date('Y-m-d', strtotime($allowedDays)) > date('Y-m-d', strtotime($closingSetting))){
                         $date_allowed = $closingSetting;
@@ -276,7 +278,7 @@ class SendNotification implements ShouldQueue
                     $toEmail = $employeeEmail;
                     $ccEmail = array($HRBPEmail,$managerEmail);
                     $message = 'Hi '.$employee->display_name.",<br/><br/>";
-                    $subject = 'KPI and Annual Target Setting : Submitted'; 
+                    $subject = 'PMS: KPI and Annual Target Setting : Submitted'; 
                 }
 
             }elseif($current_state == 'midyear'){
@@ -288,7 +290,7 @@ class SendNotification implements ShouldQueue
                      * Notify Manager, Employee & HRBP
                      */
                     $metaKey = 'kpi_mid_open';
-                    $subject = 'Mid-Year KPI review: Open';
+                    $subject = 'PMS '.$reminder.': Mid-Year KPI review: Open';
                     $cnt = 1;
                     foreach($managerName AS $k => $v){ 
                         $ccEmail = array($v->hrbp_email);  
@@ -314,7 +316,7 @@ class SendNotification implements ShouldQueue
                     $toEmail = $employeeEmail;
                     $ccEmail = array($HRBPEmail, $managerEmail);
                     $message = 'Hi '.$employee->display_name.",<br/><br/>";
-                    $subject = 'Mid-Year KPI review: Completed';
+                    $subject = 'PMS: Mid-Year KPI review: Completed';
                     
                 } 
             }elseif($current_state == 'yearend'){
@@ -328,7 +330,7 @@ class SendNotification implements ShouldQueue
                      */
 
                     $metaKey = 'kpi_final_open'; 
-                    $subject = 'Year-End KPI : Open';
+                    $subject = 'PMS '.$reminder.': Year-End KPI : Open';
                     foreach($managerName AS $k => $v){ 
                         $innerMessage = '<br/>';
                         foreach($v->teams AS $kk => $vv){ 
@@ -353,7 +355,7 @@ class SendNotification implements ShouldQueue
                     $toEmail = $managerEmail;
                     $ccEmail = array($HRBPEmail);
                     $message = 'Hi '.$managerName.",<br/><br/>";
-                    $subject = 'Year-End KPI : Submitted';
+                    $subject = 'PMS: Year-End KPI : Submitted';
                     $innerMessage = '<br/><br/>Employee: '.$employee->ecode. " | ". $employee->display_name;
                 } 
             }
