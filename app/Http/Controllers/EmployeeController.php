@@ -34,7 +34,7 @@ class EmployeeController extends Controller
                     $query->where('hrbp_email', $value);
                 }
             }),
-        ])
+        ])->where('grade', '>=', 6)
         ->with('company', 'managed_by')->with('reviews', function($q) {
             $q->where('year', Carbon::now()->format('Y'))
             ->orderBy('status', 'desc')->with('keyReview');
@@ -140,7 +140,7 @@ class EmployeeController extends Controller
                 'type'                      => $profile->is_regular ? 'regular' : 'probation',
                 'closing_date'              => Carbon::now()->addDay(3),
                 'reminder_date'             => Carbon::now()->addDay(1),
-                'author'                    => 'HR Admin - Opened'
+                'author'                    => $request['name']
             );
 
             $profile->reviews()->create($data); 

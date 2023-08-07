@@ -23,10 +23,10 @@ class ReportController extends Controller
                     $query->where('hrbp_email', $value);
                 }
             }),
-        ])
-        ->with('company')->with('reviews', function($q) use ($request) { 
+        ])->whereIn('status', ['active', 'Active'])->where('grade', '>=', 6)
+        ->with('company','managed_by')->with('reviews', function($q) use ($request) { 
             $q->where('year', $request->year);
-        })->orderBy('status','asc')->orderBy('role','asc')
+        })->orderBy('superior_ecode', 'ASC')->orderBy('status','asc')->orderBy('role','asc')
         ->get();
 
         return response()->json($employees, 200);

@@ -421,6 +421,7 @@ const updateEmployeeReview = async () => {
 
   let data = {
     profile_id: authStore.authProfile.id,
+    name: authStore.authProfile.display_name,
     ecode: employee.value.ecode, 
     year: year.value
   };
