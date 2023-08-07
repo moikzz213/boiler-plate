@@ -128,9 +128,10 @@ class EmployeeController extends Controller
                 'log_type' => 'admin-reopen'
             ]);
         }else{
-
+           
             $settings = PerformanceSetting::where(['company_id' => $profile->company_id, 'year' => Carbon::now()->format('Y')])->first();
-            $profile->reviews()->create([
+
+            $data = array(
                 'performance_settings_id'   => $settings->id,
                 'company_id'                => $profile->company_id,
                 'state'                     => 'setting',
@@ -140,7 +141,15 @@ class EmployeeController extends Controller
                 'closing_date'              => Carbon::now()->addDay(3),
                 'reminder_date'             => Carbon::now()->addDay(1),
                 'author'                    => 'HR Admin - Opened'
-            ]); 
+            );
+
+            $profile->reviews()->create($data); 
+
+            $profile->logs()->create([
+                'profile_id' => $request['profile_id'],
+                'details' => json_encode($data),
+                'log_type' => 'admin-open'
+            ]);
         } 
 
         return response()->json([
