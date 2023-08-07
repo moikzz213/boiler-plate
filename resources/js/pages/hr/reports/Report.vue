@@ -35,6 +35,28 @@
                     >
                 </div>
             </div>
+            <v-spacer></v-spacer>
+            <div class="v-col-12 v-col-md-2 my-auto text-right">
+                <DownloadExcel 
+                v-if="allEmployeeReport.length > 0"
+                :fetch="donwloadAllLeads"
+                :fields="json_field"
+                worksheet="Report"
+                name="PMS-Report.csv"
+                type="csv"
+                 
+                disabled 
+                >
+                <v-btn  
+                    size="small" 
+                    color="green"  
+                    :disabled="Object.keys(allEmployeeReport).length == 0 ? true : false"
+                    dark
+                >
+                    Download
+                </v-btn>
+            </DownloadExcel>
+            </div>
         </v-row>
         <v-row>
             <div class="v-col-12">
@@ -142,7 +164,16 @@
                                     >
                                         {{ item.submitted }}
                                     </td>
+                                </tr> 
+                                <tr>
+                                    <th colspan="3" class="text-right">Total</th>
+                                    <td class="text-center">{{ totalCount.lock }}</td>
+                                    <td class="text-center">{{ totalCount.open }}</td>
+                                    <td class="text-center">{{ totalCount.inprogress }}</td>
+                                    <td class="text-center">{{ totalCount.inreview }}</td>
+                                    <td class="text-center">{{ totalCount.submitted }}</td>
                                 </tr>
+                             
                             </tbody>
                             <tbody v-else>
                                 <tr>
@@ -223,7 +254,7 @@
                                     <td>{{ item.department }}</td>
                                     <td>{{ item.email }}</td>
                                 </tr>
-                            </tbody>
+                            </tbody> 
                         </v-table>
                     </v-card-text>
                     <v-card-actions>
@@ -284,17 +315,21 @@ const runFilter = async () => {
 const isViewList = ref(false);
 const dialogTitle = ref("");
 const listEmployeeReport = ref([]);
+const allEmployeeReport = ref([]);
+
 const viewEmployee = (data, company, status) => {
     isViewList.value = true;
     dialogTitle.value = company;
     listEmployeeReport.value = data;
     listEmployeeReport.value.statusReview = status;
-    
 };
 
-const downloading = ref(false);
 const donwloadLeads = async () => {
     return listEmployeeReport.value;
+}
+
+const donwloadAllLeads = async () => {
+    return allEmployeeReport.value;
 }
 
 const json_field = ref({
@@ -316,19 +351,14 @@ const json_field = ref({
     Department: "department", 
     Email: "email",
     Status: 'statusReview'
-}); 
-
-const startDownload = () => {
-    downloading.value = true;
-}
-const finishDownload = () => {
-      downloading.value = false; 
-}
+});  
+ 
 // employees
 const employees = ref([]);
-
 const companies = ref([]);
 const companiesObj = ref([]);
+const totalCount = ref({lock: 0, open:0, inprogress:0, inreview:0, submitted:0 });
+
 const getEmployees = async () => {
     let endpoint =
         "/api/reports/business-entity/kpi-employees?&filter[is_regular]=" +
@@ -353,6 +383,8 @@ const getEmployees = async () => {
                         });
                     }
                 });
+                allEmployeeReport.value = [];
+                totalCount.value = {lock: 0, open:0, inprogress:0, inreview:0, submitted:0 };
                 companyStatus();
             }
         })
@@ -361,8 +393,10 @@ const getEmployees = async () => {
         });
 };
 
+
 const companyStatus = () => {
     let companyStatus = {};
+    
     if (companiesObj.value && companiesObj.value.length > 0) {
         companiesObj.value.map((o, i) => {
             companyStatus = settingStore.filterAllSettings(o.id, year.value);
@@ -399,14 +433,20 @@ const companyStatus = () => {
                         ) {
                             o.lock = !isNaN(o.lock) ? o.lock : 0;
                             o.lock = parseInt(o.lock) + 1;
+                            totalCount.value.lock = totalCount.value.lock + 1;
                             o.employees.locked.push(j);
+                            j.statusReview = 'locked';
+                            allEmployeeReport.value.push(j);
                         } else if (
                             j.reviews[0].status &&
                             j.reviews[0].status == "open"
                         ) {
                             o.open = !isNaN(o.open) ? o.open : 0;
                             o.open = parseInt(o.open) + 1;
+                            totalCount.value.open = totalCount.value.open + 1;
                             o.employees.open.push(j);
+                            j.statusReview = 'open';
+                            allEmployeeReport.value.push(j);
                         } else if (
                             j.reviews[0].status &&
                             j.reviews[0].status == "inprogress"
@@ -415,35 +455,53 @@ const companyStatus = () => {
                                 ? o.inprogress
                                 : 0;
                             o.inprogress = parseInt(o.inprogress) + 1;
+                            totalCount.value.inprogress = totalCount.value.inprogress + 1;
                             o.employees.inprogress.push(j);
+                            j.statusReview = 'inprogress';
+                            allEmployeeReport.value.push(j);
                         } else if (
                             j.reviews[0].status &&
                             j.reviews[0].status == "inreview"
                         ) {
                             o.inreview = !isNaN(o.inreview) ? o.inreview : 0;
                             o.inreview = parseInt(o.inreview) + 1;
+                            totalCount.value.inreview = totalCount.value.inreview + 1;
                             o.employees.inreview.push(j);
+                            j.statusReview = 'inreview';
+                            allEmployeeReport.value.push(j);
                         } else if (
                             j.reviews[0].status &&
                             j.reviews[0].status == "submitted"
                         ) {
                             o.submitted = !isNaN(o.submitted) ? o.submitted : 0;
                             o.submitted = parseInt(o.submitted) + 1;
+                            totalCount.value.submitted = totalCount.value.submitted + 1;
                             o.employees.submitted.push(j);
+                            j.statusReview = 'submitted';
+                            allEmployeeReport.value.push(j);
                         }
                     } else if (o.state == "no-setting") {
                         o.lock = !isNaN(o.lock) ? o.lock : 0;
                         o.lock = parseInt(o.lock) + 1;
+                        totalCount.value.lock = totalCount.value.lock + 1;
                         o.employees.locked.push(j);
                     } else {
                         if (o.status == "closed" || o.status == "locked") {
                             o.lock = !isNaN(o.lock) ? o.lock : 0;
                             o.lock = parseInt(o.lock) + 1;
+                            totalCount.value.lock = totalCount.value.lock + 1;
                             o.employees.locked.push(j);
+
+                            j.statusReview = 'locked';
+                            allEmployeeReport.value.push(j);
                         } else {
                             o.open = !isNaN(o.open) ? o.open : 0;
                             o.open = parseInt(o.open) + 1;
+                            totalCount.value.open = totalCount.value.open + 1;
                             o.employees.open.push(j);
+
+                            j.statusReview = 'open';
+                            allEmployeeReport.value.push(j);
                         }
                     }
                 }
@@ -454,7 +512,6 @@ const companyStatus = () => {
         return a.sort - b.sort;
     });
 
-    console.log(companiesObj.value);
 };
 </script>
 <style>
