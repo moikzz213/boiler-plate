@@ -41,3 +41,4 @@ Route::get('/probation-first-final-review', [CronJobController::class, 'probatio
 Route::get('/run-daily-api-cron-job', [CronJobController::class, 'daily_reminder_to_managers'])->name('daily.run.cron.job');
 // always run this at last
 Route::get('/run-daily-api-probation-final-notification', [CronJobController::class, 'daily_reminder_probation_final_notification'])->name('daily.run.probation.final-notification');
+Route::get('/generate/kpi-review', [CronJobController::class, 'manualCreateReview'])->name('manual.create.review');

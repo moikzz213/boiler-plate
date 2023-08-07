@@ -57,6 +57,7 @@ Route::middleware('authkey')->group(function () {
     Route::get('/reports/business-entity/kpi-employees', [ReportController::class, 'getEmployees'])->name('report.employees.non-paginated');
 
     // measures
+    
     Route::get('/fetch/measures/non-paginated', [MeasureController::class, 'getNonPaginatedMeasures'])->name('dialog.measure.non-paginated');
     Route::get('/fetch/master-kpi/non-paginate', [KeyPerformanceIndicatorMasterController::class, 'getNoNPaginatedKpis'])->name('fetch.master-kpi.non-paginate');
     Route::get('/fetch/master-custom-kpi/non-paginate/{ecode}', [KeyPerformanceIndicatorMasterController::class, 'getNoNPaginatedCustomKpis'])->name('fetch.master-custom-kpi.non-paginate');
