@@ -37,7 +37,7 @@
         </div>
       </div>
       <div
-        v-if="['hr_admin', 'app_admin'].includes(authStore.authProfile.role)"
+        v-if="['hr_admin', 'app_admin', 'hrbp'].includes(authStore.authProfile.role)"
         class="v-col-12 v-col-md-3 text-right pb-0"
       >
         <div>
@@ -104,7 +104,7 @@
                 <div class="text-body-2">{{ ratingOrWeightage(employee) }}/100</div>
               </div>
               <div
-                v-if="['hr_admin', 'app_admin'].includes(authStore.authProfile.role)"
+                v-if="['hr_admin', 'app_admin','hrbp'].includes(authStore.authProfile.role)"
                 class="v-col-12 v-col-md-2 d-flex align-center"
               > 
                 <v-btn
@@ -398,12 +398,13 @@ const reopen = ref({
   loading: false,
 });
 const reopenReview = () => {
+  console.log("employee",employee);
   confOptions.value = {
     dialog: true,
     title: "Confirm to Open KPI",
     text:
       "Please confirm that you want to open the KPI for " +
-      authStore.authProfile.email +
+      employee.value.display_name +
       ".",
     btnColor: "secondary",
     btnTitle: "Confirm",
