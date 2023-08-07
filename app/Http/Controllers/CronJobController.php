@@ -492,4 +492,33 @@ class CronJobController extends Controller
         }
         return json_encode(array("Message" => 'Invalid access', 'Status Code' => 401));
     }
+
+    public function manualCreateReview(){
+        $query = Profile::doesntHave('reviews')->whereIn('status', ['active', 'Active'])->get();
+
+        $currentSetting = PerformanceSetting::where('status' ,'!=', 'locked')->get();  
+
+        if(!$currentSetting || count($currentSetting) == 0){
+            return response()->json([
+                'message' => 'Kindly add KPI manually / KPI already created.'
+            ], 422);
+        } 
+      
+        foreach($currentSetting AS $k => $v){
+            foreach($query AS $k => $vb){  
+                    if($vb->company_id == $v['company_id']){
+                        $vb->reviews()->create([
+                            'performance_settings_id'   => $v->id,
+                            'company_id'                => $v['company_id'],
+                            'state'                     => 'setting',
+                            'status'                     => 'open',
+                            'reminder_date'             => Carbon::now()->addDays(3),
+                            'year'                      => $v->year,
+                            'type'                      => 'regular',
+                            'author'                    => 'system'
+                        ]);
+                    } 
+            }
+        }
+    }
 }
