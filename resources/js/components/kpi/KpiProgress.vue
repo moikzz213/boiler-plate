@@ -81,8 +81,10 @@ const printColor = (userState, index, statusIndex) => {
     let state = userState.reviews[0].state;
     let status = userState.reviews[0].status;
     let currentState = states.value.findIndex((el) => el.state == state);
-
-        if (index < currentState) {
+    
+      if(userState.status == 'Inactive'){
+        return 'bg-grey-darken-1';
+      }else if (index < currentState) {
           return 'bg-grey-darken-1';
         } else if (index == currentState) {
 
@@ -97,12 +99,15 @@ const printColor = (userState, index, statusIndex) => {
   }else if(userState && userState.reviews && userState.reviews.length > 0){ 
     let state = userState.reviews[0].state;
     let status = userState.reviews[0].status;
-    if(state != 'setting'){
-      
+    
+    if(state != 'setting'){ 
       return 'bg-grey-darken-1';
-    } 
+    } else if(userState.status == 'Inactive'){
+      return 'bg-grey-darken-1';
+    }
+
     let currentState = states.value.findIndex((el) => el.state == state);
-    if (index < currentState) {
+        if (index < currentState) {
           return 'bg-grey-darken-1';
         } else if (index == currentState) {
 
@@ -115,9 +120,11 @@ const printColor = (userState, index, statusIndex) => {
         }
       
   }else if(userState && userState.length > 0) {
-
+    
     let user = userState[0].profile;
-    if(user && user.is_regular == 0){
+    if(user.status == 'Inactive'){
+      return 'bg-grey-darken-1';
+    }else if(user && user.is_regular == 0){
           let probationState = states.value.findIndex((el) => el.state == 'setting');
           let date = new Date(user.doj);
 
