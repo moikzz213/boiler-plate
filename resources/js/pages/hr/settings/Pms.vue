@@ -162,8 +162,10 @@ watch(currentPage, (newValue, oldValue) => {
     getPmsSettings(currentPage.value);
   }
 });
-getPmsSettings(currentPage.value);
 
+if(authStore.authToken){
+getPmsSettings(currentPage.value);
+}
 const addPms = () => {
   router
     .push({

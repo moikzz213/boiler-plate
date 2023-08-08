@@ -73,6 +73,22 @@ class EmployeeController extends Controller
         return response()->json($employees, 200);
     }
 
+    function secondaryManager(Request $request){
+        $employee = Profile::class::where('ecode', $request['ecode'])->first();
+    
+
+        $update = $employee->update(array('slave_ecode' => $request['slave_ecode'])); 
+        $employee->logs()->create([
+            'profile_id' => $request['profile_id'],
+            'details' => $employee,
+            'log_type' => 'update-secondary-manager'
+        ]);
+
+        return response()->json([
+            'message' => 'Employee secondary manager updated!'
+        ], 200);
+    }
+
     function updateEmployeeStatus(Request $request)
     {
         $employee = Profile::class::where('ecode', $request['ecode'])->first();

@@ -321,9 +321,11 @@ const ecdSoftSkillArray = computed(() => {
 
 const finalRating = computed(() => {
     let total = 0;
-    viewingEmployee.value.reviews[0].key_review.map((t) => {
-        total = total + overAllRating(t);
-    });
+    if(viewingEmployee.value.reviews && viewingEmployee.value.reviews.length > 0 && viewingEmployee.value.reviews[0].state == 'yearend'){
+      viewingEmployee.value.reviews[0].key_review.map((t) => {
+          total = total + overAllRating(t);
+      });
+    }
     return total.toFixed(2);
 });
 

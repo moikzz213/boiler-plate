@@ -36,7 +36,7 @@ class ProfileController extends Controller
 
     public function teamMembers($ecode){
         // First Level
-        $team = Profile::where(['superior_ecode' => $ecode, 'status' => 'Active'])
+        $team = Profile::where(['superior_ecode' => $ecode, 'status' => 'Active'])->orWhere(['slave_ecode' => $ecode])
         ->with('reviews', function($q) {
             $q->where('year', Carbon::now()->format('Y'))->with('keyReview');
         })->with('company')->with('teams', function($q) {
@@ -65,7 +65,7 @@ class ProfileController extends Controller
                     });
                 });
             });
-        })->orderBy('is_regular', 'ASC')->get();
+        })->orderBy('is_regular', 'ASC')->orderBy('slave_ecode', 'ASC')->get();
         return response()->json($team, 200);
     }
 

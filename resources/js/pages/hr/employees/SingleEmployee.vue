@@ -36,9 +36,47 @@
           Enter ecode, name, or email
         </div>
       </div>
+      <v-spacer></v-spacer>
+      <div class="v-col-12 v-col-md-3 pb-0">
+        <v-menu>
+          <template v-slot:activator="{ props }">
+            <v-text-field
+              v-bind="props"
+              v-model="secondarySearch"
+              :loading="loadingSearch"
+              variant="outlined"
+              density="compact"
+              class="bg-white"
+              label="Secondary Manager"
+              hide-details
+              @click:clear="saveSecondaryManager(item,'clear')"
+              clearable
+              :append-inner-icon="mdiMagnify"
+            >
+            </v-text-field>
+          </template>
+          <v-list density="compact" v-if="secondaryManager.length > 0" style="max-height: 300px">
+            <v-list-item
+              v-for="(item, index) in secondaryManager"
+              :key="index"
+              @click="() => saveSecondaryManager(item)"
+            >
+              <v-list-item-title>{{
+                item.display_name + " - " + item.ecode
+              }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+          <v-list density="compact" v-else>
+            <v-list-item> No results found </v-list-item>
+          </v-list>
+        </v-menu>
+        <div class="text-caption px-3 text-grey-darken-1 pt-1">
+          Enter ecode, name, or email
+        </div>
+      </div>
       <div
         v-if="['hr_admin', 'app_admin', 'hrbp'].includes(authStore.authProfile.role)"
-        class="v-col-12 v-col-md-3 text-right pb-0"
+        class="v-col-12 v-col-md-2 text-right pb-0"
       >
         <div>
           <v-menu>
@@ -280,6 +318,7 @@ const getEmployee = async () => {
     .then((res) => {
       employee.value = res.data;
       switchStatus.value = res.data.status;
+      secondarySearch.value = res.data.slave_ecode;
     })
     .catch((err) => {
       console.log("getEmployee", err);
@@ -288,10 +327,12 @@ const getEmployee = async () => {
 
 const globalSetting = computed(() => settingStore.filteredSetting(employee.value.company_id));
 
+if(authStore.authToken){
 getEmployee();
 selectIndustry();
 kpiMaster();
 fetchMeasures();
+}
 // select employee
 const selectStatus = (status) => {
   toUpdateStatus.value = status.title;
@@ -358,22 +399,74 @@ const updateEmployeeStatus = async () => {
 
 // search employee
 const search = ref("");
+const secondarySearch = ref("");
 const loadingSearch = ref(false);
 const results = ref([]);
+const secondaryManager = ref({});
 const searchEmployee = async (keywords) => {
   loadingSearch.value = true;
   await clientApi(authStore.authToken)
     .get("/api/hr/search/employee?&filter[search]=" + keywords)
     .then((res) => {
       loadingSearch.value = false;
-      results.value = res.data;
-      console.log("results.value", results.value);
+      if(secondarySearch.value){
+        secondaryManager.value = res.data;
+      }else if(search.value){
+        results.value = res.data;
+      }
     })
     .catch((err) => {
       loadingSearch.value = false;
       console.log("getEmployee", err);
     });
 };
+
+const saveSecondaryManager = async (emp,clear) => {
+   
+    let data = {
+      profile_id: authStore.authProfile.id,
+      slave_ecode: clear ? '' : emp.ecode,
+      ecode: employee.value.ecode   
+    };
+  confOptions.value = {
+    ...confOptions.value,
+    ...{
+      loading: true,
+    },
+  };
+  secondarySearch.value = emp?.ecode;
+  await clientApi(authStore.authToken)
+    .post("/api/employee/secondary-manager/update", data)
+    .then((res) => {
+      getEmployee().then(() => {
+        confOptions.value = {
+          ...confOptions.value,
+          ...{
+            loading: false,
+            dialog: false,
+          },
+        };
+        sbOptions.value = {
+          status: true,
+          type: "success",
+          text: res.data.message,
+        };
+      });
+    })
+    .catch((err) => { 
+      confOptions.value = {
+        ...confOptions.value,
+        ...{
+          loading: false,
+        },
+      };
+      sbOptions.value = {
+        status: true,
+        type: "error",
+        text: "Error while updating employee",
+      };
+    });
+}
 const selectEmployee = (emp) => {
   employee.value = emp;
   switchStatus.value = emp.status;
@@ -387,18 +480,22 @@ const selectEmployee = (emp) => {
     .catch((err) => {});
 };
 watch(search, (newValue, oldValue) => {
-  if (newValue != oldValue && newValue.length > 3) {
+  if (newValue && newValue != oldValue && newValue.length > 3) {
     searchEmployee(search.value);
   }
 });
 
+watch(secondarySearch, (newValue, oldValue) => {
+  if (newValue && newValue != oldValue && newValue.length > 3) {
+    searchEmployee(secondarySearch.value);
+  }
+});
 // reopen review
 const reopen = ref({
   data: {},
   loading: false,
 });
 const reopenReview = () => {
-  console.log("employee",employee);
   confOptions.value = {
     dialog: true,
     title: "Confirm to Open KPI",
@@ -458,7 +555,6 @@ const updateEmployeeReview = async () => {
         type: "error",
         text: "Error while updating employee",
       };
-      console.log("getEmployee", err);
     });
 };
 

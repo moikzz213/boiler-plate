@@ -164,7 +164,7 @@ const authStore = useAuthStore();
 const settingStore = useSettingStore();
 const industryStore = useIndustryStore();
 const sbOptions = ref({});
-const managerName = authStore.authProfile.display_name;
+const managerName = authStore?.authProfile?.display_name;
 // selected employee
 
 const teamList = ref([]);
@@ -380,8 +380,15 @@ const removeKPIMethod = (v) => {
     };
     clientApi(authStore.authToken)
         .post("/api/delete/employee-kpi-year", formData)
-        .then((res) => {
+        .then((res) => { 
+
+            let slaveEcodse = [];
+            slaveEcodse = res.data.profile.slave_ecode;
             teamList.value = res.data.profile.teams;
+            teamList.value = [...teamList.value, ...slaveEcodse];
+
+            console.log("teamList.value",teamList.value);
+            console.log("res.data.profile",res.data.profile);
             authStore.setProfile(res.data.profile).then(() => {
                 employeePassData();
                 sbOptions.value = {
@@ -411,8 +418,12 @@ const savedResponseMethod = (v) => {
                 type: "success",
                 text: res.data.message,
             };
-         
+            let slaveEcodse = [];
+            slaveEcodse = res.data.profile.slave_ecode;
             teamList.value = res.data.profile.teams;
+            teamList.value = [...teamList.value, ...slaveEcodse];
+            console.log("teamList.value#######",teamList.value);
+            console.log("res.data#######",res.data);
             authStore.setProfile(res.data.profile).then(() => {
                 employeePassData();
             });
@@ -461,6 +472,7 @@ const employeePassData = () => {
         return o.username == ecode.value;
     });
     selEmployeeObj.value = Object.assign({}, filteredEmp[0]);
+    console.log("teamList.value employeePassData()",teamList.value);
     getKPI(2023);
 };
 
@@ -469,27 +481,31 @@ const globalSetting = computed(() =>
 );
 
 const fetchTeamMembers = async () => {
+   
     await clientApi(authStore.authToken)
         .get("/api/fetch/team-members/" + authStore.authProfile.ecode)
         .then((res) => { 
             if(res.data && res.data.length > 0){
                 teamList.value = res.data.filter( o => o.reviews.length > 0);
+                console.log("teamList.value******",teamList.value);
             }
         })
         .catch((err) => {});
+     
 };
 
 onMounted(() => {
-fetchTeamMembers().then(() => {
-    employeePassData();
-    selectIndustry().then(() => {
-        kpiMaster().then(() => {
-            customKpiMaster().then(() => {
-                fetchMeasures();
+    if(authStore.authToken){
+        fetchTeamMembers().then(() => {
+            employeePassData();
+            selectIndustry().then(() => {
+                kpiMaster().then(() => {
+                    customKpiMaster().then(() => {
+                        fetchMeasures();
+                    });
+                });
             });
         });
-    });
-});
-
+    }
 });
 </script>

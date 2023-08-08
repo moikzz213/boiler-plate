@@ -316,7 +316,10 @@ const saveSetting = async () => {
       }
     });
 };
+
+if(authStore.authToken){
 getPmsSettings();
+}
 
 // companies
 const companyStore = useCompanyStore();
