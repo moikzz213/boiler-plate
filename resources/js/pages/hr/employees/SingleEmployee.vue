@@ -37,6 +37,11 @@
         </div>
       </div>
       <v-spacer></v-spacer>
+      <div  class="v-col-12 v-col-md-3 text-right pb-0" 
+      v-if="employee.status == 'Active' && employee.reviews && employee.reviews.length > 0 && employee.reviews[0].status == 'submitted'"
+      >
+        <v-btn color="secondary" :loading="changeStateLoading" @click="changeStage">Change to {{changeState}}</v-btn>
+      </div> 
       <div class="v-col-12 v-col-md-3 pb-0">
         <v-menu>
           <template v-slot:activator="{ props }">
@@ -204,6 +209,8 @@ const router = useRouter();
 const route = useRoute();
 const sbOptions = ref({});
 
+const changeState = ref('Mid Year');
+
 // status
 const switchStatus = ref("Active");
 const toUpdateStatus = ref("");
@@ -310,6 +317,32 @@ const ratingOrWeightage = (user) => {
   }
   return sum;
 };
+
+const changeStateLoading = ref(false);
+const changeStage = () =>{ 
+  let kpiID = employee.value?.reviews[0]?.id;
+  changeStateLoading.value = true;
+  let formData = {
+    reviewID: kpiID,
+    state: changeState.value == 'Mid Year' ? 'midyear' : 'yearend',
+    title: changeState.value,
+    profile_id: authStore.authProfile.id
+  }
+    clientApi(authStore.authToken)
+    .post("/api/hr-change/state", formData)
+    .then((res) => {
+
+      sbOptions.value = {
+          status: true,
+          type: "success",
+          text: res.data.message,
+        };
+      getEmployee();
+    })
+    .catch((err) => {
+      console.log("getEmployee", err);
+    });
+}
 // get employee
 const employee = ref({});
 const getEmployee = async () => {
@@ -317,6 +350,10 @@ const getEmployee = async () => {
     .get("/api/hr/employee/ecode/" + route.params.ecode)
     .then((res) => {
       employee.value = res.data;
+      if(res.data?.reviews[0]?.state == 'midyear'){
+        changeState.value = 'Year End';
+      }
+      changeStateLoading.value = false;
       switchStatus.value = res.data.status;
       secondarySearch.value = res.data.slave_ecode;
     })
