@@ -27,7 +27,7 @@ class ClientKeyController extends Controller
         ->with('reviews', function($q) {
             $q->where('year', Carbon::now()->format('Y'))->with('keyReview');
         }) // First Level
-        ->with('teams')->first();
+        ->with('teams','slave_ecode')->first();
 
         $currentPmsSettings = PerformanceSetting::where([ 
             'year'      => Carbon::now()->format('Y')
