@@ -73,9 +73,23 @@ class EmployeeController extends Controller
         return response()->json($employees, 200);
     }
 
+    function hrChangeStateEmployee(Request $request){
+        $review = Review::class::where('id', $request['reviewID'])->first(); 
+
+        $update = $review->update(array('state' => $request['state'], 'status' => 'open')); 
+        $review->logs()->create([
+            'profile_id' => $request['profile_id'],
+            'details' => $review,
+            'log_type' => 'update-review-state'
+        ]);
+
+        return response()->json([
+            'message' => 'Employee KPI Review state has been changed to '.$request['title']
+        ], 200);
+    }
+
     function secondaryManager(Request $request){
-        $employee = Profile::class::where('ecode', $request['ecode'])->first();
-    
+        $employee = Profile::class::where('ecode', $request['ecode'])->first(); 
 
         $update = $employee->update(array('slave_ecode' => $request['slave_ecode'])); 
         $employee->logs()->create([

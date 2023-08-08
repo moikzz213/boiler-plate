@@ -58,6 +58,7 @@ Route::middleware('authkey')->group(function () {
     Route::get('/reports/business-entity/kpi-employees', [ReportController::class, 'getEmployees'])->name('report.employees.non-paginated');
 
     Route::post('/employee/secondary-manager/update', [EmployeeController::class, 'secondaryManager'])->name('hr.secondary-manager.update');
+    Route::post('/hr-change/state', [EmployeeController::class, 'hrChangeStateEmployee'])->name('hr.change.state');
     // measures
     
     Route::get('/fetch/measures/non-paginated', [MeasureController::class, 'getNonPaginatedMeasures'])->name('dialog.measure.non-paginated');

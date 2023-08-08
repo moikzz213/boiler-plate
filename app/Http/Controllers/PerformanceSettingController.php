@@ -79,12 +79,17 @@ class PerformanceSettingController extends Controller
 
             $profile = Profile::where('ecode', $request['user_ecode']) 
                 ->with( 
+                    'slave_ecode.company', 
                     'teams.company', 
                     'company')
                 ->with('reviews', function($q) {
                     $q->where('year', Carbon::now()->format('Y'))->with('keyReview');
                 })
                 ->with('teams', function($q) {
+                    $q->with('reviews', function($qq) {
+                        $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
+                    });
+                })->with('slave_ecode', function($q) {
                     $q->with('reviews', function($qq) {
                         $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
                     });

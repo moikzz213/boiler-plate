@@ -29,6 +29,7 @@ class ReviewController extends Controller
     public function kpiSubmitted(Request $request){
 
         $query = Review::where('id', $request->reviewID)->first();
+        $OriginalManager = Profile::where('ecode', $request->employee_ecode)->with('managed_by')->first();
         $msg = 'KPI status changed to '.$request->newStatus;
 
         $defaultDayReminder = Notification::where('meta_key', 'default_reminder_days')->first();
@@ -48,6 +49,7 @@ class ReviewController extends Controller
 
         $profile = Profile::where('ecode', $request['user_ecode'])
         ->with(
+            'slave_ecode.reviews.keyReview',
             'teams.reviews.keyReview',
             'teams.company',
             'reviews.keyReview',
@@ -56,7 +58,7 @@ class ReviewController extends Controller
             $q->where('year', Carbon::now()->format('Y'));
         })->first();
 
-        SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => false, 'closingSetting' => $request['closingDateSetting'],'allowedDays' => $request['allowedDays'], 'managerEmail' => $request['managerEmail'], 'managerName' => $request['managerName']])->onQueue('processing');
+        SendNotification::dispatchAfterResponse(['data' => $query, 'isOpening' => false, 'closingSetting' => $request['closingDateSetting'],'allowedDays' => $request['allowedDays'], 'managerEmail' => $OriginalManager['managed_by']->email, 'managerName' => $OriginalManager['managed_by']->display_name])->onQueue('processing');
 
         return response()->json([
             'message' => $msg,

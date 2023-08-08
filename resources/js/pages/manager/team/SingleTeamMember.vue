@@ -332,8 +332,7 @@ const formSubmit = (reviewID,status) => {
         reviewID: reviewID,
         newStatus: status,
         user_ecode: authStore.authProfile.ecode,
-        managerEmail: authStore.authProfile.email,
-        managerName: authStore.authProfile.display_name,
+        employee_ecode: selectedEmployeeArr.value, 
         allowedDays: selEmployeeObj.value.is_regular
             ? globalSetting.value.employee_review_allowed_days
             : globalSetting.value.probation_kpi_setting,
@@ -347,6 +346,8 @@ const formSubmit = (reviewID,status) => {
             ? globalSetting.value.end_year_review_end
             : globalSetting.value.probation_final_review_end,
     };
+
+    
     clientApi(authStore.authToken)
         .post("/api/manager/employee-kpi/submit", formData)
         .then((res) => {
@@ -354,8 +355,13 @@ const formSubmit = (reviewID,status) => {
                 status: true,
                 type: "success",
                 text: res.data.message,
-            };
+            }; 
+
+            let slaveEcodse = [];
+            slaveEcodse = res.data.profile.slave_ecode;
             teamList.value = res.data.profile.teams;
+            teamList.value = [...teamList.value, ...slaveEcodse];
+
             authStore.setProfile(res.data.profile).then(() => {
               employeePassData();
 
@@ -386,9 +392,7 @@ const removeKPIMethod = (v) => {
             slaveEcodse = res.data.profile.slave_ecode;
             teamList.value = res.data.profile.teams;
             teamList.value = [...teamList.value, ...slaveEcodse];
-
-            console.log("teamList.value",teamList.value);
-            console.log("res.data.profile",res.data.profile);
+ 
             authStore.setProfile(res.data.profile).then(() => {
                 employeePassData();
                 sbOptions.value = {
@@ -422,8 +426,7 @@ const savedResponseMethod = (v) => {
             slaveEcodse = res.data.profile.slave_ecode;
             teamList.value = res.data.profile.teams;
             teamList.value = [...teamList.value, ...slaveEcodse];
-            console.log("teamList.value#######",teamList.value);
-            console.log("res.data#######",res.data);
+          
             authStore.setProfile(res.data.profile).then(() => {
                 employeePassData();
             });
@@ -472,7 +475,6 @@ const employeePassData = () => {
         return o.username == ecode.value;
     });
     selEmployeeObj.value = Object.assign({}, filteredEmp[0]);
-    console.log("teamList.value employeePassData()",teamList.value);
     getKPI(2023);
 };
 
@@ -487,7 +489,6 @@ const fetchTeamMembers = async () => {
         .then((res) => { 
             if(res.data && res.data.length > 0){
                 teamList.value = res.data.filter( o => o.reviews.length > 0);
-                console.log("teamList.value******",teamList.value);
             }
         })
         .catch((err) => {});
