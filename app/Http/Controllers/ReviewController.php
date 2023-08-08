@@ -117,6 +117,7 @@ class ReviewController extends Controller
 
         $profile = Profile::where('ecode', $request['user_ecode'])
         ->with(
+            'slave_ecode.reviews.keyReview',
             'teams.reviews.keyReview',
             'teams.company',
             'reviews.keyReview',

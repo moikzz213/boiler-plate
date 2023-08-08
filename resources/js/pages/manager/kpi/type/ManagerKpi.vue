@@ -114,7 +114,10 @@ const getCustomKpi = async (page) => {
       loadingKpiList.value = false;
     });
 };
-getCustomKpi(currentPage.value);
+if(authStore.authToken){
+  getCustomKpi(currentPage.value);
+}
+
 const addKPI = () => {
   kpiOptions.value = {
     ...kpiOptions.value,
@@ -128,7 +131,6 @@ const addKPI = () => {
       is_review: false,
     },
   };
-  console.log("addKPI", kpiOptions.value);
 };
 const openKPI = (item) => {
   kpiOptions.value = {

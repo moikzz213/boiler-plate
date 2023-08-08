@@ -30,6 +30,11 @@ class Profile extends Model
         return $this->hasMany(Profile::class, 'superior_ecode', 'ecode');
     }
 
+    public function slave_ecode()
+    {
+        return $this->hasMany(Profile::class, 'slave_ecode', 'ecode');
+    }
+
     public function managed_by()
     {
         return $this->belongsTo(Profile::class, 'superior_ecode', 'ecode');

@@ -261,8 +261,9 @@ watch(currentPage, (newValue, oldValue) => {
     getEmployees(currentPage.value);
   }
 });
+if(authStore.authToken){
 getEmployees(currentPage.value);
-
+}
 // open Employee
 const openEmployee = (profile) => {
   console.log("profile", profile);

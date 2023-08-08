@@ -41,9 +41,9 @@ const route = useRoute();
 // table tab
 const currentType = ref(route.params.type);
 const selectType = (type) => {
-  console.log("selectType", type);
+  
   if (currentType.value !== type) {
-    console.log("selectType not equal", type);
+     
     currentType.value = type;
     router
       .push({

@@ -626,7 +626,7 @@ watch(
         let getMidYearTarget = kpiData.value.target / 2;
         let percentage = "";
 
-        if (kpiData.value.measures.includes("%")) {
+        if (kpiData.value?.measures?.includes("%")) {
             percentage = "%";
         }
 
@@ -639,7 +639,7 @@ watch(
                     (newVal - getMidYearTarget).toFixed(2) + percentage;
             }
 
-            if (!kpiData.value.measures.includes("%")) {
+            if (!kpiData.value?.measures?.includes("%")) {
                 mid_remainder_target.value = kpiData.value.target - newVal;
             } else {
                 mid_remainder_target.value = kpiData.value.target;

@@ -311,9 +311,9 @@ const confirmOpenMember = () => {
             ),
             year: year.value,
             author:
-                authStore.authProfile.display_name +
+                authStore?.authProfile?.display_name +
                 " " +
-                authStore.authProfile.ecode,
+                authStore?.authProfile?.ecode,
         })
         .then((res) => {
             setTimeout(() => {
@@ -326,7 +326,7 @@ const confirmOpenMember = () => {
         });
 
     clientApi(authStore.authToken)
-        .get("/api/fetch/auth-profile/kpi/" + authStore.authProfile.ecode)
+        .get("/api/fetch/auth-profile/kpi/" + authStore?.authProfile?.ecode)
         .then((res) => {
             authStore.setProfile(res.data.result).then(() => {
                 setTimeout(() => {
@@ -430,24 +430,28 @@ const runFilter = () => {
 
 const originalTeamValue = ref([]);
 const fetchTeamMembers = () => {
+    if(authStore && authStore.authToken){
     clientApi(authStore.authToken)
-        .get("/api/fetch/team-members/" + authStore.authProfile.ecode)
+        .get("/api/fetch/team-members/" + authStore?.authProfile?.ecode)
         .then((res) => {
             managerTeam.value = res.data;
             originalTeamValue.value = res.data;
         })
         .catch((err) => {});
+    }
 };
 fetchTeamMembers();
 
 // fetch pms settings
 const fetchSettings = async () => {
+    if(authStore && authStore.authToken){
     await clientApi(authStore.authToken)
         .get("/api/pms-settings/all")
         .then((res) => {
             settingStore.setPmsSettings(res.data);
             settingStore.setAllSettings(res.data);
         });
+    }
 };
 fetchSettings();
 </script>
