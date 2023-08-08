@@ -149,7 +149,10 @@ class ReviewController extends Controller
                     $query->whereHas('settings', function($qry){
                         $qry->where('status', 'open');
                     });
-                })->doesntHave('reviews')->whereIn('status', ['active', 'Active']);
+                })->doesntHave('reviews')
+                ->orWherehas('reviews', function($qq) {
+                    $qq->where('status','open');
+                })->whereIn('status', ['active', 'Active']);
             }, 
             'profiles as in_progress' => function ($query) {
                 $query->whereHas('reviews', function($query){
