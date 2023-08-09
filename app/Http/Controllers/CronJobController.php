@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Review;
 use App\Models\Profile;
+use App\Jobs\TestMailJob;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Jobs\SendNotification;
@@ -280,7 +281,7 @@ class CronJobController extends Controller
 
         $mailToAdmin = Notification::where(['meta_key' => 'default_test_mail_notification', 'status' => 'active'])->first();
         if($mailToAdmin){
-            SendNotification::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "probation_setting_opening"])->onQueue('processing');
+            TestMailJob::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "probation_setting_opening"])->onQueue('processing');
         }
         return json_encode(array("Message" => 'Invalid access', 'Status Code' => 401));
     }
@@ -359,7 +360,7 @@ class CronJobController extends Controller
 
         $mailToAdmin = Notification::where(['meta_key' => 'default_test_mail_notification', 'status' => 'active'])->first();
         if($mailToAdmin){
-            SendNotification::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "probation_first_final_review"])->onQueue('processing');
+            TestMailJob::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "probation_first_final_review"])->onQueue('processing');
         }
 
         return json_encode(array("Message" => 'Invalid access', 'Status Code' => 401));
@@ -444,7 +445,7 @@ class CronJobController extends Controller
         $mailToAdmin = Notification::where(['meta_key' => 'default_test_mail_notification', 'status' => 'active'])->first();
         if($mailToAdmin){
             echo "Sent to Admin";
-            SendNotification::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "daily_reminder_to_managers"])->onQueue('processing');
+            TestMailJob::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "daily_reminder_to_managers"])->onQueue('processing');
         }
 
         return json_encode(array("Message" => 'Invalid access', 'Status Code' => 401));
@@ -512,7 +513,7 @@ class CronJobController extends Controller
 
         $mailToAdmin = Notification::where(['meta_key' => 'default_test_mail_notification', 'status' => 'active'])->first();
         if($mailToAdmin){
-            SendNotification::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "daily_reminder_probation_final_notification"])->onQueue('processing');
+            TestMailJob::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "daily_reminder_probation_final_notification"])->onQueue('processing');
         }
 
         return json_encode(array("Message" => 'Invalid access', 'Status Code' => 401));
