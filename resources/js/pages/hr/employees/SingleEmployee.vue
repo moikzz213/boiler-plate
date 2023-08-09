@@ -536,11 +536,11 @@ watch(search, (newValue, oldValue) => {
   }
 });
 
-// watch(secondarySearch, (newValue, oldValue) => {
-//   if (newValue && newValue != oldValue && newValue.length > 3) {
-//     searchEmployee(secondarySearch.value);
-//   }
-// });
+watch(secondarySearch, (newValue, oldValue) => {
+  if (newValue && newValue != oldValue && newValue.length > 3) {
+    searchEmployee(secondarySearch.value);
+  }
+});
 // reopen review
 const reopen = ref({
   data: {},

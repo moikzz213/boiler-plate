@@ -439,8 +439,7 @@ class CronJobController extends Controller
             foreach($query AS $kz => $vz){ 
                 $vz->reviews()->update(['status' => 'inactive', 'reminder_date' => null]);
             }
-        } 
-
+        }
 
         $mailToAdmin = Notification::where(['meta_key' => 'default_test_mail_notification', 'status' => 'active'])->first();
         if($mailToAdmin){
@@ -540,7 +539,7 @@ class CronJobController extends Controller
                             'status'                     => 'open',
                             'reminder_date'             => Carbon::now()->addDays(3),
                             'year'                      => $v->year,
-                            'type'                      => 'regular',
+                            'type'                      => $vb->is_regular ? 'regular' : 'probation',
                             'author'                    => 'system'
                         ]);
                     } 
