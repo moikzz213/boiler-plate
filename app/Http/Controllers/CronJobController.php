@@ -432,12 +432,12 @@ class CronJobController extends Controller
         }
 
         $query = Profile::whereHas('reviews', function($qq){
-                        $qq->where('status', '!=', 'locked'); 
+                        $qq->where('status', '!=', 'inactive'); 
                 })->where('status','Inactive')->get();
              
         if(count($query) > 0){
             foreach($query AS $kz => $vz){ 
-                $vz->reviews()->update(['status' => 'locked']);
+                $vz->reviews()->update(['status' => 'inactive', 'reminder_date' => null]);
             }
         } 
 
