@@ -443,8 +443,11 @@ class CronJobController extends Controller
 
         $mailToAdmin = Notification::where(['meta_key' => 'default_test_mail_notification', 'status' => 'active'])->first();
         if($mailToAdmin){
+            echo "Sent to Admin";
             SendNotification::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "daily_reminder_to_managers"])->onQueue('processing');
         }
+
+        return json_encode(array("Message" => 'Invalid access', 'Status Code' => 401));
     }
 
      /**
