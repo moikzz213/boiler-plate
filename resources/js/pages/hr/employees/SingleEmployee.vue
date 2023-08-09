@@ -209,7 +209,7 @@ const router = useRouter();
 const route = useRoute();
 const sbOptions = ref({});
 
-const changeState = ref('Mid Year');
+const changeState = ref('');
 
 // status
 const switchStatus = ref("Active");
@@ -318,13 +318,14 @@ const ratingOrWeightage = (user) => {
   return sum;
 };
 
+const stateValue = ref('');
 const changeStateLoading = ref(false);
 const changeStage = () =>{ 
   let kpiID = employee.value?.reviews[0]?.id;
   changeStateLoading.value = true;
   let formData = {
     reviewID: kpiID,
-    state: changeState.value == 'Mid Year' ? 'midyear' : 'yearend',
+    state: stateValue.value,
     title: changeState.value,
     profile_id: authStore.authProfile.id
   }
@@ -350,8 +351,21 @@ const getEmployee = async () => {
     .get("/api/hr/employee/ecode/" + route.params.ecode)
     .then((res) => {
       employee.value = res.data;
-      if(res.data?.reviews[0]?.state == 'midyear'){
-        changeState.value = 'Year End';
+      
+      if(res.data.reviews[0].type == 'regular'){
+        changeState.value = 'Mid Year';
+        stateValue.value = 'midyear';
+        if(res.data?.reviews[0]?.state == 'midyear'){
+          changeState.value = 'Year End';
+          stateValue.value = 'yearend';
+        }
+      }else{
+        changeState.value = 'First Review';
+        stateValue.value = 'first_review';
+        if(res.data?.reviews[0]?.state == 'first_review'){
+          changeState.value = 'Final Review';
+          stateValue.value = 'final_review';
+        }
       }
       changeStateLoading.value = false;
       switchStatus.value = res.data.status;
