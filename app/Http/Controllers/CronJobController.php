@@ -278,6 +278,10 @@ class CronJobController extends Controller
             
         } 
 
+        $mailToAdmin = Notification::where(['meta_key' => 'default_test_mail_notification', 'status' => 'active'])->first();
+        if($mailToAdmin){
+            SendNotification::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "probation_setting_opening"])->onQueue('processing');
+        }
         return json_encode(array("Message" => 'Invalid access', 'Status Code' => 401));
     }
 
@@ -352,6 +356,12 @@ class CronJobController extends Controller
             }      
         } 
        
+
+        $mailToAdmin = Notification::where(['meta_key' => 'default_test_mail_notification', 'status' => 'active'])->first();
+        if($mailToAdmin){
+            SendNotification::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "probation_first_final_review"])->onQueue('processing');
+        }
+
         return json_encode(array("Message" => 'Invalid access', 'Status Code' => 401));
      }
 
@@ -429,6 +439,12 @@ class CronJobController extends Controller
                 $vz->reviews()->update(['status' => 'locked']);
             }
         } 
+
+
+        $mailToAdmin = Notification::where(['meta_key' => 'default_test_mail_notification', 'status' => 'active'])->first();
+        if($mailToAdmin){
+            SendNotification::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "daily_reminder_to_managers"])->onQueue('processing');
+        }
     }
 
      /**
@@ -490,6 +506,12 @@ class CronJobController extends Controller
                 }
             }
         }
+
+        $mailToAdmin = Notification::where(['meta_key' => 'default_test_mail_notification', 'status' => 'active'])->first();
+        if($mailToAdmin){
+            SendNotification::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "daily_reminder_probation_final_notification"])->onQueue('processing');
+        }
+
         return json_encode(array("Message" => 'Invalid access', 'Status Code' => 401));
     }
 
