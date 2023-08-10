@@ -443,7 +443,6 @@ class CronJobController extends Controller
 
         $mailToAdmin = Notification::where(['meta_key' => 'default_test_mail_notification', 'status' => 'active'])->first();
         if($mailToAdmin){
-            echo "Sent to Admin";
             TestMailJob::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "daily_reminder_to_managers"])->onQueue('processing');
         }
 
@@ -521,28 +520,28 @@ class CronJobController extends Controller
     public function manualCreateReview(){
         $query = Profile::doesntHave('reviews')->whereIn('status', ['active', 'Active'])->get();
 
-        $currentSetting = PerformanceSetting::where('status' ,'!=', 'locked')->get();  
+        $currentSetting = PerformanceSetting::where('status' ,'!=', 'locked')->get();
 
         if(!$currentSetting || count($currentSetting) == 0){
             return response()->json([
                 'message' => 'Kindly add KPI manually / KPI already created.'
             ], 422);
-        } 
+        }
       
         foreach($currentSetting AS $k => $v){
             foreach($query AS $k => $vb){  
-                    if($vb->company_id == $v['company_id']){
-                        $vb->reviews()->create([
-                            'performance_settings_id'   => $v->id,
-                            'company_id'                => $v['company_id'],
-                            'state'                     => 'setting',
-                            'status'                     => 'open',
-                            'reminder_date'             => Carbon::now()->addDays(3),
-                            'year'                      => $v->year,
-                            'type'                      => $vb->is_regular ? 'regular' : 'probation',
-                            'author'                    => 'system'
-                        ]);
-                    } 
+                if($vb->company_id == $v['company_id']){
+                    $vb->reviews()->create([
+                        'performance_settings_id'   => $v->id,
+                        'company_id'                => $v['company_id'],
+                        'state'                     => 'setting',
+                        'status'                     => 'open',
+                        'reminder_date'             => Carbon::now()->addDays(3),
+                        'year'                      => $v->year,
+                        'type'                      => $vb->is_regular ? 'regular' : 'probation',
+                        'author'                    => 'system'
+                    ]);
+                } 
             }
         }
     }
