@@ -218,10 +218,12 @@
                             </DownloadExcel>
                     </v-toolbar>  
                     <v-card-text>
+                      
                         <v-table density="compact">
                             <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th>State</th>
                                     <th>Emp.ID</th>
                                     <th>Emp.Name</th>
                                     <th>Manager</th>
@@ -241,6 +243,7 @@
                                     :key="item.id"
                                 >
                                     <td>{{ index + 1 }}</td>
+                                    <td class="text-uppercase">{{ item.reviews[0].state }}</td>
                                     <td>{{ item.ecode }}</td>
                                     <td>{{ item.display_name }}</td>
                                     <td>
@@ -333,6 +336,8 @@ const donwloadAllLeads = async () => {
 }
 
 const json_field = ref({
+    State: "stateReview",
+    Status: 'statusReview',
     EmpID: "ecode",
     EmpName: "display_name",
     Manager: {
@@ -350,7 +355,7 @@ const json_field = ref({
     },
     Department: "department", 
     Email: "email",
-    Status: 'statusReview'
+    
 });  
  
 // employees
@@ -426,6 +431,7 @@ const companyStatus = () => {
             employees.value.map((j) => {
                 if (j.company_id == o.id) {
                     if (j.reviews.length > 0) {
+                        j.stateReview = j.reviews[0].state;
                         if (
                             j.reviews[0].status &&
                             (j.reviews[0].status == "locked" ||
@@ -436,6 +442,7 @@ const companyStatus = () => {
                             totalCount.value.lock = totalCount.value.lock + 1;
                             o.employees.locked.push(j);
                             j.statusReview = 'locked';
+                           
                             allEmployeeReport.value.push(j);
                         } else if (
                             j.reviews[0].status &&
@@ -507,6 +514,7 @@ const companyStatus = () => {
                 }
             });
         });
+        
     }
     companiesObj.value.sort((a, b) => {
         return a.sort - b.sort;
