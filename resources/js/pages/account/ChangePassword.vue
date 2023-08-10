@@ -89,16 +89,17 @@ const changePassword = async () => {
   password.value.data.username = props.user ? props.user.ecode : route.params.ecode;
   await axios
     .post(sanctumBaseURL.value+"/api/application/reset-password", password.value.data)
-    .then((response) => {
+    .then((response) => { 
       password.value = {
         status: false,
         loading: false,
         data: {
           username: props.user ? props.user.ecode : route.params.ecode,
-          password: "",
-          password_confirmation: "",
+          password: "11111111111111111111111",
+          password_confirmation: "11111111111111111111111",
         },
-      };
+      }; 
+     
       snackbar.value = {
         status: true,
         type: "success",

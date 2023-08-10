@@ -34,6 +34,8 @@ Auth::routes([
  */
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/login', [PageController::class, 'home'])->name('login');
+Route::get('/reset-password', [PageController::class, 'home'])->name('reset-password');
+Route::get('/link/reset-password/employee-ecode', [PageController::class, 'home'])->name('reset-password-link');
 Route::get('/dashboard', [PageController::class, 'home'])->name('dashboard');
 Route::get('/manager/teams', [PageController::class, 'home'])->name('manager.teams');
 Route::get('/manager/teams/member/{id}', [PageController::class, 'home'])->name('manager.teams.single.member');
