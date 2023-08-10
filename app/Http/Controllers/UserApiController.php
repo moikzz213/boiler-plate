@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Profile;
 use App\Models\Company;
+use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Jobs\ResetPasswordMail;
 use Illuminate\Support\Facades\Hash;
 
 class UserApiController extends Controller
@@ -209,5 +210,37 @@ class UserApiController extends Controller
         }
         return "Test";
        
+    }
+
+    public function resetPasswordMail(Request $request){
+       
+        $query = Profile::where(['ecode' => $request->ecode])->whereIn('status', ['active','Active'])->first();
+        $sendTo = '';
+        $baseURL = env("VITE_APP_URL");
+       
+        if($query){
+            if($query->email){
+                $sendTo = $query->email;
+                $subMsg = 'email ('.$query->email.')';
+                $mailMsg = 'You are receiving this email because we received a password reset request for your account.';
+                $mailMsg2 = 'If you did not request a password reset, no further action is required.';
+            }else{
+                $sendTo = $query->hrbp_email;
+                $subMsg = 'HRBP`s email ('.$query->hrbp_email.'), since you don`t have a company email address. Contact your HRBP regarding this matter.';
+                $mailMsg = 'You are receiving this email because the employee doesn`t have a company email address register to PMS to received a password reset request.';
+                $mailMsg2 = 'Employee: '.$query->display_name. ' ('.$query->ecode.')';
+            }
+
+            $link = $baseURL.'/link/reset-password/employee-ecode?key=Gtj1a5A$34zAs%$ajx98AzkIhg(65sv=1Lk8BcWAawg73&ecode='.$query->ecode."&ec=mCA%qIBQOdLR3mQzAkybITmcF4UOIYL%LosC6a$*Qlw5$77WDSLbfrdvGaXNy2)pv";
+            $msg = 'Email has been sent to your '.$subMsg;
+
+            ResetPasswordMail::dispatchAfterResponse(['email' => $sendTo,'link' => $link, 'message' => $mailMsg, 'message2' => $mailMsg2])->onQueue('processing');
+
+        }else{
+            $msg = "Employee code is invalid / Your account is disabled. Contact your HRBP.";
+        }  
+        return response([
+            'message' => $msg
+        ], 200);         
     }
 }

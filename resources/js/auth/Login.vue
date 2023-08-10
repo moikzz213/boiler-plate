@@ -10,7 +10,7 @@
 
     <v-card class="mt-8 pa-3 rounded-lg elevation-3" width="90%" max-width="450">
       <v-card-title class="px-5 pb-0 primary--text">Login</v-card-title>
-      <v-card-text class="py-5">
+      <v-card-text class="py-4">
         <v-form autocomplete="off" ref="form" @keydown.enter="login">
           <v-text-field
             v-model="credentials.login"
@@ -39,7 +39,8 @@
             :loading="loadingLogin"
             >Login</v-btn
           >
-          <div class="text-error mt-3">{{ hasError == true ? message : "" }}</div>
+            <v-btn variant="text" class="mt-3" @click="resetPassword">Reset Password</v-btn>
+          <div class="text-error mt-2">{{ hasError == true ? message : "" }}</div>
         </v-form>
       </v-card-text>
     </v-card>
@@ -105,6 +106,10 @@ const login = async () => {
       console.log("error while trying to login to server", err);
     });
 };
+
+const resetPassword = () => {
+  router.push({ path: 'reset-password' });
+}
 
 // auth login to sanctum
 const authLogin = async () => {

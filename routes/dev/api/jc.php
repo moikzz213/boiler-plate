@@ -25,6 +25,7 @@ use App\Http\Controllers\KeyPerformanceIndicatorMasterController;
 |
 */
 Route::post('/system/api-post/employees', [UserApiController::class, 'addUpdateFromUMS'])->name('system.api.employees');
+Route::post('/send-mail-reset-password', [UserApiController::class, 'resetPasswordMail'])->name('mail.reset.password');
 Route::middleware('authkey')->group(function () {
   Route::get('/pms-settings/all', [KeyPerformanceReviewController::class, 'getPmsSettings'])->name('pms.settings');
 

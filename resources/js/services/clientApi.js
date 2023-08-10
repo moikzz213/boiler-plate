@@ -15,4 +15,9 @@ const clientApi = (bearer) => {
     });
 }
 
-export { clientApi };
+const authApi = axios.create({
+    baseURL: apiUrl,
+    // withCredentials: true,
+    // headers: { Accept: "application/json" },
+});
+export { authApi, clientApi };
