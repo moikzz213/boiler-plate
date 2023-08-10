@@ -21,12 +21,13 @@
           <div> {{ dialogTitle }}</div>
           <v-spacer></v-spacer>
         </v-toolbar>
-          
+          {{ listEmployeeReport }}
           <v-card-text>
             <v-table density="compact">
                 <thead>
                 <tr>
                    <th>#</th>
+                   <th>State</th>
                    <th>Emp.ID</th>
                    <th>Emp.Name</th>
                    <th>Manager</th>
@@ -41,6 +42,7 @@
                     :key="item.id"
                 >
                     <td>{{ index+1 }}</td>
+                    <td>{{ item.ecode }}</td>
                     <td>{{ item.ecode }}</td>
                     <td>{{ item.display_name }}</td>
                     <td>{{ item.managed_by ? item.managed_by.display_name : '' }}</td>

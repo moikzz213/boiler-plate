@@ -48,7 +48,7 @@
 
 <script setup>
 import { ref, watch  } from "vue";
-import { Form, Field, useIsFormValid } from "vee-validate";
+import { Form, Field } from "vee-validate";
 import * as yup from "yup";
 import Snackbar from "@/components/SnackBar.vue";
 import {  useRoute } from "vue-router";
@@ -64,7 +64,6 @@ const snackbar = ref({
 }); 
  
 const isDisabled = ref(true);
-const isValid = useIsFormValid();
 
 const password = ref({
   status: false,
@@ -129,7 +128,6 @@ watch(
 watch(
   () => password.value.data.password,
   (newVal) => {
-    console.log(isValid.value);
     if (newVal && newVal == password.value.data.password_confirmation) {
       isDisabled.value = false;
     }else{
