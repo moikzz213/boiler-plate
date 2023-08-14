@@ -28,14 +28,12 @@ export const useAuthStore = defineStore("authClient", {
             // set role
             this.role = [];
             this.role.push(res.profile.role);
-            console.log(res.profile);
             // set is manager, to remove
             if (res.profile.teams && res.profile.teams.length > 0) {
                 this.role.push("manager");
             } else if (res.profile.slave_ecode && res.profile.slave_ecode.length > 0) {
                 this.role.push("manager");
             }
-            console.log("this.role",this.role);
             // set is logged_in
             if (res.profile && res.client.key) {
                 this.is_logged_in = true;
