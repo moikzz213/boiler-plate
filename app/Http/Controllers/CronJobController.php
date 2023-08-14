@@ -413,7 +413,7 @@ class CronJobController extends Controller
                 
                 foreach($v->teams AS $kk => $vv){
                     $q = Review::where('id', $vv->reviews[0]->id)->first();
-                   // $q->update(['reminder_date' => $remnderPlusDays]);
+                    $q->update(['reminder_date' => $remnderPlusDays]);
 
                     if(!in_array($q->state, $state)){
                         array_push($state, $q->state); 
@@ -428,7 +428,7 @@ class CronJobController extends Controller
                     } 
                 }  
             }
-            $ddd = array();
+            
             if(count($state) > 0){ 
                 foreach($state AS $kz => $vz){ 
                     foreach($regular AS $kx => $vx){ 
@@ -453,8 +453,7 @@ class CronJobController extends Controller
                                 })->whereIn('status', ['active', 'Active'])->with('reviews');
                             }])->get();
 
-                            if($query2 && count($query2)){ 
-                                 
+                            if($query2 && count($query2)){
                               SendNotification::dispatchAfterResponse(['data' => $query2,'daily_run' => true, 
                                'isOpening' => true, 'closingSetting' => $vz, 'year' => $currentYear, 'employee_type' => $vx, 'status' => $vc])->onQueue('processing'); 
                             }
