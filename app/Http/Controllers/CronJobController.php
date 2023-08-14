@@ -281,7 +281,7 @@ class CronJobController extends Controller
 
         $mailToAdmin = Notification::where(['meta_key' => 'default_test_mail_notification', 'status' => 'active'])->first();
         if($mailToAdmin){
-            TestMailJob::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "probation_setting_opening"])->onQueue('processing');
+           // TestMailJob::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "probation_setting_opening"])->onQueue('processing');
         }
         return json_encode(array("Message" => 'Invalid access', 'Status Code' => 401));
     }
@@ -360,7 +360,7 @@ class CronJobController extends Controller
 
         $mailToAdmin = Notification::where(['meta_key' => 'default_test_mail_notification', 'status' => 'active'])->first();
         if($mailToAdmin){
-            TestMailJob::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "probation_first_final_review"])->onQueue('processing');
+           // TestMailJob::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "probation_first_final_review"])->onQueue('processing');
         }
 
         return json_encode(array("Message" => 'Invalid access', 'Status Code' => 401));
@@ -403,34 +403,58 @@ class CronJobController extends Controller
                 $qq->where(['reminder_date' => $reminderEvery]);
             })->whereIn('status', ['active', 'Active'])->with('reviews');
         }])->get();
+
         $currentYear = date('Y');
         if($query && count($query) > 0){
             $state = array();
             $status= array();
             $regular = array();
             foreach($query AS $k => $v){
-                $state = array();
-                $status= array();
-                $regular = array();
+                
                 foreach($v->teams AS $kk => $vv){
                     $q = Review::where('id', $vv->reviews[0]->id)->first();
-                    $q->update(['reminder_date' => $remnderPlusDays]);
+                   // $q->update(['reminder_date' => $remnderPlusDays]);
 
                     if(!in_array($q->state, $state)){
                         array_push($state, $q->state); 
-                        array_push($status, $q->status);
-                        array_push($regular, $q->type);
                     }
+
+                    if(!in_array($q->status, $status)){
+                        array_push($status, $q->status); 
+                    }
+
+                    if(!in_array($q->type, $regular)){
+                        array_push($regular, $q->type); 
+                    } 
                 }  
             }
+            $ddd = array();
             if(count($state) > 0){
                 foreach($state AS $kz => $vz){ 
-                   SendNotification::dispatchAfterResponse(['data' => $query,'daily_run' => true, 
-                   'isOpening' => true, 'closingSetting' => $vz, 'year' => $currentYear, 'employee_type' => $regular[$kz], 'status' => $status[$kz]])->onQueue('processing');
+                    foreach($regular AS $kx => $vx){ 
+                        foreach($status AS $kc => $vc){ 
+
+                            $query2 = Profile::whereHas('teams', function($q) use ($reminderEvery, $vz, $vc, $vx) {
+                                $q->whereHas('reviews', function($qq) use ($reminderEvery, $vz, $vc, $vx){
+                                    $qq->where(['reminder_date' => $reminderEvery,'state' => $vz, 'status' => $vc, 'type' => $vx]);
+                                })->whereIn('status', ['active', 'Active']);
+                            })
+                            ->with(['teams' => function($q) use ($reminderEvery, $vz, $vc, $vx) { 
+                                $q->whereHas('reviews', function($qq) use ($reminderEvery, $vz, $vc, $vx){
+                                    $qq->where(['reminder_date' => $reminderEvery, 'state' => $vz, 'status' => $vc, 'type' => $vx]);
+                                })->whereIn('status', ['active', 'Active'])->with('reviews');
+                            }])->get();
+
+                            if($query2 && count($query2)){ 
+                               SendNotification::dispatchAfterResponse(['data' => $query2,'daily_run' => true, 
+                                'isOpening' => true, 'closingSetting' => $vz, 'year' => $currentYear, 'employee_type' => $vx, 'status' => $vc])->onQueue('processing'); 
+                            }
+                        }
+                    }
                 }
             }
-        }
-
+        } 
+       
         $query = Profile::whereHas('reviews', function($qq){
                         $qq->where('status', '!=', 'inactive'); 
                 })->where('status','Inactive')->get();
@@ -443,7 +467,7 @@ class CronJobController extends Controller
 
         $mailToAdmin = Notification::where(['meta_key' => 'default_test_mail_notification', 'status' => 'active'])->first();
         if($mailToAdmin){
-            TestMailJob::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "daily_reminder_to_managers"])->onQueue('processing');
+          TestMailJob::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "daily_reminder_to_managers"])->onQueue('processing');
         }
 
         return json_encode(array("Message" => 'Invalid access', 'Status Code' => 401));
@@ -511,7 +535,7 @@ class CronJobController extends Controller
 
         $mailToAdmin = Notification::where(['meta_key' => 'default_test_mail_notification', 'status' => 'active'])->first();
         if($mailToAdmin){
-            TestMailJob::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "daily_reminder_probation_final_notification"])->onQueue('processing');
+         //   TestMailJob::dispatchAfterResponse(['email' => $mailToAdmin->meta_value, "message" => "daily_reminder_probation_final_notification"])->onQueue('processing');
         }
 
         return json_encode(array("Message" => 'Invalid access', 'Status Code' => 401));

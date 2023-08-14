@@ -88,9 +88,11 @@ class SendNotification implements ShouldQueue
                         $ccEmail = array($v->hrbp_email);
                         $innerMessage = '<br/>';
                         foreach($v->teams AS $kk => $vv){ 
-                            $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
-                            $ccEmail[$cnt] = $vv->email;
-                            $cnt++;
+                            if($vv->is_regular == 0){
+                                $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
+                                $ccEmail[$cnt] = $vv->email;
+                                $cnt++;
+                            }
                         }
 
                         $managersObj[$k] = array(
@@ -130,9 +132,11 @@ class SendNotification implements ShouldQueue
                         $ccEmail = array($v->hrbp_email);
                         $innerMessage = '<br/>';
                         foreach($v->teams AS $kk => $vv){ 
-                            $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
-                            $ccEmail[$cnt] = $vv->email;
-                            $cnt++;
+                            if($vv->is_regular == 0){
+                                $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
+                                $ccEmail[$cnt] = $vv->email;
+                                $cnt++;
+                            }
                         }
 
                         $managersObj[$k] = array(
@@ -172,9 +176,11 @@ class SendNotification implements ShouldQueue
                         $ccEmail = array($v->hrbp_email);
                         $innerMessage = '<br/>';
                         foreach($v->teams AS $kk => $vv){ 
-                            $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
-                            $ccEmail[$cnt] = $vv->email;
-                            $cnt++;
+                            if($vv->is_regular == 0){
+                                $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
+                                $ccEmail[$cnt] = $vv->email;
+                                $cnt++;
+                            }
                         }
 
                         $managersObj[$k] = array(
@@ -207,9 +213,11 @@ class SendNotification implements ShouldQueue
                         $ccEmail = array($v->hrbp_email);
                         $innerMessage = '<br/>';
                         foreach($v->teams AS $kk => $vv){ 
-                            $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
-                            $ccEmail[$cnt] = $vv->email;
-                            $cnt++;
+                            if($vv->is_regular == 0){
+                                $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
+                                $ccEmail[$cnt] = $vv->email;
+                                $cnt++;
+                            }
                         }
 
                         $managersObj[$k] = array(
@@ -239,7 +247,9 @@ class SendNotification implements ShouldQueue
                         $innerMessage = '<br/>';
                      
                         foreach($v->teams AS $kk => $vv){ 
-                            $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
+                            if($vv->is_regular){
+                                $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
+                            }
                         }
 
                         $managersObj[$k] = array(
@@ -296,9 +306,11 @@ class SendNotification implements ShouldQueue
                         $ccEmail = array($v->hrbp_email);  
                         $innerMessage = '<br/>';
                         foreach($v->teams AS $kk => $vv){ 
-                            $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
-                            $ccEmail[$cnt] = $vv->email;
-                            $cnt++;
+                            if($vv->is_regular){
+                                $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
+                                $ccEmail[$cnt] = $vv->email;
+                                $cnt++;
+                            }
                         }
 
                         $managersObj[$k] = array(
@@ -334,7 +346,9 @@ class SendNotification implements ShouldQueue
                     foreach($managerName AS $k => $v){ 
                         $innerMessage = '<br/>';
                         foreach($v->teams AS $kk => $vv){ 
-                            $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
+                            if($vv->is_regular){
+                                $innerMessage .= '<br/>Employee: '.$vv->ecode. " | ". $vv->display_name; // Multiple records
+                            }
                         }
 
                         $managersObj[$k] = array(
