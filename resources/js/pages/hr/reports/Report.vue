@@ -243,7 +243,9 @@
                                     :key="item.id"
                                 >
                                     <td>{{ index + 1 }}</td>
-                                    <td class="text-uppercase">{{ item.reviews[0].state }}</td>
+                                    <td class="text-uppercase">
+                                        
+                                        {{ item.reviews[0]?.state }}</td>
                                     <td>{{ item.ecode }}</td>
                                     <td>{{ item.display_name }}</td>
                                     <td>
