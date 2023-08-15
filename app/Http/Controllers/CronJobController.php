@@ -427,35 +427,36 @@ class CronJobController extends Controller
                         array_push($regular, $q->type); 
                     } 
                 }  
-            }
-            
+            } 
+           
             if(count($state) > 0){ 
                 foreach($state AS $kz => $vz){ 
                     foreach($regular AS $kx => $vx){ 
                         foreach($status AS $kc => $vc){ 
 
-                            $query2 = Profile::whereHas('teams', function($q) use ($reminderEvery, $vz, $vc, $vx) {
-                                $q->whereHas('reviews', function($qq) use ($reminderEvery, $vz, $vc, $vx){
+                            $query2 = Profile::whereHas('teams', function($q) use ($remnderPlusDays, $vz, $vc, $vx) {
+                                $q->whereHas('reviews', function($qq) use ($remnderPlusDays, $vz, $vc, $vx){
                                     if($vc == 'open' || $vc == 'inprogress'){
-                                        $qq->where(['reminder_date' => $reminderEvery, 'state' => $vz, 'type' => $vx]);
+                                        $qq->where(['reminder_date' => $remnderPlusDays, 'state' => $vz, 'type' => $vx]);
                                     }else{
-                                        $qq->where(['reminder_date' => $reminderEvery, 'state' => $vz, 'status' => $vc, 'type' => $vx]);
+                                        $qq->where(['reminder_date' => $remnderPlusDays, 'state' => $vz, 'status' => $vc, 'type' => $vx]);
                                     }
                                 })->whereIn('status', ['active', 'Active']);
                             })
-                            ->with(['teams' => function($q) use ($reminderEvery, $vz, $vc, $vx) { 
-                                $q->whereHas('reviews', function($qq) use ($reminderEvery, $vz, $vc, $vx){
+                            ->with(['teams' => function($q) use ($remnderPlusDays, $vz, $vc, $vx) { 
+                                $q->whereHas('reviews', function($qq) use ($remnderPlusDays, $vz, $vc, $vx){
                                     if($vc == 'open' || $vc == 'inprogress'){
-                                        $qq->where(['reminder_date' => $reminderEvery, 'state' => $vz, 'type' => $vx]);
+                                        $qq->where(['reminder_date' => $remnderPlusDays, 'state' => $vz, 'type' => $vx]);
                                     }else{
-                                        $qq->where(['reminder_date' => $reminderEvery, 'state' => $vz, 'status' => $vc, 'type' => $vx]);
+                                        $qq->where(['reminder_date' => $remnderPlusDays, 'state' => $vz, 'status' => $vc, 'type' => $vx]);
                                     }
                                 })->whereIn('status', ['active', 'Active'])->with('reviews');
                             }])->get();
 
-                            if($query2 && count($query2)){
-                              SendNotification::dispatchAfterResponse(['data' => $query2,'daily_run' => true, 
-                               'isOpening' => true, 'closingSetting' => $vz, 'year' => $currentYear, 'employee_type' => $vx, 'status' => $vc])->onQueue('processing'); 
+                          
+                            if($query2 && count($query2)){  
+                             SendNotification::dispatchAfterResponse(['data' => $query2,'daily_run' => true, 
+                              'isOpening' => true, 'closingSetting' => $vz, 'year' => $currentYear, 'employee_type' => $vx, 'status' => $vc])->onQueue('processing'); 
                             }
                         }
                     }
