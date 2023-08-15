@@ -17,6 +17,11 @@
                 >
                 </v-autocomplete>
             </div>
+            <v-spacer></v-spacer>
+            <div class="v-col-12 v-col-md-3 my-auto text-right">
+               <a href="https://growth.gagroup.net/#!/module/4235/446" target="_blank"><v-btn size="small" color="secondary">Watch Tutorial</v-btn></a> <br/>
+               <small class="text-caption mr-4">Growth Academy</small>
+            </div>
             <div class="v-col-12">
                 <v-card class="mb-3 elevation-0">
                     <v-card-text>
