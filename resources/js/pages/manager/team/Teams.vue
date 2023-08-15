@@ -1,9 +1,14 @@
 <template>
     <v-container class="pb-16" style="max-width: 98%">
         <v-row class="mt-5">
-            <div class="v-col-12 pb-0">
+            <div class="v-col-12 pb-0 d-flex">
                 <div class="text-h6">
                     My Team {{ "(" + managerTeam.length + ")" }}
+                </div>
+                <v-spacer></v-spacer>
+                <div>
+                    <a href="https://growth.gagroup.net/#!/module/4235/446" target="_blank"><v-btn size="small" color="secondary">Watch Tutorial</v-btn></a><br/>
+                    <small class="text-caption ml-5">Growth Academy</small>
                 </div>
             </div>
             <div class="v-col-12 v-col-md-3">
