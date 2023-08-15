@@ -551,7 +551,7 @@ class CronJobController extends Controller
     }
 
     public function manualCreateReview(){
-        $query = Profile::doesntHave('reviews')->whereIn('status', ['active', 'Active'])->get();
+        $query = Profile::doesntHave('reviews')->whereIn('status', ['active', 'Active'])->where('grade', '>', 5)->where('grade', '<', 11)->get();
 
         $currentSetting = PerformanceSetting::where('status' ,'!=', 'locked')->get();
 
