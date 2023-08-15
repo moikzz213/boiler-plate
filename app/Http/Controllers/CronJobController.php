@@ -437,7 +437,7 @@ class CronJobController extends Controller
                             $query2 = Profile::whereHas('teams', function($q) use ($remnderPlusDays, $vz, $vc, $vx) {
                                 $q->whereHas('reviews', function($qq) use ($remnderPlusDays, $vz, $vc, $vx){
                                     if($vc == 'open' || $vc == 'inprogress'){
-                                        $qq->where(['reminder_date' => $remnderPlusDays, 'state' => $vz, 'type' => $vx]);
+                                        $qq->where(['reminder_date' => $remnderPlusDays, 'state' => $vz, 'type' => $vx])->whereIn('status', ['open','inprogress']);
                                     }else{
                                         $qq->where(['reminder_date' => $remnderPlusDays, 'state' => $vz, 'status' => $vc, 'type' => $vx]);
                                     }
@@ -446,7 +446,7 @@ class CronJobController extends Controller
                             ->with(['teams' => function($q) use ($remnderPlusDays, $vz, $vc, $vx) { 
                                 $q->whereHas('reviews', function($qq) use ($remnderPlusDays, $vz, $vc, $vx){
                                     if($vc == 'open' || $vc == 'inprogress'){
-                                        $qq->where(['reminder_date' => $remnderPlusDays, 'state' => $vz, 'type' => $vx]);
+                                        $qq->where(['reminder_date' => $remnderPlusDays, 'state' => $vz, 'type' => $vx])->whereIn('status', ['open','inprogress']);
                                     }else{
                                         $qq->where(['reminder_date' => $remnderPlusDays, 'state' => $vz, 'status' => $vc, 'type' => $vx]);
                                     }
