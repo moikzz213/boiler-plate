@@ -11,6 +11,13 @@
       >
         <Graph />
       </div>
+      <div
+        v-if="selectedProfileKpi && selectedProfileKpi.role == 'hrbp'"
+        class="v-col-12"
+      >
+        <div class="text-h6 mb-3">Reports</div>
+        <GraphHrbp />
+      </div>
       <div class="v-col-12">
         <div class="text-h6 mb-3">My KPI</div>
         <v-card max-width="1200">
@@ -38,6 +45,7 @@ const KpiProgress = defineAsyncComponent(() =>
   import("../components/kpi/KpiProgress.vue")
 );
 const Graph = defineAsyncComponent(() => import("../components/Graph.vue"));
+const GraphHrbp = defineAsyncComponent(() => import("../components/GraphHrbp.vue"));
 
 // authenticated user object
 const authStore = useAuthStore();

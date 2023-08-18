@@ -80,6 +80,16 @@ export const ri = [
         },
     },
     {
+        path: "/hr/reports",
+        component: () => import("../../pages/hr/reports/Reports.vue"),
+        name: "Reports",
+        meta: {
+            requiresAuth: true,
+            role: ["app_admin", "hr_admin", "hrbp"],
+            title: "Reports",
+        },
+    },
+    {
         path: "/manager/custom/:type",
         component: () => import("../../pages/manager/kpi/CustomKpi.vue"),
         name: "ManagerCustomKPI",

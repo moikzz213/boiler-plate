@@ -29,6 +29,8 @@ Route::prefix('hr')->group(function () {
     Route::get('/weightages/page/{page}', [PageController::class, 'home'])->name('hr.weightages.paginated');
     // employees
     Route::get('/employees/page/{page}', [PageController::class, 'home'])->name('hr.employees.paginated');
+    // reports
+    Route::get('/reports', [PageController::class, 'home'])->name('hr.reports');
 });
 
 Route::prefix('manager')->group(function () {
