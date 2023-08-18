@@ -26,7 +26,7 @@
         "vue-json-excel": "^0.3.0",
         "vue-json-excel3": "^1.0.1",
         "vue-router": "^4.2.1",
-        "vuetify": "^3.3.4",
+        "vuetify": "^3.3.7",
         "yup": "^1.1.1"
     }
 }

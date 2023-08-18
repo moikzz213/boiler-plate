@@ -30,7 +30,7 @@
                   <v-list-item
                     density="compact"
                     style="padding-left: 12px !important"
-                    v-if="hasAccess(sub.roles) == true" 
+                    v-if="hasAccess(sub.roles) == true"
                     :title="sub.title"
                     :value="sub.title"
                     @click="() => openPage(sub.path)"
@@ -158,6 +158,7 @@ import {
   mdiOfficeBuilding,
   mdiChartArc,
   mdiClipboardEditOutline,
+  mdiChartBoxOutline
 } from "@mdi/js";
 import { useAuthStore } from "@/stores/auth";
 import { printInitials } from "@/composables/printInitials";
@@ -179,6 +180,7 @@ const profileHeaderList = ref([
   "Employees",
   "PaginatedEmployees",
   "SingleEmployee",
+  "Reports"
 ]);
 
 // navigation
@@ -191,6 +193,12 @@ const sideNavigation = ref([
     icon: mdiHomeOutline,
     roles: ["app_admin", "normal", "manager", "hr_admin", "hrbp"],
     path: "/dashboard",
+  },
+  {
+    title: "Reports",
+    icon: mdiChartBoxOutline,
+    roles: ["app_admin", "hr_admin", "hrbp"],
+    path: "/hr/reports",
   },
   {
     title: "Teams",

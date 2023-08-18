@@ -92,7 +92,7 @@
                                       kpiDataEncrypted.managed_by.designation
                                     : ""
                             }}
-                            {{
+                            <!-- {{
                                 kpiDataEncrypted.managed_by &&
                                 kpiDataEncrypted.managed_by.grade_original
                                     ? " / G - " +
@@ -101,7 +101,7 @@
                                     ? " / G - " +
                                       kpiDataEncrypted.managed_by.grade
                                     : "-"
-                            }}
+                            }} -->
                         </v-col>
                     </v-row>
                     <v-row class="download-print my-0">
@@ -246,7 +246,7 @@
                             (Excellent)<br />
                             70% to 94% of target achievement = 2 (Partially
                             Successful)
-                        </v-col> 
+                        </v-col>
                     </v-row>
                     <div>
                         <div
