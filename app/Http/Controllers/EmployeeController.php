@@ -76,7 +76,7 @@ class EmployeeController extends Controller
     function hrChangeStateEmployee(Request $request){
         $review = Review::class::where('id', $request['reviewID'])->first(); 
 
-        $update = $review->update(array('state' => $request['state'], 'status' => 'open')); 
+        $update = $review->update(array('state' => $request['state'], 'status' => 'open', 'reminder_date' =>  Carbon::now()->addDay())); 
         $review->logs()->create([
             'profile_id' => $request['profile_id'],
             'details' => $review,
