@@ -40,11 +40,20 @@ class KeyPerformanceIndicatorMasterController extends Controller
             $kpi = KeyPerformanceIndicatorMaster::where('id', $request['id'])->update([
                 'title' => $request['title']
             ]);
+            $type = 'update';
         }else{
             $kpi = KeyPerformanceIndicatorMaster::create([
                 'title' => $request['title']
             ]);
+
+            $type = 'new';
         }
+
+        $kpi->logs()->create([
+            'profile_id' => $request['profile_id'],
+            'details' => $kpi,
+            'log_type' => $type
+        ]);
 
         return response()->json([
             'message' => 'KPI saved successfully'

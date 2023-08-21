@@ -110,10 +110,22 @@ class UserApiController extends Controller
         $body = $request->getContent();
         $postRequest = json_decode($body);
         $query = null; 
-       
+        if(!$body){
+            return response([
+                'message' => "Invalid Data",
+                'data' =>  []  
+            ], 200);   
+        }
         if ($postRequest->query && count($postRequest->query) > 0) {
           
             foreach ($postRequest->query as $k => $v) {
+                if(!$v->No){
+                    return response([
+                        'message' => "Invalid Data",
+                        'data' =>  []  
+                    ], 200);   
+                } 
+
                 $userQuery = Profile::where('username', $v->No)->first(); 
               
                 $comp = null;
@@ -208,7 +220,7 @@ class UserApiController extends Controller
                 }
             }
         }
-        return "Test";
+        return "Success";
        
     }
 
@@ -236,6 +248,8 @@ class UserApiController extends Controller
 
             ResetPasswordMail::dispatchAfterResponse(['email' => $sendTo,'link' => $link, 'message' => $mailMsg, 'message2' => $mailMsg2])->onQueue('processing');
 
+        }elseif(!$request->ecode){
+            $msg = "Data is Invalid!";
         }else{
             $msg = "Employee code is invalid / Your account is disabled. Contact your HRBP.";
         }  

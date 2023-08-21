@@ -8,106 +8,106 @@
     "src": "Print.css"
   },
   "WhiteLogo.css": {
-    "file": "assets/WhiteLogo-f9c0a548.css",
+    "file": "assets/WhiteLogo-01fd4ff3.css",
     "src": "WhiteLogo.css"
   },
-  "_ChangePassword-f25611c1.js": {
-    "file": "assets/ChangePassword-f25611c1.js",
+  "_ChangePassword-a3f6a95e.js": {
+    "file": "assets/ChangePassword-a3f6a95e.js",
     "imports": [
       "resources/js/app.js",
-      "_index.esm-f51cb365.js",
-      "_clientApi-d2428626.js",
-      "_SnackBar-5af0addc.js"
+      "_index.esm-bcdd8243.js",
+      "_clientApi-53c9b3db.js",
+      "_SnackBar-e5373db4.js"
     ]
   },
-  "_ConfirmDialog-683f9ad1.js": {
-    "file": "assets/ConfirmDialog-683f9ad1.js",
+  "_ConfirmDialog-0d4dd931.js": {
+    "file": "assets/ConfirmDialog-0d4dd931.js",
     "imports": [
       "resources/js/app.js"
     ]
   },
-  "_CustomKpiDialog-5d7cb530.js": {
-    "file": "assets/CustomKpiDialog-5d7cb530.js",
+  "_CustomKpiDialog-e0301770.js": {
+    "file": "assets/CustomKpiDialog-e0301770.js",
     "imports": [
       "resources/js/app.js",
-      "_industry-be9f0db1.js"
+      "_industry-f332f0e3.js"
     ]
   },
-  "_EmployeeCard-e3a88a44.js": {
-    "file": "assets/EmployeeCard-e3a88a44.js",
+  "_EmployeeCard-05d13f04.js": {
+    "file": "assets/EmployeeCard-05d13f04.js",
     "imports": [
       "resources/js/app.js",
       "_printInitials-a54a9c4a.js",
-      "_mdi-9c5e96e3.js"
+      "_mdi-5e26928d.js"
     ]
   },
-  "_ImportData-24a350eb.js": {
-    "file": "assets/ImportData-24a350eb.js",
+  "_ImportData-8235daf4.js": {
+    "file": "assets/ImportData-8235daf4.js",
     "imports": [
       "resources/js/app.js",
-      "_mdi-9c5e96e3.js",
-      "_clientApi-d2428626.js",
+      "_mdi-5e26928d.js",
+      "_clientApi-53c9b3db.js",
       "__commonjsHelpers-042e6b4d.js",
-      "_industry-be9f0db1.js"
+      "_industry-f332f0e3.js"
     ]
   },
-  "_KpiContent-1998e27e.js": {
+  "_KpiContent-6a5c2b7a.js": {
     "css": [
       "assets/KpiContent-30288529.css"
     ],
-    "file": "assets/KpiContent-1998e27e.js",
+    "file": "assets/KpiContent-6a5c2b7a.js",
     "imports": [
       "resources/js/app.js",
-      "_mdi-9c5e96e3.js",
-      "_vue-datepicker-53ad1bb0.js",
-      "_SnackBar-5af0addc.js"
+      "_mdi-5e26928d.js",
+      "_vue-datepicker-e0b12450.js",
+      "_SnackBar-e5373db4.js"
     ]
   },
-  "_PageHeader-abad765a.js": {
-    "file": "assets/PageHeader-abad765a.js",
+  "_PageHeader-7465f266.js": {
+    "file": "assets/PageHeader-7465f266.js",
     "imports": [
       "resources/js/app.js"
     ]
   },
-  "_PmsForm-be169b83.js": {
-    "file": "assets/PmsForm-be169b83.js",
+  "_PmsForm-f74b598f.js": {
+    "file": "assets/PmsForm-f74b598f.js",
     "imports": [
       "resources/js/app.js",
-      "_clientApi-d2428626.js",
-      "_company-5c12f6a5.js",
-      "_vue-datepicker-53ad1bb0.js",
-      "_SnackBar-5af0addc.js"
+      "_clientApi-53c9b3db.js",
+      "_company-6e72338b.js",
+      "_vue-datepicker-e0b12450.js",
+      "_SnackBar-e5373db4.js"
     ]
   },
-  "_Print-48590521.js": {
+  "_Print-b295eec6.js": {
     "css": [
       "assets/Print-7bc1d875.css"
     ],
     "dynamicImports": [
-      "_html2canvas-6922767e.js",
+      "_html2canvas-a2c5ea20.js",
       "node_modules/dompurify/dist/purify.es.js",
       "node_modules/canvg/lib/index.es.js"
     ],
-    "file": "assets/Print-48590521.js",
+    "file": "assets/Print-b295eec6.js",
     "imports": [
       "resources/js/app.js",
       "__commonjsHelpers-042e6b4d.js",
       "_typeof-7fd5df1e.js",
-      "_clientApi-d2428626.js"
+      "_clientApi-53c9b3db.js"
     ],
     "isDynamicEntry": true
   },
-  "_SnackBar-5af0addc.js": {
-    "file": "assets/SnackBar-5af0addc.js",
+  "_SnackBar-e5373db4.js": {
+    "file": "assets/SnackBar-e5373db4.js",
     "imports": [
       "resources/js/app.js"
     ]
   },
-  "_WhiteLogo-91dc91b1.js": {
+  "_WhiteLogo-c37cc4bd.js": {
     "css": [
-      "assets/WhiteLogo-f9c0a548.css"
+      "assets/WhiteLogo-01fd4ff3.css"
     ],
-    "file": "assets/WhiteLogo-91dc91b1.js",
+    "file": "assets/WhiteLogo-c37cc4bd.js",
     "imports": [
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
@@ -119,17 +119,17 @@
   "__plugin-vue_export-helper-c27b6911.js": {
     "file": "assets/_plugin-vue_export-helper-c27b6911.js"
   },
-  "_clientApi-d2428626.js": {
-    "file": "assets/clientApi-d2428626.js",
+  "_clientApi-53c9b3db.js": {
+    "file": "assets/clientApi-53c9b3db.js",
     "imports": [
       "resources/js/app.js"
     ]
   },
-  "_company-5c12f6a5.js": {
-    "file": "assets/company-5c12f6a5.js",
+  "_company-6e72338b.js": {
+    "file": "assets/company-6e72338b.js",
     "imports": [
       "resources/js/app.js",
-      "_clientApi-d2428626.js"
+      "_clientApi-53c9b3db.js"
     ]
   },
   "_defineProperty-fcf2a4a8.js": {
@@ -138,36 +138,42 @@
       "_typeof-7fd5df1e.js"
     ]
   },
-  "_html2canvas-6922767e.js": {
-    "file": "assets/html2canvas-6922767e.js",
+  "_html2canvas-a2c5ea20.js": {
+    "file": "assets/html2canvas-a2c5ea20.js",
     "imports": [
       "__commonjsHelpers-042e6b4d.js",
-      "_Print-48590521.js"
+      "_Print-b295eec6.js"
     ],
     "isDynamicEntry": true
   },
-  "_index.esm-f51cb365.js": {
-    "file": "assets/index.esm-f51cb365.js",
+  "_index.esm-bcdd8243.js": {
+    "file": "assets/index.esm-bcdd8243.js",
     "imports": [
       "resources/js/app.js",
       "__commonjsHelpers-042e6b4d.js"
     ]
   },
-  "_industry-be9f0db1.js": {
-    "file": "assets/industry-be9f0db1.js",
+  "_industry-f332f0e3.js": {
+    "file": "assets/industry-f332f0e3.js",
     "imports": [
       "resources/js/app.js",
-      "_clientApi-d2428626.js"
+      "_clientApi-53c9b3db.js"
     ]
   },
-  "_mdi-9c5e96e3.js": {
-    "file": "assets/mdi-9c5e96e3.js"
+  "_mdi-5e26928d.js": {
+    "file": "assets/mdi-5e26928d.js"
+  },
+  "_pageHeader-b233fe33.js": {
+    "file": "assets/pageHeader-b233fe33.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
   },
   "_printInitials-a54a9c4a.js": {
     "file": "assets/printInitials-a54a9c4a.js"
   },
-  "_sacntumApi-2e6ffa6b.js": {
-    "file": "assets/sacntumApi-2e6ffa6b.js",
+  "_sacntumApi-711e3304.js": {
+    "file": "assets/sacntumApi-711e3304.js",
     "imports": [
       "resources/js/app.js"
     ]
@@ -175,8 +181,8 @@
   "_typeof-7fd5df1e.js": {
     "file": "assets/typeof-7fd5df1e.js"
   },
-  "_vue-datepicker-53ad1bb0.js": {
-    "file": "assets/vue-datepicker-53ad1bb0.js",
+  "_vue-datepicker-e0b12450.js": {
+    "file": "assets/vue-datepicker-e0b12450.js",
     "imports": [
       "resources/js/app.js",
       "_typeof-7fd5df1e.js",
@@ -215,12 +221,12 @@
     "src": "resources/fonts/Futura-Medium.woff2"
   },
   "resources/js/app.css": {
-    "file": "assets/app-c4a140e9.css",
+    "file": "assets/app-e2679139.css",
     "src": "resources/js/app.css"
   },
   "resources/js/app.js": {
     "css": [
-      "assets/app-c4a140e9.css"
+      "assets/app-e2679139.css"
     ],
     "dynamicImports": [
       "resources/js/pages/Dashboard.vue",
@@ -260,32 +266,32 @@
       "resources/js/pages/manager/kpi/CustomKpi.vue",
       "resources/js/pages/hr/employees/Employees.vue",
       "resources/js/pages/hr/employees/Employees.vue",
-      "_Print-48590521.js",
+      "_Print-b295eec6.js",
       "resources/js/pages/hr/reports/Report.vue",
       "resources/js/portals/Public.vue",
       "resources/js/portals/Employee.vue"
     ],
-    "file": "assets/app-8fe9e63b.js",
+    "file": "assets/app-8d3d619d.js",
     "isEntry": true,
     "src": "resources/js/app.js"
   },
   "resources/js/auth/Login.vue": {
-    "file": "assets/Login-29a4546a.js",
+    "file": "assets/Login-3e600c0d.js",
     "imports": [
       "resources/js/app.js",
-      "_sacntumApi-2e6ffa6b.js",
-      "_WhiteLogo-91dc91b1.js",
+      "_sacntumApi-711e3304.js",
+      "_WhiteLogo-c37cc4bd.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/auth/Login.vue"
   },
   "resources/js/auth/ResetPassword.vue": {
-    "file": "assets/ResetPassword-d81df30a.js",
+    "file": "assets/ResetPassword-c11215e8.js",
     "imports": [
       "resources/js/app.js",
-      "_WhiteLogo-91dc91b1.js",
-      "_index.esm-f51cb365.js",
+      "_WhiteLogo-c37cc4bd.js",
+      "_index.esm-bcdd8243.js",
       "__plugin-vue_export-helper-c27b6911.js",
       "__commonjsHelpers-042e6b4d.js"
     ],
@@ -293,32 +299,32 @@
     "src": "resources/js/auth/ResetPassword.vue"
   },
   "resources/js/auth/ResetPasswordMail.vue": {
-    "file": "assets/ResetPasswordMail-e38aa141.js",
+    "file": "assets/ResetPasswordMail-b465d299.js",
     "imports": [
       "resources/js/app.js",
-      "_clientApi-d2428626.js",
-      "_WhiteLogo-91dc91b1.js",
+      "_clientApi-53c9b3db.js",
+      "_WhiteLogo-c37cc4bd.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/auth/ResetPasswordMail.vue"
   },
   "resources/js/components/Graph.vue": {
-    "file": "assets/Graph-7b10f8ba.js",
+    "file": "assets/Graph-73f2d6d3.js",
     "imports": [
       "resources/js/app.js",
-      "_clientApi-d2428626.js"
+      "_clientApi-53c9b3db.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/components/Graph.vue"
   },
   "resources/js/components/GraphHrbp.vue": {
-    "file": "assets/GraphHrbp-e7e019d7.js",
+    "file": "assets/GraphHrbp-4eb28c2c.js",
     "imports": [
       "resources/js/app.js",
-      "_clientApi-d2428626.js",
-      "_company-5c12f6a5.js",
-      "_vue-datepicker-53ad1bb0.js",
+      "_clientApi-53c9b3db.js",
+      "_company-6e72338b.js",
+      "_vue-datepicker-e0b12450.js",
       "_typeof-7fd5df1e.js",
       "_defineProperty-fcf2a4a8.js"
     ],
@@ -326,7 +332,7 @@
     "src": "resources/js/components/GraphHrbp.vue"
   },
   "resources/js/components/kpi/KpiProgress.vue": {
-    "file": "assets/KpiProgress-9135bab9.js",
+    "file": "assets/KpiProgress-901fb03d.js",
     "imports": [
       "resources/js/app.js"
     ],
@@ -339,22 +345,22 @@
       "resources/js/components/Graph.vue",
       "resources/js/components/GraphHrbp.vue"
     ],
-    "file": "assets/Dashboard-a31b483a.js",
+    "file": "assets/Dashboard-505358bf.js",
     "imports": [
       "resources/js/app.js",
-      "_KpiContent-1998e27e.js",
-      "_clientApi-d2428626.js",
-      "_mdi-9c5e96e3.js",
-      "_vue-datepicker-53ad1bb0.js",
+      "_KpiContent-6a5c2b7a.js",
+      "_clientApi-53c9b3db.js",
+      "_mdi-5e26928d.js",
+      "_vue-datepicker-e0b12450.js",
       "_typeof-7fd5df1e.js",
       "_defineProperty-fcf2a4a8.js",
-      "_SnackBar-5af0addc.js"
+      "_SnackBar-e5373db4.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/Dashboard.vue"
   },
   "resources/js/pages/Unauthorized.vue": {
-    "file": "assets/Unauthorized-7d4291e9.js",
+    "file": "assets/Unauthorized-67ae0b88.js",
     "imports": [
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
@@ -363,23 +369,23 @@
     "src": "resources/js/pages/Unauthorized.vue"
   },
   "resources/js/pages/account/Account.vue": {
-    "file": "assets/Account-fd080d64.js",
+    "file": "assets/Account-ef934925.js",
     "imports": [
       "resources/js/app.js",
-      "_ChangePassword-f25611c1.js",
-      "_SnackBar-5af0addc.js",
-      "_index.esm-f51cb365.js",
+      "_ChangePassword-a3f6a95e.js",
+      "_SnackBar-e5373db4.js",
+      "_index.esm-bcdd8243.js",
       "__commonjsHelpers-042e6b4d.js",
-      "_clientApi-d2428626.js"
+      "_clientApi-53c9b3db.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/account/Account.vue"
   },
   "resources/js/pages/admin/Logs.vue": {
-    "file": "assets/Logs-f043fde7.js",
+    "file": "assets/Logs-1c636a12.js",
     "imports": [
       "resources/js/app.js",
-      "_PageHeader-abad765a.js"
+      "_PageHeader-7465f266.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/admin/Logs.vue"
@@ -392,83 +398,83 @@
     "css": [
       "assets/Notifications-3bcd6e99.css"
     ],
-    "file": "assets/Notifications-4a354dce.js",
+    "file": "assets/Notifications-49063059.js",
     "imports": [
       "resources/js/app.js",
-      "_PageHeader-abad765a.js",
-      "_clientApi-d2428626.js",
-      "_SnackBar-5af0addc.js"
+      "_PageHeader-7465f266.js",
+      "_clientApi-53c9b3db.js",
+      "_SnackBar-e5373db4.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/admin/Notifications.vue"
   },
   "resources/js/pages/admin/users/EditUser.vue": {
-    "file": "assets/EditUser-6adc3401.js",
+    "file": "assets/EditUser-6b83fce5.js",
     "imports": [
       "resources/js/app.js",
-      "_clientApi-d2428626.js",
-      "_PageHeader-abad765a.js",
-      "_ChangePassword-f25611c1.js",
-      "_SnackBar-5af0addc.js",
-      "_index.esm-f51cb365.js",
+      "_clientApi-53c9b3db.js",
+      "_pageHeader-b233fe33.js",
+      "_ChangePassword-a3f6a95e.js",
+      "_SnackBar-e5373db4.js",
+      "_index.esm-bcdd8243.js",
       "__commonjsHelpers-042e6b4d.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/admin/users/EditUser.vue"
   },
   "resources/js/pages/admin/users/Users.vue": {
-    "file": "assets/Users-c961ea46.js",
+    "file": "assets/Users-60c20b26.js",
     "imports": [
       "resources/js/app.js",
-      "_mdi-9c5e96e3.js",
-      "_clientApi-d2428626.js",
-      "_PageHeader-abad765a.js"
+      "_mdi-5e26928d.js",
+      "_clientApi-53c9b3db.js",
+      "_pageHeader-b233fe33.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/admin/users/Users.vue"
   },
   "resources/js/pages/hr/companies/Companies.vue": {
-    "file": "assets/Companies-5ccade01.js",
+    "file": "assets/Companies-c6ce9979.js",
     "imports": [
       "resources/js/app.js",
-      "_mdi-9c5e96e3.js",
-      "_clientApi-d2428626.js",
-      "_PageHeader-abad765a.js",
-      "_ConfirmDialog-683f9ad1.js",
-      "_SnackBar-5af0addc.js",
-      "_ImportData-24a350eb.js",
+      "_mdi-5e26928d.js",
+      "_clientApi-53c9b3db.js",
+      "_PageHeader-7465f266.js",
+      "_ConfirmDialog-0d4dd931.js",
+      "_SnackBar-e5373db4.js",
+      "_ImportData-8235daf4.js",
       "__commonjsHelpers-042e6b4d.js",
-      "_industry-be9f0db1.js"
+      "_industry-f332f0e3.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/hr/companies/Companies.vue"
   },
   "resources/js/pages/hr/employees/Employees.vue": {
-    "file": "assets/Employees-581ed99c.js",
+    "file": "assets/Employees-c7606134.js",
     "imports": [
       "resources/js/app.js",
-      "_clientApi-d2428626.js",
-      "_company-5c12f6a5.js",
+      "_clientApi-53c9b3db.js",
+      "_company-6e72338b.js",
       "resources/js/components/kpi/KpiProgress.vue",
-      "_EmployeeCard-e3a88a44.js",
+      "_EmployeeCard-05d13f04.js",
       "_printInitials-a54a9c4a.js",
-      "_mdi-9c5e96e3.js"
+      "_mdi-5e26928d.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/hr/employees/Employees.vue"
   },
   "resources/js/pages/hr/employees/SingleEmployee.vue": {
-    "file": "assets/SingleEmployee-ccf02a84.js",
+    "file": "assets/SingleEmployee-93ce702a.js",
     "imports": [
       "resources/js/app.js",
-      "_clientApi-d2428626.js",
-      "_mdi-9c5e96e3.js",
-      "_KpiContent-1998e27e.js",
-      "_EmployeeCard-e3a88a44.js",
-      "_ConfirmDialog-683f9ad1.js",
-      "_SnackBar-5af0addc.js",
-      "_industry-be9f0db1.js",
-      "_vue-datepicker-53ad1bb0.js",
+      "_clientApi-53c9b3db.js",
+      "_mdi-5e26928d.js",
+      "_KpiContent-6a5c2b7a.js",
+      "_EmployeeCard-05d13f04.js",
+      "_ConfirmDialog-0d4dd931.js",
+      "_SnackBar-e5373db4.js",
+      "_industry-f332f0e3.js",
+      "_vue-datepicker-e0b12450.js",
       "_typeof-7fd5df1e.js",
       "_defineProperty-fcf2a4a8.js",
       "_printInitials-a54a9c4a.js"
@@ -477,62 +483,62 @@
     "src": "resources/js/pages/hr/employees/SingleEmployee.vue"
   },
   "resources/js/pages/hr/industries/Industries.vue": {
-    "file": "assets/Industries-9d068b3b.js",
+    "file": "assets/Industries-2f055b98.js",
     "imports": [
       "resources/js/app.js",
-      "_mdi-9c5e96e3.js",
-      "_clientApi-d2428626.js",
-      "_PageHeader-abad765a.js",
-      "_ConfirmDialog-683f9ad1.js",
-      "_SnackBar-5af0addc.js",
-      "_ImportData-24a350eb.js",
+      "_mdi-5e26928d.js",
+      "_clientApi-53c9b3db.js",
+      "_PageHeader-7465f266.js",
+      "_ConfirmDialog-0d4dd931.js",
+      "_SnackBar-e5373db4.js",
+      "_ImportData-8235daf4.js",
       "__commonjsHelpers-042e6b4d.js",
-      "_industry-be9f0db1.js"
+      "_industry-f332f0e3.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/hr/industries/Industries.vue"
   },
   "resources/js/pages/hr/kpi/HrCustomKpi.vue": {
-    "file": "assets/HrCustomKpi-89624d6f.js",
+    "file": "assets/HrCustomKpi-7eb0f9fb.js",
     "imports": [
       "resources/js/app.js",
-      "_clientApi-d2428626.js",
-      "_mdi-9c5e96e3.js",
-      "_PageHeader-abad765a.js",
-      "_CustomKpiDialog-5d7cb530.js",
-      "_ConfirmDialog-683f9ad1.js",
-      "_SnackBar-5af0addc.js",
-      "_industry-be9f0db1.js"
+      "_clientApi-53c9b3db.js",
+      "_mdi-5e26928d.js",
+      "_PageHeader-7465f266.js",
+      "_CustomKpiDialog-e0301770.js",
+      "_ConfirmDialog-0d4dd931.js",
+      "_SnackBar-e5373db4.js",
+      "_industry-f332f0e3.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/hr/kpi/HrCustomKpi.vue"
   },
   "resources/js/pages/hr/kpi/HrMasterKpi.vue": {
-    "file": "assets/HrMasterKpi-1039d3cc.js",
+    "file": "assets/HrMasterKpi-7921848d.js",
     "imports": [
       "resources/js/app.js",
-      "_PageHeader-abad765a.js",
-      "_mdi-9c5e96e3.js",
-      "_clientApi-d2428626.js",
-      "_ConfirmDialog-683f9ad1.js",
-      "_SnackBar-5af0addc.js",
-      "_CustomKpiDialog-5d7cb530.js",
-      "_ImportData-24a350eb.js",
-      "_industry-be9f0db1.js",
+      "_PageHeader-7465f266.js",
+      "_mdi-5e26928d.js",
+      "_clientApi-53c9b3db.js",
+      "_ConfirmDialog-0d4dd931.js",
+      "_SnackBar-e5373db4.js",
+      "_CustomKpiDialog-e0301770.js",
+      "_ImportData-8235daf4.js",
+      "_industry-f332f0e3.js",
       "__commonjsHelpers-042e6b4d.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/hr/kpi/HrMasterKpi.vue"
   },
   "resources/js/pages/hr/measures/Measures.vue": {
-    "file": "assets/Measures-dec54ea4.js",
+    "file": "assets/Measures-8f45f4e9.js",
     "imports": [
       "resources/js/app.js",
-      "_mdi-9c5e96e3.js",
-      "_clientApi-d2428626.js",
-      "_PageHeader-abad765a.js",
-      "_ConfirmDialog-683f9ad1.js",
-      "_SnackBar-5af0addc.js"
+      "_mdi-5e26928d.js",
+      "_clientApi-53c9b3db.js",
+      "_PageHeader-7465f266.js",
+      "_ConfirmDialog-0d4dd931.js",
+      "_SnackBar-e5373db4.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/hr/measures/Measures.vue"
@@ -545,12 +551,12 @@
     "css": [
       "assets/Report-ee53e089.css"
     ],
-    "file": "assets/Report-579f82de.js",
+    "file": "assets/Report-6dd568be.js",
     "imports": [
       "resources/js/app.js",
-      "_clientApi-d2428626.js",
-      "_vue-datepicker-53ad1bb0.js",
-      "_mdi-9c5e96e3.js",
+      "_clientApi-53c9b3db.js",
+      "_vue-datepicker-e0b12450.js",
+      "_mdi-5e26928d.js",
       "_typeof-7fd5df1e.js",
       "_defineProperty-fcf2a4a8.js"
     ],
@@ -558,12 +564,12 @@
     "src": "resources/js/pages/hr/reports/Report.vue"
   },
   "resources/js/pages/hr/reports/Reports.vue": {
-    "file": "assets/Reports-d0f86023.js",
+    "file": "assets/Reports-0532e44b.js",
     "imports": [
       "resources/js/app.js",
-      "_clientApi-d2428626.js",
-      "_company-5c12f6a5.js",
-      "_vue-datepicker-53ad1bb0.js",
+      "_clientApi-53c9b3db.js",
+      "_company-6e72338b.js",
+      "_vue-datepicker-e0b12450.js",
       "_typeof-7fd5df1e.js",
       "_defineProperty-fcf2a4a8.js"
     ],
@@ -571,30 +577,30 @@
     "src": "resources/js/pages/hr/reports/Reports.vue"
   },
   "resources/js/pages/hr/settings/NewPms.vue": {
-    "file": "assets/NewPms-bcb798d8.js",
+    "file": "assets/NewPms-e11a38f8.js",
     "imports": [
       "resources/js/app.js",
-      "_PageHeader-abad765a.js",
-      "_PmsForm-be169b83.js",
-      "_clientApi-d2428626.js",
-      "_company-5c12f6a5.js",
-      "_vue-datepicker-53ad1bb0.js",
+      "_PageHeader-7465f266.js",
+      "_PmsForm-f74b598f.js",
+      "_clientApi-53c9b3db.js",
+      "_company-6e72338b.js",
+      "_vue-datepicker-e0b12450.js",
       "_typeof-7fd5df1e.js",
       "_defineProperty-fcf2a4a8.js",
-      "_SnackBar-5af0addc.js"
+      "_SnackBar-e5373db4.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/hr/settings/NewPms.vue"
   },
   "resources/js/pages/hr/settings/Pms.vue": {
-    "file": "assets/Pms-0296a6f8.js",
+    "file": "assets/Pms-7837daf6.js",
     "imports": [
       "resources/js/app.js",
-      "_mdi-9c5e96e3.js",
-      "_clientApi-d2428626.js",
-      "_company-5c12f6a5.js",
-      "_vue-datepicker-53ad1bb0.js",
-      "_PageHeader-abad765a.js",
+      "_mdi-5e26928d.js",
+      "_clientApi-53c9b3db.js",
+      "_company-6e72338b.js",
+      "_vue-datepicker-e0b12450.js",
+      "_PageHeader-7465f266.js",
       "_typeof-7fd5df1e.js",
       "_defineProperty-fcf2a4a8.js"
     ],
@@ -602,59 +608,59 @@
     "src": "resources/js/pages/hr/settings/Pms.vue"
   },
   "resources/js/pages/hr/settings/SinglePms.vue": {
-    "file": "assets/SinglePms-4eb99556.js",
+    "file": "assets/SinglePms-8ac207f0.js",
     "imports": [
       "resources/js/app.js",
-      "_clientApi-d2428626.js",
-      "_PageHeader-abad765a.js",
-      "_PmsForm-be169b83.js",
-      "_company-5c12f6a5.js",
-      "_vue-datepicker-53ad1bb0.js",
+      "_clientApi-53c9b3db.js",
+      "_PageHeader-7465f266.js",
+      "_PmsForm-f74b598f.js",
+      "_company-6e72338b.js",
+      "_vue-datepicker-e0b12450.js",
       "_typeof-7fd5df1e.js",
       "_defineProperty-fcf2a4a8.js",
-      "_SnackBar-5af0addc.js"
+      "_SnackBar-e5373db4.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/hr/settings/SinglePms.vue"
   },
   "resources/js/pages/hr/weightage/Weightages.vue": {
-    "file": "assets/Weightages-0cb604f8.js",
+    "file": "assets/Weightages-13c6cc13.js",
     "imports": [
       "resources/js/app.js",
-      "_mdi-9c5e96e3.js",
-      "_PageHeader-abad765a.js",
-      "_clientApi-d2428626.js",
-      "_ConfirmDialog-683f9ad1.js",
-      "_SnackBar-5af0addc.js"
+      "_mdi-5e26928d.js",
+      "_PageHeader-7465f266.js",
+      "_clientApi-53c9b3db.js",
+      "_ConfirmDialog-0d4dd931.js",
+      "_SnackBar-e5373db4.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/hr/weightage/Weightages.vue"
   },
   "resources/js/pages/manager/kpi/CustomKpi.vue": {
-    "file": "assets/CustomKpi-d1885999.js",
+    "file": "assets/CustomKpi-c2718a41.js",
     "imports": [
       "resources/js/app.js",
-      "_clientApi-d2428626.js",
-      "_mdi-9c5e96e3.js",
-      "_CustomKpiDialog-5d7cb530.js",
-      "_ConfirmDialog-683f9ad1.js",
-      "_SnackBar-5af0addc.js",
-      "_industry-be9f0db1.js"
+      "_clientApi-53c9b3db.js",
+      "_mdi-5e26928d.js",
+      "_CustomKpiDialog-e0301770.js",
+      "_ConfirmDialog-0d4dd931.js",
+      "_SnackBar-e5373db4.js",
+      "_industry-f332f0e3.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/manager/kpi/CustomKpi.vue"
   },
   "resources/js/pages/manager/team/SingleTeamMember.vue": {
-    "file": "assets/SingleTeamMember-c52c3247.js",
+    "file": "assets/SingleTeamMember-1aba72be.js",
     "imports": [
       "resources/js/app.js",
-      "_KpiContent-1998e27e.js",
-      "_EmployeeCard-e3a88a44.js",
-      "_clientApi-d2428626.js",
-      "_industry-be9f0db1.js",
-      "_SnackBar-5af0addc.js",
-      "_mdi-9c5e96e3.js",
-      "_vue-datepicker-53ad1bb0.js",
+      "_KpiContent-6a5c2b7a.js",
+      "_EmployeeCard-05d13f04.js",
+      "_clientApi-53c9b3db.js",
+      "_industry-f332f0e3.js",
+      "_SnackBar-e5373db4.js",
+      "_mdi-5e26928d.js",
+      "_vue-datepicker-e0b12450.js",
       "_typeof-7fd5df1e.js",
       "_defineProperty-fcf2a4a8.js",
       "_printInitials-a54a9c4a.js"
@@ -663,40 +669,40 @@
     "src": "resources/js/pages/manager/team/SingleTeamMember.vue"
   },
   "resources/js/pages/manager/team/Teams.vue": {
-    "file": "assets/Teams-5b11d459.js",
+    "file": "assets/Teams-7e283e50.js",
     "imports": [
       "resources/js/app.js",
       "resources/js/components/kpi/KpiProgress.vue",
-      "_EmployeeCard-e3a88a44.js",
-      "_clientApi-d2428626.js",
-      "_SnackBar-5af0addc.js",
+      "_EmployeeCard-05d13f04.js",
+      "_clientApi-53c9b3db.js",
+      "_SnackBar-e5373db4.js",
       "_printInitials-a54a9c4a.js",
-      "_mdi-9c5e96e3.js"
+      "_mdi-5e26928d.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/pages/manager/team/Teams.vue"
   },
   "resources/js/portals/Employee.css": {
-    "file": "assets/Employee-393d906a.css",
+    "file": "assets/Employee-1a46a0dc.css",
     "src": "resources/js/portals/Employee.css"
   },
   "resources/js/portals/Employee.vue": {
     "css": [
-      "assets/Employee-393d906a.css"
+      "assets/Employee-1a46a0dc.css"
     ],
-    "file": "assets/Employee-cf2b253b.js",
+    "file": "assets/Employee-8077aac6.js",
     "imports": [
       "resources/js/app.js",
-      "_mdi-9c5e96e3.js",
+      "_mdi-5e26928d.js",
       "_printInitials-a54a9c4a.js",
-      "_sacntumApi-2e6ffa6b.js",
+      "_sacntumApi-711e3304.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/portals/Employee.vue"
   },
   "resources/js/portals/Public.vue": {
-    "file": "assets/Public-b68178b4.js",
+    "file": "assets/Public-ead24911.js",
     "imports": [
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
