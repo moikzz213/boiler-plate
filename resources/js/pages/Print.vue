@@ -251,8 +251,8 @@
                     <div>
                         <div
                             id="ecd-print"
-                            class="ecd-print"
-                            v-if="technicalArr.length > 0"
+                            class="ecd-print" 
+                            v-if='kpiDataEncrypted.reviews[0].type == "regular"'
                         >
                             <div
                                 class="text-h6 mb-1 header-title text-center"
@@ -327,7 +327,7 @@
                             </v-row>
 
                             <v-row class="download-print ma-0 mb-1">
-                                <v-col md="6" sm="6" xs="6" class="px-3 py-2">
+                                <v-col md="6" sm="6" xs="6" class="px-3 py-2"   v-if="technicalArr.length > 0">
                                     <v-row
                                         v-for="(item, index) in technicalArr"
                                         :key="item.id"
@@ -346,8 +346,17 @@
                                         </v-col>
                                     </v-row>
                                 </v-col>
-
-                                <v-col md="6" sm="6" xs="6" class="px-3 py-2">
+                                <v-col md="6" sm="6" xs="6" class="px-3 py-2" v-else>
+                                    <v-row>
+                                        <v-col
+                                            md="12"
+                                            sm="12"
+                                            xs="12"
+                                            style="border: 1px solid #000"
+                                        >1.</v-col>
+                                    </v-row>
+                                </v-col>
+                                <v-col md="6" sm="6" xs="6" class="px-3 py-2" v-if="technicalArr.length > 0">
                                     <v-row
                                         v-for="(item, index) in softskillArr"
                                         :key="item.id"
@@ -369,6 +378,16 @@
                                         >
                                             2.
                                         </v-col>
+                                    </v-row>
+                                </v-col>
+                                <v-col md="6" sm="6" xs="6" class="px-3 py-2" v-else>
+                                    <v-row>
+                                        <v-col
+                                            md="12"
+                                            sm="12"
+                                            xs="12"
+                                            style="border: 1px solid #000"
+                                        >1.</v-col>
                                     </v-row>
                                 </v-col>
                             </v-row>
