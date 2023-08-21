@@ -143,6 +143,7 @@ const importCSV = () => {
     complete: parseComplete,
   });
 };
+ 
 const parseComplete = async (results, file) => {
   // Remove 1st row header
   // delete results.data[0];
@@ -153,6 +154,23 @@ const parseComplete = async (results, file) => {
     return el != null && el[firstKey] != "";
   });
 
+  let validation = new Set(
+    resultsArray.map(obj => {
+      return obj.title;
+    }));
+
+    if(validation.size < resultsArray.length){
+    emit("imported", {
+        status: false,
+        message: "Kindly remove the duplicate data from the file.",
+      });
+
+      setTimeout(() => {
+        importData.value.loading = false;
+      }, 1500);
+      return false;
+  }
+   
   // set data
   let data = {
     import_data: JSON.stringify(resultsArray),

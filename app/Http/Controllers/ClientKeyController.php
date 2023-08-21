@@ -16,7 +16,7 @@ class ClientKeyController extends Controller
         $clientKey = ClientKey::firstOrCreate([
             'key' => $request['key'],
             'ecode' => $request['user_ecode'] ? $request['user_ecode'] : null,
-        ]);
+        ]); 
 
         // save employee profile
         // return profile with role for hrbp hr_admin

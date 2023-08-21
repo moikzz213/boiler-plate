@@ -193,13 +193,7 @@ const sideNavigation = ref([
     icon: mdiHomeOutline,
     roles: ["app_admin", "normal", "manager", "hr_admin", "hrbp"],
     path: "/dashboard",
-  },
-  {
-    title: "Reports",
-    icon: mdiChartBoxOutline,
-    roles: ["app_admin", "hr_admin", "hrbp"],
-    path: "/hr/reports",
-  },
+  }, 
   {
     title: "Teams",
     icon: mdiAccountSupervisor,
