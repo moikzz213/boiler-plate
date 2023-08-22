@@ -1,7 +1,6 @@
 <template>
-    <v-container class="pb-16" style="max-width: 1200px"> 
-        {{ have_access }}
-        <v-row :class="`${have_access}-sssss my-5`" v-if="have_access && kpiDataEncrypted">
+    <v-container :class="`${have_access}-sssss pb-16` " style="max-width: 1200px">  
+        <v-row class="my-5" v-if="have_access && kpiDataEncrypted">
             <div class="v-col-12">
                 <v-btn
                     size="small"
