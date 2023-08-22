@@ -44,9 +44,11 @@ Route::get('/manager/kpi', [PageController::class, 'home'])->name('manager.teams
 Route::get('/hr/employees', [PageController::class, 'home'])->name('hr.employees');
 Route::get('/hr/employees/{ecode}', [PageController::class, 'home'])->name('hr.employees.single');
 Route::get('/hr/custom/{type}', [PageController::class, 'home'])->name('hr.kpi.custom');
+Route::get('/hr/custom/{type}/page/{page}', [PageController::class, 'home'])->name('hr.kpi.custom.paginated');
 Route::get('/hr/master/{type}', [PageController::class, 'home'])->name('hr.kpi.master');
+Route::get('/hr/master/{type}/page/{page}', [PageController::class, 'home'])->name('hr.kpi.master.paginated');
 Route::get('/hr/settings/pms', [PageController::class, 'home'])->name('hr.settings.pms');
-Route::get('/hr/settings/pms/page/:page', [PageController::class, 'home'])->name('hr.settings.pms.paginated');
+Route::get('/hr/settings/pms/page/{page}', [PageController::class, 'home'])->name('hr.settings.pms.paginated');
 Route::get('/hr/settings/pms/{id}', [PageController::class, 'home'])->name('hr.settings.pms.single');
 Route::get('/hr/settings/pms/new', [PageController::class, 'home'])->name('hr.settings.pms.new');
 
