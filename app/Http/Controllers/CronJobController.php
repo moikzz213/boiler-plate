@@ -576,7 +576,8 @@ class CronJobController extends Controller
                         'reminder_date'             => Carbon::now()->addDays(3),
                         'year'                      => $v->year,
                         'type'                      => $vb->is_regular ? 'regular' : 'probation',
-                        'author'                    => 'system'
+                        'author'                    => 'system',
+                        'created_at'                => Carbon::now()
                     ]);
                 } 
             }
