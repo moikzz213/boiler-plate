@@ -562,7 +562,7 @@ const kpiDataEncrypted = ref(null);
 const teamList = ref(authStore.authProfile.teams);
 const have_access = ref(false);
 const adminRoles = ref(["hr_admin", "app_admin", "hrbp"]);
-console.log('authStore.authProfile.role',authStore.authProfile.role);
+
 if (
     authStore.authProfile.ecode == ecode.value ||
     adminRoles.value.includes(authStore.authProfile.role)
