@@ -566,14 +566,14 @@ class CronJobController extends Controller
         }
       
         foreach($currentSetting AS $k => $v){
-            foreach($query AS $k => $vb){  
+            foreach($query AS $k => $vb){
                 if($vb->company_id == $v['company_id']){
                     $vb->reviews()->create([
                         'performance_settings_id'   => $v->id,
                         'company_id'                => $v['company_id'],
                         'state'                     => 'setting',
                         'status'                     => 'open',
-                        'reminder_date'             => Carbon::now()->addDays(3),
+                        'reminder_date'             => Carbon::now()->addDays(1),
                         'year'                      => $v->year,
                         'type'                      => $vb->is_regular ? 'regular' : 'probation',
                         'author'                    => 'system',
