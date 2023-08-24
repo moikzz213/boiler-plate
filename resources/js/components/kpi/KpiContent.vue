@@ -15,7 +15,7 @@
           d-flex align-center justify-center px-3 text-center pms-tab`">
           KPI {{ kpiArray ? "(" + kpiArray.length + ")" : "(" + 0 + ")" }}
         </v-card>
-        <v-card v-if="viewingEmployee && viewingEmployee.is_regular" @click="() => selectTab('ecd')" flat :class="`${selectedTab == 'ecd' ? '' : 'bg-grey-darken-3 text-white'
+        <v-card v-if="viewingEmployee?.reviews && viewingEmployee.reviews.length > 0 && viewingEmployee.reviews[0].type == 'regular'" @click="() => selectTab('ecd')" flat :class="`${selectedTab == 'ecd' ? '' : 'bg-grey-darken-3 text-white'
           } d-flex align-center justify-center px-3 text-caption text-center pms-tab`">
           Employee Capability Development {{ "(" + ecdArray.length + ")" }}
         </v-card> 

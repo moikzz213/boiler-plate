@@ -86,7 +86,7 @@
                                     color="secondary"
                                     class="text-capitalize rounded-lg text-md-caption text-lg-body-2"
                                     >{{
-                                        selEmployeeObj.is_regular &&
+                                        selEmployeeObj.reviews[0].type == 'regular' &&
                                         selEmployeeObj.reviews[0].state ==
                                             "setting" &&
                                         selEmployeeObj.reviews[0].status ==
@@ -298,7 +298,7 @@ const submitForReview = () => {
 
     if (selEmployeeObj.value.reviews[0].state == "setting") {
         if (
-            selEmployeeObj.value.is_regular &&
+            selEmployeeObj.value.reviews[0].type == 'regular' &&
             (selEmployeeObj.value.reviews[0].status == "open" ||
                 selEmployeeObj.value.reviews[0].status == "inprogress")
         ) {
@@ -338,16 +338,16 @@ const formSubmit = (reviewID,status) => {
         newStatus: status,
         user_ecode: authStore.authProfile.ecode,
         employee_ecode: selectedEmployeeArr.value, 
-        allowedDays: selEmployeeObj.value.is_regular
+        allowedDays: selEmployeeObj.value.reviews[0].type == 'regular'
             ? globalSetting.value.employee_review_allowed_days
             : globalSetting.value.probation_kpi_setting,
-        closingDateSetting: selEmployeeObj.value.is_regular
+        closingDateSetting: selEmployeeObj.value.reviews[0].type == 'regular'
             ? globalSetting.value.annual_kpi_setting_end
             : globalSetting.value.probation_kpi_setting,
-        closingDateMid: selEmployeeObj.value.is_regular
+        closingDateMid: selEmployeeObj.value.reviews[0].type == 'regular'
             ? globalSetting.value.mid_year_review_end
             : globalSetting.value.probation_first_review_end,
-        closingDateFinal: selEmployeeObj.value.is_regular
+        closingDateFinal: selEmployeeObj.value.reviews[0].type == 'regular'
             ? globalSetting.value.end_year_review_end
             : globalSetting.value.probation_final_review_end,
     };
