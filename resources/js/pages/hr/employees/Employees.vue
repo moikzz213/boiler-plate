@@ -197,7 +197,6 @@ const hasStateToChange = () => {
       .then((res) => {
         showMidBtn.value = res.data.first_button;
         showFinalBtn.value = res.data.second_button;
-         console.log(res.data);
       })
       .catch((err) => {
         location.reload();
@@ -301,12 +300,14 @@ const getEmployees = async (page) => {
       currentPage.value = res.data.current_page;
       totalResult.value = res.data.total;
       employees.value = res.data.data;
+
+      if(res?.data?.data?.length > 0){
+        hasStateToChange();
+      }
     })
     .catch((err) => {
       location.reload();
-    });
-
-    hasStateToChange();
+    }); 
 };
 watch(currentPage, (newValue, oldValue) => {
   if (newValue != oldValue) {

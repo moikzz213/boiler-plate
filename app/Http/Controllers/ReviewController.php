@@ -140,7 +140,7 @@ class ReviewController extends Controller
         
         $data = $company
         ->whereHas('profiles', function ($q) {
-            $q->where('is_regular', true)->whereIn('status', ['active','Active']);
+            $q->whereIn('status', ['active','Active']);
         })
         ->whereHas('settings', function ($q) use($state) { 
             $q->where(['state' => $state, 'year' => Carbon::now()->format('Y')]); 
@@ -151,8 +151,8 @@ class ReviewController extends Controller
                     $query->whereHas('settings', function($qry){
                         $qry->where('status', 'open');
                     });
-                })->doesntHave('reviews')
-                ->orWherehas('reviews', function($qq) {
+                })
+                ->wherehas('reviews', function($qq) {
                     $qq->where('status','open');
                 })->whereIn('status', ['active', 'Active']);
             }, 
@@ -180,7 +180,7 @@ class ReviewController extends Controller
                 })->whereIn('status', ['active', 'Active']);
             },
         ])->orderBy('title','ASC')->get(); 
-       
+ 
         $companyData = $company->whereHas('profiles', function ($q) {
             $q->where('is_regular', true)->whereIn('status', ['active','Active']);
         })->withCount(['profiles AS profiles_count' =>  function ($q) {
