@@ -442,7 +442,7 @@ const fetchTeamMembers = () => {
             managerTeam.value = res.data;
             originalTeamValue.value = res.data;
         })
-        .catch((err) => {});
+        .catch((err) => {location.reload();});
     }
 };
 fetchTeamMembers();

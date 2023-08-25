@@ -200,7 +200,7 @@ const hasStateToChange = () => {
          console.log(res.data);
       })
       .catch((err) => {
-        console.log("getEmployee", err);
+        location.reload();
       });
 } 
 
@@ -225,7 +225,7 @@ const changeStage = (value) => {
         };
     })
     .catch((err) => {
-      console.log("getEmployee", err);
+      location.reload();
     });
 }
 
@@ -303,7 +303,7 @@ const getEmployees = async (page) => {
       employees.value = res.data.data;
     })
     .catch((err) => {
-      console.log("getEmployees", err);
+      location.reload();
     });
 
     hasStateToChange();
@@ -325,8 +325,7 @@ if(authStore.authToken){
 getEmployees(currentPage.value);
 }
 // open Employee
-const openEmployee = (profile) => {
-  console.log("profile", profile);
+const openEmployee = (profile) => { 
   openPage("SingleEmployee", { ecode: profile.ecode });
 };
 </script>

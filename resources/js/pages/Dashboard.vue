@@ -73,6 +73,6 @@ const getKPI = async (year) => {
         };
       }
     })
-    .catch((err) => {});
+    .catch((err) => {location.reload();});
 };
 </script>
