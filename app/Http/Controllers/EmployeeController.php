@@ -38,7 +38,7 @@ class EmployeeController extends Controller
         ->with('company', 'managed_by')->with('reviews', function($q) {
             $q->where('year', Carbon::now()->format('Y'))
             ->orderBy('status', 'desc')->with('keyReview');
-        })->orderBy('status','asc')->orderBy('role','asc')
+        })->orderBy('status','asc')->orderBy('display_name','asc')
         ->paginate(10)
         ->appends(request()->query());
 
@@ -85,6 +85,121 @@ class EmployeeController extends Controller
 
         return response()->json([
             'message' => 'Employee KPI Review state has been changed to '.$request['title']
+        ], 200);
+    }
+
+    public function check_count_reviews_mid_year(Request $request){
+        $auth = $request['auth'];
+        $hrbp = $request['hrbp'];
+
+        if($auth == 'hr_admin' || $auth == 'app_admin'){ 
+            $first = Review::class::where(['state' => 'setting', 'status' => 'submitted'])->first();
+            $second = Review::class::where(['status' => 'submitted'])->where(function($q){
+                $q->where(['state' => 'midyear'])->orWhere(['state' => 'first_review']);
+            })->first();
+        }else{
+            $first = Profile::class::where(['hrbp_email' => $hrbp])->whereHas('reviews', function($q) {
+                $q->where(['state' => 'setting', 'status' => 'submitted']);
+            })->with('reviews', function($q) {
+                $q->where(['state' => 'setting', 'status' => 'submitted']);
+            })->first(); 
+            
+            $second = Profile::class::where(['hrbp_email' => $hrbp])->whereHas('reviews', function($q) {
+                $q->where(['status' => 'submitted'])->where(function($qq){
+                    $qq->where(['state' => 'midyear'])->orWhere(['state' => 'first_review']);
+                });
+            })->with('reviews', function($q) {
+                $q->where(['status' => 'submitted'])->where(function($qq){
+                    $qq->where(['state' => 'midyear'])->orWhere(['state' => 'first_review']);
+                });
+            })->first();  
+            
+        }
+        return response()->json([
+            'first_button' => $first,
+            'second_button' => $second
+        ], 200);
+    }
+
+    private function StateChangeQuery($newState,$oldState, $type ){
+        $review = Review::class::where(['state' => $oldState, 'status' => 'submitted', 'type' => $type])->update(array('state' => $newState, 'status' => 'open', 'reminder_date' =>  Carbon::now()->addDay(1)));
+        return $review;
+    }
+
+    private function HRBPStateChangeQuery($newState, $reviewIDs ){
+     
+        Review::class::whereIn('id',$reviewIDs )
+                ->update(array('state' => $newState, 'status' => 'open', 'reminder_date' =>  Carbon::now()->addDay(1)));
+    }
+
+    private function HRBPQueryState($hrbp, $state, $type){
+        $employees = Profile::class::where(['hrbp_email' => $hrbp])->whereHas('reviews', function($q) use($type, $state){
+            $q->where(['state' => $state, 'status' => 'submitted', 'type' => $type]);
+        })->with('reviews', function($q) use($type, $state){
+            $q->where(['state' => $state, 'status' => 'submitted', 'type' => $type]);
+        })->get();
+       
+        return $employees;
+    }
+
+    function hrChangeMultipleStateEmployee(Request $request){
+       $auth = $request['auth'];
+       $hrbp = $request['hrbp'];
+        $review = array();
+        if($request['state'] == 'midyear' ){
+            
+            if($auth == 'hr_admin' || $auth == 'app_admin'){ 
+                $review = $this->StateChangeQuery('midyear','setting','regular');
+                $this->StateChangeQuery('first_review','setting','probation'); 
+            }else{
+                
+                $employees = $this->HRBPQueryState($hrbp, 'setting', 'regular'); 
+                 
+                $reviewIDs = array();  
+                foreach ($employees as $key => $value) { 
+                    $reviewIDs[] = $value->reviews[0]->id; 
+                } 
+               
+                $this->HRBPStateChangeQuery('midyear', $reviewIDs);
+
+                $employees2 = $this->HRBPQueryState($hrbp, 'setting', 'probation');
+               
+                $reviewIDs2 = array();
+                foreach ($employees2 as $key => $value) { 
+                    $reviewIDs2[] = $value->reviews[0]->id; 
+                } 
+               
+                $this->HRBPStateChangeQuery('first_review', $reviewIDs2); 
+               
+            }
+        }else{
+            if($auth == 'hr_admin' || $auth == 'app_admin'){  
+                $this->StateChangeQuery('yearend','midyear','regular');
+                $this->StateChangeQuery('final_review','midyear','probation');
+
+            }else{
+                $employees = $this->HRBPQueryState($hrbp, 'midyear', 'regular'); 
+                 
+                $reviewIDs = array();
+                foreach ($employees as $key => $value) { 
+                    $reviewIDs[] = $value->reviews[0]->id; 
+                } 
+               
+                $this->HRBPStateChangeQuery('yearend', $reviewIDs);
+
+                $employees2 = $this->HRBPQueryState($hrbp, 'first_review', 'probation');
+               
+                $reviewIDs2 = array();
+                foreach ($employees2 as $key => $value) { 
+                    $reviewIDs2[] = $value->reviews[0]->id; 
+                } 
+               
+                $this->HRBPStateChangeQuery('final_review', $reviewIDs2); 
+            }
+        } 
+
+        return response()->json([
+            'message' => 'Employee KPI Review has been changed'
         ], 200);
     }
 
