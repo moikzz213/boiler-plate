@@ -60,9 +60,11 @@ Route::middleware('authkey')->group(function () {
 
     Route::post('/employee/secondary-manager/update', [EmployeeController::class, 'secondaryManager'])->name('hr.secondary-manager.update');
     Route::post('/hr-change/state', [EmployeeController::class, 'hrChangeStateEmployee'])->name('hr.change.state');
+    Route::post('/hr-change/multitple-state', [EmployeeController::class, 'hrChangeMultipleStateEmployee'])->name('hr.change.multiple-state');
     // measures
     
     Route::get('/fetch/measures/non-paginated', [MeasureController::class, 'getNonPaginatedMeasures'])->name('dialog.measure.non-paginated');
     Route::get('/fetch/master-kpi/non-paginate', [KeyPerformanceIndicatorMasterController::class, 'getNoNPaginatedKpis'])->name('fetch.master-kpi.non-paginate');
     Route::get('/fetch/master-custom-kpi/non-paginate/{ecode}', [KeyPerformanceIndicatorMasterController::class, 'getNoNPaginatedCustomKpis'])->name('fetch.master-custom-kpi.non-paginate');
+    Route::post('/check-reviews/acount-validation', [EmployeeController::class, 'check_count_reviews_mid_year'])->name('check.count.reviews.validation');
 });

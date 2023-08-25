@@ -79,7 +79,18 @@
           >
         </div>
       </div>
+      <div class="v-col-4"> 
+      </div>
+      <div class="v-col-4 text-center">
+        <v-btn v-if="showMidBtn" color="primary" size="small" @click="changeStage('midyear')">Change KPI`s to Mid Year/ First Review</v-btn>
+        <div v-if="showMidBtn" class="text-caption text-center">(Only Submitted KPIs - Regular / Probation)</div>
+      </div>
+      <div class="v-col-4 text-right"> 
+        <v-btn v-if="showFinalBtn" color="primary" size="small" @click="changeStage('yearend')">Change KPI`s to Year End/ Final Review</v-btn>
+        <div v-if="showFinalBtn" class="text-caption text-center">(Only Submitted KPIs - Regular / Probation)</div>
+      </div>
     </v-row>
+
     <v-row>
       <div v-if="employees.length > 0" class="v-col-12">
         <v-card
@@ -122,6 +133,7 @@
         </v-card>
       </div>
     </v-row>
+    <SnackBar :options="sbOptions" />
   </v-container>
 </template>
 
@@ -133,7 +145,7 @@ import { clientApi } from "@/services/clientApi";
 import { useCompanyStore } from "@/stores/company";
 import KpiProgress from "@/components/kpi/KpiProgress.vue";
 import EmployeeCard from "@/components/EmployeeCard.vue";
-
+import SnackBar from "@/components/SnackBar.vue";
 // authenticated user object
 const authStore = useAuthStore();
 
@@ -170,6 +182,52 @@ const loadCompnaies = () => {
     });
   }
 };
+
+const showMidBtn = ref(false);
+const showFinalBtn = ref(false);
+const hasStateToChange = () => {
+
+  let formData = { 
+      auth: authStore.authProfile.role, 
+      hrbp: authStore.authProfile.hrbp_email
+    };
+
+      clientApi(authStore.authToken)
+      .post("/api/check-reviews/acount-validation",formData)
+      .then((res) => {
+        showMidBtn.value = res.data.first_button;
+        showFinalBtn.value = res.data.second_button;
+         console.log(res.data);
+      })
+      .catch((err) => {
+        location.reload();
+      });
+} 
+
+const sbOptions = ref({});
+const changeStage = (value) => {
+ 
+    let formData = {
+      state: value,
+      auth: authStore.authProfile.role,
+      profile_id: authStore.authProfile.profile_id,
+      hrbp: authStore.authProfile.hrbp_email
+    };
+
+    clientApi(authStore.authToken)
+    .post("/api/hr-change/multitple-state", formData)
+    .then((res) => {
+      getEmployees(currentPage.value)
+      sbOptions.value = {
+          status: true,
+          type: "success",
+          text: res.data.message,
+        };
+    })
+    .catch((err) => {
+      location.reload();
+    });
+}
 
 // filter employee
 const employeeTypeList = ref([
@@ -245,8 +303,10 @@ const getEmployees = async (page) => {
       employees.value = res.data.data;
     })
     .catch((err) => {
-      console.log("getEmployees", err);
+      location.reload();
     });
+
+    hasStateToChange();
 };
 watch(currentPage, (newValue, oldValue) => {
   if (newValue != oldValue) {
@@ -265,8 +325,7 @@ if(authStore.authToken){
 getEmployees(currentPage.value);
 }
 // open Employee
-const openEmployee = (profile) => {
-  console.log("profile", profile);
+const openEmployee = (profile) => { 
   openPage("SingleEmployee", { ecode: profile.ecode });
 };
 </script>

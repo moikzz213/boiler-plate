@@ -243,7 +243,9 @@ const fetchMeasures = async () => {
         .then((res) => {
             measuresList.value = res.data;
         })
-        .catch((err) => {});
+        .catch((err) => {
+          location.reload();
+        });
 };
 
 const industryWithKPI = ref([]);
@@ -274,7 +276,9 @@ const getKPI = async (year) => {
                 };
             }
         })
-        .catch((err) => {});
+        .catch((err) => {
+          location.reload();
+        });
 };
 
 
@@ -305,6 +309,8 @@ const kpiMaster = async () => {
                     });
                 });
             } 
+        }).catch((err) => {
+          location.reload();
         });
 };
 
@@ -341,7 +347,7 @@ const changeStage = () =>{
       getEmployee();
     })
     .catch((err) => {
-      console.log("getEmployee", err);
+      
     });
 }
 // get employee
@@ -372,7 +378,7 @@ const getEmployee = async () => {
       secondarySearch.value = res.data.slave_ecode;
     })
     .catch((err) => {
-      console.log("getEmployee", err);
+      location.reload();
     });
 };
 

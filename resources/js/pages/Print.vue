@@ -672,7 +672,7 @@ const fetchEmployeeKPIbyYear = async () => {
                 }
             }, 1000);
         })
-        .catch((err) => {});
+        .catch((err) => {location.reload();});
 };
 
 onMounted(() => {

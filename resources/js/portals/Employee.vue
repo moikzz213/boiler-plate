@@ -36,6 +36,7 @@ const refreshAuth = async () => {
       if (err.response.status == 401) {
         // logout user and redirect to login
         localStorage.removeItem("authClient");
+ 
         router.push({ path: "/login" });
       }
       settingStore.setPageLoading(false);
