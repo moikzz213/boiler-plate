@@ -51,8 +51,6 @@ Route::middleware('authkey')->group(function () {
     // Manager KPI Submit
     Route::post('/manager/employee-kpi/submit', [ReviewController::class, 'kpiSubmitted'])->name('manager.employee.kpi.save');
 
-    // Non Paginate Fetch
-
     // Notifications
     Route::get('/fetch/setting/notifications', [NotificationController::class, 'fetchNotifications'])->name('fetch.notifications');
     Route::post('/save/setting/notifications', [NotificationController::class, 'saveNotifications'])->name('save.notifications');

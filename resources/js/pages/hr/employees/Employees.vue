@@ -81,13 +81,13 @@
       </div>
       <div class="v-col-4"> 
       </div>
-      <div class="v-col-4 text-center">
+      <div class="v-col-12 v-col-md-4 text-center">
         <v-btn v-if="showMidBtn" color="primary" size="small" @click="changeStage('midyear')">Change KPI`s to Mid Year/ First Review</v-btn>
         <div v-if="showMidBtn" class="text-caption text-center">(Only Submitted KPIs - Regular / Probation)</div>
       </div>
-      <div class="v-col-4 text-right"> 
+      <div class="v-col-12 v-col-md-4 text-center"> 
         <v-btn v-if="showFinalBtn" color="primary" size="small" @click="changeStage('yearend')">Change KPI`s to Year End/ Final Review</v-btn>
-        <div v-if="showFinalBtn" class="text-caption text-center">(Only Submitted KPIs - Regular / Probation)</div>
+        <div v-if="showFinalBtn" class="text-caption text-center">(Only Mid-Year Submitted KPIs - Regular / Probation)</div>
       </div>
     </v-row>
 
