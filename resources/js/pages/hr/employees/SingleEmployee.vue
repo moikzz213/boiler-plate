@@ -386,9 +386,9 @@ const globalSetting = computed(() => settingStore.filteredSetting(employee.value
 
 if(authStore.authToken){
 getEmployee();
-selectIndustry();
-kpiMaster();
-fetchMeasures();
+//selectIndustry();
+//kpiMaster();
+//fetchMeasures();
 }
 // select employee
 const selectStatus = (status) => {

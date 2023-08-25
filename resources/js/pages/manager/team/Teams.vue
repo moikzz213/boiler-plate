@@ -441,8 +441,14 @@ const fetchTeamMembers = () => {
         .then((res) => {
             managerTeam.value = res.data;
             originalTeamValue.value = res.data;
+            console.log('res',res);
+            if(res.data.length > 0){
+            fetchSettings();
+            }
         })
-        .catch((err) => {location.reload();});
+        .catch((err) => { 
+            location.reload();
+        });
     }
 };
 fetchTeamMembers();
@@ -458,5 +464,5 @@ const fetchSettings = async () => {
         });
     }
 };
-fetchSettings();
+
 </script>
