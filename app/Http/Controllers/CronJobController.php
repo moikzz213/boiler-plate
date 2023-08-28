@@ -555,7 +555,7 @@ class CronJobController extends Controller
         if(!$request->input('key') || !$request->input('c') || ( $request->input('key') != 'Moikzz' || $request->input('c') != 'Ghassan')){
             return json_encode(array("Message" => 'Invalid access', 'Status Code' => 403));
         }
-        $query = Profile::doesntHave('reviews')->whereIn('status', ['active', 'Active'])->where('grade', '>', 5)->where('grade', '<', 11)->get();
+        $query = Profile::doesntHave('reviews')->whereIn('status', ['active', 'Active'])->whereBetween('grade', [6,10])->get();
 
         $currentSetting = PerformanceSetting::where('status' ,'!=', 'locked')->get();
 

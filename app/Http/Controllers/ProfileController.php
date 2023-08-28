@@ -43,25 +43,25 @@ class ProfileController extends Controller
             // Second Level
             $q->with('reviews', function($qq) {
                 $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
-            })->with('company')->where('grade', '>', 5)->whereIn('status', ['active', 'Active'])->orderBy('is_regular', 'ASC');
+            })->with('company')->whereBetween('grade', [6,10])->whereIn('status', ['active', 'Active'])->orderBy('is_regular', 'ASC');
 
             // Third Level
             $q->with('teams', function($qq) {
                 $qq->with('reviews', function($qq) {
                     $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
-                })->with('company')->where('grade', '>', 5)->whereIn('status', ['active', 'Active'])->orderBy('is_regular', 'ASC');
+                })->with('company')->whereBetween('grade', [6,10])->whereIn('status', ['active', 'Active'])->orderBy('is_regular', 'ASC');
 
                 // Fourth Level
                 $qq->with('teams', function($qq) {
                     $qq->with('reviews', function($qq) {
                         $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
-                    })->with('company')->where('grade', '>', 5)->whereIn('status', ['active', 'Active'])->orderBy('is_regular', 'ASC');
+                    })->with('company')->whereBetween('grade', [6,10])->whereIn('status', ['active', 'Active'])->orderBy('is_regular', 'ASC');
 
                     // Fifth Level
                     $qq->with('teams', function($qq) {
                         $qq->with('reviews', function($qq) {
                             $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
-                        })->with('company')->where('grade', '>', 5)->whereIn('status', ['active', 'Active'])->orderBy('is_regular', 'ASC');
+                        })->with('company')->whereBetween('grade', [6,10])->whereIn('status', ['active', 'Active'])->orderBy('is_regular', 'ASC');
                     });
                 });
             });
