@@ -11,6 +11,7 @@ import Chart from "chart.js/auto";
 const props = defineProps(["data"]);
 const chart_container = ref(null);
 const fetchedData = ref(props.data);
+console.log(fetchedData.value);
 const filterData = (property) => fetchedData.value.map((d) => d[property]);
 const theDataTitle = computed(() => fetchedData.value.map((d) => d.sub_title ? d.title + " - " + d.sub_title.toUpperCase() : d.title));
 const theDataSet = computed(() => {

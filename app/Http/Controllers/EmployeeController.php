@@ -34,7 +34,7 @@ class EmployeeController extends Controller
                     $query->where('hrbp_email', $value);
                 }
             }),
-        ])->where('grade', '>=', 6)
+        ])->whereBetween('grade', [6,10])
         ->with('company', 'managed_by')->with('reviews', function($q) {
             $q->where('year', Carbon::now()->format('Y'))
             ->orderBy('status', 'desc')->with('keyReview');

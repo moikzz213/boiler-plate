@@ -134,16 +134,26 @@ class ReviewController extends Controller
         ], 200);
     }
 
-    function getReviewForGraph($state){
+    function getReviewForGraph(Request $request,$state){
         // graph array
         $company = new Company;
+
+        $year = @$request->input('year');
+        $filterHRBP = @$request->input('comp');
+
+        if(!$year){
+            $year = Carbon::now()->format('Y');
+        } 
         
         $data = $company
-        ->whereHas('profiles', function ($q) {
+        ->whereHas('profiles', function ($q) use($filterHRBP) {
             $q->whereIn('status', ['active','Active']);
+            if($filterHRBP){
+                $q->where('hrbp_email', $filterHRBP);
+            }
         })
-        ->whereHas('settings', function ($q) use($state) { 
-            $q->where(['state' => $state, 'year' => Carbon::now()->format('Y')]); 
+        ->whereHas('settings', function ($q) use($state, $year) { 
+            $q->where(['state' => $state, 'year' => $year]);  
         })
         ->withCount([
             'profiles as open' => function ($q) {
@@ -181,8 +191,11 @@ class ReviewController extends Controller
             },
         ])->orderBy('title','ASC')->get(); 
  
-        $companyData = $company->whereHas('profiles', function ($q) {
+        $companyData = $company->whereHas('profiles', function ($q) use($filterHRBP) {
             $q->where('is_regular', true)->whereIn('status', ['active','Active']);
+            if($filterHRBP){
+                $q->where('hrbp_email', $filterHRBP);
+            }
         })->withCount(['profiles AS profiles_count' =>  function ($q) {
             $q->whereIn('status', ['active', 'Active']);
         }])->orderBy('title','ASC')->get();
