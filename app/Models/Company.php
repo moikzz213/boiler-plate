@@ -17,12 +17,7 @@ class Company extends Model
     public function logs()
     {
         return $this->morphToMany(Log::class, 'loggable');
-    }
-
-    public function settings()
-    {
-        return $this->hasMany(PerformanceSetting::class);
-    }
+    } 
 
     public function profiles()
     {

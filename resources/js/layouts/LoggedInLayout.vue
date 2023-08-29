@@ -194,60 +194,14 @@ const sideNavigation = ref([
     roles: ["app_admin", "normal", "manager", "hr_admin", "hrbp"],
     path: "/dashboard",
   }, 
-  {
-    title: "Teams",
-    icon: mdiAccountSupervisor,
-    roles: ["app_admin", "manager"],
-    path: "/manager/teams",
-  },
-  {
-    title: "My Custom KPI",
-    icon: mdiPlaylistEdit,
-    roles: ["app_admin", "manager"],
-    path: "/manager/custom/kpi",
-  },
-  {
-    title: "Employees",
-    icon: mdiAccountGroup,
-    roles: ["app_admin", "hr_admin", "hrbp"],
-    path: "/hr/employees",
-  },
-  {
-    title: "Reports",
-    icon: mdiChartArc,
-    roles: ["app_admin", "hr_admin", "hrbp"],
-    path: "/hr/reports",
-  },
+ 
+   
   {
     title: "Settings",
     icon: mdiCog,
     roles: ["app_admin", "hr_admin", 'hrbp'],
     path: "",
-    subs: [
-      {
-        title: "PMS Settings",
-        icon: mdiCogOutline,
-        path: "/hr/settings/pms",
-        roles: ["app_admin", "hr_admin", 'hrbp'],
-      },
-      {
-        title: "Custom KPIs",
-        icon: mdiPlaylistEdit,
-        path: "/hr/custom/kpi",
-        roles: ["app_admin", "hr_admin"],
-      },
-      {
-        title: "KPIs",
-        icon: mdiFormatListBulleted,
-        path: "/hr/master/kpi",
-        roles: ["app_admin", "hr_admin"],
-      },
-      {
-        title: "Industries",
-        icon: mdiDomain,
-        path: "/hr/industries",
-        roles: ["app_admin", "hr_admin"],
-      },
+    subs: [ 
       {
         title: "Companies",
         icon: mdiOfficeBuilding,
@@ -260,18 +214,7 @@ const sideNavigation = ref([
         path: "/admin/notifications",
         roles: ["app_admin", "hr_admin"],
       },
-      {
-        title: "Measures",
-        icon: mdiClipboardEditOutline,
-        path: "/hr/measures",
-        roles: ["app_admin", "hr_admin"],
-      },
-      {
-        title: "Weightage",
-        icon: mdiPercent,
-        path: "/hr/weightages",
-        roles: ["app_admin", "hr_admin"],
-      },
+       
     ],
   },
   {

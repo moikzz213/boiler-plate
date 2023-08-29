@@ -32,6 +32,8 @@ return new class extends Migration
             $table->string('role')->nullable(); // hr_admin, hrbp
             $table->boolean('is_regular')->nullable()->default(true);
             $table->foreignId('company_id')->constrained()->nullable();
+            $table->boolean('sync')->default(true); // active, inactive
+            $table->string('slave_ecode')->nullable(); // active, inactive
             $table->timestamps();
         });
     }

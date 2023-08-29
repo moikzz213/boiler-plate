@@ -54,12 +54,9 @@ import { useAuthStore } from "@/stores/auth";
 import { authApi } from "@/services/sacntumApi";
 import GuestLayout from "../layouts/GuestLayout.vue";
 import WhiteLogo from "@/Components/logo/WhiteLogo.vue";
-import { useSettingStore } from "@/stores/settings";
 
 // router
-const router = useRouter();
-
-const settingStore = useSettingStore();
+const router = useRouter(); 
 const appName = ref(import.meta.env.VITE_APP_NAME);
 const key = ref(import.meta.env.VITE_APP_KEY);
 // authStore
@@ -83,20 +80,17 @@ const login = async () => {
   loadingLogin.value = true;
   authLogin()
     .then((res) => {
-      settingStore.setPageLoading(true, "logging in"); 
       let redirectPath = "/dashboard";
       authStore
         .saveClientKey(res.data)
         .then((keyResponse) => {
-          loadingLogin.value = false;
-          settingStore.setPmsSettings(keyResponse.data.pms_settings);
-          settingStore.setAllSettings(keyResponse.data.all_settings);
+          loadingLogin.value = false; 
           router.push({ path: redirectPath });
-          settingStore.setPageLoading(false, "logging in");
+         // window.location = redirectPath;
         })
         .catch(() => {
           loadingLogin.value = false;
-          settingStore.setPageLoading(false, "logging in");
+           
         });
     })
     .catch((err) => {
@@ -133,5 +127,4 @@ const authLogin = async () => {
 };
 
 // set from login
-settingStore.setIsFromLogin(true);
 </script>

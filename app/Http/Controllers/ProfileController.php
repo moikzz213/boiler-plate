@@ -32,119 +32,21 @@ class ProfileController extends Controller
     {
         $profile = Profile::where('user_id', $id)->first();
         return response()->json($profile, 200);
-    }
-
-    public function teamMembers($ecode){
-        // First Level
-        $team = Profile::where(['superior_ecode' => $ecode, 'status' => 'Active'])->orWhere(['slave_ecode' => $ecode])
-        ->with('reviews', function($q) {
-            $q->where('year', Carbon::now()->format('Y'))->with('keyReview');
-        })->with('company')->with('teams', function($q) {
-            // Second Level
-            $q->with('reviews', function($qq) {
-                $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
-            })->with('company')->whereBetween('grade', [6,10])->whereIn('status', ['active', 'Active'])->orderBy('is_regular', 'ASC');
-
-            // Third Level
-            $q->with('teams', function($qq) {
-                $qq->with('reviews', function($qq) {
-                    $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
-                })->with('company')->whereBetween('grade', [6,10])->whereIn('status', ['active', 'Active'])->orderBy('is_regular', 'ASC');
-
-                // Fourth Level
-                $qq->with('teams', function($qq) {
-                    $qq->with('reviews', function($qq) {
-                        $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
-                    })->with('company')->whereBetween('grade', [6,10])->whereIn('status', ['active', 'Active'])->orderBy('is_regular', 'ASC');
-
-                    // Fifth Level
-                    $qq->with('teams', function($qq) {
-                        $qq->with('reviews', function($qq) {
-                            $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
-                        })->with('company')->whereBetween('grade', [6,10])->whereIn('status', ['active', 'Active'])->orderBy('is_regular', 'ASC');
-                    });
-                });
-            });
-        })->orderBy('is_regular', 'ASC')->orderBy('slave_ecode', 'ASC')->get();
-        return response()->json($team, 200);
-    }
-
-    public function EmployeeKPI($ecode, $year){
-
-        $query = Profile::where(
-            'ecode', $ecode
-        )->with('company','managed_by', 'reviews.settings')->with('reviews', function($q) use ($year){
-            $q->where('year', $year)->with('keyReview');
-        })->first();
-
-        return response()->json([
-            'result' => $query
-        ], 200);
-    }
-
-    public function KPIEmployeeByYear($ecode, $year){
-        $query = Profile::whereHas('reviews', function($q) use ($year){
-            $q->where('year', $year);
-        })->where(
-            'ecode', $ecode
-        )->first();
-
-        return response()->json([
-            'result' => $query
-        ], 200);
-    }
+    }   
 
     public function fetchAuthProfile($ecode){
         $profile = Profile::where('ecode', $ecode) 
-                ->with( 
-                    'teams.company', 
-                    'company')
-                ->with('reviews', function($q) {
-                    $q->where('year', Carbon::now()->format('Y'))->with('keyReview');
-                })
-                ->with('teams', function($q) {
-                    $q->with('reviews', function($qq) {
-                        $qq->where('year', Carbon::now()->format('Y'))->with('keyReview');
-                    });
-                })->first(); 
+                ->with('company')->first(); 
         return response()->json([
             'result' => $profile
         ], 200);
     }
 
-    public function createReviewByYear(Request $request){
-
-        $query = Profile::where('ecode', $request->ecode )->first();
-        $haveReview = Review::where(['profile_id' => $query->id, 'year' => $request->year, 'performance_settings_id' => $request->setting['id']])->first();
-      
-        if($haveReview){
-            $query->reviews()->update([ 
-                'status'        => 'inprogress',
-                'author'        => $request->author,
-                'reminder_date' => Carbon::now()->addDays(3),
-            ]);
-        }else{
-            $query->reviews()->create([
-                'performance_settings_id' => $request->setting['id'],
-                'state'         => 'setting',
-                'status'        => 'inprogress',
-                'company_id'    => $request->setting['company_id'],
-                'year'          => $request->year,
-                'reminder_date' => Carbon::now()->addDays(3), // add reminder date, current date + 3 days
-                'type'          => $request->is_regular ? "regular" : "probation",
-                'author'        => $request->author
-            ]);
-        }
-        return response()->json([
-            'query' => $query,
-            'data' => $haveReview,
-            'message' => 'KPI Setting / Review has been Initiated.'
-        ], 200);
-    }
+    
 
     public function getSingleUser($ecode)
     {
-        $profile = Profile::where('ecode', $ecode)->with('company','managed_by')->first();
+        $profile = Profile::where('ecode', $ecode)->with('company')->first();
         return response()->json($profile, 200);
     }
 

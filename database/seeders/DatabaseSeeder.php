@@ -20,8 +20,7 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            IndustriesTableSeeder::class,
-            NotificationTableSeeder::class,
+            
            // CompaniesTableSeeder::class
             // CompaniesTableSeeder::class,
             // UsersTableSeeder::class,

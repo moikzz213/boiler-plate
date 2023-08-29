@@ -1,0 +1,1 @@
+import{c as s,w as a,V as t,o,d as e,I as c,b as _}from"./app-47bd7f18.js";import{_ as l}from"./PageHeader-83084245.js";const r=_("div",{class:"v-col-12"},null,-1),m={__name:"Logs",setup(n){return(i,u)=>(o(),s(t,null,{default:a(()=>[e(l,{title:"Logs"}),e(c,null,{default:a(()=>[r]),_:1})]),_:1}))}};export{m as default};

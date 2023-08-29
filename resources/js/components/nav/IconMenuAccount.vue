@@ -45,10 +45,8 @@ import { ref, onMounted, watch } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
 import { printInitials } from "@/composables/printInitials";
-import { useSettingStore } from "@/stores/settings";
 import { authApi } from "@/services/sacntumApi";
 import { mdiAccount } from "@mdi/js";
-const settingStore = useSettingStore();
 const iconProps = defineProps({
   color: {
     type: String,
@@ -94,14 +92,14 @@ const logout = async () => {
   loadingLogout.value = true;
   authlogout()
     .then(() => {
-      settingStore.setPageLoading(true, "logging out");
+      
       removeClientKey().then(() => {
-        settingStore.setPageLoading(false, "logging out");
+        
       });
     })
     .catch((err) => {
       loadingLogout.value = false;
-      settingStore.setPageLoading(false, "logging out");
+     
       console.log("error while trying to logout to server", err);
     });
 };

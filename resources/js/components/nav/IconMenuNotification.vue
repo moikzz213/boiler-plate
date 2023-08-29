@@ -45,22 +45,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
-import { useAuthStore } from "@/stores/auth";
+import { ref} from "vue";
+ 
 import { useRouter } from "vue-router";
-import { printInitials } from "@/composables/printInitials";
-import { useSettingStore } from "@/stores/settings";
-import { authApi } from "@/services/sacntumApi";
-import { mdiAccount, mdiBellOutline } from "@mdi/js";
-const settingStore = useSettingStore();
+  
 const iconProps = defineProps({
   color: {
     type: String,
     default: "dark",
   },
 });
-console.log("IconMenuNotification");
-const authStore = useAuthStore();
+ 
+ 
 const router = useRouter();
 const menu = ref(false);
 const openPage = (openPath) => {

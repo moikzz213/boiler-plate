@@ -16,11 +16,7 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from "vue";
-import { useSettingStore } from "@/stores/settings";
-
-const settingStore = useSettingStore();
-settingStore.setPageLoading(false);
+import { onMounted, onUnmounted, ref } from "vue"; 
 
 const baseUrl = ref(import.meta.env.VITE_APP_URL);
 const interval = ref(null);
